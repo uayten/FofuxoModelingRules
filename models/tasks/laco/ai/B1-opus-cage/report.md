@@ -90,11 +90,180 @@ Tool changes asked by the modeler: labels off the model with long leader
 lines; `views()` for any angle. Added to use modifiers: `set` and `crease`
 ops.
 
+## Round 3: the heart from the top
+
+Feedback: the heart-shaped part of the wing is still too square from the top
+under Subdivision. Knot approved and left untouched (D-053).
+
+1. Measured the top outline of both wings: half depth (largest |y|) in bands
+   of 5% of the width, on the limit surface (a temporary copy of the stack at
+   Subdivision 4). Round 2 kept 81% of its largest depth at the very tip and
+   ran straight from the knot out (a cone, then a flat-ended cylinder); the
+   reference peaks at 70–75% of the width and falls to 38% at the tip (an
+   egg).
+2. Topology: not changed. The reference reaches its outline with 28
+   vertices per 1/8 and five columns, as B1 (29); the square end was vertex
+   placement, not a missing loop. A cut would add a column the modeler then
+   has to clean (D-045). The fold into the knot still needs loops.
+3. Added the `target` op to Fofuxo Cage: `target v22 w 945 d 440` sets where
+   a vertex lands after Subdivision, and the sync solves the cage (the
+   base += target − sub passes of round 2, now one line). First try: a
+   target near the tip pushed v4 within the Mirror merge distance, the
+   vertex welded and the solve stopped converging; reverted from the text,
+   and the solver now keeps every base value at least 1.5 × the merge
+   distance from a mirror plane.
+4. `Laço`, all by target ops in three syncs: the three inner columns' depth
+   scaled by the reference/B1 ratio at each column (×1.43, ×1.35, ×1.21),
+   the tip rounded from the top (v22, v7, v28, v21, v20 shallower and v22,
+   v7, v28 pulled in by 1.5–2%), the h 0 row kept thin (v13 stopped at the
+   weld floor), and the front rim's tip held at its round 2 width (v19, v1,
+   v5).
+
+| Half depth (mm) at % of width | 10 | 30 | 50 | 70 | 90 | 95 | 100 |
+|---|---|---|---|---|---|---|---|
+| B1 round 2 | 3.7 | 6.4 | 9.3 | 11.0 | 11.3 | 10.9 | 9.2 |
+| B1 round 3 | 5.0 | 9.4 | 12.9 | 14.6 | 12.8 | 9.8 | 4.7 |
+| Reference | 4.4 | 9.1 | 12.7 | 14.5 | 12.4 | 10.2 | 5.5 |
+
+| | B1 round 2 | B1 round 3 | Reference |
+|---|---|---|---|
+| `Laço` evaluated | 123.4 × 22.7 × 66.4 mm | 123.4 × 28.7 × 66.4 mm | 126.1 × 28.1 × 68.4 mm |
+| Groove at h 0, 30% of width | 4.7 mm | 5.3 mm | 3.8 mm |
+
+The front silhouette did not move (L1 sub values identical to round
+2). The wing is 6 mm deeper overall, the reference's proportion.
+
+## Round 4: knot with 10 vertices, -Y, tool
+
+Asked by the modeler after round 3: the knot rebuilt like theirs and rounded
+by Subdivision; model on -Y; a very small Mirror merge; modifier settings the
+AI can read and change; a lock; clearer vertex labels; a self-critique of the
+wing against theirs.
+
+1. `Laço Nó`: rebuilt by a script with the topology of the modeler's knot
+   (10 vertices, 5 quads per 1/8, one valence-3 pole), mapped to B1's side
+   and scaled to B1's knot; the next sync pulled it (the tool has no topology
+   ops). Subdivision switched back on in the viewport (`set Subdivision
+   show_viewport on`, 1/2 as theirs). Then `target` ops put each cage
+   vertex's result on the round-2 knot's surface, along the ray from the
+   center, three passes: 31.3 × 27.3 × 36.2 mm, the approved size; radial
+   deviation from the approved knot median 0.23 mm, 95% under 0.63 mm, worst
+   0.84 mm. 160 faces with Subdivision 1 in the viewport, against 96 without
+   Subdivision in round 2.
+2. Mirror merge: 0.1 mm on both objects (`set Mirror merge_threshold 0.1mm`),
+   the value on the modeler's wing (D-054). The solver's floor near a plane
+   is 1.5 × that, 0.15 mm.
+3. -Y: both objects moved across the Y plane with the new `flip` (values in
+   the text unchanged, same result). The base vertices now face the front
+   view (D-055).
+4. Wing: tried the thin middle again with the small merge (`target v13 d
+   240`): v13 went to 0.15 mm from the plane for 0.6 mm of groove. Reverted
+   to the round-3 cage: a vertex that close to the plane reads as a mistake to
+   whoever edits next. The wing is otherwise as in round 3.
+
+### Self-critique of the wing against the modeler's
+
+Read in the same frame (the modeler's cage text, `Laço.blend` of `human/`):
+
+| | Modeler | B1 |
+|---|---|---|
+| Layout | loops radiate from the knot and follow the outline: the rim runs diagonally to the top corner and around the tip, a ring goes around the outer lobe | columns straight across the width (w 0, 280, 558, 880, tip), inherited from A2 |
+| Where the heart lives | in the layout: the rim and the lobe ring draw it | in positions: about 25 target ops scaled columns until the outline matched |
+| Cage against result | the cage stays outside the surface by a steady margin everywhere | uneven: in the h 0 row and at the tip the cage dips inside its neighbours (v14 base d 280 for a result of 530, v7 base 271 for 420) |
+| Pole | at the top corner of the lobe, where the rim turns | at the tip |
+| Thin middle | 1.5 mm deep from the knot to half the width | same depth at v13, but only one column: the groove fades by 56% of the width |
+
+What this means for B1: the outline matches the modeler's within 0.8 mm,
+but the cage is harder to edit. Dragging one vertex of a cage that dips
+inside moves the surface in a way that is hard to predict, and the folds
+still to do (into the knot, radial gathering) follow radial loops, which B1
+does not have. A better B1 would rebuild the wing with the modeler's layout
+(the same way the knot was rebuilt) instead of stacking more ops on the A2
+grid. Not done: it is a new wing, not an edit, and the modeler judges this
+one first.
+
+### Tool changes
+
+- Labels: the number only; dot, leader and number share a color, and
+  neighbours never share one; 6 px between labels; leaders avoid crossing
+  each other and other vertices, with a swap pass; coincident vertices share
+  one label; hidden vertices are hollow with a dashed leader. The views fit
+  the object, not its parent.
+- `modifiers` section in the text: settings and effect of each modifier;
+  `set` takes units (a length without one is refused); axis flags as letters;
+  objects by name. The sync reports `stack_changes`.
+- `lock` / `unlock`: the object cannot be selected; with `ui=True` all input
+  is swallowed; Esc or the sidebar button hands control back, and the next
+  sync warns `human_took_over`.
+- `flip(name, axis)` and the `modeled_behind` warning.
+- Tests: 103 checks pass (were 83).
+
+## Round 5: a lighter wing and the pinch into the knot
+
+Asked: the wing is "muito high poly" next to the modeler's; the modeler marked
+a whole loop sharp to remove, reshaping the rest to the same volume or
+better. The pinch where the wing enters the knot is "muito fraco". Also: all
+the suggestions of round 4 may be implemented.
+
+1. `dissolve sharp` removed the marked loop (v9 v8 v11 v12 v7 v22 v4, from
+   the X plane through the pole to the Z plane). The first try left three
+   n-gons: the loop turns at the pole v7, whose last spoke (v7-v21) has to go
+   with it; the op now takes it. 29 → 22 vertices, 20 → 14 quads per 1/8;
+   evaluated 450 vertices (the modeler's: 610).
+2. `fit` to the round-3 surface (captured before): median 0.02 mm, within
+   ±0.3 mm. Same volume with a quarter fewer vertices.
+3. The pinch, measured in sections across the width (the waist = depth at
+   h 0 over the lobe's largest depth):
+
+| % of width | 5 | 15 | 20 | 30 | 40 | 55 | 70 | 85 |
+|---|---|---|---|---|---|---|---|---|
+| Modeler | 0.42 | 0.32 | 0.29 | 0.28 | 0.35 | 0.61 | 0.87 | 0.79 |
+| B1 round 3 | 0.81 | 0.62 | 0.57 | 0.55 | 0.57 | 0.64 | 0.76 | 0.89 |
+| B1 round 5 | 0.45 | 0.31 | 0.29 | 0.32 | 0.44 | 0.59 | 0.75 | 0.87 |
+
+   How: the h 0 row thin near the knot (v10 at 0.7 mm from the Y plane as the
+   modeler's v2, v13 at 0.5 mm) and the row next to it close to it (v25 at
+   d 260, h 30), with v24 alone carrying the lobe's round side and the rim's
+   base raised so the front silhouette stays. Two tries were rejected on the
+   way: target ops on this column bent the cage (v25 fell onto the axis, v24
+   flew out, the rim sank 12%), and a flat lobe bottom gave boxy lobes (n 4.8
+   against the modeler's 3.1-3.3). Final lobes n 3.0.
+4. Editability: the new `cage_dips` check flagged v25 and v28; moved until
+   clean. It flags v7 in round 3 and nothing in the modeler's wing.
+
+Words for the pinch, for next time (in `EXAMPLE.md`): near the knot each
+cross-section is two round lobes that almost pinch apart at h 0; the depth
+at h 0 is 0.3 of the lobe's depth up to 30% of the width and opens past
+half; in the cage, a thin h 0 row plus a row right next to it (a tight loop)
+keep Subdivision from rounding the waist away.
+
+### Tool changes
+
+- `dissolve <edges>` and `cut <vA-vB> [N]` ops; `sharp` names the edges the
+  human marked.
+- Shape tools: `capture`, `fit`, `deviation`, `profile`, `sections` (with
+  image, superellipse exponent and waist), `compare` (against a file),
+  `rebuild` (another object's topology, fitted).
+- Views: `focus`, `ghost`, `normals`. The sync report leaves the modifiers
+  out unless the stack changed (`verbose=True` brings them).
+- `cage_dips` editability check on every sync.
+- `models/example/laco/measures.json`: the modeler's bow measured once.
+- Tests: 118 checks, and the last line states the verdict (Blender exits 0
+  when the test file does not parse).
+
+| | B1 round 3 | B1 round 5 | Modeler |
+|---|---|---|---|
+| `Laço` cage per 1/8 | 29 vertices, 20 quads | 22 vertices, 14 quads | 28, 19 |
+| `Laço` evaluated | 642 v, 123.4 × 28.7 × 66.4 mm | 450 v, 123.6 × 28.8 × 66.4 mm | 610 v, 126.1 × 28.9 × 68.7 mm |
+
 ## Verdict
 
 - Knot: "muito muito muito melhor, está ótimo"; left without Subdivision
   (D-053): Mirror only, 31.3 × 27.3 × 36.2 mm, 96 faces.
-- Wings: the heart-shaped part is still too square from the top under
-  Subdivision. Open.
+- Knot: after round 3, "o laço nó está bom agora"; round 4 rebuilt it with
+  10 vertices and Subdivision as a test. Waiting for the verdict.
+- Wings: round 3 answered the square top; after round 4 the modeler asked
+  for a lighter cage and a stronger pinch into the knot. Round 5 above;
+  waiting for the verdict.
 
 Details in `feedback.md`.

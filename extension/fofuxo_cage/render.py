@@ -8,9 +8,12 @@ and in background mode.
 - render_views: any cameras (yaw, pitch in degrees) x cage / subdivision, for
   3/4 views, views from above or below, the back.
 
-Cage panels label the base vertices with their ids, placed away from the
-model with a leader line to each vertex. Parent, children and siblings are
-drawn gray in the subdivision panels and join the outline.
+Cage panels label the base vertices with their id numbers, placed away from
+the model with a leader line to each vertex. Each vertex, its leader and its
+label share one color, and vertices that share a face never share a color.
+Leaders avoid crossing each other and passing over other vertices. Parent,
+children and siblings are drawn gray in the subdivision panels and join the
+outline.
 """
 
 import itertools
@@ -38,12 +41,17 @@ SUB_FACE = np.array([0.86, 0.74, 0.64])
 CONTEXT_FACE = np.array([0.70, 0.70, 0.72])
 WIRE = np.array([0.12, 0.12, 0.18])
 WIRE_COPY = np.array([0.62, 0.64, 0.70])
-VERT = np.array([0.85, 0.10, 0.10])
-POLE = np.array([0.95, 0.55, 0.0])
 OUTLINE = np.array([0.0, 0.35, 1.0])
-LEADER = np.array([0.40, 0.40, 0.50])
 TEXT = np.array([0.1, 0.1, 0.1])
+# Vertex colors: dark enough to read as text on white, far apart in hue.
+PALETTE = np.array([
+    (0.84, 0.10, 0.11), (0.12, 0.40, 0.75), (0.13, 0.55, 0.13), (0.90, 0.45, 0.00),
+    (0.55, 0.25, 0.70), (0.00, 0.55, 0.60), (0.85, 0.20, 0.60), (0.50, 0.33, 0.16),
+    (0.45, 0.50, 0.00), (0.10, 0.10, 0.45),
+])
 LABEL_H = 16
+LABEL_GAP = 6  # px kept free between labels
+DOT_CLEAR = 5  # px a leader keeps from other vertices
 AXIS_NAME = "wdh"
 
 # yaw 0 looks from the front (-Y), yaw 90 from the right (+X); pitch > 0 from above.
@@ -142,11 +150,13 @@ class Panel:
             mask[miny:maxy + 1, minx:maxx + 1] |= inside
         return mask
 
-    def line(self, p0, p1, color, alpha=1.0):
+    def line(self, p0, p1, color, alpha=1.0, dash=False):
         n = int(max(abs(p1[0] - p0[0]), abs(p1[1] - p0[1]))) + 2
         xs = np.linspace(p0[0], p1[0], n).astype(int)
         ys = np.linspace(p0[1], p1[1], n).astype(int)
         ok = (xs >= 0) & (xs < PANEL) & (ys >= 0) & (ys < PANEL)
+        if dash:  # 4 px on, 3 px off
+            ok &= np.arange(n) % 7 < 4
         xs, ys = xs[ok], ys[ok]
         self.img[ys, xs] = self.img[ys, xs] * (1 - alpha) + color * alpha
 
@@ -190,15 +200,20 @@ def _triangles(co, faces):
     return co[np.array(tris, dtype=int)] if tris else np.zeros((0, 3, 3))
 
 
-def _evaluated(obj, depsgraph):
+def _evaluated(obj, depsgraph, normals=False):
     ev = obj.evaluated_get(depsgraph)
     me = ev.to_mesh()
     try:
         co = np.empty(len(me.vertices) * 3, dtype=np.float32)
         me.vertices.foreach_get("co", co)
         faces = [list(p.vertices) for p in me.polygons]
+        nor = np.empty(len(me.vertices) * 3, dtype=np.float32)
+        if normals:
+            me.vertices.foreach_get("normal", nor)
     finally:
         ev.to_mesh_clear()
+    if normals:
+        return co.reshape(-1, 3).astype(float), faces, nor.reshape(-1, 3).astype(float)
     return co.reshape(-1, 3).astype(float), faces
 
 
@@ -256,12 +271,18 @@ class Scene:
         edges = [tuple(e.vertices) for e in mesh.edges]
         self.cage_co, cage_faces, self.cage_edges, self.copy_of = _mirror_copies(self.base, faces, edges, mirror)
         self.cage_tris = _triangles(self.cage_co, cage_faces)
-        ev_co, ev_faces = _evaluated(obj, depsgraph)
+        self.base_tris = _triangles(self.base, faces)
+        ev_co, ev_faces, ev_nor = _evaluated(obj, depsgraph, normals=True)
+        n = len(self.base)
+        # Under Mirror > Subdivision base vertex i is evaluated vertex i.
+        self.normals = ev_nor[:n] if len(ev_nor) >= n else None
         self.ev_tris = _triangles(ev_co, ev_faces)
         self.context_tris = _context_triangles(obj, depsgraph)
-        self.labels = [f"v{vid}" for vid in ids]
+        self.labels = [str(vid) for vid in ids]
+        self.colors = _vertex_colors(len(self.base), faces, ids)
         self.poles = _pole_indices(obj, mirror)
-        pts = [self.cage_co, ev_co] + ([self.context_tris.reshape(-1, 3)] if len(self.context_tris) else [])
+        # The fit follows the object itself; the related parts may run off the panel.
+        pts = [self.cage_co, ev_co]
         self.lo = np.min([p.min(axis=0) for p in pts], axis=0)
         self.hi = np.max([p.max(axis=0) for p in pts], axis=0)
 
@@ -277,22 +298,46 @@ class Scene:
         span = max(max(np.ptp(corners @ c.right), np.ptp(corners @ c.up)) for c in cams)
         return (PANEL - 2 * PAD) * FILL / max(span, 1e-6), center
 
-    def cage_panel(self, cam, scale, center, frame=None):
+    def cage_panel(self, cam, scale, center, frame=None, focus=None, ghost=False, normals=False):
+        """focus: ids to label (the others get small gray dots); ghost: fill
+        only the base part and draw the mirror copies as faint wire; normals:
+        a tick along the result's normal at each vertex."""
         panel = Panel(cam, scale, center)
         if frame is not None and cam.aligned:
             _grid(panel, frame)
-        mask = panel.fill(self.cage_tris, CAGE_FACE)
+        mask = panel.fill(self.base_tris if ghost else self.cage_tris, CAGE_FACE)
         px, _ = panel.to_px(self.cage_co)
         for (a, b), k in zip(self.cage_edges, self.copy_of):
             if k:
-                panel.line(px[a], px[b], WIRE_COPY, alpha=0.8)
+                panel.line(px[a], px[b], WIRE_COPY, alpha=0.35 if ghost else 0.8)
         for (a, b), k in zip(self.cage_edges, self.copy_of):
             if not k:
                 panel.line(px[a], px[b], WIRE)
         n = len(self.base)
-        for i in range(n):
-            panel.dot(px[i], POLE if i in self.poles else VERT, r=3 if i in self.poles else 2)
-        _place_labels(panel, px[:n], self.labels, mask)
+        hidden = _hidden(panel, self.cage_co, n)
+        keep = list(range(n))
+        if focus is not None:
+            wanted = {str(v).lstrip("v") for v in focus}
+            keep = [i for i in range(n) if self.labels[i] in wanted]
+            for i in range(n):
+                if i not in keep:
+                    panel.dot(px[i], WIRE_COPY, r=1)
+        if normals and self.normals is not None:
+            tips, _ = panel.to_px(self.base[keep] + self.normals[keep] * (16 / scale))
+            for i, tip in zip(keep, tips):
+                panel.line(px[i], tip, self.colors[i])
+        for i in keep:
+            if i in self.poles:  # a pole gets a dark ring
+                panel.dot(px[i], WIRE, r=5)
+                panel.dot(px[i], WHITE, r=4)
+            if hidden[i]:  # hollow: behind the model
+                panel.dot(px[i], self.colors[i], r=3)
+                panel.dot(px[i], WHITE, r=1)
+            else:
+                panel.dot(px[i], WIRE, r=3)
+                panel.dot(px[i], self.colors[i], r=2)
+        _place_labels(panel, px[keep], [self.labels[i] for i in keep], mask,
+                      [self.colors[i] for i in keep], [hidden[i] for i in keep])
         panel.text(4, 4, f"{cam.name}  cage")
         return panel
 
@@ -311,6 +356,25 @@ class Scene:
 
 # --- drawing helpers ----------------------------------------------------------
 
+def _hidden(panel, co, n):
+    """Per base vertex: True when the drawn model covers it. co holds the base
+    vertices and then their mirror copies (n each); a copy that lands on the
+    same pixel and is in view counts as the vertex being in view (the front
+    view of a back 1/8 shows its front copy)."""
+    px, depth = panel.to_px(co)
+    tol = 3 / panel.scale  # 3 px of depth: a vertex is not hidden by its own faces
+
+    def seen(j):
+        xi, yi = int(px[j][0]), int(px[j][1])
+        return not (0 <= xi < PANEL and 0 <= yi < PANEL) or panel.zbuf[yi, xi] <= depth[j] + tol
+
+    out = []
+    for i in range(n):
+        copies = [j for j in range(i, len(co), n) if np.hypot(*(px[j] - px[i])) <= 1.5]
+        out.append(not any(seen(j) for j in copies))
+    return out
+
+
 def _dilate(mask, r):
     out = mask.copy()
     for _ in range(r):
@@ -323,44 +387,143 @@ def _dilate(mask, r):
     return out
 
 
-def _place_labels(panel, pts, labels, model_mask):
-    """Labels go around the model, never over it, over another label or over a
-    vertex; a leader line joins each label to its vertex.
+def _vertex_colors(n, faces, ids):
+    """A palette color per base vertex; vertices sharing a face differ.
 
-    Each label searches rings of growing radius around its vertex for a spot
-    off the model; crowded vertices choose first. Only when no such spot exists
-    does a label sit over the model.
+    Greedy coloring in id order, so a vertex keeps its color across panels and
+    syncs as long as its neighbors do not change.
+    """
+    near = [set() for _ in range(n)]
+    for f in faces:
+        for a in f:
+            near[a].update(b for b in f if b != a)
+    color = {}
+    for i in sorted(range(n), key=lambda i: ids[i]):
+        used = {color[j] for j in near[i] if j in color}
+        color[i] = next((c for c in range(len(PALETTE)) if c not in used), ids[i] % len(PALETTE))
+    return [PALETTE[color[i]] for i in range(n)]
+
+
+def _crosses(p, q, a, b):
+    """True when segments p-q and a-b cross (touching ends do not count)."""
+    def orient(u, v, w):
+        return (v[0] - u[0]) * (w[1] - u[1]) - (v[1] - u[1]) * (w[0] - u[0])
+    d1, d2 = orient(a, b, p), orient(a, b, q)
+    d3, d4 = orient(p, q, a), orient(p, q, b)
+    return d1 * d2 < 0 and d3 * d4 < 0
+
+
+def _seg_dist(pt, a, b):
+    ax, ay = a
+    dx, dy = b[0] - ax, b[1] - ay
+    t = ((pt[0] - ax) * dx + (pt[1] - ay) * dy) / max(dx * dx + dy * dy, 1e-9)
+    t = min(max(t, 0.0), 1.0)
+    return math.hypot(pt[0] - ax - t * dx, pt[1] - ay - t * dy)
+
+
+def _anchor(v, rect):
+    """Where a leader meets its label: the nearest point of the rectangle."""
+    return (min(max(v[0], rect[0]), rect[2]), min(max(v[1], rect[1]), rect[3]))
+
+
+def _clusters(pts, radius=4):
+    """Groups of vertices that land within radius px of each other."""
+    groups = []
+    for i, p in enumerate(pts):
+        for g in groups:
+            if any(np.hypot(*(p - pts[j])) <= radius for j in g):
+                g.append(i)
+                break
+        else:
+            groups.append([i])
+    return groups
+
+
+def _traded(mine, theirs):
+    """My label moved to their spot, keeping my width, centered where theirs was."""
+    w = mine[2] - mine[0]
+    cx = (theirs[0] + theirs[2]) / 2
+    return (cx - w / 2, theirs[1], cx + w / 2, theirs[3])
+
+
+def _place_labels(panel, pts, labels, model_mask, colors, hidden):
+    """Labels go around the model, never over it, over another label or over a
+    vertex; a leader line in the vertex's color joins each label to its vertex.
+    Vertices that land on the same spot share one label (each number in its own
+    color, a dark leader). A vertex hidden behind the model gets a dashed
+    leader and a paler number.
+
+    Each label searches rings of growing radius around its vertex for a spot,
+    in passes that give up one wish at a time: off the model with a leader that
+    crosses no other leader or label and passes over no other vertex; then
+    crossings allowed; then over the model. Crowded vertices choose first. A
+    last pass swaps the spots of two labels whose leaders still cross when the
+    swap removes the crossing.
     """
     pts = np.asarray(pts, dtype=float)
     if not len(pts):
         return
+    groups = _clusters(pts)
+    all_pts = pts
+    pts = np.array([all_pts[g].mean(axis=0) for g in groups])
+    labels_of = labels
+    labels = [" ".join(labels_of[i] for i in g) for g in groups]
     avoid = _dilate(model_mask, 5)
     dist = np.linalg.norm(pts[:, None] - pts[None], axis=2)
     order = np.argsort(-(dist < 40).sum(axis=1), kind="stable")
     dots = [(p[0] - 3, p[1] - 3, p[0] + 3, p[1] + 3) for p in pts]
     placed = {}
 
-    def free(rect, own, allow_model):
+    def leader(i, rect):
+        return tuple(pts[i]), _anchor(pts[i], rect)
+
+    def clean(i, rect, others):
+        """The leader of i to rect crosses no other leader or label and keeps off other vertices."""
+        p, q = leader(i, rect)
+        if any(_seg_dist(pts[j], p, q) < DOT_CLEAR for j in range(len(pts)) if j != i):
+            return False
+        for j, r in others.items():
+            if j == i:
+                continue
+            if _crosses(p, q, *leader(j, r)):
+                return False
+            if _crosses(p, q, (r[0], r[1]), (r[2], r[3])) or _crosses(p, q, (r[0], r[3]), (r[2], r[1])):
+                return False
+        return True
+
+    def free(rect, own, allow_model, allow_cross):
         x0, y0, x1, y1 = rect
         if x0 < 0 or y0 < PAD / 2 or x1 > PANEL or y1 > PANEL - 12:
             return False
         if not allow_model and avoid[int(y0):int(y1), int(x0):int(x1)].any():
             return False
-        hits = list(placed.values()) + [d for j, d in enumerate(dots) if j != own]
-        return all(x1 <= r[0] or x0 >= r[2] or y1 <= r[1] or y0 >= r[3] for r in hits)
+        g = LABEL_GAP
+        if not all(x1 + g <= r[0] or x0 - g >= r[2] or y1 + g <= r[1] or y0 - g >= r[3]
+                   for r in placed.values()):
+            return False
+        if not all(x1 <= r[0] or x0 >= r[2] or y1 <= r[1] or y0 >= r[3]
+                   for j, r in enumerate(dots) if j != own):
+            return False
+        if allow_cross:
+            return True
+        # New leader against the placed ones, and the placed leaders against the new label.
+        if not clean(own, rect, placed):
+            return False
+        return all(not (_crosses(*leader(j, r), (x0, y0), (x1, y1)) or _crosses(*leader(j, r), (x0, y1), (x1, y0)))
+                   for j, r in placed.items())
 
     for i in order:
         w = len(labels[i]) * 12 + 2
         vx, vy = pts[i]
         chosen = None
-        for allow_model in (False, True):
-            for radius in range(14, 260, 12):
+        for allow_model, allow_cross in ((False, False), (False, True), (True, False), (True, True)):
+            for radius in range(16, 260, 10):
                 for k in range(24):
                     ang = k * np.pi / 12
                     cx, cy = vx + radius * np.cos(ang), vy - radius * np.sin(ang)
                     x = cx if np.cos(ang) >= 0 else cx - w
                     rect = (x, cy - LABEL_H / 2, x + w, cy + LABEL_H / 2)
-                    if free(rect, i, allow_model):
+                    if free(rect, i, allow_model, allow_cross):
                         chosen = rect
                         break
                 if chosen:
@@ -369,14 +532,44 @@ def _place_labels(panel, pts, labels, model_mask):
                 break
         placed[i] = chosen or (vx + 4, vy - LABEL_H - 2, vx + 4 + w, vy - 2)
 
-    for i, rect in placed.items():
-        vx, vy = pts[i]
-        nx = min(max(vx, rect[0]), rect[2])
-        ny = min(max(vy, rect[1]), rect[3])
-        if np.hypot(nx - vx, ny - vy) > 5:
-            panel.line((vx, vy), (nx, ny), LEADER, alpha=0.85)
-    for i, rect in placed.items():
-        panel.text(rect[0] + 1, rect[1] + 1, labels[i], color=WIRE, scale=2)
+    def fits(rect, others):
+        x0, y0, x1, y1 = rect
+        if x0 < 0 or y0 < PAD / 2 or x1 > PANEL or y1 > PANEL - 12:
+            return False
+        g = LABEL_GAP
+        return all(x1 + g <= r[0] or x0 - g >= r[2] or y1 + g <= r[1] or y0 - g >= r[3] for r in others)
+
+    # Untangle: two labels whose leaders still cross trade spots (each keeps
+    # its own width) when the traded leaders do not cross.
+    for _ in range(3):
+        swapped = False
+        keys = list(placed)
+        for n, i in enumerate(keys):
+            for j in keys[n + 1:]:
+                if not _crosses(*leader(i, placed[i]), *leader(j, placed[j])):
+                    continue
+                ri, rj = _traded(placed[i], placed[j]), _traded(placed[j], placed[i])
+                others = [r for k, r in placed.items() if k not in (i, j)]
+                if fits(ri, others + [rj]) and fits(rj, others) and not _crosses(*leader(i, ri), *leader(j, rj)):
+                    placed[i], placed[j] = ri, rj
+                    swapped = True
+        if not swapped:
+            break
+
+    def tone(i):
+        return colors[i] * 0.45 + WHITE * 0.55 if hidden[i] else colors[i]
+
+    for n, rect in placed.items():
+        g = groups[n]
+        a = _anchor(pts[n], rect)
+        if np.hypot(a[0] - pts[n][0], a[1] - pts[n][1]) > 5:
+            color = colors[g[0]] if len(g) == 1 else WIRE
+            panel.line(pts[n], a, color, dash=all(hidden[i] for i in g))
+    for n, rect in placed.items():
+        x = rect[0] + 1
+        for i in groups[n]:
+            panel.text(x, rect[1] + 1, labels_of[i], color=tone(i), scale=2)
+            x += (len(labels_of[i]) + 1) * 12
 
 
 def _grid(panel, frame):
@@ -538,14 +731,56 @@ def render_sheet(obj, ids, depsgraph, frame, path, title="", concept=None):
     return _compose(rows, title, path)
 
 
-def render_views(obj, ids, depsgraph, views, path, title=""):
+def render_views(obj, ids, depsgraph, views, path, title="", focus=None, ghost=False, normals=False):
     """Any cameras x cage / subdivision. views: preset names ("front", "top",
-    "left"...), "yaw,pitch" strings or (yaw, pitch) pairs in degrees."""
+    "left"...), "yaw,pitch" strings or (yaw, pitch) pairs in degrees. focus,
+    ghost, normals: see Scene.cage_panel."""
     scene = Scene(obj, ids, depsgraph)
     cams = [Camera(v) for v in views]
     scale, center = scene.fit(cams)
-    rows = [[scene.cage_panel(c, scale, center).img, scene.sub_panel(c, scale, center)[0].img] for c in cams]
+    rows = [[scene.cage_panel(c, scale, center, focus=focus, ghost=ghost, normals=normals).img,
+             scene.sub_panel(c, scale, center)[0].img] for c in cams]
     return _compose(rows, title, path)
+
+
+SECTION_CAMS = {"w": "right", "d": "front", "h": "top"}
+SECTION_CURVE = np.array([0.85, 0.40, 0.10])
+
+
+def section_panel(scene, axis, c, segs, cage_segs, frame, entry):
+    """One cut: the result's section (orange, thick), the cage's (dark) and the
+    base vertices near the plane, labeled, on the frame grid."""
+    cam = Camera(SECTION_CAMS[axis])
+    scale, center = scene.fit([cam], frame)
+    panel = Panel(cam, scale, center)
+    _grid(panel, frame)
+    mask = np.zeros((PANEL, PANEL), dtype=bool)
+    for seg in cage_segs:
+        (p, q), _ = panel.to_px(seg)
+        panel.line(p, q, WIRE)
+    for seg in segs:
+        (p, q), _ = panel.to_px(seg)
+        for dx, dy in ((0, 0), (1, 0), (0, 1)):
+            panel.line((p[0] + dx, p[1] + dy), (q[0] + dx, q[1] + dy), SECTION_CURVE)
+        n = int(max(abs(q[0] - p[0]), abs(q[1] - p[1]))) + 2
+        xs = np.clip(np.linspace(p[0], q[0], n).astype(int), 0, PANEL - 1)
+        ys = np.clip(np.linspace(p[1], q[1], n).astype(int), 0, PANEL - 1)
+        mask[ys, xs] = True
+    k = "wdh".index(axis)
+    near = [i for i in range(len(scene.base)) if abs(scene.base[i][k] - c) < frame.axes[k].extent * 0.03]
+    px, _ = panel.to_px(scene.base)
+    for i in near:
+        panel.dot(px[i], WIRE, r=3)
+        panel.dot(px[i], scene.colors[i], r=2)
+    _place_labels(panel, px[near], [scene.labels[i] for i in near], _dilate(mask, 2),
+                  [scene.colors[i] for i in near], [False] * len(near))
+    n_text = f"  n {entry['n']}" if entry.get("n") else ""
+    panel.text(4, 4, f"{axis} {entry['at']}{n_text}")
+    return panel
+
+
+def compose_row(panels, title, path):
+    return _compose([[p.img for p in panels]], title, path)
 
 
 def _write_png(rgb, path):

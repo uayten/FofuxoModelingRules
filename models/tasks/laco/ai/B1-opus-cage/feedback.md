@@ -38,6 +38,49 @@ round: `../../human/Laço.blend` (the modeler's bow, same as E1).
 | 7 | "o nó do laço ficou muito muito muito melhor, está ótimo! ... deixaria sem modificador de subdivision ... para precisar utilizar o modificador ele teria que ser mais low poly" | Knot accepted; Subdivision removed (`remove Subdivision`) | Rule | D-053; B1 `Laço Nó` |
 | 8 | The heart-shaped part of the wing is still too square from the top with Subdivision | Open work | Specific | next session |
 
+## Round 3 (2026-09-29)
+
+| # | Modeler said | AI understood | Class | Goes to |
+|---|---|---|---|---|
+| 9 | "A parte em formato de coração da asa do laço ainda está muito quadrada vista de cima com Subdivision" (item 8) | Measured: the top outline kept 81% of its depth at the tip (flat end); the reference falls to 38%. Matched the reference's top profile with `target` ops, no new loops. | Specific (heart, B1); second case of D-041 for "round from the top", pending the verdict | B1 `Laço`; D-041 evidence if accepted |
+| 10 | "uma op `target` que resolve o cage para o sub cair num alvo" (idea from earlier sessions, in this session's brief) | `target <vid> <axis> <value>`: the sync solves the base so the sub lands there | Tool | Fofuxo Cage (done) |
+
+## Round 4 (2026-09-29)
+
+| # | Modeler said | AI understood | Class | Goes to |
+|---|---|---|---|---|
+| 11 | Labels: the leader in the vertex's color, no "v", neighbours in different colors, more space between numbers, leaders that do not cross | Done as asked, plus shared labels for coincident vertices and hollow dots for hidden ones | Tool | Fofuxo Cage render |
+| 12 | "a solda por causa do modificador mirror é causada por uma opção do modificador ... da forma como eu faço é deixar um valor bem bem pequeno, pois eu quero que eles se conectem quando encosta no X0" | Merge distance very small (0.1 mm, as on the modeler's wing); set on both objects | Rule | D-054 |
+| 13 | "queria que a extensão do blender bloqueasse a malha que você está editando, ou se precisar, bloqueasse a utilização do usuário no blender" | `lock(name, ui=False)`: object not selectable; `ui=True` swallows input; Esc or Unlock takes over | Tool | Fofuxo Cage (done) |
+| 14 | "faça o nó ter 10 vertices (igual como eu fiz) e depois use o solidify [Subdivision: the modeler corrected the name] para dar a forma arredondada" | Knot rebuilt with the modeler's topology, Subdivision 1/2, fitted to the approved knot within 0.8 mm | Specific, test of D-053 from the other side | B1 `Laço Nó`; EXAMPLE open question |
+| 15 | "o laço com formato de coração, também é bom você dar uma olhada e fazer uma auto crítica em relação ao seu" | Self-critique in `report.md`: same outline, worse layout (columns against radial loops), uneven cage | AI deduction, pending | `report.md`; EXAMPLE deductions |
+| 16 | "as informações de configurações dos modificadores são muito importantes, você deve poder editá-las e compreender o resultado das mudanças na malha" | `modifiers` section with each modifier's settings and effect; `set` with units | Tool | Fofuxo Cage (done) |
+| 17 | "é para você modelar no eixo -Y ... os vertices que importam estão na parte de trás do mirror" | Base mesh on -Y; `flip` and a warning | Rule | D-055 |
+
+Proposed for `SKILL.md` (not yet written): "Mirror merge distance very small
+(0.1 mm): vertices join only when they touch the plane" (D-054) and "Model
+on -Y, the side the front view sees" (D-055).
+
+## Round 5 (2026-09-29)
+
+| # | Modeler said | AI understood | Class | Goes to |
+|---|---|---|---|---|
+| 18 | "a sua asa ainda está muito high poly se comparada com a minha. marquei um loop inteiro com sharp que você poderia remover e reajustar os vertices para conseguir o mesmo volume, ou até um volume melhor" | Loop dissolved (`dissolve sharp`), volume refitted: 22 vertices per 1/8 | Rule, second case of D-045 | D-045 evidence; B1 `Laço` |
+| 19 | "está faltando um finco maior no meio da asa quando entra no nó ... veja como eu fiz e dê uma sugestão para si próprio de como escrever o que eu fiz com palavras" | The pinch measured as the waist of the cross-sections (0.28-0.32 of the lobe depth near the knot); built with a thin h 0 row and a tight row next to it. Words written in `EXAMPLE.md` | Specific (heart) + second case of D-039 | `EXAMPLE.md`; D-039 evidence |
+| 20 | "você pode implementar todas as suas sugestões" | Done: topology ops, shape tools, views options, quiet reports, editability check, measures file, test verdict line | Tool | Fofuxo Cage |
+
+Marking edges sharp in Blender worked as a way for the modeler to point at a
+loop; the tool now reads it (`dissolve sharp`, `crease sharp ...`). Worth
+keeping as the convention? (question D)
+
+After round 5 (open, next session):
+
+| # | Modeler said | AI understood | Class | Goes to |
+|---|---|---|---|---|
+| D | "pode ser loop ou seam como referência para você" | The modeler points at edges with sharp or seam marks; the tool should read seam as it reads sharp | Tool | Fofuxo Cage (`seam` keyword, to do) |
+| 21 | "marquei com seam as edges que precisam ser puxadas para Y- para dar um formato mais arredondado. no geral o modelo está bom" | Seams on v15-v27 and v23-v27 (around v27, the lobe's outer side at 85% of the width): pull them toward -Y (deeper) for a rounder lobe | Specific | next session |
+| 22 | "existem ferramentas no blender para fazer todas as edições que você está escrevendo scripts ... não valeria mais a pena você utilizar as do blender do que escrever scripts novos? em termos à longo prazo sobre performance" | Yes: wrap Blender's own operators (select by id, run the operator, read the result back) instead of writing new bmesh code per tool | Tool | Fofuxo Cage: generic operator op (to do) |
+
 Items 1 and 2 resolve through A and B: item 1 is D-051 applied to this
 concept; item 2 is the heart shape of B. When to apply (from C) is settled by
 item 6: case by case.

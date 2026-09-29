@@ -7,6 +7,12 @@
 targets: vertex ids (v7), loop labels from the verts section (L1, rest) or
 all. axes: any of w, d, h (e.g. wh). Coordinates on a mirror plane stay on it.
 Ops run in order, after any line edits, and are cleared once applied.
+
+    target <vid> <axis> <value> [<axis> <value> ...]
+
+sets where a vertex lands after the stack (its sub column, in permille), e.g.
+target v22 w 944 d 606. The sync solves the base positions after every other
+op (sync.solve_targets); axes not named keep their base value.
 """
 
 import re
@@ -22,7 +28,7 @@ class OpError(ValueError):
 def parse(line):
     tokens = line.replace(",", " ").split()
     if not tokens or tokens[0].lower() not in ("move", "scale"):
-        raise OpError(f"unknown op {line!r}: use move or scale")
+        raise OpError(f"unknown op {line!r}: use move, scale or target")
     verb, rest = tokens[0].lower(), tokens[1:]
     from_zero = False
     if verb == "scale" and [t.lower() for t in rest[-2:]] == ["from", "0"]:
@@ -36,6 +42,34 @@ def parse(line):
     if not m:
         raise OpError(f"{line!r}: amount must be a percentage like +4% or 105%, not {amount!r}")
     return verb, targets, axes.lower(), float(m[1]), from_zero
+
+
+def is_target(line):
+    tokens = line.split()
+    return bool(tokens) and tokens[0].lower() == "target"
+
+
+def parse_target(line, cage, keep_on_plane):
+    """(vid, {axis index: sub value}) from a target line."""
+    tokens = line.replace(",", " ").split()[1:]
+    if len(tokens) < 3 or len(tokens) % 2 == 0:
+        raise OpError(f"{line!r}: expected 'target <vid> <axis> <value> [<axis> <value> ...]'")
+    vid_token, pairs = tokens[0].lower(), tokens[1:]
+    if not re.fullmatch(r"v\d+", vid_token) or int(vid_token[1:]) not in cage.verts:
+        raise OpError(f"{line!r}: no vertex {tokens[0]}")
+    vid = int(vid_token[1:])
+    goal = {}
+    for axis, value in zip(pairs[::2], pairs[1::2]):
+        axis = axis.lower()
+        if axis not in AXES:
+            raise OpError(f"{line!r}: axis must be w, d or h, not {axis!r}")
+        try:
+            goal[AXES.index(axis)] = float(value)
+        except ValueError:
+            raise OpError(f"{line!r}: value must be permille like 606, not {value!r}") from None
+        if keep_on_plane(vid, AXES.index(axis)):
+            raise OpError(f"{line!r}: v{vid} lies on the mirror plane of {axis}; that value stays 0")
+    return vid, goal
 
 
 def _targets(tokens, cage, line):

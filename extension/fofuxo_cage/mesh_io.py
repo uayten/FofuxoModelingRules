@@ -5,8 +5,9 @@ materials, parent and every other mesh attribute stay as they are.
 """
 
 import bmesh
+import bpy
 
-from . import topology
+from . import modifier_info, topology
 from .cage_format import Cage, Vertex, fmt, normalize_face
 from .frame import Frame
 
@@ -179,6 +180,11 @@ def default_frame(obj, depsgraph):
     return Frame.around(all_co, kept_sides(obj.data, mirror))
 
 
+def _fresh_depsgraph():
+    bpy.context.view_layer.update()
+    return bpy.context.evaluated_depsgraph_get()
+
+
 def build_cage(obj, ids, depsgraph, frame, forms=()):
     """The cage text model of the object's current mesh, measured in frame."""
     mesh = obj.data
@@ -214,6 +220,7 @@ def build_cage(obj, ids, depsgraph, frame, forms=()):
         cage.groups.append(("rest", [ids[i] for i in rest]))
     cage.faces = [tuple(ids[i] for i in p.vertices) for p in mesh.polygons]
     cage.edges = edge_data_lines(mesh, ids)
+    cage.modifiers = modifier_info.describe(obj, _fresh_depsgraph, lambda co: _size(co, ()))
     cage.forms = list(forms)
     return cage
 

@@ -283,6 +283,11 @@ E1's center vertices are packed close together so the wing keeps its narrowing
 into the knot after Subdivision. A2 had loose spacing and drifted "out of shape,
 mainly after the Subdivision".
 
+B1 round 5 (second case): the pinch where the wing enters the knot ("um finco
+maior no meio da asa quando entra no nó") needs the row next to the thin h 0
+row to sit close to it; with evenly spaced rows the waist stayed at 0.44-0.55
+of the lobe depth, with the tight row it reached the modeler's 0.29-0.32.
+
 ### D-041: Imagine the views the concept does not show; round looks round (Stated, T1)
 
 Seen from the top, E1's bow wing converges to the center in depth as well (a
@@ -314,6 +319,11 @@ sizes was wrong: their reports were right, the check was not.
 A3 (Opus) was the best result untouched, but as a start for manual editing A2
 was better: fixing A2 meant dragging vertices; fixing A3 meant cleaning excess
 loops and then dragging vertices anyway. Start lean.
+
+B1 round 5: the wing was "muito high poly" next to the modeler's. The modeler
+marked a whole loop to remove and reshape "para conseguir o mesmo volume, ou
+até um volume melhor": 29 → 22 vertices per 1/8, the surface refitted within
+0.3 mm of the round before.
 
 ### D-046: The face budget mixes reference detail, overall shape and target (Stated, T1)
 
@@ -384,6 +394,23 @@ cage already holds the form; "para precisar utilizar o modificador ele teria
 que ser mais low poly". A cage dense enough to carry its shape goes without
 Subdivision; Subdivision is for a lower-poly cage (D-033, D-051).
 
+### D-054: Mirror merge distance very small (Stated, B1)
+
+The weld at a mirror plane comes from the Mirror modifier's merge option. The
+modeler keeps its distance "bem bem pequeno", so vertices join only when they
+touch the plane (X = 0), never because they came close to it. E1's `Laço`
+uses 0.1 mm. In B1 a merge of 1 mm (Blender's default) welded a wing vertex
+that the AI had moved 1 mm off the plane. Clipping stays on, so vertices on
+the plane stay there while editing.
+
+### D-055: Model on the -Y side (Stated, B1)
+
+With Mirror on Y, the half that holds the base vertices is -Y, the side the
+front view looks at. B1 had its base on +Y, so in every render the vertices
+that matter sat behind their mirror copy, "ficando uma malha na frente dos
+vertices importantes". E1 models on -Y. Fofuxo Cage warns `modeled_behind`
+and moves a part across with `flip(name, "d")`.
+
 ### D-040: Silhouette overlap as an audit check (Stated, T1)
 
 The auditor compares the evaluated mesh's front silhouette with the concept.
@@ -424,7 +451,8 @@ Solidify.
   the general idea is D-026.
 - E1 vertex group names `ShrinkWrap` / `Shrwink2`: working names, not a naming
   rule.
-- E1 Mirror merge threshold: 0.0001 on `Laço`, 0.001 on `Laço Nó`.
+- E1 Mirror merge threshold 0.001 (Blender's default) on `Laço Nó`: left as
+  it came; the practice is a very small distance (D-054, 0.0001 on `Laço`).
 
 ## Open questions
 

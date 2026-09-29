@@ -3,16 +3,21 @@
     add <type> [as <name>] [at <place>]   add a modifier (default name, at the end)
     remove <modifier>                     remove a modifier
     reorder <modifier> to <place>         move a modifier in the stack
-    set <modifier> <property> <value>     change a setting, e.g. set Subdivision levels 2
+    set <modifier> <property> <value>     change a setting, e.g. set Subdivision levels 2,
+                                          set Mirror merge_threshold 0.1mm, set Mirror use_axis XZ
     apply <modifier>                      apply a modifier to the mesh (destructive)
     crease <edges> <value>                e.g. crease plane-x 1.0, crease v2-v16 0.5
+    dissolve <edges>                      remove an edge loop (see mesh_ops)
+    cut <vA-vB> [N]                       cut N loops across the ring of edge vA-vB
 
+Values: lengths with a unit (0.1mm, 2cm), angles with a unit (30deg), on/off,
+axis flags as letters (XZ, - for none), an object name or - for none.
 type: a Blender modifier type, e.g. SUBSURF, MIRROR, BEVEL, SOLIDIFY,
 WEIGHTED_NORMAL (case does not matter). place: first, last, a 1-based
 position, before <modifier> or after <modifier>. Names with spaces go in
 quotes. Edges: vA-vB pairs, loop labels (the edges between consecutive
-vertices of the loop) or plane-x / plane-y / plane-z (every edge on that
-mirror plane).
+vertices of the loop), plane-x / plane-y / plane-z (every edge on that
+mirror plane) or sharp (every edge marked sharp in Blender).
 
 The whole batch is checked against a simulated stack before anything runs,
 so a bad op changes nothing.
@@ -23,7 +28,9 @@ import shlex
 
 import bpy
 
-VERBS = ("add", "remove", "reorder", "set", "apply", "crease")
+from . import mesh_ops, modifier_info
+
+VERBS = ("add", "remove", "reorder", "set", "apply", "crease", "dissolve", "cut")
 CREASE_ATTR = "crease_edge"
 # Names Blender gives new modifiers (checked on 5.2), so a batch can refer to
 # a modifier it adds and new modifiers keep their default names (D-006).
@@ -84,29 +91,10 @@ def _place(tokens, names, line, moving=None):
 
 
 def _value(prop, raw):
-    kind = prop.type
-    if kind == "BOOLEAN":
-        low = raw.lower()
-        if low in ("true", "on", "1", "yes"):
-            return True
-        if low in ("false", "off", "0", "no"):
-            return False
-        raise ObjectOpError(f"{prop.identifier} takes true or false, not {raw!r}")
     try:
-        if kind == "INT":
-            return int(raw)
-        if kind == "FLOAT":
-            return float(raw)
-    except ValueError:
-        raise ObjectOpError(f"{prop.identifier} takes a number, not {raw!r}") from None
-    if kind == "ENUM":
-        items = [i.identifier for i in prop.enum_items]
-        if raw not in items:
-            raise ObjectOpError(f"{prop.identifier} takes one of {items}, not {raw!r}")
-        return raw
-    if kind == "STRING":
-        return raw
-    raise ObjectOpError(f"{prop.identifier} cannot be set from text")
+        return modifier_info.parse_value(prop, raw)
+    except modifier_info.ModifierValueError as e:
+        raise ObjectOpError(str(e)) from None
 
 
 def _context(obj):
@@ -184,7 +172,7 @@ def check_all(obj, lines, cage):
             value = raw
             if rna is not None:
                 prop = rna.properties.get(prop_name)
-                if prop is None or prop.is_readonly or (getattr(prop, "is_array", False) and prop.array_length > 0):
+                if prop is None or prop.is_readonly:
                     raise ObjectOpError(f"{line!r}: {name} has no settable property {prop_name!r}")
                 value = _value(prop, raw)
             out.append((line, _setter(obj, name, prop_name, value)))
@@ -205,6 +193,25 @@ def check_all(obj, lines, cage):
                 raise ObjectOpError(f"{line!r}: the crease value must be from 0 to 1")
             pairs = _edge_pairs(args[:-1], cage, line)
             out.append((line, lambda pairs=pairs, value=value: f"{_set_crease(obj, pairs, value)} edges"))
+        elif v == "dissolve":
+            if not args:
+                raise ObjectOpError(f"{line!r}: expected 'dissolve <edges>'")
+            specs = _edge_pairs(args, cage, line)
+            try:
+                mesh_ops.check_dissolve(obj.data, specs)
+            except mesh_ops.MeshOpError as e:
+                raise ObjectOpError(f"{line!r}: {e}") from None
+            out.append((line, lambda specs=specs: mesh_ops.dissolve(obj, specs)))
+        elif v == "cut":
+            m = re.fullmatch(r"v(\d+)-v(\d+)", args[0].lower()) if args else None
+            if not m or len(args) > 2 or (len(args) == 2 and not args[1].isdigit()):
+                raise ObjectOpError(f"{line!r}: expected 'cut <vA-vB> [N]'")
+            pair, cuts = (int(m[1]), int(m[2])), int(args[1]) if len(args) == 2 else 1
+            try:
+                mesh_ops.check_cut(obj.data, pair)
+            except mesh_ops.MeshOpError as e:
+                raise ObjectOpError(f"{line!r}: {e}") from None
+            out.append((line, lambda pair=pair, cuts=cuts: mesh_ops.cut(obj, pair, cuts)))
         else:
             raise ObjectOpError(f"{line!r}: unknown op")
     return out
@@ -273,30 +280,21 @@ def _edge_pairs(tokens, cage, line):
             out += [("pair", a, b) for a, b in zip(ids, ids[1:])]
         elif low in ("plane-x", "plane-y", "plane-z"):
             out.append(("plane", "XYZ".index(low[-1].upper())))
+        elif low == "sharp":
+            out.append(("sharp",))
         else:
-            raise ObjectOpError(f"{line!r}: unknown edges {t!r}; use vA-vB, a loop label or plane-x/y/z")
+            raise ObjectOpError(f"{line!r}: unknown edges {t!r}; use vA-vB, a loop label, plane-x/y/z or sharp")
     return out
 
 
 def _set_crease(obj, specs, value):
     """Set the crease of the edges named by specs; returns how many changed."""
-    from .mesh_io import ID_ATTR
-    from .topology import PLANE_TOL
-
     mesh = obj.data
-    ids = [d.value for d in mesh.attributes[ID_ATTR].data]
-    wanted = {frozenset((a, b)) for kind, *rest in specs if kind == "pair" for a, b in [rest]}
-    planes = [rest[0] for kind, *rest in specs if kind == "plane"]
     attr = mesh.attributes.get(CREASE_ATTR)
     if attr is None:
         attr = mesh.attributes.new(CREASE_ATTR, "FLOAT", "EDGE")
-    count = 0
-    for e, d in zip(mesh.edges, attr.data):
-        a, b = e.vertices
-        on_plane = any(abs(mesh.vertices[a].co[k]) < PLANE_TOL and abs(mesh.vertices[b].co[k]) < PLANE_TOL
-                       for k in planes)
-        if on_plane or frozenset((ids[a], ids[b])) in wanted:
-            d.value = value
-            count += 1
+    edges = mesh_ops.edge_indices(mesh, specs)
+    for i in edges:
+        attr.data[i].value = value
     mesh.update()
-    return count
+    return len(edges)

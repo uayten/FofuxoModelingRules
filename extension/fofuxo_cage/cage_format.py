@@ -4,13 +4,14 @@ import re
 from dataclasses import dataclass, field
 
 FORMAT_VERSION = 1
-SECTIONS = ("verts", "faces", "edges", "ops", "forms")
+SECTIONS = ("modifiers", "verts", "faces", "edges", "ops", "forms")
 
 HELP = (
     "# Values are permille of the frame: w = width (X), d = depth (Y), h = height (Z).",
     "# A mirrored axis counts from the mirror plane (0) to the frame edge (1000).",
     "# Edit \"base w d h\", then run sync. sub = where the vertex lands after the",
-    "# modifier stack (read-only). frame, faces and edges are written by the plugin.",
+    "# modifier stack (read-only). frame, modifiers, faces and edges are written by",
+    "# the plugin; change a modifier with a set op (set Mirror merge_threshold 0.1mm).",
 )
 
 _NUM = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)"
@@ -40,6 +41,7 @@ class Cage:
     groups: list = field(default_factory=list)  # [(label, [ids])]
     verts: dict = field(default_factory=dict)  # id -> Vertex
     faces: list = field(default_factory=list)  # [tuple of ids]
+    modifiers: list = field(default_factory=list)  # raw lines, read-only
     edges: list = field(default_factory=list)  # raw lines, read-only
     ops: list = field(default_factory=list)  # raw lines
     forms: list = field(default_factory=list)  # raw lines, kept verbatim
@@ -98,6 +100,8 @@ def parse(text):
             cage.faces.append(tuple(int(t[1:]) for t in m[1].split()))
         elif section == "edges":
             cage.edges.append(line)
+        elif section == "modifiers":
+            cage.modifiers.append(line)
         elif section == "ops":
             cage.ops.append(line)
     while cage.forms and not cage.forms[-1].strip():
@@ -128,6 +132,8 @@ def write(cage):
     out = [f"# fofuxo_cage {FORMAT_VERSION}", *HELP, ""]
     for key, value in cage.header.items():
         out.append(f"{key:<8} {value}")
+    if cage.modifiers:
+        out += ["", "modifiers"] + [f"  {line}" for line in cage.modifiers]
     out += ["", "verts", f"# {'loop':<6}{'id':<5}{'base w':>6}{'d':>6}{'h':>6} |{'sub w':>6}{'d':>6}{'h':>6} | flags"]
     for label, ids in cage.groups:
         for k, vid in enumerate(ids):

@@ -21,12 +21,17 @@ sys.path.insert(0, str(HERE.parents[2]))
 
 import fofuxo_cage as fc  # noqa: E402
 
+fc.register()  # operators and panel, as when Blender enables the extension
 SYNC = sys.modules["fofuxo_cage.sync"]
 
 failures = []
 
 
+checks = []
+
+
 def check(cond, what):
+    checks.append(what)
     print(("  ok   " if cond else "  FAIL ") + what)
     if not cond:
         failures.append(what)
@@ -282,6 +287,26 @@ def main():
     check(r["action"] == "pushed", f"pushed ({r['action']})")
     check(all(abs(obj.data.vertices[i].co.x - old[i][0] / 2) < 1e-7 for i in old), "every x halved around the plane")
 
+    print("10f. target: solve the base so the sub lands on a value")
+    cage = fc.cage_format.parse(text_path.read_text("utf-8"))
+    free = next(v for v in cage.verts.values() if not v.flags and v.sub is not None)
+    goal_w, goal_d = free.sub[0] + 30, free.sub[1] - 20
+    text_path.write_text(text_path.read_text("utf-8").replace(
+        "\nops\n", f"\nops\n  target v{free.id} w {goal_w:.0f} d {goal_d:.0f}\n"), "utf-8")
+    r = fc.sync("Laço")
+    got = fc.cage_format.parse(text_path.read_text("utf-8")).verts[free.id]
+    check(r["action"] == "pushed" and any(o.startswith(f"target v{free.id}") for o in r.get("ops", [])),
+          f"target applied ({r.get('ops')})")
+    check(abs(got.sub[0] - round(goal_w)) <= 1 and abs(got.sub[1] - round(goal_d)) <= 1,
+          f"sub landed on the target ({got.sub[:2]} vs {goal_w:.0f}, {goal_d:.0f})")
+    on_z = next(v for v in cage.verts.values() if "Z" in v.flags)
+    before = co_list(obj)
+    text_path.write_text(text_path.read_text("utf-8").replace("\nops\n", f"\nops\n  target v{on_z.id} h 50\n"), "utf-8")
+    r = fc.sync("Laço")
+    check(r["action"] == "error" and "mirror plane" in r["error"], f"target across a plane refused ({r.get('error')})")
+    check(co_list(obj) == before, "mesh unchanged")
+    text_path.write_text(text_path.read_text("utf-8").replace(f"  target v{on_z.id} h 50\n", ""), "utf-8")
+
     print("11. stack, material, parent and attributes untouched")
     now = untouched_signature(obj)
     for key in ("mods", "materials", "parent", "matrix", "attrs"):
@@ -301,9 +326,69 @@ def main():
     check(r["action"] == "error" and "no_such_prop" in r["error"] and co_list(obj) == before, f"bad set refused ({r.get('error')})")
     text_path.write_text(text_path.read_text("utf-8").replace("  set Subdivision no_such_prop 1\n", ""), "utf-8")
 
+    print("11c2. modifier settings: shown in the text, set with units")
+
+    def add_ops(*lines):
+        text_path.write_text(text_path.read_text("utf-8").replace(
+            "\nops\n", "\nops\n" + "".join(f"  {line}\n" for line in lines)), "utf-8")
+
+    cage = fc.cage_format.parse(text_path.read_text("utf-8"))
+    mirror_mod = next(m for m in obj.modifiers if m.type == "MIRROR")
+    check(any(line.startswith(f"{mirror_mod.name} (MIRROR)  -> v ") for line in cage.modifiers),
+          f"modifiers section with the effect ({cage.modifiers[:1]})")
+    add_ops(f"set {mirror_mod.name} merge_threshold 0.05mm")
+    r = fc.sync("Laço")
+    check(r["action"] == "pushed" and abs(mirror_mod.merge_threshold - 0.00005) < 1e-9,
+          f"merge_threshold set in mm ({mirror_mod.merge_threshold})")
+    check(any("merge_threshold 0.05mm" in line for line in r["modifiers"]), "the text shows the new value")
+    check(any("merge_threshold 0.05mm" in line for line in r.get("stack_changes", [])), "reported as a stack change")
+    before = co_list(obj)
+    add_ops(f"set {mirror_mod.name} merge_threshold 0.001")
+    r = fc.sync("Laço")
+    check(r["action"] == "error" and "unit" in r["error"] and co_list(obj) == before,
+          f"a length without a unit refused ({r.get('error')})")
+    text_path.write_text(text_path.read_text("utf-8").replace(
+        f"  set {mirror_mod.name} merge_threshold 0.001\n", ""), "utf-8")
+    add_ops(f"set {mirror_mod.name} use_axis XY")
+    fc.sync("Laço")
+    check(list(mirror_mod.use_axis) == [True, True, False], f"axis flags set from letters ({list(mirror_mod.use_axis)})")
+    add_ops(f"set {mirror_mod.name} use_axis XYZ")
+    fc.sync("Laço")
+    check(list(mirror_mod.use_axis) == [True, True, True], "axis flags restored")
+
+    print("11c3. lock and unlock")
+    was = obj.hide_select
+    st = fc.lock("Laço")
+    check(st["locked"] == ["Laço"] and obj.hide_select, f"locked ({st})")
+    r = fc.sync("Laço")
+    check(r["action"] in ("unchanged", "pulled"), f"sync works while locked ({r['action']})")
+    st = fc.unlock()
+    check(not st["locked"] and obj.hide_select == was and "fofuxo_cage_lock" not in obj,
+          "unlocked, selectability restored")
+    fc.lock("Laço")
+    bpy.ops.fofuxo_cage.unlock()  # the human's button
+    r = fc.sync("Laço")
+    check(any(i["code"] == "human_took_over" for i in r["issues"]), "the next sync reports the take-over")
+    r = fc.sync("Laço")
+    check(not any(i["code"] == "human_took_over" for i in r["issues"]), "reported once")
+
+    print("11c4. flip to the other side of a mirror plane")
+    before_vals = {vid: v.base for vid, v in fc.cage_format.parse(text_path.read_text("utf-8")).verts.items()}
+    size_before = fc.sync("Laço")["size"]
+    old_y = {i: v.co.y for i, v in enumerate(obj.data.vertices)}
+    r = fc.flip("Laço", "d")
+    check(r["action"] == "flipped" and "d Y+" in r["frame"], f"flipped to +Y ({r.get('frame')})")
+    check(all(abs(obj.data.vertices[i].co.y + y) < 1e-9 for i, y in old_y.items()), "every y negated")
+    after_vals = {vid: v.base for vid, v in fc.cage_format.parse(text_path.read_text("utf-8")).verts.items()}
+    check(after_vals == before_vals, "text values unchanged")
+    check(r["size"] == size_before, f"same evaluated size ({r['size']})")
+    check(any(i["code"] == "modeled_behind" for i in fc.sync("Laço")["issues"]), "+Y warns: modeled behind")
+    r = fc.flip("Laço", "d")
+    check("d Y-" in r["frame"] and fc.sync("Laço")["action"] == "unchanged", "flipped back to -Y, in sync")
+
     print("11d. stack ops: add, reorder, set, remove; a bad batch changes nothing")
     stack0 = [m.name for m in obj.modifiers]
-    batch = ("  add BEVEL as Edge at first\n  set Edge width 0.001\n  add WEIGHTED_NORMAL\n"
+    batch = ("  add BEVEL as Edge at first\n  set Edge width 1mm\n  add WEIGHTED_NORMAL\n"
              "  reorder WeightedNormal to after Edge\n")
     text_path.write_text(text_path.read_text("utf-8").replace("\nops\n", "\nops\n" + batch), "utf-8")
     r = fc.sync("Laço")
@@ -325,11 +410,68 @@ def main():
     check(tuple(img.size) == (2 * 480 + 6, 26 + 3 * 480 + 12), f"3 views x 2 panels ({tuple(img.size)})")
     bpy.data.images.remove(img)
 
+    print("11e. topology ops: cut a loop, dissolve it again")
+    n0, f0 = len(obj.data.vertices), len(obj.data.polygons)
+    cage = fc.cage_format.parse(text_path.read_text("utf-8"))
+    a, b = next((f[0], f[1]) for f in cage.faces)
+    add_ops(f"cut v{a}-v{b}")
+    r = fc.sync("Laço")
+    n1 = len(obj.data.vertices)
+    check(r["action"] == "pushed" and n1 > n0 and all(len(p.vertices) == 4 for p in obj.data.polygons),
+          f"cut added {n1 - n0} vertices, all quads ({r.get('ops')})")
+    new_ids = set(fc.cage_format.parse(text_path.read_text("utf-8")).verts) - set(cage.verts)
+    check(len(new_ids) == n1 - n0, f"new vertices got fresh ids ({sorted(new_ids)})")
+    idx = index_of(obj)
+    sharp = obj.data.attributes.get("sharp_edge") or obj.data.attributes.new("sharp_edge", "BOOLEAN", "EDGE")
+    new_idx = {idx[v] for v in new_ids}
+    for e in obj.data.edges:
+        sharp.data[e.index].value = e.vertices[0] in new_idx and e.vertices[1] in new_idx
+    r = fc.sync("Laço")  # marking sharp moves nothing
+    add_ops("dissolve sharp")
+    r = fc.sync("Laço")
+    check(r["action"] == "pushed" and len(obj.data.vertices) == n0 and len(obj.data.polygons) == f0,
+          f"the marked loop dissolved back to {n0} vertices ({r.get('ops')})")
+    before = co_list(obj)
+    add_ops(f"dissolve v{a}-v{b}")
+    r = fc.sync("Laço")
+    check(r["action"] == "error" and "quads" in r["error"] and co_list(obj) == before,
+          f"a dissolve that leaves n-gons refused ({r.get('error')})")
+    text_path.write_text(text_path.read_text("utf-8").replace(f"  dissolve v{a}-v{b}\n", ""), "utf-8")
+
+    print("11f. shape tools: capture, profile, sections, fit, compare, editability")
+    cap = fc.capture("Laço", key="test")
+    check(cap["verts"] > 1000, f"captured a dense surface ({cap['verts']} verts)")
+    prof = fc.profile("Laço", "top")
+    check(len(prof["rows"]) == 21 and prof["rows"][10][1] > 0, "top profile, 21 bands")
+    sec = fc.sections("Laço", "w", [150, 300])  # the width was halved in 10e
+    check(all(s.get("n") and s.get("waist") for s in sec["sections"]) and Path(sec["render"]).exists(),
+          f"sections with exponent and waist ({[(s.get('n'), s.get('waist')) for s in sec['sections']]})")
+    add_ops("move all d +3%")
+    fc.sync("Laço")
+    moved = fc.deviation("Laço", "test")
+    fitted = fc.fit("Laço", "test", passes=2)
+    check(fitted["deviation_mm"]["mean_abs"] < moved["mean_abs"] / 2,
+          f"fit brings the surface back ({moved['mean_abs']} -> {fitted['deviation_mm']['mean_abs']} mm)")
+    cmp_ = fc.compare("Laço", "Laço", blend=SOURCE)
+    check(abs(cmp_["size_mm"]["this"][0] - cmp_["size_mm"]["ref"][0] / 2) < 2.0 and "top" in cmp_,
+          f"compare against the source file ({cmp_['size_mm']})")
+    check("Laço.001" not in bpy.data.objects, "the borrowed reference is gone")
+    r = fc.sync("Laço")
+    check(not any(i["code"] == "cage_dips" for i in r["issues"]), "the modeler's wing has no dips")
+    check("modifiers" not in r, "modifiers left out of a quiet report")
+    check("modifiers" in fc.sync("Laço", verbose=True), "and included with verbose")
+    v = fc.views("Laço", ["front"], render_name="focus", focus=[a, b], ghost=True, normals=True)
+    check(Path(v["render"]).exists(), "views with focus, ghost and normals")
+
     print("12. Laço Nó")
     r = fc.sync("Laço Nó")
     check(r["action"] == "init", f"init ({r['action']})")
     cage = fc.cage_format.parse(Path(r["text"]).read_text("utf-8"))
     check(len(cage.verts) == 10, "10 verts")
+    fc.capture("Laço Nó", key="knot")
+    rb = fc.rebuild("Laço Nó", "Laço Nó", "knot", blend=SOURCE, passes=2)
+    check(len(bpy.data.objects["Laço Nó"].data.vertices) == 10 and rb["deviation_mm"]["mean_abs"] < 0.2,
+          f"rebuilt from the source's topology and fitted ({rb['count']}, {rb['deviation_mm']})")
     knot = bpy.data.objects["Laço Nó"]
     knot_text = Path(r["text"])
     knot_text.write_text(knot_text.read_text("utf-8").replace("\nops\n", "\nops\n  apply Mirror\n"), "utf-8")
@@ -367,5 +509,7 @@ try:
 except Exception:
     traceback.print_exc()
     failures.append("exception")
-print(f"\n{'FAILED: ' + str(len(failures)) if failures else 'ALL PASSED'}")
+# The last line is the verdict: Blender exits 0 when this file fails to parse,
+# so read it rather than trusting the exit code alone.
+print(f"\n{'FAILED: ' + str(len(failures)) if failures else 'ALL PASSED'} ({len(checks)} checks)")
 sys.exit(1 if failures else 0)
