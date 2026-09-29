@@ -82,6 +82,19 @@ After round 5 (open, next session):
 | 22 | "existem ferramentas no blender para fazer todas as edições que você está escrevendo scripts ... não valeria mais a pena você utilizar as do blender do que escrever scripts novos? em termos à longo prazo sobre performance" | Yes: wrap Blender's own operators (select by id, run the operator, read the result back) instead of writing new bmesh code per tool | Tool | Fofuxo Cage: generic operator op (to do) |
 | 23 | "você, ao assumir o controle do blender, deveria sair do edit mode e bloquear o usuário de mexer" | `lock()` leaves Edit Mode (edits kept) and blocks input by default; the AI locks before editing | Tool | Fofuxo Cage (done) |
 
+## Round 6 (2026-09-29): the modeler's edit of B1
+
+| # | Modeler did / said | AI understood | Class | Goes to |
+|---|---|---|---|---|
+| 24 | Edited B1: "alterações no B1 para ficar igual ao concept (modelagem correta) tire suas próprias conclusões e anote para você conseguir entender e replicar em outra situação" | Edit saved to `human/B1-human-edit.blend`; lessons in `EXAMPLE.md` (loops end on silhouette turning points; four rim points at a heart's tip; fuller lobes; the knot wider) | AI deductions, pending | `EXAMPLE.md`, questions E-G |
+| 25 | Re-added a loop after round 5 removed one, in another place | Placement, not count: a loop should end on the rim at a turning point of the outline | Provisional (first case) | `EXAMPLE.md`; DECISIONS if confirmed |
+
+| # | Question | Modeler's answer | Class | Goes to |
+|---|---|---|---|---|
+| E | The edit is about 6% bigger than the concept's red silhouette, as E1 was. On purpose (and why), or the Image Empty's scale? | "não foi proposital, foi a forma que eu encontrei de chegar no formato que eu queria mais rápido. o concept é uma referência inicial, mas principalmente para concepts de objetos orgânicos, um desenho não bidimensional não vai conseguir ser traduzido fielmente para o 3D, pois o 2D funciona em um único ângulo, o 3D precisa funcionar em múltiplos ângulos." | Size: Coincidence. The concept as a starting reference: Rule | Coincidences; D-056 |
+| F | The knot is 11% wider than round 5 and fuller at its front corners: read from the concept's knot, or to sit better on the wings? | "Ambos, eu identifiquei que no 3D, durante a sobreposição, estava um pedaço sendo cortado de uma forma que não se parecia com o concept, então para ajustar isso eu enlargueci o nó para esconder a junção das asas com ele." | Provisional (first case) | D-057; `EXAMPLE.md` |
+| G | `cage_dips` flags v5 and v9 of the edited knot: a pinch on purpose at the knot's sides, or should the check leave round parts alone? | Misread as about the heart: "tentei deixar ele mais arredondado, antes às edges estavam muito juntas, isso é bom quando eu quero, usando o subdivision surface, deixar um canto menos arredondado. eu queria exatamente o oposto ... tive que aumentar o espaçamento". The knot's case is answered by F: v5 and v9 are the knot's side vertices that stayed while the front and back ones moved out, so the knot hugs the wings. | The heart answer: Rule (D-039, the other side). The check: Tool | D-039; `cage_dips` now says a dip may be on purpose |
+
 Items 1 and 2 resolve through A and B: item 1 is D-051 applied to this
 concept; item 2 is the heart shape of B. When to apply (from C) is settled by
 item 6: case by case.

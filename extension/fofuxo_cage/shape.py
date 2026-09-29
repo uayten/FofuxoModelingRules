@@ -366,6 +366,7 @@ def _borrowed(ref, blend=None):
         yield _object(ref)
         return
     before = set(bpy.data.objects)
+    libs_before = set(bpy.data.libraries)
     with bpy.data.libraries.load(str(blend), link=False) as (src, dst):
         if ref not in src.objects:
             raise ShapeError(f"no object {ref!r} in {blend}")
@@ -380,6 +381,8 @@ def _borrowed(ref, blend=None):
             bpy.data.objects.remove(o)
             if mesh is not None and mesh.users == 0:
                 bpy.data.meshes.remove(mesh)
+        for lib in set(bpy.data.libraries) - libs_before:  # appending leaves the library behind
+            bpy.data.libraries.remove(lib)
 
 
 def compare(name, ref, blend=None):

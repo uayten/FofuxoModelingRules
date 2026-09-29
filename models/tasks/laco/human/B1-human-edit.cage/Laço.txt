@@ -1,0 +1,80 @@
+# fofuxo_cage 1
+# Values are permille of the frame: w = width (X), d = depth (Y), h = height (Z).
+# A mirrored axis counts from the mirror plane (0) to the frame edge (1000).
+# Edit "base w d h", then run sync. sub = where the vertex lands after the
+# modifier stack (read-only). frame, modifiers, faces and edges are written by
+# the plugin; change a modifier with a set op (set Mirror merge_threshold 0.1mm).
+
+object   Laço
+frame    w X+ 62.2   d Y- 16.5   h Z+ 33.2   (mm)
+stack    Mirror(XYZ) > Subdivision(1/2)
+size     base 135.4 x 37.1 x 76.7   sub 131.1 x 33.5 x 69.8   (mm, w x d x h)
+count    v 28  f 19   evaluated v 610 f 608
+
+modifiers
+  Mirror (MIRROR)  -> v 154  f 152  size 135.4 x 37.1 x 76.7 mm
+      use_axis XYZ  use_bisect_axis -  use_clip on  use_mirror_merge on  merge_threshold 0.1mm
+      mirror_object -
+  Subdivision (SUBSURF)  -> v 610  f 608  size 131.1 x 33.5 x 69.8 mm
+      levels 1  render_levels 2  quality 3  use_limit_surface on  boundary_smooth ALL
+      use_creases on
+
+verts
+# loop  id   base w     d     h | sub w     d     h | flags
+L1      v2        0     0    78 |     0     0    79 | X Y
+        v0      275     0   646 |   274     0   567 | Y
+        v3      539     0   960 |   542     0   897 | Y
+        v6      809     0  1155 |   802     0  1052 | Y
+        v1     1035     0   968 |   992     0   919 | Y
+        v29    1088     0   629 |  1054     0   628 | Y
+        v19    1079     0   291 |  1034     0   302 | Y
+        v5      923     0     0 |   977     0     0 | Y Z
+L2      v10       0    40     0 |     0    74     0 | X Z
+        v13     281    30     0 |   285   177     0 | Z
+        v14     632   210     0 |   578   521     0 | Z
+        v15     775  1056     0 |   787   896     0 | Z
+        v20     973   553     0 |   946   569     0 | Z
+L3      v18       0   141    41 |     0   119    37 | X
+        v25     270   319    25 |   273   373    72 |
+        v26     538  1022   257 |   550   825   242 |
+        v27     806  1123   331 |   793   984   318 |
+        v28     992   645   304 |   971   597   311 |
+L4      v16       0    78    80 |     0    70    77 | X
+        v24     278   525   515 |   274   425   458 |
+        v17     542   822   828 |   545   668   785 |
+        v23     822   792  1031 |   804   664   939 |
+        v21     988   543   886 |   962   478   875 | pole3
+L5      v30       0   109    61 |     0   109    61 | X
+        v31     263   545    82 |   269   518   204 |
+        v22     552  1013   609 |   546   908   526 |
+        v32     820  1046   659 |   804   941   647 |
+        v33    1012   597   644 |   986   566   634 |
+
+faces
+  f0   v32 v22 v26 v27
+  f1   v17 v3 v0 v24
+  f2   v24 v0 v2 v16
+  f3   v21 v1 v6 v23
+  f4   v20 v5 v19 v28
+  f5   v33 v32 v27 v28
+  f6   v15 v20 v28 v27
+  f7   v23 v6 v3 v17
+  f8   v33 v29 v1 v21
+  f9   v22 v31 v25 v26
+  f10  v10 v13 v25 v18
+  f11  v13 v14 v26 v25
+  f12  v14 v15 v27 v26
+  f13  v31 v30 v18 v25
+  f14  v24 v16 v30 v31
+  f15  v17 v24 v31 v22
+  f16  v28 v19 v29 v33
+  f17  v21 v23 v32 v33
+  f18  v23 v17 v22 v32
+
+edges
+  crease 1.0  v2-v16 v10-v18 v16-v30 v18-v30
+  seam  v15-v27 v23-v32 v27-v32
+
+ops
+
+forms

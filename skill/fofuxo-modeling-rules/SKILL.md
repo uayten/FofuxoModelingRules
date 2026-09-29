@@ -12,7 +12,11 @@ description: Non-destructive modeling rules for Blender driven through the offic
 
 1. **Shape first.** The model must match the concept's shape and proportions.
    This matters more than anything else in this skill: a clean, non-destructive
-   stack on the wrong shape is a **failed delivery** (D-032).
+   stack on the wrong shape is a **failed delivery** (D-032). The concept is a
+   starting reference, read for proportions and for the points where its
+   outline turns, not a stencil: a 2D drawing of an organic object works from
+   one angle, the 3D has to work from all of them (D-056). A model that covers
+   the drawing's silhouette exactly can still be the wrong shape.
 2. **A working file, not an output.** A human will open the `.blend` and keep
    editing. Symmetry, smoothing, thickness and repetition stay live in the
    modifier stack. A mesh with the right shape but baked symmetry or smoothing
@@ -134,7 +138,11 @@ Every task follows these steps, in order:
   its symmetry axes on the world axes. Pose it afterwards with the object
   rotation, never applied (D-014).
 - **Mirror on every axis the shape is symmetric in**, with clipping and merge
-  on. A bow symmetric in X, Y and Z is modeled as 1/8 (D-009).
+  on. A bow symmetric in X, Y and Z is modeled as 1/8 (D-009). Keep the merge
+  distance very small (0.1 mm): vertices weld only when they touch the plane,
+  never because they came close to it (D-054).
+- **Model the half on -Y**, the side the front view sees, so the vertices you
+  edit are in front of their mirror copy (D-055).
 - Closed volume vs. sheet + Solidify is an artistic choice: follow the concept
   (D-012). For thickness, prefer extruding the faces that need it (D-013).
 - **Close openings simply** where a body part passes through (sleeves, pants,
@@ -159,10 +167,21 @@ Every task follows these steps, in order:
   poorly and pulls the rounding toward the center (D-027).
 - **Boolean is for hard-surface** (windows, doors, shelves, straight props).
   Avoid it on organic characters (D-028).
-- **Tight loops where the form turns sharply.** Subdivision smooths every
-  turn; loops placed close together keep a pinch, fold or dent after it. E1's
-  bow has its center vertices packed "juntinhos" so the wing narrows into the
-  knot as in the concept (D-039).
+- **Spacing sets roundness.** Subdivision smooths every turn: loops placed
+  close together keep a pinch, fold or dent after it; loops spread apart make
+  it round. E1's bow has its center vertices packed "juntinhos" so the wing
+  narrows into the knot; the pinch where B1's wing enters the knot needed the
+  row next to the thin middle row close to it; the modeler rounded B1's heart
+  lobes by spreading their edges (D-039).
+- **Start lean.** Too many loops cost more than too few: a cage with excess
+  loops has to be cleaned and then shaped anyway. A loop that carries no form
+  is removed and the volume refitted by moving vertices (D-045).
+- **Low poly, stylized.** A game asset must be low poly, and a stylized one
+  may carry abstractions the real object does not have: roundness and shape
+  follow the concept's stylization (D-051).
+- **A covering part hides the junction it makes** with the part it covers:
+  B1's knot grew to hide where the wings cut into it, hugging them at its
+  sides (D-057) — **Provisional**.
 - **Crease holds the silhouette** where Subdivision would pull the shape out of
   place, e.g. a part entering another (D-021).
 - **No loose geometry.** Vertices and edges without faces are an error; clean
@@ -190,6 +209,10 @@ Confirmed so far:
 - Subdivision position: last for meshes that will be animated; otherwise
   where the final form needs it, as in the table below. When the order changes
   nothing in the result, either is fine (D-030).
+- **Subdivision only for a cage that needs it**: a cage dense enough to carry
+  its shape goes without; Subdivision is for a lower-poly cage (D-053).
+- The AI adds, removes, sets and reorders modifiers, and applies one only in
+  specific cases, decided case by case and reported (D-052).
 
 Use only the modifiers the part needs, always in this order. Helpers insert
 each modifier at its canonical slot regardless of call order.

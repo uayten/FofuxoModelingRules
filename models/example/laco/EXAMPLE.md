@@ -14,6 +14,7 @@
 - [How it was made](#how-it-was-made)
 - [Whys](#whys)
 - [AI deductions](#ai-deductions)
+- [What the modeler's edit of B1 teaches](#what-the-modelers-edit-of-b1-teaches)
 - [Rules that came from it](#rules-that-came-from-it)
 - [Only this model](#only-this-model)
 - [Open questions](#open-questions)
@@ -62,17 +63,89 @@ From the E1 interview and the T1 verdicts, in the modeler's words when kept:
 | The cage is bigger than the result on purpose: Subdivision pulls the wing 9 mm shorter and 11 mm thinner | cage 135.2 × 39.2 × 75.6 mm, evaluated 126.1 × 28.1 × 68.4 mm | pending |
 | The Y-plane rim of the cage is drawn as the front silhouette | loop L1 lies on the Y plane from the knot to the tip | pending |
 | The v10 pole exists to round the wing's top corner | only interior pole; sits where the rim turns | pending |
-| The bow is about 6% bigger than the concept | 126.1 vs 118.4 mm at the Empty's scale | pending: is the Empty at the model's scale? |
+| The bow is about 6% bigger than the concept | 126.1 vs 118.4 mm at the Empty's scale (E1); 131.3 vs 124.1 mm in the modeler's edit of B1 | coincidence: not on purpose (D-056) |
 | `Laço Nó` is tilted -6° to follow the chest | rotation on X only | pending |
 | The wing's loops radiate from the knot and follow the outline, not columns across the width: the Y-plane rim (8 vertices) runs from the center up to the top corner and around the tip; a ring (5 vertices) goes around the outer lobe | cage text in B1's frame (B1 round 4 self-critique) | pending |
 | The whole X-plane column sits within 10% of the height (h 0 to 95 permille), with crease 1.0: the wing narrows almost to a point at the knot (D-037) | same | pending |
 | The cage stays outside the surface everywhere, by a steady margin: the tip ring is 1.4 × deeper in the cage than in the result | same: v1 base d 1185, sub 797 | pending |
 | The thin middle row (1.5 mm deep) runs from the knot to half the width; past it, the h 0 row is as deep as the lobes | v22 d 66, v3 d 93, v1 d 1185 (base) | pending |
 
+## What the modeler's edit of B1 teaches
+
+`models/tasks/laco/human/B1-human-edit.blend`: the modeler took B1 after
+round 5 and made it "igual ao concept (modelagem correta)". Read by id
+against round 5 and measured against E1. Written so the AI can do it again
+on another heart-shaped (or lobed) part.
+
+**Topology: place loops for the silhouette, then count.**
+
+- The loop the modeler had marked for removal (round 5) ran into the pole at
+  the tip and gave the outline nothing. The edit adds a loop back in another
+  place, ending with 28 vertices and 19 quads per 1/8, E1's count: the fault
+  was where the loop ran, not how many there were.
+- The new loop starts at the knot next to the pinch (v30 on the X plane at
+  h 61, v31 at h 82: beside the slit row), climbs across the lobe (v22 h 609,
+  v32 h 659) and leaves on the rim at the tip (v29, at the widest point of
+  the upper tip bulge). A loop that ends on the silhouette adds a point to
+  the outline; one that ends in a pole mid-surface does not.
+- The heart's tip now has four rim points from the top corner to the dent:
+  upper corner (v1, h 919), upper bulge (v29, h 628), lower bulge (v19,
+  h 302), dent on the Z plane (v5, 977 against 1054: 7%). Round 5 had
+  three and the tip read as a straight edge.
+- The outer column moved in (w 880 → about 810) to leave room for the tip,
+  and the lobe's edges were spread apart: close edges keep a turn sharp under
+  Subdivision, spread edges round it (D-039, the other side).
+- Each lobe's section now has the rim plus three rows before the waist row:
+  upper (L4), middle (the new loop), lower near h 0 (the slit row, D-039).
+
+**Volume: fuller lobes than the silhouette alone asks for.**
+
+- Deeper: half depth 16.8 mm at 70% of the width (round 5 and E1: 14.3,
+  14.4). The seams the modeler had marked "para dar um formato mais
+  arredondado" were pulled toward -Y here (v15 +27%, v23 +14%, v27 +4%).
+- Taller lobes at 30-80% of the width (+1.5 to +2.4 mm of half height) and a
+  rounder tip (half height 26.0 mm at the tip against 27.4).
+- Rounder sections toward the tip: n 3.35 at 70% (round 5: 3.8) and the
+  waist fuller there (0.83 against 0.73): past the middle the two lobes
+  merge; the pinch stays near the knot (0.35 at 20-30%).
+
+**Size and place.**
+
+- The whole bow is 131.3 × 33.7 × 69.8 mm, about 6% wider and 7% taller than
+  the concept's red silhouette (124.1 × 65.3 mm), as E1 was. Not on purpose:
+  the quickest way the modeler found to the shape they wanted (a
+  coincidence). What it shows: the concept is a starting reference, and a 2D
+  drawing of an organic object cannot be copied into 3D; the 3D has to work
+  from every angle (D-056).
+- `Laço` moved 1.3 mm in X and 0.4 mm in Z to center the bow on the
+  concept's bow (the red's center, not the Image Empty's).
+- The knot grew 11% in width (34.7 mm; round 5: 31.3; E1: 29.7), fuller at
+  its front corners (half height 16.3 mm at 65% of its width against 14.0).
+  Its height stayed at 36.2 mm (the concept's knot column: 35.1 mm). Why: in
+  3D the wings cut into the knot in a way that did not look like the concept,
+  so the knot grew to hide the junction (D-057). Only its front and back
+  vertices moved out (v0, v1, v7); the side vertices on the mid plane (v5,
+  v9) stayed, so seen from the top the knot's sides stay in where the wings
+  pass: it hugs them.
+
+**How to do it again.**
+
+1. Draw the outline's turning points on the concept first (corners, bulges,
+   dents); give each one a rim vertex, and let every loop across the part
+   end on one of them.
+2. Near a pinch, keep the row next to the thin row tight (D-039); let the
+   next loop start there and fan out to a bulge on the rim.
+3. Count last: the reference's count is a sanity check, not a target.
+   Space the edges by the roundness wanted: close for a crisp turn, apart for
+   a round one.
+4. Make lobes fuller than the front view suggests: half depth at the lobe's
+   widest point about a quarter of the part's full height (16.8 of 69.8 mm),
+   sections n 3.1-3.5.
+
 ## Rules that came from it
 
 D-009, D-021, D-032, D-033, D-036, D-037, D-039, D-041, D-044, D-049, D-051,
-D-054.
+D-054, D-056, D-057 (Provisional).
 
 ## Only this model
 

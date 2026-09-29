@@ -288,6 +288,13 @@ maior no meio da asa quando entra no nó") needs the row next to the thin h 0
 row to sit close to it; with evenly spaced rows the waist stayed at 0.44-0.55
 of the lobe depth, with the tight row it reached the modeler's 0.29-0.32.
 
+The other side (Stated, B1 round 6): spacing sets how round a turn comes out
+under Subdivision. Edges close together keep a corner less rounded; to make
+the heart's lobes rounder the modeler spread them apart: "antes as edges
+estavam muito juntas, isso é bom quando eu quero, usando o subdivision
+surface, deixar um canto menos arredondado. eu queria exatamente o oposto
+... então tive que aumentar o espaçamento".
+
 ### D-041: Imagine the views the concept does not show; round looks round (Stated, T1)
 
 Seen from the top, E1's bow wing converges to the center in depth as well (a
@@ -411,6 +418,26 @@ that matter sat behind their mirror copy, "ficando uma malha na frente dos
 vertices importantes". E1 models on -Y. Fofuxo Cage warns `modeled_behind`
 and moves a part across with `flip(name, "d")`.
 
+### D-056: The concept is a starting reference; the 3D must work from every angle (Stated, B1)
+
+"O concept é uma referência inicial, mas principalmente para concepts de
+objetos orgânicos, um desenho não bidimensional não vai conseguir ser
+traduzido fielmente para o 3D, pois o 2D funciona em um único ângulo, o 3D
+precisa funcionar em múltiplos ângulos." Seen in B1: round 5 matched the
+concept's front silhouette better than the modeler's edit (overlap 0.917
+against 0.893) and was still the wrong shape. The concept sets the
+proportions and the turning points of the outline; the forms are judged from
+several angles (D-041). Refines D-032 and D-038: matching the concept stays
+first, as a read of the drawing, not a stencil of its outline.
+
+### D-057: A covering part hides the junction it makes with another (Provisional, B1)
+
+The modeler widened B1's knot 11% because, seen in 3D, the wings cut into it
+in a way that did not look like the concept: "eu enlargueci o nó para
+esconder a junção das asas com ele". The knot's sides stay in where the wings
+pass, so it hugs them. Seen once; ask whether it holds for other covering
+parts (belts, buttons, ribbons).
+
 ### D-040: Silhouette overlap as an audit check (Stated, T1)
 
 The auditor compares the evaluated mesh's front silhouette with the concept.
@@ -451,6 +478,10 @@ Solidify.
   the general idea is D-026.
 - E1 vertex group names `ShrinkWrap` / `Shrwink2`: working names, not a naming
   rule.
+- The bow about 6% bigger than the concept's silhouette, in E1 (126.1 against
+  118.4 mm) and in the modeler's edit of B1 (131.3 against 124.1 mm): "não
+  foi proposital, foi a forma que eu encontrei de chegar no formato que eu
+  queria mais rápido" (D-056).
 - E1 Mirror merge threshold 0.001 (Blender's default) on `Laço Nó`: left as
   it came; the practice is a very small distance (D-054, 0.0001 on `Laço`).
 

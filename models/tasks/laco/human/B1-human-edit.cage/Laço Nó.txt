@@ -1,0 +1,46 @@
+# fofuxo_cage 1
+# Values are permille of the frame: w = width (X), d = depth (Y), h = height (Z).
+# A mirrored axis counts from the mirror plane (0) to the frame edge (1000).
+# Edit "base w d h", then run sync. sub = where the vertex lands after the
+# modifier stack (read-only). frame, modifiers, faces and edges are written by
+# the plugin; change a modifier with a set op (set Mirror merge_threshold 0.1mm).
+
+object   Laço Nó
+frame    w X+ 62.2   d Y- 16.5   h Z+ 33.2   (mm)
+stack    Mirror(XYZ) > Subdivision(1/2)
+size     base 38.3 x 29.6 x 43.1   sub 34.7 x 27.3 x 36.2   (mm, w x d x h)
+count    v 10  f 5   evaluated v 162 f 160
+
+modifiers
+  Mirror (MIRROR)  -> v 42  f 40  size 38.3 x 29.6 x 43.1 mm
+      use_axis XYZ  use_bisect_axis -  use_clip on  use_mirror_merge on  merge_threshold 0.1mm
+      mirror_object -
+  Subdivision (SUBSURF)  -> v 162  f 160  size 34.7 x 27.3 x 36.2 mm
+      levels 1  render_levels 2  quality 3  use_limit_surface on  boundary_smooth ALL
+      use_creases on
+
+verts
+# loop  id   base w     d     h | sub w     d     h | flags
+L1      v8        0   898     0 |     0   828     0 | X Z
+        v3        0   850   196 |     0   784   193 | X
+        v2        0   716   505 |     0   586   432 | X
+        v6        0     0   650 |     0     0   546 | X Y
+L2      v4      261     0   473 |   230     0   424 | Y
+        v5      261     0   232 |   276     0   206 | Y
+        v9      261     0     0 |   276     0     0 | Y Z
+L3      v0      308   608   359 |   221   497   365 | pole3
+        v1      308   686   134 |   248   594   174 |
+        v7      308   739     0 |   248   628     0 | Z
+
+faces
+  f0   v6 v2 v0 v4
+  f1   v0 v2 v3 v1
+  f2   v1 v3 v8 v7
+  f3   v4 v0 v1 v5
+  f4   v5 v1 v7 v9
+
+edges
+
+ops
+
+forms

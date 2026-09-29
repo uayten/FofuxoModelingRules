@@ -256,6 +256,39 @@ keep Subdivision from rounding the waist away.
 | `Laço` cage per 1/8 | 29 vertices, 20 quads | 22 vertices, 14 quads | 28, 19 |
 | `Laço` evaluated | 642 v, 123.4 × 28.7 × 66.4 mm | 450 v, 123.6 × 28.8 × 66.4 mm | 610 v, 126.1 × 28.9 × 68.7 mm |
 
+## Round 6: the modeler's edit
+
+The modeler edited B1 after round 5 "para ficar igual ao concept (modelagem
+correta)" and asked the AI to draw its own conclusions. The edit is saved
+as `../../human/B1-human-edit.blend` (the AI file stays as round 5, per the
+README); the lessons are in `models/example/laco/EXAMPLE.md`, section "What
+the modeler's edit of B1 teaches".
+
+| | B1 round 5 (AI) | Modeler's edit | E1 |
+|---|---|---|---|
+| `Laço` cage per 1/8 | 22 v, 14 quads | 28 v, 19 quads | 28, 19 |
+| `Laço` size (limit surface) | 123.6 × 28.8 × 66.4 mm | 131.3 × 33.7 × 69.8 mm | 126.1 × 28.9 × 68.7 mm |
+| Front overlap with the concept's red (IoU, scene position) | 0.917 | 0.893 | |
+| Half depth at 70% of the width | 14.3 mm | 16.8 mm | 14.4 mm |
+| Section n / waist at 70% | 3.8 / 0.73 | 3.35 / 0.83 | 3.65 / 0.85 |
+| Waist at 20-30% | 0.29-0.34 | 0.35 | 0.28-0.29 |
+| `Laço Nó` size | 31.3 × 27.3 × 36.2 mm | 34.7 × 27.3 × 36.2 mm | 29.7 × 26.0 × 35.1 mm |
+
+What the AI takes from it:
+
+- The front overlap was not the goal: round 5 matched the concept's red
+  better (0.917) and was still wrong. The edit is bigger than the red on
+  every side and fuller in depth: the silhouette is a guide for proportions
+  and turning points, not a stencil.
+- Loops placed for the outline beat loop count: the loop removed in round 5
+  came back elsewhere, from the pinch at the knot to a new rim point at the
+  tip.
+- `cage_dips` flags the modeler's knot (v5, v9): the knot's side vertices
+  stayed while its front and back grew to hide the wings' junction (D-057),
+  so it hugs the wings. A dip can be on purpose; the warning now says so.
+- The size above the concept was not on purpose (D-056: the concept is a
+  starting reference; the 3D has to work from every angle).
+
 ## Verdict
 
 - Knot: "muito muito muito melhor, está ótimo"; left without Subdivision

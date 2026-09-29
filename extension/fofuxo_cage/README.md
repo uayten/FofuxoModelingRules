@@ -175,7 +175,9 @@ bow tie, so a session reads them instead of measuring again.
 A sync also checks editability: `cage_dips` warns about a vertex that sits
 inside the average of its neighbours while the surface over it bulges out
 (dragging it moves the surface in a way that is hard to predict, D-043). A
-concave cage under a groove is fine.
+concave cage under a groove is fine, and a dip can be on purpose: the
+modeler's B1 knot dips at its sides where it hugs the wings (D-057). Read it
+as a question, not an error.
 
 ## View sheet
 

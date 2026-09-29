@@ -132,5 +132,6 @@ def check_editability(obj, ids, depsgraph, mirror):
         bm.free()
     if not dips:
         return []
-    return [_issue("WARN", "cage_dips", "the cage dips inward under a convex surface: hard to edit "
-                                        "(move the vertex out and let its neighbours carry the shape)", dips)]
+    return [_issue("WARN", "cage_dips", "the cage dips inward under a convex surface: on purpose (a part "
+                                        "hugging another, D-057)? If not, it is hard to edit: move the vertex "
+                                        "out and let its neighbours carry the shape", dips)]

@@ -452,10 +452,11 @@ def main():
     fitted = fc.fit("Laço", "test", passes=2)
     check(fitted["deviation_mm"]["mean_abs"] < moved["mean_abs"] / 2,
           f"fit brings the surface back ({moved['mean_abs']} -> {fitted['deviation_mm']['mean_abs']} mm)")
+    libs = set(bpy.data.libraries)
     cmp_ = fc.compare("Laço", "Laço", blend=SOURCE)
     check(abs(cmp_["size_mm"]["this"][0] - cmp_["size_mm"]["ref"][0] / 2) < 2.0 and "top" in cmp_,
           f"compare against the source file ({cmp_['size_mm']})")
-    check("Laço.001" not in bpy.data.objects, "the borrowed reference is gone")
+    check("Laço.001" not in bpy.data.objects and set(bpy.data.libraries) == libs, "the borrowed reference is gone, library too")
     r = fc.sync("Laço")
     check(not any(i["code"] == "cage_dips" for i in r["issues"]), "the modeler's wing has no dips")
     check("modifiers" not in r, "modifiers left out of a quiet report")
