@@ -6,6 +6,8 @@ From the Blender MCP:
     result = fofuxo_cage.sync("Laço")
     fofuxo_cage.lock("Laço")      # keep the human off while the AI edits
     fofuxo_cage.unlock()
+    fofuxo_cage.review(["Laço"])  # show the human, in a Blender of their own
+    fofuxo_cage.absorb()          # read back what the human saved there
 """
 
 import sys
@@ -13,8 +15,10 @@ import sys
 import bpy
 
 from . import cage_format, concept, frame, mesh_io, mesh_ops, modifier_info, object_ops, ops, render, selection, topology, validate
+from . import instance as instance_mod
 from . import lock as lock_mod
 from .concept import find_box, sample
+from .instance import InstanceError, absorb, instance, is_ai, release_mcp, review, say
 from .lock import LockError, lock, unlock
 from .mesh_ops import MeshOpError, ensure_looptools, help_text as mesh_help, select
 from .shape import ShapeError, capture, compare, deviation, fit, profile, rebuild, sections
@@ -29,6 +33,7 @@ def register():
     sys.modules.setdefault(ALIAS, sys.modules[__name__])
     for cls in lock_mod.CLASSES:
         bpy.utils.register_class(cls)
+    instance_mod.register()
     if not bpy.app.background:
         # LoopTools is part of the toolset (mesh op): enable or install it once
         # Blender is up; an extension may not install another while registering.
@@ -45,6 +50,7 @@ def _looptools_later():
 
 def unregister():
     lock_mod.unlock()
+    instance_mod.unregister()
     for cls in reversed(lock_mod.CLASSES):
         bpy.utils.unregister_class(cls)
     if sys.modules.get(ALIAS) is sys.modules[__name__] and __name__ != ALIAS:

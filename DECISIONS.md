@@ -438,6 +438,18 @@ esconder a junção das asas com ele". The knot's sides stay in where the wings
 pass, so it hugs them. Seen once; ask whether it holds for other covering
 parts (belts, buttons, ribbons).
 
+### D-058: The AI works in a Blender of its own; the human reviews in another (Stated, B1)
+
+The modeler: open the AI's Blender as a black screen that says it is for the
+AI's exclusive use, even when the human already has a Blender open; when the
+human should see or change the model, open a normal Blender with the model
+appended. The AI is then in charge of its own file alone, and of saving and
+reading the human's changes. In Fofuxo Cage: `launcher.py` (the AI's
+instance, MCP port 9876), `review()` and `absorb()` (the human's copy and its
+way back), and a human's Blender stops its own MCP server while the AI's
+instance runs. Replaces locking the human's Blender (`lock`) for the AI's
+normal work.
+
 ### D-040: Silhouette overlap as an audit check (Stated, T1)
 
 The auditor compares the evaluated mesh's front silhouette with the concept.

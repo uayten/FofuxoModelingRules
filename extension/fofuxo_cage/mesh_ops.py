@@ -36,7 +36,7 @@ import bpy
 from mathutils import Vector
 
 from . import mesh_io, selection, validate
-from . import lock as lock_mod
+from .lock import PROP as LOCK_PROP, _leave_edit_mode, lock, unlock
 from .selection import SelectionError
 
 TAG_ATTR = "fofuxo_cage_tag"
@@ -295,11 +295,11 @@ _TOOL_SETTINGS = ("mesh_select_mode", "use_proportional_edit", "proportional_edi
 def editing(obj, take_lock=True):
     """Edit Mode on obj alone, under a 3D View override; everything the
     human had (lock, active object, selection, tool settings) comes back."""
-    was_locked = lock_mod.PROP in obj
+    was_locked = LOCK_PROP in obj
     if take_lock and not was_locked:
-        lock_mod.lock(obj.name, ui=False)
+        lock(obj.name, ui=False)
     else:
-        lock_mod._leave_edit_mode()
+        _leave_edit_mode()
     view_layer = bpy.context.view_layer
     active = view_layer.objects.active
     selected = [o for o in view_layer.objects if o.select_get()]
@@ -328,7 +328,7 @@ def editing(obj, take_lock=True):
             if o.name in view_layer.objects:
                 o.select_set(True)
         if take_lock and not was_locked:
-            lock_mod.unlock(obj.name)
+            unlock(obj.name)
 
 
 def _ids(mesh):
@@ -546,8 +546,8 @@ def precheck(obj, runners):
     """Run the batch's mesh ops on a temporary copy; the first failure is raised."""
     copy = obj.copy()
     copy.data = obj.data.copy()
-    if lock_mod.PROP in copy:
-        del copy[lock_mod.PROP]
+    if LOCK_PROP in copy:
+        del copy[LOCK_PROP]
     for coll in obj.users_collection:
         coll.objects.link(copy)
     counter = None

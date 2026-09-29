@@ -158,6 +158,11 @@ to start from.
 - **Annotations.** Strokes drawn with Blender's Annotate tool read as 3D
   points; the sync names the vertices under each stroke. A way to say
   "here" without selecting.
+- **Two Blenders (done, D-058).** The AI works in a Blender of its own
+  (`launcher.py`: a black screen, input swallowed, the MCP server); the human
+  sees and changes the model in a normal Blender (`review`), and what the
+  human saves comes back through the sync (`absorb`). Checked live: a
+  human's Blender already on port 9876 lets it go to the AI's within 3 s.
 - **Human edits explained.** When the modeler moves vertices, the sync's
   deltas come with a guess of the intent (`L1 rim up 4%: the silhouette was
   low?`) that the AI asks about, as `models/FEEDBACK.md` describes.
@@ -212,6 +217,7 @@ piece goes.
 | Step | What | Why first |
 |---|---|---|
 | 1 | Phase 0 + `seam` in the selection grammar (**done**) | unlocks every other operator; the round-6 seams need it |
+| 1b | The AI's own Blender and the human's review (D-058, **done**) | the AI tests every tool alone, the human reviews in a normal Blender |
 | 2 | Phase 2: pull with falloff, slide, smooth, to sphere | the next edits on B1 are shaping, not topology |
 | 3 | Part 2 items 1, 5, 7 (targets, poly budget, session brief) | cheap, and each round gets cheaper |
 | 4 | Phase 1 whitelist complete | covers the loop work of the next examples |

@@ -4,10 +4,13 @@ Run from the repository root:
     blender -b --factory-startup --python extension/fofuxo_cage/tests/test_roundtrip.py --python-exit-code 1
 """
 
+import json
+import os
 import re
 import shutil
 import sys
 import tempfile
+import time
 import traceback
 from pathlib import Path
 
@@ -633,6 +636,64 @@ def main():
         fc.unlock()
     else:
         print("  skip (no Edit Mode in background)")
+
+    print("14. review in the human's Blender, absorb back")
+    ai_file = bpy.data.filepath
+    fc.sync("Laço")
+    fc.lock("Laço", ui=False)
+    rv = fc.review(["Laço", "Laço Nó"], launch=False)
+    review_path = Path(rv["review"])
+    check(rv["command"][1] == "--python-expr" and "open_review" in rv["command"][2]
+          and review_path.parent == Path(ai_file).with_suffix(".cage"), f"review command ready ({review_path.name})")
+    fc.unlock()
+    # The human's Blender runs the command: here, in this same session.
+    fc.instance_mod.open_review(ai_file, ["Laço", "Laço Nó"], review_path, {"length_unit": "MILLIMETERS"})
+    info = fc.instance()
+    names = sorted(o.name for o in bpy.context.scene.objects)
+    human = bpy.data.objects["Laço"]
+    check(names == ["Laço", "Laço Nó"] and info.get("review_of") == ai_file and bpy.data.filepath == str(review_path),
+          f"the review holds the objects and knows its source ({names})")
+    check(fc.lock_mod.PROP not in human and not human.hide_select
+          and [m.type for m in human.modifiers][:2] == ["MIRROR", "SUBSURF"]
+          and bpy.context.scene.unit_settings.length_unit == "MILLIMETERS", "unlocked, with its modifiers and units")
+    hid = index_of(human)
+    moved_vid = sorted(hid)[5]
+    human.data.vertices[hid[moved_vid]].co.z += 0.002
+    human.modifiers["Subdivision"].render_levels = 3
+    time.sleep(1.1)  # a save the file's time can tell from the first one
+    bpy.ops.wm.save_mainfile()
+    bpy.ops.wm.open_mainfile(filepath=ai_file)  # back in the AI's Blender
+    mats0 = len(bpy.data.materials)
+    ab = fc.absorb()
+    rep = ab.get("Laço", {})
+    check(ab["changed"] and rep.get("action") == "pulled" and f"v{moved_vid}" in rep.get("blender_edits", []),
+          f"absorb: the human's move comes back as a Blender edit ({rep})")
+    check(bpy.data.objects["Laço"].modifiers["Subdivision"].render_levels == 3, "and the modifier change")
+    check(not [o for o in bpy.data.objects if o.name.startswith("Laço.")] and len(bpy.data.materials) == mats0
+          and not [m for m in bpy.data.meshes if m.users == 0], "no leftover objects, meshes or materials")
+    check(fc.absorb()["changed"] is False, "a second absorb finds nothing new")
+    obj = bpy.data.objects["Laço"]
+    state_path = Path(ai_file).with_suffix(".cage") / "review.json"
+    state = json.loads(state_path.read_text("utf-8"))
+    state["pid"] = os.getpid()  # pretend the human's Blender is still open
+    state_path.write_text(json.dumps(state), "utf-8")
+    fc.edit("Laço", f"move v{moved_vid} h +5%")
+    rv = fc.review(["Laço", "Laço Nó"], launch=False)
+    check(rv.get("update") is True, f"with the review open, a newer version is announced ({rv})")
+    ai_co = tuple(obj.data.vertices[index_of(obj)[moved_vid]].co)
+    bpy.ops.wm.open_mainfile(filepath=str(review_path))
+    check(bpy.ops.fofuxo_cage.load_update() == {"FINISHED"}, "the human loads it")
+    human = bpy.data.objects["Laço"]
+    co = tuple(human.data.vertices[index_of(human)[moved_vid]].co)
+    check(all(abs(a - b) < 1e-7 for a, b in zip(co, ai_co))
+          and not [o for o in bpy.data.objects if o.name.startswith("Laço.")], "the review now shows the AI's version")
+    try:
+        spent = bpy.ops.fofuxo_cage.load_update() == {"CANCELLED"}
+    except RuntimeError:  # a cancelled operator with a warning raises in background
+        spent = True
+    check(spent, "and the notice is spent")
+    bpy.ops.wm.open_mainfile(filepath=ai_file)
+    obj = bpy.data.objects["Laço"]
 
     print(f"\nsidecar: {text_path.parent}")
     print(text_path.read_text("utf-8")[:2400])

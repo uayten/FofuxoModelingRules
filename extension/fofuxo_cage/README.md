@@ -17,6 +17,9 @@ cage mesh (the base mesh under Subdivision):
   and what it does to the mesh (`set Mirror merge_threshold 0.1mm`).
 - Stop at a conflict instead of overwriting anyone's edit, and lock the
   object (or all of Blender's input) while the AI edits.
+- Give the AI a Blender of its own (a black screen, the MCP server) and the
+  human a normal one with the model appended; read back what the human saves
+  there (`review`, `absorb`).
 - Move the modeled part to the other side of a mirror plane (`flip`), e.g. to
   model on -Y, in front of its mirror copy.
 - Run Blender's own mesh operators from one line of text, on a selection by
@@ -107,7 +110,8 @@ fofuxo_cage.lock("Laço", ui=False)  # only the object lock
 fofuxo_cage.unlock()                # release everything
 ```
 
-The AI locks before it edits and unlocks when it hands back. Taking control
+In its own Blender (below) the AI needs no lock. In a Blender the human is
+using, the AI locks before it edits and unlocks when it hands back. Taking control
 leaves Edit Mode first: the human's edits are written into the mesh and the
 next sync reports them as Blender edits.
 
@@ -116,6 +120,51 @@ is editing. The human can always take over: Esc while the input is blocked,
 or **Unlock** in the 3D View sidebar (Fofuxo tab). The next sync then warns
 `human_took_over`: the AI stops and asks. A lock survives a save (the object's
 selectability is kept in a custom property), and `unlock` restores it.
+
+### Two Blenders: the AI's and the human's review
+
+The AI works in a Blender of its own (D-058). The launcher starts it:
+
+```bash
+python extension/fofuxo_cage/launcher.py models/tasks/laco/ai/B1-opus-cage/B1.blend
+```
+
+- Plain Python, no bpy: it starts Blender with `-- --fofuxo-ai`, waits for
+  the MCP port (9876) and prints `{"started": true, "pid": ..., "listeners":
+  [...]}`. If an AI instance is already running it starts nothing; open the
+  file there instead.
+- The AI's instance shows one black area with the notice "Fofuxo Cage:
+  Blender exclusivo da AI" (Blender's focus mode: no top bar, no status
+  bar), swallows every input event (the window's close button still works)
+  and keeps its MCP server on. Saving writes the file's own layout, not the
+  focus mode. `say(text)` adds a status line under the notice.
+- A human's Blender with Fofuxo Cage looks every 3 s for a live AI instance
+  and then stops its own MCP server, so the MCP always reaches the AI's
+  (Blender's server binds with `SO_REUSEADDR`: on Windows two Blenders can
+  hold the port and nothing tells which one answers). An older Blender
+  needs `fofuxo_cage.release_mcp()`, or its MCP server stopped by hand.
+- `instance()` says which Blender answers: `{"role": "ai" | "human", ...}`.
+
+```python
+fofuxo_cage.review(["Concept", "Laço", "Laço Nó"])   # default: every object in the scene
+fofuxo_cage.absorb()                                  # what the human saved comes back
+```
+
+- `review(names)` saves the AI's file and opens a normal Blender that loads
+  the human's startup file without its objects, appends those objects from
+  the AI's file (the AI's lock left out, the units kept) and saves
+  `<file>.cage/review.blend`. The human edits there and saves (Ctrl+S).
+- While that Blender is open, `review()` again only writes
+  `review.update.json`: the human's Blender shows it in the 3D View header,
+  and **Load AI update** in the Fofuxo tab replaces those objects with the
+  AI's saved version (mesh, modifiers, transform).
+- `absorb()` does the same the other way: mesh, modifiers and transform of
+  the reviewed objects come from `review.blend` into the AI's objects, and
+  each one syncs, so the human's changes come back as `blender_edits` and
+  `blender_deltas`. It only counts saves made after the review opened;
+  nothing new returns `{"changed": false}`. References between the objects
+  (a Mirror's object, a parent) and materials go to the AI's own datablocks;
+  nothing loaded is left behind.
 
 ## Other views
 
