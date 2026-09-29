@@ -40,6 +40,7 @@ models/
     ai/                        AI runs (T ids), one folder per run
     human/                     human work on the task
 DECISIONS.md                   every rule, why, and where it came from
+ROADMAP.md                     what to build next: Blender's tools for the AI, learning from use
 ```
 
 Today: the catalog lists the bow tie and the hat (both from E1, the dragon
