@@ -65,10 +65,17 @@ From the E1 interview and the T1 verdicts, in the modeler's words when kept:
 
 ## Rules that came from it
 
-D-009, D-021, D-032, D-033, D-036, D-037, D-039, D-041, D-044, D-049.
+D-009, D-021, D-032, D-033, D-036, D-037, D-039, D-041, D-044, D-049, D-051.
 
 ## Only this model
 
+- **Heart-shaped wings** (B1): two lobes joined by a thin middle row (1.5 mm
+  deep at h 0 near the knot) and a deep tip dent (about 9% in the cage). "É só
+  desse conceito, mas em uma quantidade considerável de desenhos os laços são
+  em formato de coração. Na vida real eles não são assim." Reading hint: look
+  for the heart in a drawn bow's shading and outline; do not model a real bow.
+- **Round knot** (B1): cross-sections fit a superellipse of exponent about 2.5
+  with 10 cage vertices per 1/8. How round follows the concept (D-051).
 - Mirror merge threshold 0.1 mm on `Laço`, 1 mm on `Laço Nó` (Coincidences).
 - Geometry Nodes Essentials: `Smooth by Angle` and `Array` elsewhere in the
   file come from Blender's bundled `geometry_nodes_essentials.blend`, packed

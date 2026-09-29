@@ -75,6 +75,11 @@ def near(values, co, frame, tol=0.5):
     return all(abs(a - b) <= tol for a, b in zip(values, frame.to_values(co)))
 
 
+def index_of(obj):
+    """Vertex index of each stable id."""
+    return {d.value: i for i, d in enumerate(obj.data.attributes[fc.mesh_io.ID_ATTR].data)}
+
+
 def base_of(path, vid):
     return fc.cage_format.parse(path.read_text("utf-8")).verts[vid].base
 
@@ -133,6 +138,12 @@ def main():
     check(sum(len(ids) for _, ids in cage.groups) == 28, "every vertex listed once")
     check(fc.cage_format.parse(fc.cage_format.write(cage)) == cage, "parse(write(cage)) == cage")
     check(not [i for i in r["issues"] if i["level"] == "ERROR"], f"no ERROR on the original ({r['issues']})")
+    sheet = bpy.data.images.load(r.get("render", ""), check_existing=False) if r.get("render") else None
+    check(sheet is not None and tuple(sheet.size) == (3 * 480 + 12, 26 + 3 * 480 + 12),
+          f"view sheet written ({r.get('render')}, {tuple(sheet.size) if sheet else None})")
+    if sheet:
+        bpy.data.images.remove(sheet)
+    check(all(g.shape == (7, 5) for g in fc.font.GLYPHS.values()), "every glyph is 5x7")
     text0 = text_path.read_text("utf-8")
 
     print("2. nothing changed")
@@ -167,6 +178,8 @@ def main():
     r = fc.sync("Laço")
     check(r["action"] == "pulled" and r["blender_edits"] == ["v10"], f"action pulled ({r['action']})")
     check(near(base_of(text_path, 10), obj.data.vertices[10].co, fr), "text shows the human's v10")
+    expected = f"v10 h+{0.002 / fr.axes[2].extent * 100:.1f}%"
+    check(r.get("blender_deltas") == [expected], f"human edit reported in percent ({r.get('blender_deltas')})")
 
     print("5. both edited: conflict")
     edit_text_line(text_path, 12, w="900")
@@ -228,16 +241,105 @@ def main():
     r = fc.sync("Laço")
     check(r["action"] == "unchanged", f"next sync unchanged ({r['action']})")
 
+    print("10b. set_frame from a box found in the concept")
+    color = fc.sample("EUA-Frente.png", 560, 750)
+    found = fc.find_box("EUA-Frente.png", color, tol=0.25, roi=[480, 760, 650, 850])
+    check(found is not None and found["box"][:2] == [528, 722], f"bow found in the concept ({found})")
+    r = fc.set_frame("Laço", concept={"image": "EUA-Frente.png", "box": found["box"]})
+    check(r["action"] == "reframed" and r["frame"].startswith("w X- 59.2"), f"frame from the box ({r['frame']})")
+    check(SYNC._load_state(SYNC.paths(obj)["state"])["concept"]["box"] == found["box"], "concept box kept in the state")
+    fr = frame_of(obj)
+
+    print("10c. relative ops")
+    cage = fc.cage_format.parse(text_path.read_text("utf-8"))
+    loop = cage.groups[0][1]
+    idx = index_of(obj)
+    old = {vid: tuple(obj.data.vertices[i].co) for vid, i in idx.items()}
+    text = text_path.read_text("utf-8").replace("\nops\n", "\nops\n  move L1 h +4%\n")
+    text_path.write_text(text, "utf-8")
+    r = fc.sync("Laço")
+    moved_h = [vid for vid in loop if abs(old[vid][2]) >= 1e-6]
+    check(r["action"] == "pushed" and r.get("ops") == [f"move L1 h +4%  ({len(loop)} verts)"], f"op applied ({r.get('ops')})")
+    check(all(abs(obj.data.vertices[idx[vid]].co.z - old[vid][2] - fr.axes[2].extent * 0.04) < 1e-7
+              for vid in moved_h), "L1 moved up 4% of the frame height")
+    check(all(obj.data.vertices[idx[vid]].co.z == 0.0 for vid in loop if vid not in moved_h),
+          "Z-plane vertices stayed on it")
+    check(all(d.endswith("h+4.0%") for d in r["deltas"]), f"deltas in percent ({r['deltas'][:3]})")
+    check(not fc.cage_format.parse(text_path.read_text("utf-8")).ops, "ops section cleared")
+
+    print("10d. a bad op writes nothing")
+    before = co_list(obj)
+    text_path.write_text(text_path.read_text("utf-8").replace("\nops\n", "\nops\n  move L99 h +4%\n"), "utf-8")
+    r = fc.sync("Laço")
+    check(r["action"] == "error" and "L99" in r["error"], f"refused ({r.get('error')})")
+    check(co_list(obj) == before, "mesh unchanged")
+    text_path.write_text(text_path.read_text("utf-8").replace("  move L99 h +4%\n", ""), "utf-8")
+
+    print("10e. scale from the mirror plane")
+    old = {i: tuple(v.co) for i, v in enumerate(obj.data.vertices)}
+    text_path.write_text(text_path.read_text("utf-8").replace("\nops\n", "\nops\n  scale all w 50% from 0\n"), "utf-8")
+    r = fc.sync("Laço")
+    check(r["action"] == "pushed", f"pushed ({r['action']})")
+    check(all(abs(obj.data.vertices[i].co.x - old[i][0] / 2) < 1e-7 for i in old), "every x halved around the plane")
+
     print("11. stack, material, parent and attributes untouched")
     now = untouched_signature(obj)
     for key in ("mods", "materials", "parent", "matrix", "attrs"):
         check(now[key] == sig[key], f"{key} unchanged")
+
+    print("11b. object ops: set a modifier, crease edges")
+    sub_mod = next(m for m in obj.modifiers if m.type == "SUBSURF")
+    text_path.write_text(text_path.read_text("utf-8").replace(
+        "\nops\n", f"\nops\n  set {sub_mod.name} render_levels 3\n  crease plane-x 0.5\n"), "utf-8")
+    r = fc.sync("Laço")
+    check(r["action"] == "pushed" and sub_mod.render_levels == 3, f"render_levels set ({r.get('ops')})")
+    edges = fc.cage_format.parse(text_path.read_text("utf-8")).edges
+    check(any(line.startswith("crease 0.5") for line in edges), f"X-plane edges creased 0.5 ({edges})")
+    before = co_list(obj)
+    text_path.write_text(text_path.read_text("utf-8").replace("\nops\n", "\nops\n  set Subdivision no_such_prop 1\n"), "utf-8")
+    r = fc.sync("Laço")
+    check(r["action"] == "error" and "no_such_prop" in r["error"] and co_list(obj) == before, f"bad set refused ({r.get('error')})")
+    text_path.write_text(text_path.read_text("utf-8").replace("  set Subdivision no_such_prop 1\n", ""), "utf-8")
+
+    print("11d. stack ops: add, reorder, set, remove; a bad batch changes nothing")
+    stack0 = [m.name for m in obj.modifiers]
+    batch = ("  add BEVEL as Edge at first\n  set Edge width 0.001\n  add WEIGHTED_NORMAL\n"
+             "  reorder WeightedNormal to after Edge\n")
+    text_path.write_text(text_path.read_text("utf-8").replace("\nops\n", "\nops\n" + batch), "utf-8")
+    r = fc.sync("Laço")
+    names = [m.name for m in obj.modifiers]
+    check(r["action"] == "pushed" and names == ["Edge", "WeightedNormal"] + stack0, f"stack {names} ({r.get('ops')})")
+    check(abs(obj.modifiers["Edge"].width - 0.001) < 1e-9, "Edge width set on the new modifier")
+    check("sub unavailable" in r["count"], f"sub column off with Bevel in the stack ({r['count']})")
+    text_path.write_text(text_path.read_text("utf-8").replace(
+        "\nops\n", "\nops\n  remove Edge\n  remove Nope\n"), "utf-8")
+    r = fc.sync("Laço")
+    check(r["action"] == "error" and [m.name for m in obj.modifiers] == names, f"bad batch refused ({r.get('error')})")
+    text_path.write_text(text_path.read_text("utf-8").replace("  remove Nope\n", "  remove WeightedNormal\n"), "utf-8")
+    r = fc.sync("Laço")
+    check([m.name for m in obj.modifiers] == stack0, f"back to the original stack ({[m.name for m in obj.modifiers]})")
+
+    print("11c. views from any angle")
+    v = fc.views("Laço", [(45, 30), "top", "-45,-20"])
+    img = bpy.data.images.load(v["render"], check_existing=False)
+    check(tuple(img.size) == (2 * 480 + 6, 26 + 3 * 480 + 12), f"3 views x 2 panels ({tuple(img.size)})")
+    bpy.data.images.remove(img)
 
     print("12. Laço Nó")
     r = fc.sync("Laço Nó")
     check(r["action"] == "init", f"init ({r['action']})")
     cage = fc.cage_format.parse(Path(r["text"]).read_text("utf-8"))
     check(len(cage.verts) == 10, "10 verts")
+    knot = bpy.data.objects["Laço Nó"]
+    knot_text = Path(r["text"])
+    knot_text.write_text(knot_text.read_text("utf-8").replace("\nops\n", "\nops\n  apply Mirror\n"), "utf-8")
+    r = fc.sync("Laço Nó")
+    cage = fc.cage_format.parse(knot_text.read_text("utf-8"))
+    n = len(knot.data.vertices)
+    check(r["action"] == "pushed" and "Mirror" not in knot.modifiers and n > 10,
+          f"Mirror applied: {n} vertices ({r.get('ops')})")
+    check(len(cage.verts) == n and len(set(cage.verts)) == n, "every applied vertex has its own id")
+    check(fc.sync("Laço Nó")["action"] == "unchanged", "next sync unchanged")
 
     print("13. Edit Mode refused")
     try:

@@ -43,6 +43,7 @@ the destination.
 | Provisional | seen once; unknown whether it generalizes | `DECISIONS.md` as Provisional; becomes Stated on a second matching case |
 | Specific | true for this model only | the example's `EXAMPLE.md` |
 | Coincidence | an accident of the file (a name, a threshold) | Coincidences in `DECISIONS.md` |
+| Tool | about how the AI sees or edits, not about modeling | Fofuxo Cage (`extension/fofuxo_cage/`) |
 | Discarded | see below; the reason is recorded | stays in `feedback.md` only |
 
 Questions that weigh an item:

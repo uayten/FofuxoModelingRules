@@ -1,0 +1,79 @@
+# fofuxo_cage 1
+# Values are permille of the frame: w = width (X), d = depth (Y), h = height (Z).
+# A mirrored axis counts from the mirror plane (0) to the frame edge (1000).
+# Edit "base w d h", then run sync. sub = where the vertex lands after the
+# modifier stack (read-only). frame, faces and edges are written by the plugin.
+
+object   Laço
+frame    w X+ 62.2   d Y+ 16.5   h Z+ 33.2   (mm)
+stack    Mirror(XYZ) > Subdivision(1/2)
+size     base 126.4 x 25.2 x 70.1   sub 123.4 x 22.7 x 66.4   (mm, w x d x h)
+count    v 29  f 20   evaluated v 642 f 640
+
+verts
+# loop  id   base w     d     h | sub w     d     h | flags
+L1      v2        0     0    80 |     0     0    79 | X Y
+        v0      280     0   576 |   280     0   540 | Y
+        v3      558     0   936 |   565     0   879 | Y
+        v6      880     0  1056 |   842     0  1000 | Y
+        v1      972     0   946 |   964     0   867 | Y
+        v19    1011     0   462 |   992     0   452 | Y
+        v5      927     0     0 |   956     0     0 | Y Z
+L2      v16       0    74    76 |     0    68    75 | X
+        v24     280   226   532 |   280   208   508 |
+        v17     558   403   884 |   565   345   831 |
+        v23     880   450  1004 |   842   387   948 |
+        v21     973   361   896 |   965   341   819 |
+        v28    1016   336   415 |   990   331   436 |
+        v20     931   349     0 |   957   329     0 | Z
+L3      v9        0   111    64 |     0   109    62 | X
+        v8      280   322   448 |   280   323   425 |
+        v11     558   579   744 |   565   536   698 |
+        v12     880   641   844 |   843   600   791 |
+        v7      986   517   708 |   957   535   722 | pole3
+L4      v10       0   140     0 |     0   138     0 | X Z
+        v13     280   149     0 |   280   258     0 | Z
+        v14     558   413     0 |   565   487     0 | Z
+        v15     881   635     0 |   838   635     0 | Z
+        v4      937   561     0 |   940   566     0 | Z
+L5      v18       0   133    42 |     0   131    39 | X
+        v25     280   383   314 |   280   348   274 |
+        v26     558   688   520 |   565   592   450 |
+        v27     880   764   590 |   841   688   509 |
+        v22     974   657   494 |   959   589   458 |
+
+faces
+  f0   v26 v11 v12 v27
+  f1   v27 v12 v7 v22
+  f2   v17 v24 v0 v3
+  f3   v24 v16 v2 v0
+  f4   v21 v23 v6 v1
+  f5   v20 v28 v19 v5
+  f6   v25 v8 v11 v26
+  f7   v18 v9 v8 v25
+  f8   v23 v17 v3 v6
+  f9   v28 v21 v1 v19
+  f10  v4 v22 v28 v20
+  f11  v22 v7 v21 v28
+  f12  v12 v11 v17 v23
+  f13  v10 v18 v25 v13
+  f14  v13 v25 v26 v14
+  f15  v7 v12 v23 v21
+  f16  v8 v9 v16 v24
+  f17  v11 v8 v24 v17
+  f18  v15 v27 v22 v4
+  f19  v14 v26 v27 v15
+
+edges
+  crease 1.0  v2-v16 v9-v16 v9-v18 v10-v18
+
+ops
+
+forms
+  silhouette front     done     L1 rim within ~1% of the concept box
+  dent in outer edge   done     tip 940 at h 0 against ~985 above and below (deeper than the concept, as the reference)
+  top figure eight     done     depth 759 outside, 138 at the center
+  wings behind knot    done     crease 1.0 on the X-plane edges: center column at h 79 (2.6 mm)
+  horizontal fold      partial  h 0 row thinned (d -17% to -31%): two lobes, shallower than the reference
+  fold into the knot   not done needs loops at the knot edge
+  radial gathering     not done

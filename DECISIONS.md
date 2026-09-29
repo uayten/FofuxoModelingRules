@@ -18,6 +18,9 @@ Tests:
 
 - **T1**: `models/tasks/laco/ai/`, bow tie modeled by Sonnet with and without the
   skill, judged blind.
+- **B1**: `models/tasks/laco/ai/B1-opus-cage/`, Opus reshapes run A2 with
+  Fofuxo Cage; judged by the modeler against his bow (`models/tasks/laco/human/`,
+  the E1 bow). E1 may be used for decisions; what is ambiguous is asked.
 
 ---
 
@@ -356,6 +359,30 @@ which would shift every value when one extreme vertex moves. Mirrored axes
 count from the plane with no sign; values are whole permille (1‰ ≈ 0.06 mm
 on the bow tie's width); axes are named w, d, h. Only mm stays in the size
 line. Concept bow tie on E1: 118.4 × 62.5 mm at the Image Empty's scale.
+
+### D-051: Stylized game assets: low poly, and abstraction is allowed (Stated, B1)
+
+Asked whether a knot must be as round as the reference's (superellipse
+exponent 2.5 against B1's 4.3–4.6): "it depends more on the concept", but
+part of the judgment is always: a game asset must be low poly; a stylized
+asset may carry abstractions that the same object does not have in real life.
+So roundness and shape follow the concept's stylization, not the real object.
+
+### D-052: The AI manages the modifier stack; applying is for specific cases (Stated, B1)
+
+The AI may add, remove, edit and reorder modifiers, and apply one in specific
+cases. Widens D-048, whose tool touched mesh data only. Fofuxo Cage does it
+through ops in the cage text (`add`, `remove`, `reorder`, `set`, `apply`,
+`crease`). When to apply has no rule: "cada caso é um caso". The AI decides
+from its own modeling judgment as it grows, and reports every apply.
+
+### D-053: Subdivision only for a cage that needs it (Stated, B1)
+
+The B1 knot (19 vertices per 1/8, fitted round) was judged "muito muito muito
+melhor": the modeler would change nothing but drop its Subdivision, since the
+cage already holds the form; "para precisar utilizar o modificador ele teria
+que ser mais low poly". A cage dense enough to carry its shape goes without
+Subdivision; Subdivision is for a lower-poly cage (D-033, D-051).
 
 ### D-040: Silhouette overlap as an audit check (Stated, T1)
 

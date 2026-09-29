@@ -45,8 +45,7 @@ was right; the check was wrong (D-044).
 
 ## Run A2: revised skill (D-032 to D-035)
 
-- **Files:** `A2-sonnet/A2-ai.blend` (the run), `../human/A2-human-edit.blend`
-  (the modeler's manual edit of it). Sonnet 5.5, same prompt as run A.
+- **File:** `A2-sonnet/A2-ai.blend`. Sonnet 5.5, same prompt as run A.
 - **Result:** `Laço` (29 cage vertices per 1/8) and `Laço Nó`, Mirror XYZ →
   Subdivision 1, on the chest. Size 13.5 × 3.3 × 7.3 cm, matching its report.
   1024 evaluated faces. Silhouette overlap with the concept: 94.6%, as

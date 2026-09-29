@@ -8,8 +8,9 @@ From the Blender MCP:
 
 import sys
 
-from . import cage_format, frame, mesh_io, topology, validate
-from .sync import SyncError, set_frame, sync  # sync shadows the submodule name on purpose
+from . import cage_format, concept, frame, mesh_io, object_ops, ops, render, topology, validate
+from .concept import find_box, sample
+from .sync import SyncError, set_frame, sync, views  # sync shadows the submodule name on purpose
 
 ALIAS = "fofuxo_cage"
 

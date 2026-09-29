@@ -3,7 +3,7 @@
 *.blend2
 
 # Fofuxo Cage sync state (machine-specific; the .txt next to it is kept)
-*.cage/.state/
+**/*.cage/.state/
 
 # Python
 __pycache__/
