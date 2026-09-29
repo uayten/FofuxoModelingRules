@@ -496,7 +496,9 @@ def main():
             check(False, "sync refused in Edit Mode")
         except fc.SyncError:
             check(True, "sync refused in Edit Mode")
-        bpy.ops.object.mode_set(mode="OBJECT")
+        st = fc.lock("Laço")  # the AI takes control: out of Edit Mode, edits kept
+        check(obj.mode == "OBJECT" and st.get("left_edit_mode") == "Laço", f"lock leaves Edit Mode ({st})")
+        fc.unlock()
     else:
         print("  skip (no Edit Mode in background)")
 

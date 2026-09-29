@@ -97,10 +97,14 @@ state is in `<file>.cage/.state/`. The object must be in Object Mode.
 ### Lock
 
 ```python
-fofuxo_cage.lock("Laço")            # the object cannot be selected, so not edited
-fofuxo_cage.lock("Laço", ui=True)   # also swallow every mouse and key event
+fofuxo_cage.lock("Laço")            # take control: leave Edit Mode, lock the object, block input
+fofuxo_cage.lock("Laço", ui=False)  # only the object lock
 fofuxo_cage.unlock()                # release everything
 ```
+
+The AI locks before it edits and unlocks when it hands back. Taking control
+leaves Edit Mode first: the human's edits are written into the mesh and the
+next sync reports them as Blender edits.
 
 While locked, the 3D View header and the status bar say which objects the AI
 is editing. The human can always take over: Esc while the input is blocked,

@@ -80,6 +80,7 @@ After round 5 (open, next session):
 | D | "pode ser loop ou seam como referência para você" | The modeler points at edges with sharp or seam marks; the tool should read seam as it reads sharp | Tool | Fofuxo Cage (`seam` keyword, to do) |
 | 21 | "marquei com seam as edges que precisam ser puxadas para Y- para dar um formato mais arredondado. no geral o modelo está bom" | Seams on v15-v27 and v23-v27 (around v27, the lobe's outer side at 85% of the width): pull them toward -Y (deeper) for a rounder lobe | Specific | next session |
 | 22 | "existem ferramentas no blender para fazer todas as edições que você está escrevendo scripts ... não valeria mais a pena você utilizar as do blender do que escrever scripts novos? em termos à longo prazo sobre performance" | Yes: wrap Blender's own operators (select by id, run the operator, read the result back) instead of writing new bmesh code per tool | Tool | Fofuxo Cage: generic operator op (to do) |
+| 23 | "você, ao assumir o controle do blender, deveria sair do edit mode e bloquear o usuário de mexer" | `lock()` leaves Edit Mode (edits kept) and blocks input by default; the AI locks before editing | Tool | Fofuxo Cage (done) |
 
 Items 1 and 2 resolve through A and B: item 1 is D-051 applied to this
 concept; item 2 is the heart shape of B. When to apply (from C) is settled by

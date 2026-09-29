@@ -161,7 +161,8 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
     if obj is None or obj.type != "MESH":
         raise SyncError(f"no mesh object named {name!r}")
     if obj.mode == "EDIT":
-        raise SyncError(f"{name} is in Edit Mode: leave it (Tab) so the mesh data is current, then sync again.")
+        raise SyncError(f"{name} is in Edit Mode: take control with lock({name!r}) (it leaves Edit Mode and keeps "
+                        "the edits), or leave it (Tab), then sync again.")
 
     p = paths(obj)
     state = _load_state(p["state"])

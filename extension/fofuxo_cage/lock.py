@@ -1,7 +1,9 @@
 """Keep the human's hands off what the AI is editing.
 
-    lock("Laço")            the object cannot be selected, so not edited
-    lock("Laço", ui=True)   also swallow every mouse and key event in Blender
+    lock("Laço")            take control: leave Edit Mode (the human's edits
+                            are kept), make the object unselectable and
+                            swallow every mouse and key event in Blender
+    lock("Laço", ui=False)  only the object lock
     unlock()                release everything
 
 A locked object keeps its original selectability in a custom property, so a
@@ -33,13 +35,31 @@ def _set_header(text):
         win.workspace.status_text_set(text)
 
 
-def lock(name, ui=False):
-    """Lock object `name` against selection; with ui=True block all input too."""
+def _leave_edit_mode():
+    """Back to Object Mode, which writes the Edit Mode changes into the mesh.
+    Returns the name of the object that was being edited, or None."""
+    obj = bpy.context.view_layer.objects.active
+    if obj is None or obj.mode == "OBJECT":
+        return None
+    wm = bpy.context.window_manager
+    if wm.windows:
+        win = wm.windows[0]
+        area = next((a for a in win.screen.areas if a.type == "VIEW_3D"), win.screen.areas[0])
+        with bpy.context.temp_override(window=win, area=area, active_object=obj, object=obj):
+            bpy.ops.object.mode_set(mode="OBJECT")
+    else:
+        bpy.ops.object.mode_set(mode="OBJECT")
+    return obj.name
+
+
+def lock(name, ui=True):
+    """Take control of object `name`: leave Edit Mode (keeping the human's
+    edits: the next sync reads them as Blender edits), make the object
+    unselectable and, with ui (the default), swallow all input."""
     obj = bpy.data.objects.get(name)
     if obj is None:
         raise LockError(f"no object named {name!r}")
-    if obj.mode == "EDIT":
-        raise LockError(f"{name} is in Edit Mode: the human is editing it. Ask before taking it.")
+    left = _leave_edit_mode()
     if PROP not in obj:
         obj[PROP] = int(obj.hide_select)
     obj.select_set(False)
@@ -47,10 +67,13 @@ def lock(name, ui=False):
     _state["taken_over"] = False
     names = ", ".join(o.name for o in _locked_objects())
     _state["message"] = f"Fofuxo Cage: the AI is editing {names}"
-    if ui and not _state["ui"]:
+    if ui and not _state["ui"] and bpy.context.window_manager.windows:  # no windows in background
         _start_block()
     _set_header(_state["message"] + ("   (Esc to take over)" if _state["ui"] else ""))
-    return status()
+    report = status()
+    if left:
+        report["left_edit_mode"] = left
+    return report
 
 
 def unlock(name=None):
