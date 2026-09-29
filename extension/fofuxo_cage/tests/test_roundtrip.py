@@ -1,4 +1,4 @@
-"""Round-trip tests on a temporary copy of examples/01-laco/Laço.blend.
+"""Round-trip tests on a temporary copy of models/example/laco/human/Laço.blend.
 
 Run from the repository root:
     blender -b --factory-startup --python extension/fofuxo_cage/tests/test_roundtrip.py --python-exit-code 1
@@ -16,7 +16,7 @@ import bpy
 
 HERE = Path(__file__).resolve()
 REPO = HERE.parents[3]
-SOURCE = REPO / "examples" / "01-laco" / "Laço.blend"
+SOURCE = REPO / "models" / "example" / "laco" / "human" / "Laço.blend"
 sys.path.insert(0, str(HERE.parents[2]))
 
 import fofuxo_cage as fc  # noqa: E402

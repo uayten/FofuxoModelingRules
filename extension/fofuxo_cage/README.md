@@ -139,7 +139,7 @@ text edit over it.
 blender -b --factory-startup --python extension/fofuxo_cage/tests/test_roundtrip.py --python-exit-code 1
 ```
 
-The test copies `examples/01-laco/Laço.blend` to a temporary folder and never
+The test copies `models/example/laco/human/Laço.blend` to a temporary folder and never
 touches the original.
 
 ## Why

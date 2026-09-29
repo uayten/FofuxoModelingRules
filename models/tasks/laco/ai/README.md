@@ -4,13 +4,13 @@
 - **Model:** Sonnet 5.5 (subagent), one run per side.
 - **Skill version:** commit `d2eb7cc`, without `fofuxo_lib` or the auditor.
 - **Task:** model the red bow tie from the concept (`EUA-Frente.png`, packed in
-  `start.blend`), about 13.5 cm wide.
+  `../start.blend`), about 13.5 cm wide.
 - **Judging:** blind, labeled X and Y.
 
 | Label | File | Run |
 |---|---|---|
-| X | `sem-regras.blend` | without the skill |
-| Y | `com-regras.blend` | with `SKILL.md` |
+| X | `X-sonnet-no-rules/sem-regras.blend` | without the skill |
+| Y | `Y-sonnet-rules/com-regras.blend` | with `SKILL.md` |
 
 ## Measured
 
@@ -45,11 +45,11 @@ was right; the check was wrong (D-044).
 
 ## Run A2: revised skill (D-032 to D-035)
 
-- **File:** `com-regras-v2.blend`, Sonnet 5.5, same prompt as run A.
+- **Files:** `A2-sonnet/A2-ai.blend` (the run), `../human/A2-human-edit.blend`
+  (the modeler's manual edit of it). Sonnet 5.5, same prompt as run A.
 - **Result:** `Laço` (29 cage vertices per 1/8) and `Laço Nó`, Mirror XYZ →
   Subdivision 1, on the chest. Size 13.5 × 3.3 × 7.3 cm, matching its report.
-  `com-regras-v2.blend` now holds the modeler's manual edit; the original A2 is
-  in `com-regras-v2.blend1`. 1024 evaluated faces. Silhouette overlap with the concept: 94.6%, as
+  1024 evaluated faces. Silhouette overlap with the concept: 94.6%, as
   the model measured it.
 - **Verdict:** good to edit, close to the modeler's modifier choices. Still out
   of shape, mainly after Subdivision: it misses the outer dents and the folds
@@ -66,7 +66,7 @@ was right; the check was wrong (D-044).
 
 ## Run A3: Opus 5.5, build + self-critique (D-036 to D-043)
 
-- **Files:** `com-regras-v3-antes.blend` (first version), `com-regras-v3.blend`
+- **Files:** `A3-opus/A3-before.blend` (first version), `A3-opus/A3-after.blend`
   (after one self-critique pass). Screenshots `A3-antes-*` / `A3-depois-*`.
 - **Result:** `Laço` (71 cage vertices per 1/8) and `Laço Nó` (37), Mirror XYZ
   → Subdivision 1, on the chest. 12.35 × 2.9 × 6.53 cm, sized to the concept

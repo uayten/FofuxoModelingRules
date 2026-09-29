@@ -11,12 +11,12 @@ Status:
 
 Examples:
 
-- **E1**: `examples/01-laco/Laço.blend`, dragon + "Roupa Estadunidense" outfit. Focus: the bow tie
+- **E1**: `models/example/laco/human/Laço.blend`, dragon + "Roupa Estadunidense" outfit. Focus: the bow tie
   (`Laço`, `Laço Nó`).
 
 Tests:
 
-- **T1**: `tests/01-laco/`, bow tie modeled by Sonnet with and without the
+- **T1**: `models/tasks/laco/ai/`, bow tie modeled by Sonnet with and without the
   skill, judged blind.
 
 ---
