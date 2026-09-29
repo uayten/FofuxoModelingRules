@@ -14,6 +14,11 @@ Examples:
 - **E1**: `Laço.blend`, dragon + "Roupa Estadunidense" outfit. Focus: the bow tie
   (`Laço`, `Laço Nó`).
 
+Tests:
+
+- **T1**: `tests/01-laco/`, bow tie modeled by Sonnet with and without the
+  skill, judged blind.
+
 ---
 
 ## Naming
@@ -45,11 +50,12 @@ Child naming: a descriptive name (`Laço Nó`; `Asas 2` should have been
 `Asa Membrana`, the number was a missing name). Numbering is acceptable when
 there are many complex technical names.
 
-### D-004: Plural when the object shows more than one unit (Stated, E1)
+### D-004: Plural when the object shows more than one unit (Stated, E1, T1)
 
 A Mirror pair (left and right wings: `Asas`) or an Array (`Estrelas`) makes the
 name plural. By this rule `Chifre` should be `Chifres`: the inconsistency in E1
-is human, not a rule.
+is human, not a rule. The count is of the thing the name describes: a bow with
+two loops is one bow (`Laço`), confirmed in T1.
 
 ### D-005: Mesh data named after the object (Stated as good practice, E1)
 
@@ -222,6 +228,86 @@ modeling. Its slot in the stack waits for a hard-surface example.
 ribbon starts matching the surface it sits on.
 
 ---
+
+### D-032: Shape comes first (Stated, T1)
+
+Matching the concept's shape is "very, very, very important". In T1 the run
+without rules got the shape right and was judged better, even with no
+modifiers.
+
+### D-033: The cage carries the silhouette, Subdivision only smooths (Stated, T1)
+
+Replaces the first-draft rule "minimal base shape, detail comes from
+modifiers". In T1 a 7-vertex cage with Subdivision 2 lost the bow's shape, and
+the dense wireframe looked "threatening" for no reason. Fewer visible vertices
+feels easier to edit, though a mesh that already has modifiers is easier to edit
+in the end. Small accessories: Subdivision level 1.
+
+### D-034: A symmetric baked mesh gets cut and mirrored (Stated, T1)
+
+On T1's run without rules (right shape, no modifiers), the modeler would cut
+the mesh in half and add a Mirror "with 100% certainty".
+
+### D-035: Placement: ground or where the concept shows it (Provisional, T1)
+
+The draft rule "rests on Z = 0" put T1's bow on the floor. E1's bow sits on the
+chest. Proposed: standalone assets rest on the ground; accessories worn by a
+character sit where the concept shows them. Not yet confirmed.
+
+### D-036: The concept's shading shows forms that need loops (Stated, T1)
+
+The T1 run A2 matched the outer silhouette but missed what the shading shows: a
+dent in the middle of each wing's outer edge, and a fold where each wing enters
+the knot. The modeler would add loops for both.
+
+### D-037: Imagine what the concept hides (Stated, T1)
+
+"It takes some imagination to understand the concept beyond what is strictly in
+the image." The bow's wing contours keep converging behind the knot, crossing
+like an X: each wing narrows almost to a point at the center. E1's bow follows
+this; A2 could not infer it.
+
+### D-038: Concept size wins, with tolerance (Stated, T1)
+
+When a requested size and the concept disagree, the concept is worth more, "not
+set in stone".
+
+### D-039: Tight loops keep sharp turns after Subdivision (Stated, T1)
+
+E1's center vertices are packed close together so the wing keeps its narrowing
+into the knot after Subdivision. A2 had loose spacing and drifted "out of shape,
+mainly after the Subdivision".
+
+### D-041: Imagine the views the concept does not show; round looks round (Stated, T1)
+
+Seen from the top, E1's bow wing converges to the center in depth as well (a
+figure eight). A2 from the top is "a somewhat square bone". The model must
+imagine how a form that looks round in the image gets round in every view.
+
+### D-042: Validate each object alone, then all together (Stated, T1)
+
+Suggested by the modeler after A2: judge each object on its own first, and the
+set last.
+
+### D-043: Deliver an honest, editable base (Stated, T1)
+
+Inner shading forms stay hard for models. The delivery is the best shape the AI
+reached, with a live stack, plus a shape map: each form from "Read the concept"
+marked done, partial or not done, and where it lives. The human knows where to
+finish; the AI never reports a shape as done when it is not.
+
+### D-044: Measure from the evaluated vertices (Verified, T1)
+
+With GPU Subdivision on (the default here), `obj.dimensions` and `bound_box`
+measure the cage, not the subdivided surface. Found by run A3 and verified:
+run A's bow measured 14.0 × 10.0 cm by `obj.dimensions` and 13.5 × 7.1 cm by
+evaluated vertices. The earlier T1 claim that runs A and A2 misreported their
+sizes was wrong: their reports were right, the check was not.
+
+### D-040: Silhouette overlap as an audit check (Stated, T1)
+
+The auditor compares the evaluated mesh's front silhouette with the concept.
+Necessary, not sufficient: A2 scored 94.6% and still missed D-036 and D-037.
 
 ## Scope
 

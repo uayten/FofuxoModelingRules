@@ -8,13 +8,15 @@ description: Non-destructive modeling rules for Blender driven through the offic
 > Status: **draft v0.1**. Rules are being refined from reference models made by a
 > human modeler. Items marked **[TBD]** are open and must not be treated as final.
 
-## The one idea
+## The two ideas
 
-The `.blend` you deliver is a **working file**, not an output. A human will open it
-and keep editing. Every dimension, bevel, hole and repetition must still be
-adjustable from the modifier panel or a Geometry Nodes input. A mesh that looks
-right but can only be changed by moving vertices is a **failed delivery**, no
-matter how good it looks.
+1. **Shape first.** The model must match the concept's shape and proportions.
+   This matters more than anything else in this skill: a clean, non-destructive
+   stack on the wrong shape is a **failed delivery** (D-032).
+2. **A working file, not an output.** A human will open the `.blend` and keep
+   editing. Symmetry, smoothing, thickness and repetition stay live in the
+   modifier stack. A mesh with the right shape but baked symmetry or smoothing
+   is also a **failed delivery**: cut it and put the Mirror back (D-034).
 
 ## Hard limits
 
@@ -26,9 +28,10 @@ Never, under any circumstance:
 - Export (`bpy.ops.export_*`, `bpy.ops.wm.*_export`, glTF/FBX/OBJ/USD/STL…).
   Export is a manual human validation step done with Fofuxo FastExport. Your
   job ends at the audit and the saved `.blend`.
-- Build finished detail by writing vertices/faces directly (`bmesh`,
-  `mesh.from_pydata`, `mesh.vertices[i].co = ...`). Detail comes from
-  modifiers. See [When no helper fits](#when-no-helper-fits).
+- Build by hand what a modifier should produce: the mirrored half, the
+  smoothed surface, the thickness, the repeated copies. The cage (silhouette)
+  is yours to shape; smoothing, symmetry, thickness and repetition come from
+  modifiers (D-033).
 - Delete, apply or merge Boolean cutters.
 - Join parts (`bpy.ops.object.join`). Each part stays a separate object, grouped
   by parent (D-003, D-011).
@@ -62,16 +65,50 @@ Every task follows these steps, in order:
      suggest a project context file in Markdown so the answers are written
      once (D-002).
 3. **Scene setup** — `setup_asset("<Asset>")`: units, collections.
-4. **Plan** — decompose the object into parts. For each part, write one line:
+4. **Read the concept** — before planning, write down the shape you see, in
+   three layers (D-036, D-037):
+   - **silhouette**: the outer contour and its proportions;
+   - **inner forms**: every dent, fold, crease and bulge the shading shows
+     (E1 bow: a dent in the middle of each wing's outer edge, a fold where each
+     wing enters the knot). Each one needs edge loops in the cage;
+   - **hidden forms**: extend the visible contours behind the parts that hide
+     them. E1 bow: the wings' top and bottom edges keep converging behind the
+     knot, crossing like an X, so each wing narrows almost to a point at the
+     center. The concept only shows what is visible; the model must be whole;
+   - **the other views**: a front concept still implies a top and a side.
+     Imagine them and write them down. E1 bow from the top: each wing also
+     narrows in depth toward the center, a figure eight, not a flat bar.
+     Forms that look round in the concept get round cross-sections, not boxy
+     ones (D-041).
+5. **Plan** — decompose the object into parts. For each part, write one line:
    base primitive, modifier stack, cutters, parametric or not. For anything
    with more than one part, show the plan in your reply before building.
    Wait for approval? **[TBD]**
-5. **Build** — only through library helpers.
-6. **Look** — `get_screenshot_of_area_as_image("VIEW_3D")` from at least two angles; compare with
-   the request and the concept. Fix before auditing.
-7. **Audit** — run the auditor. Fix every `ERROR`. Fix every `WARN` or justify
+6. **Build** — only through library helpers.
+7. **Look** — compare the shape with the concept before anything else (D-032).
+   Check **each object alone first** (Local View, `/`), then **all together**
+   (D-042):
+   - front, top and side orthographic views of each object; the top and side
+     must match what you wrote in step 4, not just look plausible;
+   - front orthographic view aligned with the concept's Image Empty, the model
+     over the image: silhouette and proportions must match. Then put a
+     screenshot of the model **side by side** with the concept at the same
+     scale: that is where the inner forms show (T1, A3);
+   - parts in front must stay whole: check that no part hides another that
+     the concept shows (T1, A3);
+   - every inner and hidden form listed in step 4 is in the model. A matching
+     outer silhouette is not enough: in T1 a bow with 94.6% silhouette overlap
+     still missed the dents, the folds and the narrowing behind the knot;
+   - at least one more angle (side or 3/4) for depth;
+   - measure the dimensions with code, from the **evaluated vertices**
+     (`evaluated_get(depsgraph).to_mesh()`), never from `obj.dimensions` or
+     `bound_box`: with GPU Subdivision on, those measure the cage, not the
+     subdivided surface. In T1 `obj.dimensions` gave 14.0 × 10.0 cm for a bow
+     whose evaluated vertices span 13.5 × 7.1 cm (D-044).
+   Fix the shape before auditing.
+8. **Audit** — run the auditor. Fix every `ERROR`. Fix every `WARN` or justify
    it in the report. Re-run until clean.
-8. **Deliver** — save the `.blend` and write the delivery report
+9. **Deliver** — save the `.blend` and write the delivery report
    (see [Delivery report](#delivery-report)). Stop.
 
 ## Base mesh
@@ -79,9 +116,14 @@ Every task follows these steps, in order:
 - Start from the simplest primitive that carries the silhouette: cube,
   cylinder (vertex count = what the silhouette needs, not more), plane,
   circle. Curves as base: **[TBD]**.
-- The base mesh is a **cage**: few vertices, all of them meaningful. Allowed
-  cage edits (through helpers only): extrude, loop cut, inset, edge data
-  (bevel weight, crease, sharp, seam).
+- **The cage carries the silhouette; Subdivision only smooths it** (D-033).
+  Give the cage the vertices the silhouette needs (pinches, flares, notches):
+  E1's bow uses 33 vertices per 1/8. A cage too sparse for the shape, with a
+  high Subdivision level making up the form, is wrong: in test T1 a 7-vertex
+  cage at level 2 turned a bow tie into a bone. On small accessories,
+  Subdivision level 1. Allowed cage edits (through helpers only): extrude,
+  loop cut, inset, moving vertices, edge data (bevel weight, crease, sharp,
+  seam).
 - Prefer **edge data over extra geometry** for hard edges: bevel weight +
   `Bevel(limit=WEIGHT)`, or crease + Subdivision, instead of manual support
   loops — they stay editable. **[TBD — confirm against examples]**
@@ -117,6 +159,10 @@ Every task follows these steps, in order:
   poorly and pulls the rounding toward the center (D-027).
 - **Boolean is for hard-surface** (windows, doors, shelves, straight props).
   Avoid it on organic characters (D-028).
+- **Tight loops where the form turns sharply.** Subdivision smooths every
+  turn; loops placed close together keep a pinch, fold or dent after it. E1's
+  bow has its center vertices packed "juntinhos" so the wing narrows into the
+  knot as in the concept (D-039).
 - **Crease holds the silhouette** where Subdivision would pull the shape out of
   place, e.g. a part entering another (D-021).
 - **No loose geometry.** Vertices and edges without faces are an error; clean
@@ -191,8 +237,9 @@ intentional; leave it.
 ## Units, transforms and origin
 
 - Scene: Metric, unit scale 1.0. Display unit follows the scene (E1 shows cm).
-- Model at real-world size. If the request gives no size, state the size you
-  assumed in the plan.
+- Size: the concept's proportions win over a requested number, with some
+  tolerance (D-038). If the request gives no size, state the size you assumed
+  in the plan.
 - Scale applied: every object at `(1, 1, 1)`.
 - Rotation not applied: the mesh is world-aligned, the object rotation poses
   it (D-014).
@@ -202,7 +249,9 @@ intentional; leave it.
   - side part mirrored across the body: origin on the part, Mirror with
     `mirror_object` = the body (E1: `Asas`, `Chifre`) — **Provisional**;
   - other cases: **[TBD]**.
-- The asset rests on the ground plane (Z = 0).
+- Placement **[TBD — D-035]**: a standalone asset (prop, furniture) rests on
+  the ground (Z = 0); an accessory worn by a character sits where the concept
+  shows it (E1: the bow on the chest).
 
 ## Naming and collections
 
@@ -213,8 +262,9 @@ intentional; leave it.
   name comes only from the project context (D-002).
 - **Child objects**: descriptive name (`Laço Nó`, `Asa Membrana`). Numbering only
   when there are many complex technical names (D-003).
-- **Plural** when the object shows more than one unit: a Mirror pair (`Asas`)
-  or an Array (`Estrelas`) (D-004).
+- **Plural** when the object shows more than one unit of the thing its name
+  describes: a Mirror pair (`Asas`: two wings), an Array (`Estrelas`). A bow
+  with two loops is still one bow (`Laço`) (D-004).
 - **Mesh data** named after its object (D-005).
 - **Collections**: one per asset, with sub-collections by role (E1: `Rig`,
   `Malha`). Create a sub-collection when a section has 3+ related objects not
@@ -265,6 +315,12 @@ clean. It reports, per object:
   (the human check: zoom out, wireframe on) (D-015)
 - loose geometry: vertices and edges with no face (`ERROR`; fix with Delete
   Loose)
+- silhouette overlap with the concept in front view (evaluated mesh vs. the
+  concept's object mask). A low overlap is an `ERROR`; a high one does not prove
+  the shape (inner and hidden forms are checked in Look) (D-040)
+- evaluated dimensions, measured from the evaluated vertices (D-044)
+- open edges on the evaluated mesh: a closed part must stay closed after the
+  Mirror (a too-high merge threshold can weld rows near the mirror plane)
 - leftover modifiers: duplicated Armature, `.001` suffix on a lone modifier
 - mesh data name different from the object name
 - cutters: collection, display type, render visibility, orphan cutters
@@ -273,13 +329,21 @@ Severity: `ERROR` blocks delivery; `WARN` must be fixed or justified.
 
 ## Delivery report
 
+The delivery is an **honest, editable base** (D-043): the best shape you could
+reach, with a live stack, and a precise map of what is still missing. Never
+report the shape as done when it is not.
+
 End every task with:
 
 1. File saved (path).
 2. Parts: name → stack, one line each.
-3. What the user can adjust and where (modifier / GN input).
-4. Audit summary: `0 ERROR`, list of `WARN` with justification.
-5. Library gaps found, if any.
+3. **Shape map**: every form you wrote in step 4 (silhouette, inner, hidden,
+   other views), each marked **done**, **partial** or **not done**, with the
+   object and area where it lives. This is where a human will finish the work.
+4. Measured dimensions (from code) vs. the concept.
+5. What the user can adjust and where (modifier / GN input).
+6. Audit summary: `0 ERROR`, list of `WARN` with justification.
+7. Library gaps found, if any.
 
 Do not offer to export.
 
