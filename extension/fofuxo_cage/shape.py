@@ -141,8 +141,13 @@ def _stats(values):
 def deviation(name, surface, levels=DENSE_LEVELS):
     """Signed distance (mm) from the object's dense surface to `surface`:
     positive = outside it. Returns percentiles."""
-    surf = _surface(surface)
     co, _ = dense(_object(name), levels)
+    return deviation_of(co, surface)
+
+
+def deviation_of(co, surface):
+    """deviation() for points already taken (a dense copy's vertices)."""
+    surf = _surface(surface)
     out = []
     for c in co:
         hit, normal, _, dist = surf.bvh.find_nearest(Vector(c))
@@ -184,6 +189,23 @@ def profile(name, view="top", bands=20, levels=DENSE_LEVELS, co=None):
         rows.append([round(f, 2), round(float(m[sel].max()) * 1000, 1),
                      round(float(m[mid].max()) * 1000, 1) if mid.any() else 0.0])
     return {"view": view, "extent_mm": round(float(top) * 2000, 1), "rows": rows}
+
+
+def profile_change(co0, co1, min_mm=0.05):
+    """How each view's outline changed between two dense copies: per view the
+    band that moved most, e.g. "top +0.4 mm at 0.85" (at 85% of the width).
+    Views that moved less than min_mm are left out."""
+    out = []
+    for view in VIEWS:
+        a = {f: m for f, m, _ in profile(None, view, co=co0)["rows"]}
+        b = {f: m for f, m, _ in profile(None, view, co=co1)["rows"]}
+        common = [f for f in a if f in b]
+        if not common:
+            continue
+        f = max(common, key=lambda k: abs(b[k] - a[k]))
+        if abs(b[f] - a[f]) >= min_mm:
+            out.append(f"{view} {b[f] - a[f]:+.1f} mm at {f:.2f}")
+    return out
 
 
 def superellipse_n(u, v):

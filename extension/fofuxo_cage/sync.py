@@ -374,7 +374,11 @@ def edit(name, *lines, **kwargs):
     if "\nops\n" not in text:
         raise SyncError(f"no ops section in {path}")
     path.write_text(text.replace("\nops\n", "\nops\n" + "".join(f"  {line}\n" for line in lines), 1), "utf-8")
-    return sync(name, **kwargs)
+    report = sync(name, **kwargs)
+    if report["action"] in ("error", "conflict"):
+        path.write_text(text, "utf-8")  # a refused edit leaves no lines behind for the next call
+        report["note"] = "the text is as before this call"
+    return report
 
 
 def solve_targets(obj, ids, frame, targets, tol=TARGET_TOL, steps=TARGET_STEPS):

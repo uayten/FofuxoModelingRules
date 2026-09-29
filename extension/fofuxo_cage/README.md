@@ -225,6 +225,22 @@ print(fofuxo_cage.mesh_help())               # the operators and their parameter
 | `vertices_smooth` | `mesh.vertices_smooth` | `factor` (0 to 1), `repeat`, `xaxis`, `yaxis`, `zaxis` |
 | `translate` | `transform.translate` | `w`, `d`, `h`: the move, in % of that frame axis or mm, + away from the mirror plane; `falloff`, `radius` (% of the frame's largest axis, or mm), `connected`: proportional editing, on when either of the first two is given |
 
+| `edge_slide` | `transform.edge_slide` | `factor` (-1 to 1, toward one neighbour loop or the other), `even`, `flipped`, `clamp` |
+| `vert_slide` | `transform.vert_slide` | `factor` (-1 to 1 along the vertex's edge), `even`, `flipped`, `clamp` |
+| `shrink_fatten` | `transform.shrink_fatten` | `value` (length, + outward along the normals), `even`; proportional editing |
+| `push_pull` | `transform.push_pull` | `value` (length, + away from the selection's center); proportional editing |
+| `tosphere` | `transform.tosphere` | `factor` (0 to 1); proportional editing |
+| `looptools_circle` | LoopTools circle | `fit` (best, inside), `flatten`, `influence` (0 to 100), `radius` (length), `regular`, `lock_x/y/z`. A closed loop only: a loop that ends on a mirror plane is half a circle, and circling it breaks the plane (refused) or the shape |
+| `looptools_relax` | LoopTools relax | `iterations` (1, 3, 5, 10, 25), `interpolation` (cubic, linear), `regular` |
+| `looptools_space` | LoopTools space | `influence` (0 to 100), `interpolation`, `lock_x/y/z` |
+| `symmetrize` | `mesh.symmetrize` | `direction` (negative_x ... positive_z), `threshold` (length): for a part modeled whole; on a mirrored half it crosses the plane and is refused |
+| `symmetry_snap` | `mesh.symmetry_snap` | `direction`, `threshold`, `factor`, `use_center` |
+
+The shaping ops are the ones that move a region the way a modeler would
+(the round-5 lesson: moving single vertices bends the cage). `translate`
+with `falloff` is the pull with falloff. `vertices_smooth_laplacian` was
+tried and left out: on a cage of 28 vertices it moves nothing on a part of
+the mesh and blows up the whole mesh at the strength that moves it.
 Values: on/off, numbers, enum names in any case, lengths with a unit (`2mm`)
 or in % of the frame.
 
@@ -244,13 +260,18 @@ copied before each op and restored if a check fails.
 
 **Report:** one line per op: vertices added and removed with their ids,
 faces before and after, `all quads`, how many vertices moved, how far the
-surface moved (max and mean, mm, on a dense copy) and the largest moves in
-percent of the frame:
+surface moved (max and mean, mm, on a dense copy), how each view's outline
+changed (the band that moved most, from `profile`: `top +0.6 mm at 0.60` is
+at 60% of the width) and the largest moves in percent of the frame:
 
 ```
-mesh translate seam d=+3% falloff=smooth radius=25%  (+0 v, -0 v, faces 19 -> 19, all quads,
-  moved 8 v, surface moved: max 0.34 mm, mean 0.08 mm; v32 d+3.0% v27 d+3.0% ... v21 d+0.5%)
+mesh shrink_fatten faces v14 v15 v26 v27 v20 v28 v22 v32 v33 value=0.6mm falloff=smooth radius=20%
+  (+0 v, -0 v, faces 19 -> 19, all quads, moved 14 v, surface moved: max 0.57 mm, mean 0.23 mm,
+  profile top +0.6 mm at 0.60, front +0.1 mm at 0.50, side +0.7 mm at 0.30; v22 d+3.6% ...)
 ```
+
+When `edit()` is refused (an error or a conflict), the text goes back to
+what it was before the call, so a refused line never runs with the next one.
 
 **Aliases** kept from before the mesh op: `dissolve <selection>` is
 `mesh dissolve_edges <selection>`; `cut <vA-vB> [N]` is `mesh loopcut_slide

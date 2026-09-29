@@ -106,7 +106,7 @@ The round-5 lesson: moving single vertices bends the cage; Blender's shaping
 tools move a region the way a modeler would.
 
 - **Pull with falloff:** `transform.translate` with proportional editing
-  (`mesh pull seam d +3% falloff=smooth radius=12%`). The seam-marked edges
+  (`mesh translate seam d=+3% falloff=smooth radius=12%`). The seam-marked edges
   of B1 round 6 are this case: pull toward -Y, neighbours follow.
 - **Slide along the surface:** `transform.edge_slide` / `vert_slide`: move a
   loop without changing the shape it rests on (to tighten a loop toward a
@@ -114,7 +114,8 @@ tools move a region the way a modeler would.
 - **Along the normals:** `transform.shrink_fatten` (inflate or thin a
   region evenly).
 - **Round:** `transform.tosphere`, LoopTools `circle` (a round section),
-  `relax`, `vertices_smooth`, `vertices_smooth_laplacian` (keep volume).
+  `relax`, `vertices_smooth` (`vertices_smooth_laplacian` was tried: see
+  the status below).
   The knot's roundness (D-051) would take one line.
 - **Symmetry:** `symmetrize`, `symmetry_snap` for parts modeled whole.
 - **Measured, then accepted:** each shaping op reports the section and
@@ -123,6 +124,24 @@ tools move a region the way a modeler would.
 - LoopTools is an extension, and part of the toolset (the modeler, step 1):
   `ensure_looptools()` enables it from disk or installs it from
   extensions.blender.org on a machine without it (done in step 1).
+
+**Status: done (2026-09-29).** In the whitelist: `translate` (the pull, with
+proportional editing), `edge_slide`, `vert_slide`, `shrink_fatten`,
+`push_pull`, `tosphere`, `vertices_smooth`, LoopTools `circle`, `relax`,
+`space`, `symmetrize`, `symmetry_snap`. Every op now reports how each view's
+outline changed (`profile top +0.6 mm at 0.60`). Found on the way:
+- `vertices_smooth_laplacian` left out: on a 28-vertex cage it moves
+  nothing on a part and blows the whole up at the strength that moves it;
+- LoopTools `circle` and `relax` are for loops off the mirror planes: a
+  loop that ends on a plane is half of one, and the check refuses the result;
+- `symmetrize` on a mirrored half crosses the plane and is refused: it is
+  for parts modeled whole;
+- a refused `edit()` puts the text back, so the refused line does not run
+  again with the next call.
+Example on a copy of the modeler's B1 edit: `mesh shrink_fatten faces v14
+v15 v26 v27 v20 v28 v22 v32 v33 value=0.6mm falloff=smooth radius=20%`
+makes the lobe's outer side 3.5% deeper; the section at w 850 goes from d
+837 to 875 and its exponent from 3.6 to 3.45 (rounder).
 
 ### Phase 3: building new parts
 
@@ -218,7 +237,7 @@ piece goes.
 |---|---|---|
 | 1 | Phase 0 + `seam` in the selection grammar (**done**) | unlocks every other operator; the round-6 seams need it |
 | 1b | The AI's own Blender and the human's review (D-058, **done**) | the AI tests every tool alone, the human reviews in a normal Blender |
-| 2 | Phase 2: pull with falloff, slide, smooth, to sphere | the next edits on B1 are shaping, not topology |
+| 2 | Phase 2: pull with falloff, slide, smooth, to sphere (**done**) | the next edits on B1 are shaping, not topology |
 | 3 | Part 2 items 1, 5, 7 (targets, poly budget, session brief) | cheap, and each round gets cheaper |
 | 4 | Phase 1 whitelist complete | covers the loop work of the next examples |
 | 5 | Phase 5 marks report and annotations | the modeler's way of pointing, made reliable |

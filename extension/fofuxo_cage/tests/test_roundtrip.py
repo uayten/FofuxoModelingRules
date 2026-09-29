@@ -553,6 +553,33 @@ def main():
     r = fc.edit("Laço", f"mesh vertices_smooth v{ids_list[pick]} factor=0.5 repeat=2")
     check(r["action"] == "pushed" and co_list(obj) != before and "moved 1 v" in r["ops"][0],
           f"vertices_smooth ({r['ops'][0]})")
+    print("11h. shaping ops (Phase 2)")
+    fa, fb = next((ids_list[e.vertices[0]], ids_list[e.vertices[1]]) for e in obj.data.edges
+                  if e.vertices[0] in free and e.vertices[1] in free)
+    quad = next(p for p in obj.data.polygons if all(i in free for i in p.vertices))
+    quad_ids = " ".join(f"v{ids_list[i]}" for i in quad.vertices)
+    for line in (f"mesh edge_slide loop v{fa}-v{fb} factor=0.2",
+                 f"mesh vert_slide v{ids_list[pick]} factor=0.2",
+                 f"mesh shrink_fatten faces {quad_ids} value=1%",
+                 f"mesh push_pull faces {quad_ids} value=0.3mm",
+                 f"mesh tosphere faces {quad_ids} factor=0.5 falloff=smooth radius=20%",
+                 f"mesh looptools_relax loop v{fa}-v{fb} iterations=3",
+                 f"mesh looptools_space loop v{fa}-v{fb}"):
+        r = fc.edit("Laço", line)
+        note = (r.get("ops") or [""])[0]
+        check(r["action"] == "pushed" and "moved" in note and "surface moved" in note,
+              f"{line.split()[1]} ({note.split('(', 1)[-1][:110] if note else r.get('error')})")
+        for v, co in zip(obj.data.vertices, shape0):
+            v.co = co
+        obj.data.update()
+        fc.sync("Laço")
+    r = fc.edit("Laço", "mesh translate all h=+3%")
+    check("profile front +" in r["ops"][0] or "profile side +" in r["ops"][0], f"the profiles' change reported ({r['ops'][0][-90:]})")
+    r = fc.edit("Laço", "mesh symmetrize all direction=negative_x")
+    check(r["action"] == "error" and "mirror plane" in r["error"]
+          and not fc.cage_format.parse(text_path.read_text("utf-8")).ops,
+          f"symmetrize on a mirrored half refused, the text left clean ({r.get('error', '')[:80]})")
+
     for v, co in zip(obj.data.vertices, shape0):  # back to the shape the later checks expect
         v.co = co
     obj.data.update()

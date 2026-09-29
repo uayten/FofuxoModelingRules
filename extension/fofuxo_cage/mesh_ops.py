@@ -146,9 +146,10 @@ def _value(param, raw, key, rna, frame):
         return v
     if unit == "enum":
         items = [i.identifier for i in rna.properties[param.prop].enum_items] if rna is not None else []
-        if raw.upper() not in items:
+        match = next((i for i in items if i.lower() == raw.lower()), None)  # LoopTools' items are lower case
+        if match is None:
             raise MeshOpError(f"{key} takes one of {[i.lower() for i in items]}, not {raw!r}")
-        return raw.upper()
+        return match
     if unit == "length":
         return _length(raw, key, frame)
     if unit == "axis":
@@ -159,10 +160,6 @@ def _value(param, raw, key, rna, frame):
 
 
 # --- the whitelist -------------------------------------------------------------
-
-def _falloff_rna():
-    return bpy.ops.transform.translate.get_rna_type()
-
 
 class Op:
     """A whitelisted operator. needs: the element kind the selection must
@@ -187,13 +184,19 @@ class Op:
 
     def kwargs(self, values, sel, obj):
         if self.build is not None:
-            return self.build(values, sel, obj)
-        out = dict(self.defaults)
-        out.update({self.params[k].prop: v for k, v in values.items()})
-        return out
+            return self.build(self, values, sel, obj)
+        return _plain(self, values, obj)
 
 
-def _loopcut(values, sel, obj):
+def _plain(op, values, obj):
+    """The operator's defaults and the parameters, lengths in Blender units."""
+    scale = max(obj.matrix_world.to_scale())
+    out = dict(op.defaults)
+    out.update({op.params[k].prop: v * scale if op.params[k].unit == "length" else v for k, v in values.items()})
+    return out
+
+
+def _loopcut(op, values, sel, obj):
     cut = {"number_cuts": values.get("number_cuts", 1), "smoothness": values.get("smoothness", 0.0),
            "falloff": values.get("falloff", "INVERSE_SQUARE"), "edge_index": sel["seed"], "object_index": 0}
     return {"MESH_OT_loopcut": cut, "TRANSFORM_OT_edge_slide": {"value": values.get("slide", 0.0)}}
@@ -210,10 +213,31 @@ def _proportional(values, obj):
             "use_proportional_projected": False}
 
 
-def _translate(values, sel, obj):
+def _translate(op, values, sel, obj):
     local = Vector([values.get(a, 0.0) for a in "wdh"])
     return {"value": tuple(obj.matrix_world.to_3x3() @ local), "orient_type": "GLOBAL",
             "mirror": False, "snap": False, **_proportional(values, obj)}
+
+
+def _transform(op, values, sel, obj):
+    """A transform operator: its parameters in Blender units, no snapping, and
+    proportional editing when the operator takes it."""
+    scale = max(obj.matrix_world.to_scale())
+    out = {"mirror": False, "snap": False, **op.defaults}
+    for key, v in values.items():
+        if key not in PROPORTIONAL:
+            p = op.params[key]
+            out[p.prop] = v * scale if p.unit == "length" else v
+    if "falloff" in op.params:
+        out.update(_proportional(values, obj))
+    return out
+
+
+def _circle(op, values, sel, obj):
+    out = _plain(op, values, obj)
+    if "radius" in values:
+        out["custom_radius"] = True
+    return out
 
 
 PROPORTIONAL = {
@@ -260,6 +284,65 @@ OPS = {
         "h": P("value", "axis", "move along h, as w"),
         **PROPORTIONAL,
     }, build=_translate),
+    # Phase 2: shaping a region the way a modeler would.
+    "edge_slide": Op("transform.edge_slide", "EDGE", "slide an edge loop along the faces beside it: the loop moves, "
+                                                     "the surface it rests on stays", {
+        "factor": P("value", "float", "how far, -1 to 1 (toward one neighbour loop or the other)"),
+        "even": P("use_even", "bool", "keep the loop's shape (even) instead of a fraction per edge"),
+        "flipped": P("flipped", "bool", "measure even from the other side"),
+        "clamp": P("use_clamp", "bool", "stay between the neighbour loops (default on)"),
+    }, build=_transform),
+    "vert_slide": Op("transform.vert_slide", "VERT", "slide vertices along one of their edges", {
+        "factor": P("value", "float", "how far along the edge, -1 to 1"),
+        "even": P("use_even", "bool", "even distance"),
+        "flipped": P("flipped", "bool", "measure from the other end"),
+        "clamp": P("use_clamp", "bool", "stay on the edge (default on)"),
+    }, build=_transform),
+    "shrink_fatten": Op("transform.shrink_fatten", "VERT", "move the selection along its normals: inflate (+) "
+                                                           "or thin (-) a region evenly", {
+        "value": P("value", "length", "how far, mm or % of the frame's largest axis; + outward"),
+        "even": P("use_even_offset", "bool", "keep the thickness even at corners"),
+        **PROPORTIONAL,
+    }, build=_transform),
+    "push_pull": Op("transform.push_pull", "VERT", "move the selection toward (-) or away from (+) its center", {
+        "value": P("value", "length", "how far, mm or % of the frame's largest axis"),
+        **PROPORTIONAL,
+    }, build=_transform),
+    "tosphere": Op("transform.tosphere", "VERT", "round the selection toward a sphere around its center", {
+        "factor": P("value", "factor", "0 (as is) to 1 (a sphere)"),
+        **PROPORTIONAL,
+    }, build=_transform),
+    "looptools_circle": Op("mesh.looptools_circle", "EDGE", "make a closed loop round (LoopTools): a round "
+                                                              "section; a loop cut by a mirror plane is not a circle", {
+        "fit": P("fit", "enum", "best (a circle through the loop) or inside"),
+        "flatten": P("flatten", "bool", "also flatten the loop onto a plane (default on)"),
+        "influence": P("influence", "float", "how far, 0 to 100 (%)"),
+        "radius": P("radius", "length", "a set radius, mm or %"),
+        "regular": P("regular", "bool", "spread the vertices evenly on the circle"),
+        "lock_x": P("lock_x", "bool", "keep X (w)"), "lock_y": P("lock_y", "bool", "keep Y (d)"),
+        "lock_z": P("lock_z", "bool", "keep Z (h)"),
+    }, build=_circle, looptools=True),
+    "looptools_relax": Op("mesh.looptools_relax", "EDGE", "even out a loop's curvature (LoopTools)", {
+        "iterations": P("iterations", "enum", "1, 3, 5, 10 or 25"),
+        "interpolation": P("interpolation", "enum", "cubic or linear"),
+        "regular": P("regular", "bool", "spread the vertices evenly"),
+    }, defaults={"input": "selected"}, looptools=True),
+    "looptools_space": Op("mesh.looptools_space", "EDGE", "space a loop's vertices evenly along it (LoopTools)", {
+        "influence": P("influence", "float", "how far, 0 to 100 (%)"),
+        "interpolation": P("interpolation", "enum", "cubic or linear"),
+        "lock_x": P("lock_x", "bool", "keep X (w)"), "lock_y": P("lock_y", "bool", "keep Y (d)"),
+        "lock_z": P("lock_z", "bool", "keep Z (h)"),
+    }, defaults={"input": "selected"}, looptools=True),
+    "symmetrize": Op("mesh.symmetrize", None, "copy one side of the mesh onto the other (a part modeled whole)", {
+        "direction": P("direction", "enum", "negative_x, positive_x, ... (the side copied from, to the other)"),
+        "threshold": P("threshold", "length", "merge distance on the plane"),
+    }),
+    "symmetry_snap": Op("mesh.symmetry_snap", None, "snap vertices to their mirror counterparts", {
+        "direction": P("direction", "enum", "negative_x, positive_x, ..."),
+        "threshold": P("threshold", "length", "how far a counterpart may be"),
+        "factor": P("factor", "factor", "0 to 1: how far toward the mirrored position"),
+        "use_center": P("use_center", "bool", "snap middle vertices onto the plane"),
+    }),
 }
 
 
@@ -412,8 +495,8 @@ class Runner:
         surface = None
         if measure:
             from . import shape
-            co, tris = shape.dense(obj)
-            surface = shape.Surface(co, tris, "before")
+            dense0, tris = shape.dense(obj)
+            surface = shape.Surface(dense0, tris, "before")
         backup = bmesh.new()
         backup.from_mesh(mesh)
         try:
@@ -453,10 +536,15 @@ class Runner:
             parts.append("nothing changed")
         if surface is not None:
             from . import shape
-            dev = shape.deviation(obj.name, surface)
+            dense1, _ = shape.dense(obj)
+            dev = shape.deviation_of(dense1, surface)
             if dev:
                 parts.append(f"surface moved: max {max(abs(dev['min']), abs(dev['max'])):.2f} mm, "
                              f"mean {dev['mean_abs']:.2f} mm")
+            # The outline from each view, measured: how a shaping op changed the form.
+            profiles = shape.profile_change(dense0, dense1)
+            if profiles:
+                parts.append("profile " + ", ".join(profiles))
         note = ", ".join(parts)
         if moved and self.frame is not None:
             note += "; " + " ".join(_deltas(self.frame, co0, moved))
