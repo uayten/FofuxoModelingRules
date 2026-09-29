@@ -335,6 +335,28 @@ discussed: section table with named forms (proposed), per-view pixel images
 (rejected as a write format: LLMs read pixel coordinates poorly, views do not
 link, no topology).
 
+### D-049: Cage text v1: vertices by id, grouped by loops (Provisional, T1)
+
+E1's `Laço` cage, measured: one patch of 28 vertices per 1/8, three corners on
+the mirror planes, one valence-3 pole; its Y-plane boundary is the front
+silhouette. A section table could not read that cage back, so the format
+stores vertices by stable id, groups them by edge loops for reading, shows
+where each vertex lands after Subdivision (under Mirror > Subdivision, base
+vertex i is evaluated vertex i: verified exactly), and changes topology only
+through ops. The modeler approved it as a first option that may not be the
+best: only use will tell. Tool: `extension/fofuxo_cage/`.
+
+### D-050: Cage values in permille of a fixed frame (Provisional, T1)
+
+The modeler's proposal: read vertices as fractions of the object's size ("at
+50% of the height") instead of positions, since the AI reads the concept in
+proportions. Refined together: the frame is a fixed box (the concept's size,
+or the evaluated result at the first sync), not the mesh's own bounding box,
+which would shift every value when one extreme vertex moves. Mirrored axes
+count from the plane with no sign; values are whole permille (1‰ ≈ 0.06 mm
+on the bow tie's width); axes are named w, d, h. Only mm stays in the size
+line. Concept bow tie on E1: 118.4 × 62.5 mm at the Image Empty's scale.
+
 ### D-040: Silhouette overlap as an audit check (Stated, T1)
 
 The auditor compares the evaluated mesh's front silhouette with the concept.

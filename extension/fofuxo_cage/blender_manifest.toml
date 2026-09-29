@@ -1,0 +1,15 @@
+schema_version = "1.0.0"
+
+id = "fofuxo_cage"
+version = "0.1.0"
+name = "Fofuxo Cage"
+tagline = "Text round trip of cage meshes between an AI and a human"
+maintainer = "Antônio Froz"
+type = "add-on"
+
+blender_version_min = "4.2.0"
+
+license = ["SPDX:GPL-3.0-or-later"]
+
+[permissions]
+files = "Read and write the cage text files next to the .blend"
