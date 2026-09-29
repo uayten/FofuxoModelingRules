@@ -304,6 +304,35 @@ run A's bow measured 14.0 × 10.0 cm by `obj.dimensions` and 13.5 × 7.1 cm by
 evaluated vertices. The earlier T1 claim that runs A and A2 misreported their
 sizes was wrong: their reports were right, the check was not.
 
+### D-045: Too many loops cost more than too few (Stated, T1)
+
+A3 (Opus) was the best result untouched, but as a start for manual editing A2
+was better: fixing A2 meant dragging vertices; fixing A3 meant cleaning excess
+loops and then dragging vertices anyway. Start lean.
+
+### D-046: The face budget mixes reference detail, overall shape and target (Stated, T1)
+
+No fixed number. The overall shape comes fast (the part the models reached);
+the inner fold that makes the shadow took the modeler the longest, and is the
+part no model reached (Opus scratched it).
+
+### D-047: AI-edited cages stay under 255 vertices (Stated, T1)
+
+The modeler's proposal for the next step: a cage small enough to edit without
+rewriting a whole Python script. Humans judge the cage and the subdivided
+result side by side, so the AI must see both.
+
+### D-048: The vertex-editing format is a separate project (Stated, T1)
+
+A text format the AI edits to place cage vertices, with a round trip: the AI
+writes, a plugin turns the text into mesh and render automatically, the AI
+reads the render and writes again; it may give up and say so; a human edits
+the vertices in Blender; the AI reads the result back and continues from the
+human's state. This skill will use that tool once it exists. Candidates
+discussed: section table with named forms (proposed), per-view pixel images
+(rejected as a write format: LLMs read pixel coordinates poorly, views do not
+link, no topology).
+
 ### D-040: Silhouette overlap as an audit check (Stated, T1)
 
 The auditor compares the evaluated mesh's front silhouette with the concept.
