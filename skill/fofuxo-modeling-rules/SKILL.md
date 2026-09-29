@@ -249,9 +249,11 @@ intentional; leave it.
   - side part mirrored across the body: origin on the part, Mirror with
     `mirror_object` = the body (E1: `Asas`, `Chifre`) — **Provisional**;
   - other cases: **[TBD]**.
-- Placement **[TBD — D-035]**: a standalone asset (prop, furniture) rests on
-  the ground (Z = 0); an accessory worn by a character sits where the concept
-  shows it (E1: the bow on the chest).
+- Placement: no ground rule; the mesh origin is not tied to Z = 0. Model
+  world-aligned (D-014), and **move, rotate and scale the concept's Image
+  Empty** until it sits in a good position to read against the model, e.g. an
+  asymmetric or tilted concept (D-035). Adjusting the reference is always
+  allowed; it never goes to render.
 
 ## Naming and collections
 

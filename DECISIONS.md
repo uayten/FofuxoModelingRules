@@ -1,6 +1,6 @@
 # Decisions
 
-Every rule in `SKILL.md` comes from here. Each entry says what the rule is, why
+Every rule in `skill/fofuxo-modeling-rules/SKILL.md` comes from here. Each entry says what the rule is, why
 (in the modeler's words when possible), and which example it came from.
 
 Status:
@@ -11,7 +11,7 @@ Status:
 
 Examples:
 
-- **E1**: `Laço.blend`, dragon + "Roupa Estadunidense" outfit. Focus: the bow tie
+- **E1**: `examples/01-laco/Laço.blend`, dragon + "Roupa Estadunidense" outfit. Focus: the bow tie
   (`Laço`, `Laço Nó`).
 
 Tests:
@@ -248,11 +248,13 @@ in the end. Small accessories: Subdivision level 1.
 On T1's run without rules (right shape, no modifiers), the modeler would cut
 the mesh in half and add a Mirror "with 100% certainty".
 
-### D-035: Placement: ground or where the concept shows it (Provisional, T1)
+### D-035: No ground rule; move the concept, not the model (Stated, T1)
 
-The draft rule "rests on Z = 0" put T1's bow on the floor. E1's bow sits on the
-chest. Proposed: standalone assets rest on the ground; accessories worn by a
-character sit where the concept shows them. Not yet confirmed.
+The draft rule "rests on Z = 0" put T1's first bow on the floor. It is dropped:
+the mesh origin is not tied to the ground. The AI models world-aligned (D-014)
+and may move, rotate and scale the concept's Image Empty until it sits in a
+good position to read against the model (e.g. an asymmetric or tilted
+concept).
 
 ### D-036: The concept's shading shows forms that need loops (Stated, T1)
 
