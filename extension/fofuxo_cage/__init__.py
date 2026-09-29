@@ -12,12 +12,13 @@ import sys
 
 import bpy
 
-from . import cage_format, concept, frame, mesh_io, mesh_ops, modifier_info, object_ops, ops, render, topology, validate
+from . import cage_format, concept, frame, mesh_io, mesh_ops, modifier_info, object_ops, ops, render, selection, topology, validate
 from . import lock as lock_mod
 from .concept import find_box, sample
 from .lock import LockError, lock, unlock
+from .mesh_ops import MeshOpError, ensure_looptools, help_text as mesh_help, select
 from .shape import ShapeError, capture, compare, deviation, fit, profile, rebuild, sections
-from .sync import SyncError, flip, set_frame, sync, views  # sync shadows the submodule name on purpose
+from .sync import SyncError, edit, flip, set_frame, sync, views  # sync shadows the submodule name on purpose
 
 ALIAS = "fofuxo_cage"
 
@@ -28,6 +29,18 @@ def register():
     sys.modules.setdefault(ALIAS, sys.modules[__name__])
     for cls in lock_mod.CLASSES:
         bpy.utils.register_class(cls)
+    if not bpy.app.background:
+        # LoopTools is part of the toolset (mesh op): enable or install it once
+        # Blender is up; an extension may not install another while registering.
+        bpy.app.timers.register(_looptools_later, first_interval=2.0)
+
+
+def _looptools_later():
+    try:
+        print("Fofuxo Cage:", ensure_looptools())
+    except Exception as e:  # never break the extension over it; the mesh op retries
+        print(f"Fofuxo Cage: LoopTools not ready: {e}")
+    return None
 
 
 def unregister():

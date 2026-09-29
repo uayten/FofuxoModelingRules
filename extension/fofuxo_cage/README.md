@@ -19,8 +19,12 @@ cage mesh (the base mesh under Subdivision):
   object (or all of Blender's input) while the AI edits.
 - Move the modeled part to the other side of a mirror plane (`flip`), e.g. to
   model on -Y, in front of its mirror copy.
-- Change topology from the text: remove an edge loop (`dissolve sharp`, the
-  loop the human marked) or cut a new one (`cut v25-v22`).
+- Run Blender's own mesh operators from one line of text, on a selection by
+  cage id: `mesh loopcut_slide ring v25-v22 number_cuts=2`, `mesh translate
+  seam d=+3% falloff=smooth radius=25%` (proportional editing). Walk loops,
+  rings and paths with Blender's selection tools; read the marks the human
+  left (`sharp`, `seam`, `crease`). Every op is tried on a copy first and
+  reported in numbers.
 - Measure in numbers instead of images: outlines from a view, cuts across
   the model with their roundness and waist, the distance to a captured
   surface or to a reference file; fit a cage to a surface; take another
@@ -32,6 +36,7 @@ cage mesh (the base mesh under Subdivision):
 
 - [Install](#install)
 - [Use](#use)
+- [Mesh op](#mesh-op)
 - [Shape tools](#shape-tools)
 - [View sheet](#view-sheet)
 - [Text format](#text-format)
@@ -127,6 +132,87 @@ result's normal at each vertex. A view is a preset (`front`, `back`, `left`,
 `right`, `top`, `bottom`), a `"yaw,pitch"` string or a `(yaw, pitch)` pair in
 degrees: yaw 0 looks from the front, 90 from the right; pitch > 0 looks from
 above. The default is 3/4 from above, 3/4 from below and 3/4 from the back.
+
+## Mesh op
+
+```
+mesh <operator> <selection> [key=value ...]
+```
+
+One line in the ops section (or `fofuxo_cage.edit(name, line)`, which writes
+the line and syncs) runs one of Blender's mesh operators:
+
+```python
+fofuxo_cage.edit("Laço", "mesh translate seam d=+3% falloff=smooth radius=25%")
+fofuxo_cage.edit("Laço", "mesh loopcut_slide ring v25-v22 number_cuts=2")
+fofuxo_cage.select("Laço", "loop v25-v22")   # preview: the ids a selection names
+print(fofuxo_cage.mesh_help())               # the operators and their parameters
+```
+
+**Selection** (shared with `crease` and `dissolve`; terms add up):
+
+| term | selects |
+|---|---|
+| `v25` | a vertex |
+| `v25-v22` | an edge |
+| `L3` | the edges between the consecutive vertices of a loop label |
+| `plane-x`, `plane-y`, `plane-z` | every edge on that mirror plane |
+| `sharp`, `seam`, `crease` | every edge the human marked so (crease: weight above 0) |
+| `loop vA-vB` | the edge loop through vA-vB (Blender's `select_edge_loop_multi`) |
+| `ring vA-vB` | the edge ring through vA-vB (`select_edge_ring_multi`) |
+| `path vA vB` | the shortest path of edges from vA to vB (`shortest_path_select`) |
+| `faces vA vB vC vD` | every face whose vertices are all in the list |
+| `all` | everything |
+
+**Operators** (the whitelist; anything else is refused with the list):
+
+| operator | Blender | parameters |
+|---|---|---|
+| `dissolve_edges` | `mesh.dissolve_edges` | `use_verts` (default on), `use_face_split` |
+| `dissolve_verts` | `mesh.dissolve_verts` | `use_face_split`, `use_boundary_tear` |
+| `delete_edgeloop` | `mesh.delete_edgeloop` | `use_face_split` |
+| `loopcut_slide` | `mesh.loopcut_slide` across the ring of the first edge named | `number_cuts` (1), `smoothness` (0), `falloff`, `slide` (-1 to 1, 0 = halfway) |
+| `subdivide_edgering` | `mesh.subdivide_edgering` on a selected ring | `number_cuts` (1), `smoothness` (0), `interpolation` |
+| `vertices_smooth` | `mesh.vertices_smooth` | `factor` (0 to 1), `repeat`, `xaxis`, `yaxis`, `zaxis` |
+| `translate` | `transform.translate` | `w`, `d`, `h`: the move, in % of that frame axis or mm, + away from the mirror plane; `falloff`, `radius` (% of the frame's largest axis, or mm), `connected`: proportional editing, on when either of the first two is given |
+
+Values: on/off, numbers, enum names in any case, lengths with a unit (`2mm`)
+or in % of the frame.
+
+**Running:** the object is locked for the op (which takes it out of the
+human's Edit Mode, keeping the edits), enters Edit Mode alone, the selection
+is set by id, the operator runs under a 3D View override (auto merge and
+snapping off), and the object leaves Edit Mode. The human's active object,
+selection, select mode and proportional settings come back after. Vertices
+the operator made get fresh ids (each vertex carries a random tag through the
+operator; one that comes back with an interpolated tag is new).
+
+**Safety:** the whole batch first runs on a temporary copy of the object; an
+op that fails there (Blender refuses, the selection is empty, or the result
+breaks a rule: quads under Subdivision, no loose geometry, mirror planes)
+refuses the batch and nothing is written. On the object itself the mesh is
+copied before each op and restored if a check fails.
+
+**Report:** one line per op: vertices added and removed with their ids,
+faces before and after, `all quads`, how many vertices moved, how far the
+surface moved (max and mean, mm, on a dense copy) and the largest moves in
+percent of the frame:
+
+```
+mesh translate seam d=+3% falloff=smooth radius=25%  (+0 v, -0 v, faces 19 -> 19, all quads,
+  moved 8 v, surface moved: max 0.34 mm, mean 0.08 mm; v32 d+3.0% v27 d+3.0% ... v21 d+0.5%)
+```
+
+**Aliases** kept from before the mesh op: `dissolve <selection>` is
+`mesh dissolve_edges <selection>`; `cut <vA-vB> [N]` is `mesh loopcut_slide
+vA-vB number_cuts=N`; `crease <selection> <value>` sets the crease weight of
+the selected edges.
+
+**LoopTools** is part of the toolset. `fofuxo_cage.ensure_looptools()`
+enables it when it is on disk in any extension repository, and otherwise
+installs it from extensions.blender.org (online access is turned on for the
+install and restored after). It runs a few seconds after the extension loads
+in a Blender with a window, and before any LoopTools op.
 
 ## Shape tools
 
@@ -305,23 +391,17 @@ forms
     mm is never read as meters;
   - `apply <modifier>`: destructive; only in the cases the skill allows. New
     vertices (e.g. from a Mirror) get fresh ids;
-  - `crease <edges> <value>`: edges as `vA-vB`, a loop label,
-    `plane-x` / `plane-y` / `plane-z` (every edge on that mirror plane) or
-    `sharp` (every edge marked sharp in Blender), e.g. `crease plane-x 1.0`
-    to pinch where a part enters another;
-  - `dissolve <edges>`: remove the edge loop those edges make; the faces on
-    both sides merge and the loop's vertices go away. A loop that turns at a
-    pole takes the pole's last spoke with it. `dissolve sharp` removes the
-    loop the human marked sharp. Refused when it would leave anything but
-    quads;
-  - `cut <vA-vB> [N]`: cut N new loops (default 1) across the edge ring that
-    holds edge vA-vB. New vertices get fresh ids; place them in a later sync
-    (or with `target` ops, once their ids are known).
+  - `crease <selection> <value>`: the crease weight of the selected edges
+    (the selection grammar of the [mesh op](#mesh-op)), e.g. `crease plane-x
+    1.0` to pinch where a part enters another;
+  - `mesh <operator> <selection> [key=value ...]`: one of Blender's mesh
+    operators; see [Mesh op](#mesh-op). `dissolve <selection>` and
+    `cut <vA-vB> [N]` are its aliases for removing and cutting loops.
 
   A place is `first`, `last`, a 1-based position, `before <modifier>` or
   `after <modifier>`; names with spaces go in quotes. The whole batch is
-  checked against a simulated stack first, so a bad op changes nothing, and a
-  batch may refer to a modifier it adds.
+  checked against a simulated stack first and its mesh ops run on a copy, so
+  a bad op changes nothing, and a batch may refer to a modifier it adds.
 - **forms**: free text kept verbatim across syncs: the shape map of D-043.
 
 ## Round trip rules
@@ -342,14 +422,15 @@ text edit over it.
 - Vertex ids live in the `fofuxo_cage_id` point attribute. Vertices new since
   the last sync (a loop cut, an extrude) get fresh ids; old ids never move to a
   new vertex.
-- Only vertex positions and that attribute are written. Modifiers, materials,
-  parent, crease, seams, UVs and vertex groups are not touched. Each push adds
-  an undo step.
+- A push writes only vertex positions and that attribute. Modifiers,
+  materials, parent, crease, seams, UVs and vertex groups change only through
+  an op that names them (`set`, `crease`, `mesh`...). Each push adds an undo
+  step.
 
 ## Limits of v0.1
 
-- Topology ops are `dissolve` and `cut` only; anything else comes from the
-  human in Blender or from `rebuild`, and the next sync pulls it. A mesh
+- Topology ops are the whitelist of the mesh op; anything else comes from
+  the human in Blender or from `rebuild`, and the next sync pulls it. A mesh
   rebuilt from scratch has lost its id attribute, so the pulled vertices take
   ids from their index.
 - Mirror planes are the object's local planes; a Mirror with a mirror object

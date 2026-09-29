@@ -6,32 +6,31 @@
     set <modifier> <property> <value>     change a setting, e.g. set Subdivision levels 2,
                                           set Mirror merge_threshold 0.1mm, set Mirror use_axis XZ
     apply <modifier>                      apply a modifier to the mesh (destructive)
-    crease <edges> <value>                e.g. crease plane-x 1.0, crease v2-v16 0.5
-    dissolve <edges>                      remove an edge loop (see mesh_ops)
+    crease <selection> <value>            e.g. crease plane-x 1.0, crease v2-v16 0.5
+    dissolve <selection>                  remove an edge loop (see mesh_ops)
     cut <vA-vB> [N]                       cut N loops across the ring of edge vA-vB
+    mesh <operator> <selection> [k=v ...] run a Blender mesh operator (see mesh_ops)
 
 Values: lengths with a unit (0.1mm, 2cm), angles with a unit (30deg), on/off,
 axis flags as letters (XZ, - for none), an object name or - for none.
 type: a Blender modifier type, e.g. SUBSURF, MIRROR, BEVEL, SOLIDIFY,
 WEIGHTED_NORMAL (case does not matter). place: first, last, a 1-based
 position, before <modifier> or after <modifier>. Names with spaces go in
-quotes. Edges: vA-vB pairs, loop labels (the edges between consecutive
-vertices of the loop), plane-x / plane-y / plane-z (every edge on that
-mirror plane) or sharp (every edge marked sharp in Blender).
+quotes. Selections: the grammar of selection.py (vN, vA-vB, loop labels,
+plane-x/y/z, sharp, seam, crease, loop vA-vB, ring vA-vB, path vA vB,
+faces ..., all).
 
 The whole batch is checked against a simulated stack before anything runs,
-so a bad op changes nothing.
+and its mesh ops run first on a temporary copy, so a bad op changes nothing.
 """
 
-import re
 import shlex
 
 import bpy
 
-from . import mesh_ops, modifier_info
+from . import mesh_ops, modifier_info, selection
 
-VERBS = ("add", "remove", "reorder", "set", "apply", "crease", "dissolve", "cut")
-CREASE_ATTR = "crease_edge"
+VERBS = ("add", "remove", "reorder", "set", "apply", "crease", "dissolve", "cut", "mesh")
 # Names Blender gives new modifiers (checked on 5.2), so a batch can refer to
 # a modifier it adds and new modifiers keep their default names (D-006).
 DEFAULT_NAMES = {
@@ -107,11 +106,15 @@ def _run(op, **kwargs):
         raise ObjectOpError(f"Blender refused {op.idname_py()} {kwargs}")
 
 
-def check_all(obj, lines, cage):
+def check_all(obj, lines, cage, frame=None, next_id=0):
     """Check a batch against a simulated stack; returns [(line, run)].
 
     Each run() applies its op and returns a short result for the report.
+    frame: for lengths in % of the frame; next_id: the first fresh vertex id.
     """
+    counter = {"next_id": next_id}
+    runners = []
+    applied = False
     names = [m.name for m in obj.modifiers]
     kinds = {m.name: m.type for m in obj.modifiers}
     types = _types()
@@ -191,30 +194,38 @@ def check_all(obj, lines, cage):
                 raise ObjectOpError(f"{line!r}: the crease value must be a number from 0 to 1") from None
             if not 0.0 <= value <= 1.0:
                 raise ObjectOpError(f"{line!r}: the crease value must be from 0 to 1")
-            pairs = _edge_pairs(args[:-1], cage, line)
-            out.append((line, lambda pairs=pairs, value=value: f"{_set_crease(obj, pairs, value)} edges"))
-        elif v == "dissolve":
-            if not args:
-                raise ObjectOpError(f"{line!r}: expected 'dissolve <edges>'")
-            specs = _edge_pairs(args, cage, line)
             try:
-                mesh_ops.check_dissolve(obj.data, specs)
+                terms = selection.parse(args[:-1], cage)
+                selection.check(obj.data, [t for t in terms if t[0] != "mark"])
+            except selection.SelectionError as e:
+                raise ObjectOpError(f"{line!r}: {e}") from None
+            out.append((line, lambda terms=terms, value=value: f"{_set_crease(obj, terms, value)} edges"))
+        elif v in ("mesh", "dissolve", "cut"):
+            try:
+                runner = mesh_ops.check_line(obj, v, args, line, cage, frame, counter)
             except mesh_ops.MeshOpError as e:
                 raise ObjectOpError(f"{line!r}: {e}") from None
-            out.append((line, lambda specs=specs: mesh_ops.dissolve(obj, specs)))
-        elif v == "cut":
-            m = re.fullmatch(r"v(\d+)-v(\d+)", args[0].lower()) if args else None
-            if not m or len(args) > 2 or (len(args) == 2 and not args[1].isdigit()):
-                raise ObjectOpError(f"{line!r}: expected 'cut <vA-vB> [N]'")
-            pair, cuts = (int(m[1]), int(m[2])), int(args[1]) if len(args) == 2 else 1
-            try:
-                mesh_ops.check_cut(obj.data, pair)
-            except mesh_ops.MeshOpError as e:
-                raise ObjectOpError(f"{line!r}: {e}") from None
-            out.append((line, lambda pair=pair, cuts=cuts: mesh_ops.cut(obj, pair, cuts)))
+            if not applied:  # the copy cannot follow an apply earlier in the batch
+                runners.append(runner)
+            out.append((line, _mesh_runner(runner)))
         else:
             raise ObjectOpError(f"{line!r}: unknown op")
+        applied = applied or v == "apply"
+    if runners:
+        try:
+            mesh_ops.precheck(obj, runners)
+        except mesh_ops.MeshOpError as e:
+            raise ObjectOpError(str(e)) from None
     return out
+
+
+def _mesh_runner(runner):
+    def run():
+        try:
+            return runner()
+        except (mesh_ops.MeshOpError, RuntimeError) as e:
+            raise ObjectOpError(str(e)) from None
+    return run
 
 
 def _adder(obj, kind, name, place):
@@ -267,34 +278,9 @@ def _applier(obj, name):
     return run
 
 
-def _edge_pairs(tokens, cage, line):
-    groups = {label.lower(): ids for label, ids in cage.groups if label}
-    out = []
-    for t in tokens:
-        low = t.lower()
-        m = re.fullmatch(r"v(\d+)-v(\d+)", low)
-        if m:
-            out.append(("pair", int(m[1]), int(m[2])))
-        elif low in groups:
-            ids = groups[low]
-            out += [("pair", a, b) for a, b in zip(ids, ids[1:])]
-        elif low in ("plane-x", "plane-y", "plane-z"):
-            out.append(("plane", "XYZ".index(low[-1].upper())))
-        elif low == "sharp":
-            out.append(("sharp",))
-        else:
-            raise ObjectOpError(f"{line!r}: unknown edges {t!r}; use vA-vB, a loop label, plane-x/y/z or sharp")
-    return out
-
-
-def _set_crease(obj, specs, value):
-    """Set the crease of the edges named by specs; returns how many changed."""
-    mesh = obj.data
-    attr = mesh.attributes.get(CREASE_ATTR)
-    if attr is None:
-        attr = mesh.attributes.new(CREASE_ATTR, "FLOAT", "EDGE")
-    edges = mesh_ops.edge_indices(mesh, specs)
-    for i in edges:
-        attr.data[i].value = value
-    mesh.update()
-    return len(edges)
+def _set_crease(obj, terms, value):
+    """Set the crease of the edges the selection names; returns how many."""
+    try:
+        return mesh_ops.crease(obj, terms, value)
+    except mesh_ops.MeshOpError as e:
+        raise ObjectOpError(str(e)) from None

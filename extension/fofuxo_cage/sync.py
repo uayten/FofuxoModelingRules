@@ -197,7 +197,8 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
     if cur is not None and cur.ops:
         object_lines = [line for line in cur.ops if object_ops.verb(line) in object_ops.VERBS]
         try:
-            appliers = object_ops.check_all(obj, object_lines, cur)
+            next_id = max([state["next_id"] if state else 0, *[i + 1 for i in ids]])
+            appliers = object_ops.check_all(obj, object_lines, cur, frame, next_id)
         except object_ops.ObjectOpError as e:
             report.update(action="error", error=f"ops: {e}. Nothing was written.")
             return report
@@ -320,7 +321,8 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
                 report.setdefault("ops", []).append(f"{line}  ({note})" if note else line)
             if appliers:
                 # apply can add vertices (e.g. Mirror): give them ids before writing.
-                ids, more = mesh_io.ensure_ids(obj.data, now["co"], max(now["co"], default=-1) + 1)
+                ids, more = mesh_io.ensure_ids(obj.data, now["co"], max([state["next_id"] if state else 0,
+                                                                        max(now["co"], default=-1) + 1]))
                 fresh = list(fresh) + more
             if targets:
                 _run_targets(obj, ids, frame, targets, target_lines, now, report)
@@ -354,6 +356,25 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
     if not verbose and "stack_changes" not in report:
         report.pop("modifiers", None)
     return report
+
+
+def edit(name, *lines, **kwargs):
+    """Write op lines into the text's ops section and sync: one call per edit,
+    e.g. edit("Laço", "mesh translate seam d=+2% falloff=smooth radius=20%").
+    Syncs once first if there is no text yet. kwargs go to sync."""
+    obj = bpy.data.objects.get(name)
+    if obj is None or obj.type != "MESH":
+        raise SyncError(f"no mesh object named {name!r}")
+    path = paths(obj)["text"]
+    if not path.exists():
+        first = sync(name, render=False)
+        if first["action"] in ("conflict", "error"):
+            return first
+    text = path.read_text("utf-8")
+    if "\nops\n" not in text:
+        raise SyncError(f"no ops section in {path}")
+    path.write_text(text.replace("\nops\n", "\nops\n" + "".join(f"  {line}\n" for line in lines), 1), "utf-8")
+    return sync(name, **kwargs)
 
 
 def solve_targets(obj, ids, frame, targets, tol=TARGET_TOL, steps=TARGET_STEPS):

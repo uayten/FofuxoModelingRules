@@ -438,6 +438,137 @@ def main():
           f"a dissolve that leaves n-gons refused ({r.get('error')})")
     text_path.write_text(text_path.read_text("utf-8").replace(f"  dissolve v{a}-v{b}\n", ""), "utf-8")
 
+    print("11g. the mesh op: Blender's operators on a selection by id")
+
+    def drop_ops():
+        text = text_path.read_text("utf-8")
+        head, _, tail = text.partition("\nops\n")
+        rest = tail.split("\n")
+        while rest and rest[0].startswith("  "):
+            rest.pop(0)
+        text_path.write_text(head + "\nops\n" + "\n".join(rest), "utf-8")
+
+    looptools = fc.ensure_looptools()
+    check(looptools["looptools"].startswith(("enabled", "installed")) and "looptools_circle" in dir(bpy.ops.mesh),
+          f"LoopTools ready ({looptools})")
+    before = co_list(obj)
+    add_ops(f"mesh no_such_op v{a}")
+    r = fc.sync("Laço")
+    check(r["action"] == "error" and "dissolve_edges" in r["error"] and co_list(obj) == before,
+          f"unknown operator refused with the list ({r.get('error', '')[:90]})")
+    drop_ops()
+    add_ops(f"mesh vertices_smooth v{a} strength=2")
+    r = fc.sync("Laço")
+    check(r["action"] == "error" and "factor" in r["error"], f"unknown parameter refused ({r.get('error')})")
+    drop_ops()
+    add_ops(f"mesh vertices_smooth v{a} factor=3")
+    r = fc.sync("Laço")
+    check(r["action"] == "error" and "0 to 1" in r["error"], f"a factor out of range refused ({r.get('error')})")
+    drop_ops()
+    seam = obj.data.attributes.get("uv_seam") or obj.data.attributes.new("uv_seam", "BOOLEAN", "EDGE")
+    seam.data.foreach_set("value", [False] * len(obj.data.edges))  # the example came with UV seams
+    add_ops("mesh dissolve_edges seam")
+    r = fc.sync("Laço")
+    check(r["action"] == "error" and "seam" in r["error"], f"no seam marked: refused ({r.get('error')})")
+    drop_ops()
+
+    ts = bpy.context.tool_settings
+    mode0, active0, hide0 = tuple(ts.mesh_select_mode), bpy.context.view_layer.objects.active, obj.hide_select
+    loop = fc.select("Laço", f"loop v{a}-v{b}")
+    ring = fc.select("Laço", f"ring v{a}-v{b}")
+    check(len(loop["edges"]) >= 2 and f"v{min(a, b)}-v{max(a, b)}" in loop["edges"],
+          f"loop walker through the edge ({loop['edges']})")
+    check(len(ring["edges"]) >= 2 and not set(ring["edges"]) & (set(loop["edges"]) - {f"v{min(a, b)}-v{max(a, b)}"}),
+          f"ring walker across it ({ring['edges']})")
+    far = loop["verts"][-1] if loop["verts"][-1] != f"v{a}" else loop["verts"][0]
+    path = fc.select("Laço", f"path v{a} {far}")
+    check(f"v{a}" in path["verts"] and far in path["verts"] and len(path["edges"]) >= 1,
+          f"path from v{a} to {far} ({path['edges']})")
+    face = fc.select("Laço", "faces " + " ".join(f"v{v}" for v in cage.faces[0]))
+    check(len(face.get("faces", [])) == 1, f"a face by its vertices ({face.get('faces')})")
+    check(tuple(ts.mesh_select_mode) == mode0 and bpy.context.view_layer.objects.active == active0
+          and obj.hide_select == hide0 and obj.mode == "OBJECT" and "fofuxo_cage_lock" not in obj,
+          "select left no trace: mode, active object, lock, select mode")
+
+    n0, f0 = len(obj.data.vertices), len(obj.data.polygons)
+    known = set(fc.cage_format.parse(text_path.read_text("utf-8")).verts)
+    add_ops(f"mesh loopcut_slide ring v{a}-v{b} number_cuts=2")
+    r = fc.sync("Laço")
+    n1 = len(obj.data.vertices)
+    note = (r.get("ops") or [""])[0]
+    check(r["action"] == "pushed" and n1 == n0 + 2 * len(ring["edges"]) and f"+{n1 - n0} v" in note
+          and "all quads" in note, f"loopcut_slide: 2 loops across the ring ({note})")
+    ids_now = fc.cage_format.parse(text_path.read_text("utf-8")).verts
+    new_ids = set(ids_now) - known
+    check(len(new_ids) == n1 - n0 and min(new_ids) > max(known), f"the new vertices got fresh ids ({sorted(new_ids)})")
+    check(fc.sync("Laço")["action"] == "unchanged", "the next sync is unchanged")
+    idx = index_of(obj)
+    seam = obj.data.attributes.get("uv_seam") or obj.data.attributes.new("uv_seam", "BOOLEAN", "EDGE")
+    new_idx = {idx[v] for v in new_ids}
+    vs = obj.data.vertices
+    links = {}
+    for e in obj.data.edges:
+        links.setdefault(e.vertices[0], []).append(e.vertices[1])
+        links.setdefault(e.vertices[1], []).append(e.vertices[0])
+
+    def rung(i, j):
+        # The edge between the two cuts runs along an old ring edge: in line
+        # with the old vertex next to one of its ends.
+        for p, q in ((i, j), (j, i)):
+            for o in links[p]:
+                if o not in new_idx:
+                    u, w = (vs[p].co - vs[o].co).normalized(), (vs[q].co - vs[p].co).normalized()
+                    if u.dot(w) > 0.999:
+                        return True
+        return False
+
+    for e in obj.data.edges:
+        i, j = e.vertices
+        seam.data[e.index].value = i in new_idx and j in new_idx and not rung(i, j)
+    fc.sync("Laço")
+    r = fc.edit("Laço", "mesh dissolve_edges seam")
+    check(r["action"] == "pushed" and len(obj.data.vertices) == n0 and len(obj.data.polygons) == f0,
+          f"edit(): the seam loops dissolved back to {n0} vertices ({r.get('ops') or r.get('error')})")
+
+    free = [i for i, v in enumerate(obj.data.vertices) if min(abs(c) for c in v.co) > 1e-4]
+    ids_list = [d.value for d in obj.data.attributes[fc.mesh_io.ID_ATTR].data]
+    pick = free[0]
+    nbr = next(e.vertices[1] if e.vertices[0] == pick else e.vertices[0] for e in obj.data.edges if pick in e.vertices)
+    on_plane = [i for i, v in enumerate(obj.data.vertices) if abs(v.co.y) < 1e-6]
+    fr = frame_of(obj)
+    shape0 = co_list(obj)
+    d0 = {i: fr.to_values(obj.data.vertices[i].co)[1] for i in (pick, nbr)}
+    r = fc.edit("Laço", f"mesh translate v{ids_list[pick]} d=+2% falloff=smooth radius=40%")
+    d1 = {i: fr.to_values(obj.data.vertices[i].co)[1] for i in (pick, nbr)}
+    note = (r.get("ops") or [""])[0]
+    check(r["action"] == "pushed" and abs(d1[pick] - d0[pick] - 20) < 0.01,
+          f"translate: the vertex moves d +2% ({d1[pick] - d0[pick]:.2f} permille; {note or r.get('error')})")
+    check(0 < abs(d1[nbr] - d0[nbr]) < 20, f"proportional editing: a neighbour follows less ({d1[nbr] - d0[nbr]:.2f})")
+    check(all(abs(obj.data.vertices[i].co.y) < 1e-6 for i in on_plane), "vertices on the Y plane stay on it")
+    check("surface moved: max" in note and f"v{ids_list[pick]} d+2.0%" in note, "reported: deviation and deltas")
+    before = co_list(obj)
+    r = fc.edit("Laço", f"mesh vertices_smooth v{ids_list[pick]} factor=0.5 repeat=2")
+    check(r["action"] == "pushed" and co_list(obj) != before and "moved 1 v" in r["ops"][0],
+          f"vertices_smooth ({r['ops'][0]})")
+    for v, co in zip(obj.data.vertices, shape0):  # back to the shape the later checks expect
+        v.co = co
+    obj.data.update()
+    check(fc.sync("Laço")["action"] == "pulled", "shape restored from Blender")
+    interior = next(i for i in free if len([e for e in obj.data.edges if i in e.vertices]) == 4)
+    before = co_list(obj)
+    r = fc.edit("Laço", f"mesh dissolve_verts v{ids_list[interior]}")
+    check(r["action"] == "error" and "quads" in r["error"] and co_list(obj) == before,
+          f"an op that leaves n-gons refused on the copy, nothing written ({r.get('error')})")
+    check(len([o for o in bpy.data.objects if o.name.startswith("Laço.")]) == 0, "the checking copy is gone")
+    drop_ops()
+    r = fc.edit("Laço", f"crease loop v{a}-v{b} 0.5")
+    edges = fc.cage_format.parse(text_path.read_text("utf-8")).edges
+    check(r["action"] == "pushed" and any(line.startswith("crease 0.5") and f"v{a}" in line for line in edges),
+          f"crease through a walker ({r.get('ops')})")
+    fc.edit("Laço", f"crease loop v{a}-v{b} 0")
+    check(tuple(ts.mesh_select_mode) == mode0 and obj.hide_select == hide0 and "fofuxo_cage_lock" not in obj,
+          "the mesh op left no trace: select mode, lock")
+
     print("11f. shape tools: capture, profile, sections, fit, compare, editability")
     cap = fc.capture("Laço", key="test")
     check(cap["verts"] > 1000, f"captured a dense surface ({cap['verts']} verts)")

@@ -72,6 +72,20 @@ mesh <operator> <selection> [key=value ...]
 - **Done when:** the round-5 loop removal and the test's loop cut pass
   through `mesh` with the same results.
 
+**Status: done (2026-09-29).** `mesh_ops.py` and `selection.py`; the
+whitelist starts with `dissolve_edges`, `dissolve_verts`, `delete_edgeloop`,
+`loopcut_slide`, `subdivide_edgering`, `vertices_smooth` and `translate`
+(with proportional editing). `fofuxo_cage.edit(name, line)` writes a line and
+syncs, `select(name, text)` previews a selection. Checked on copies:
+- the round-4 file (git `0d8e8b5`) with the loop v9 v8 v11 v12 v7 v22 v4
+  marked sharp: `mesh dissolve_edges sharp` gives exactly round 5's topology
+  (29 -> 22 vertices, 20 -> 14 quads). Blender's `dissolve_edges` already
+  takes the pole's last spoke, so the bmesh code for it went away;
+- the round-6 seams of `human/B1-human-edit.blend` (v15-v27, v23-v32,
+  v27-v32): `mesh translate seam d=+3% falloff=smooth radius=25%` moves them
+  3% deeper and 4 neighbours by 0.1-0.5%; surface max 0.34 mm, the section at
+  w 850 goes from d 837 to 852.
+
 ### Phase 1: topology
 
 | Need (seen in) | Blender operator |
@@ -106,8 +120,9 @@ tools move a region the way a modeler would.
 - **Measured, then accepted:** each shaping op reports the section and
   profile change it caused (`sections`, `profile`), so the AI checks the
   numbers, not a render.
-- LoopTools is an extension (installed here); the whitelist marks its
-  operators as optional and falls back to the built-in ones.
+- LoopTools is an extension, and part of the toolset (the modeler, step 1):
+  `ensure_looptools()` enables it from disk or installs it from
+  extensions.blender.org on a machine without it (done in step 1).
 
 ### Phase 3: building new parts
 
@@ -196,7 +211,7 @@ piece goes.
 
 | Step | What | Why first |
 |---|---|---|
-| 1 | Phase 0 + `seam` in the selection grammar | unlocks every other operator; the round-6 seams need it |
+| 1 | Phase 0 + `seam` in the selection grammar (**done**) | unlocks every other operator; the round-6 seams need it |
 | 2 | Phase 2: pull with falloff, slide, smooth, to sphere | the next edits on B1 are shaping, not topology |
 | 3 | Part 2 items 1, 5, 7 (targets, poly budget, session brief) | cheap, and each round gets cheaper |
 | 4 | Phase 1 whitelist complete | covers the loop work of the next examples |
