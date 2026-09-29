@@ -580,6 +580,26 @@ def main():
           and not fc.cage_format.parse(text_path.read_text("utf-8")).ops,
           f"symmetrize on a mirrored half refused, the text left clean ({r.get('error', '')[:80]})")
 
+    print("11i. the task's targets and poly budget")
+    target_md = Path(bpy.data.filepath).parent / "target.md"
+    n_faces = len(obj.data.polygons)
+    target_md.write_text("# Target\n\n```targets\n"
+                         f"Laço       faces              {n_faces - 5}  +20%  the modeler's wing\n"
+                         f"Laço       verts              {len(obj.data.vertices)}  +20%\n"
+                         "Laço       size w             63mm   5%    half the modeler's width (10e)\n"
+                         "Laço       section w 0.3 n    3.0    0.8\n"
+                         "Laço       profile top 0.75   99mm   1mm   far off on purpose\n"
+                         "\"Laço Nó\"  faces              5      +20%\n```\n", "utf-8")
+    r = fc.sync("Laço")
+    budget = [i for i in r["issues"] if i["code"] == "poly_budget"]
+    check(len(budget) == 1 and f"{n_faces} faces, over the target" in budget[0]["msg"],
+          f"the sync warns past the face budget ({budget[0]['msg'] if budget else r['issues']})")
+    tg = fc.check_targets("Laço")
+    check(tg["in"] == 3 and tg["out"] == 2 and tg["results"][-1].startswith("OUT Laço profile top 0.75"),
+          f"targets measured: {tg['in']} in, {tg['out']} out ({tg['results'][2]})")
+    target_md.unlink()
+    check(not [i for i in fc.sync("Laço")["issues"] if i["code"] == "poly_budget"], "no target.md, no budget")
+
     for v, co in zip(obj.data.vertices, shape0):  # back to the shape the later checks expect
         v.co = co
     obj.data.update()

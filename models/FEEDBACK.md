@@ -9,6 +9,7 @@ feedback on AI models. Every item is filtered before it becomes a rule.
 - [Feedback on an AI model](#feedback-on-an-ai-model)
 - [The filter](#the-filter)
 - [Where things go](#where-things-go)
+- [Session brief (NEXT.md)](#session-brief-nextmd)
 
 ## Interview on an example
 
@@ -68,3 +69,18 @@ not want as a rule; the AI misread; out of scope (rig, D-017).
 - `DECISIONS.md` keeps the why; `SKILL.md` keeps only the rule.
 - The catalog status of an example moves forward (`CATALOG.md`) as it is
   measured, interviewed and validated.
+
+## Session brief (NEXT.md)
+
+At the end of each session on a run, the AI writes `ai/<run>/NEXT.md`, and
+the next session reads it first, instead of the whole history (fewer tokens;
+`ROADMAP.md`, Part 2, item 7). The modeler may edit it. Sections:
+
+- **Open items**: the feedback items and questions still waiting, by number;
+- **Read first**: the files (and sections) the next session needs, nothing
+  more;
+- **Measures to trust**: the numbers already taken (`measures.json`, the
+  task's targets and their last result), so they are not measured again;
+- **Do not touch**: files that are records (the modeler's edits, a finished
+  round's `.blend`);
+- **Start**: the file to open and the first call.

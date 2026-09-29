@@ -191,12 +191,16 @@ to start from.
 What would improve the modeling as the modeler uses the tool, and where each
 piece goes.
 
-1. **Numeric targets per task.** Each form in the shape map gets a measure
+1. **(Done.) Numeric targets per task.** Each form in the shape map gets a measure
    and a target taken from the reference (waist ratio, section exponent,
    top profile, face count), written in the task's `target.md`. The AI
    stops when the numbers are in, and the modeler judges what numbers miss.
    Round 5 showed it works: the pinch went from "fraco" to the modeler's
    ratios in one pass once it was measured.
+   Done: a ` ```targets ` block in `target.md`, measured by
+   `check_targets()`. First result: E1 and round 5 pass all 15 lines, the
+   modeler's B1 edit fails 5 (fuller, wider): which reference the targets
+   follow is question H.
 2. **A technique library.** Named techniques in each example's `EXAMPLE.md`,
    one block each: when to use it, how (in cage words), how to measure it,
    the source. Already there in draft: the pinch into the knot, the heart
@@ -212,13 +216,14 @@ piece goes.
    candidates: the marks convention; "remove a loop that carries no shape,
    refit the volume" (D-045, second case); "a tight row next to a thin row
    keeps a pinch" (D-039, second case).
-5. **Poly budget warning.** The task's target holds the reference's face
+5. **(Done: `poly_budget` in every sync.) Poly budget warning.** The task's target holds the reference's face
    count; the sync warns past it (for example 20% over). "Muito high poly"
    would have been caught before the modeler saw it.
 6. **Editability measured.** `cage_dips` today; next, how even the cage's
    offset from the surface is, and pole count and placement against the
    reference's. The modeler's cage is the yardstick.
-7. **A session brief file per run.** `ai/<run>/NEXT.md`: open items, files
+7. **(Done: `models/FEEDBACK.md`, first one in `ai/B1-opus-cage/NEXT.md`.)
+   A session brief file per run.** `ai/<run>/NEXT.md`: open items, files
    to read, measures to trust, what not to touch. Written at the end of
    each session, read first in the next: fewer tokens than re-reading the
    history, and the modeler can edit it.
@@ -238,7 +243,7 @@ piece goes.
 | 1 | Phase 0 + `seam` in the selection grammar (**done**) | unlocks every other operator; the round-6 seams need it |
 | 1b | The AI's own Blender and the human's review (D-058, **done**) | the AI tests every tool alone, the human reviews in a normal Blender |
 | 2 | Phase 2: pull with falloff, slide, smooth, to sphere (**done**) | the next edits on B1 are shaping, not topology |
-| 3 | Part 2 items 1, 5, 7 (targets, poly budget, session brief) | cheap, and each round gets cheaper |
+| 3 | Part 2 items 1, 5, 7 (targets, poly budget, session brief) (**done**) | cheap, and each round gets cheaper |
 | 4 | Phase 1 whitelist complete | covers the loop work of the next examples |
 | 5 | Phase 5 marks report and annotations | the modeler's way of pointing, made reliable |
 | 6 | Part 2 items 2, 4, 6 (technique library, candidates, editability) | turns B1's lessons into reusable knowledge |

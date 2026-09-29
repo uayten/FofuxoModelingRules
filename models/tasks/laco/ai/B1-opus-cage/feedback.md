@@ -98,3 +98,9 @@ After round 5 (open, next session):
 Items 1 and 2 resolve through A and B: item 1 is D-051 applied to this
 concept; item 2 is the heart shape of B. When to apply (from C) is settled by
 item 6: case by case.
+
+After round 6 (open, next session):
+
+| # | Question | Modeler's answer | Class | Goes to |
+|---|---|---|---|---|
+| H | The task's numeric targets (`target.md`) come from E1. Round 5 is in on all 15 lines; the modeler's B1 edit, called "modelagem correta", is out on 5: height 69.8 mm (65.7 ±6%), depth 33.7 mm (28.9 ±15%), waist at w 0.3 0.37 (0.28 ±0.06), top profile at 0.75 16.7 mm (14.5 ±1.5), knot width 34.7 mm (29.7 ±12%). Should the targets follow the edit (fuller lobes, a wider knot), E1, or both with wider tolerances? | | | `target.md` |

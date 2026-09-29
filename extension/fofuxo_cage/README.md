@@ -41,6 +41,7 @@ cage mesh (the base mesh under Subdivision):
 - [Use](#use)
 - [Mesh op](#mesh-op)
 - [Shape tools](#shape-tools)
+  - [Task targets](#task-targets)
 - [View sheet](#view-sheet)
 - [Text format](#text-format)
 - [Round trip rules](#round-trip-rules)
@@ -327,6 +328,34 @@ fofuxo_cage.rebuild("Laço Nó", "Laço Nó", "knot", blend=".../human/Laço.ble
 
 `models/example/laco/measures.json` keeps these measures for the modeler's
 bow tie, so a session reads them instead of measuring again.
+
+### Task targets
+
+A task's `target.md` may hold a ` ```targets ` block: one line per measure
+with its target, tolerance and why (`models/tasks/laco/target.md`).
+
+```
+# object   measure              target   tolerance  why
+Laço       faces                19       +20%       the modeler's wing (D-045, D-046)
+Laço       size w               124.4mm  6%         the concept's width (D-056)
+Laço       section w 0.15 waist 0.32     0.06       the pinch into the knot (D-039)
+Laço       profile top 0.75     14.5mm   1.5mm      the lobe's half depth from the top
+"Laço Nó"  faces                5        +20%       the modeler's knot
+```
+
+- Measures: `faces`, `verts` (the base cage), `evaluated faces`,
+  `size w|d|h` (the full result, mm), `section <axis> <fraction> n|waist`
+  (a cut at a fraction of the part's half size from its mirror plane: the
+  superellipse exponent, or the waist ratio), `profile top|front|side
+  <fraction>` (mm). Tolerance: `5%`, `0.05` or `1mm` both ways, `+20%` only
+  above, `-10%` only below.
+- `fofuxo_cage.check_targets(names=None, path=None)` measures every line:
+  `{"in": 14, "out": 1, "results": ["in  Laço faces = 19 (target 19 +20%) ...",
+  "OUT Laço profile top 0.75 = 16.7mm (target 14.5 ±1.5mm) ..."]}`. The AI
+  stops when every line is in; the modeler judges what the numbers miss.
+- target.md is found by walking up from the .blend's folder. Every sync
+  checks the count lines (the poly budget) and warns `poly_budget` past
+  them: "muito high poly" is caught before the modeler sees it.
 
 A sync also checks editability: `cage_dips` warns about a vertex that sits
 inside the average of its neighbours while the surface over it bulges out

@@ -15,6 +15,7 @@ from . import cage_format, mesh_io, topology, validate
 from . import concept as concept_mod
 from .lock import took_over
 from . import object_ops
+from . import targets as targets_mod
 from . import ops as ops_mod
 from . import render as render_mod
 from .cage_format import CageFormatError, normalize_face
@@ -344,6 +345,7 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
     report["issues"] += validate.check_mesh(obj, ids, mirror, sides, has_subsurf)
     if has_subsurf and not any(i["level"] == "ERROR" for i in report["issues"]):
         report["issues"] += validate.check_editability(obj, ids, _depsgraph(), mirror)
+    report["issues"] += targets_mod.budget_issues(obj)  # the task's poly budget (target.md)
     if "Y" in mirror and sides.get("Y") == "+":
         report["issues"].append(_warn("modeled_behind", "the base mesh is on +Y, behind its mirror copy in the "
                                                         "front view: model on -Y (flip(name, 'd'), D-055)"))
