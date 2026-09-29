@@ -85,6 +85,8 @@ This is a project decision that goes beyond one `.blend`.
 ### D-009: Mirror on every axis the shape is symmetric in (Stated, E1)
 
 The bow is symmetric (or very close) in X, Y and Z, so only 1/8 is modeled.
+The knot is a box with Subdivision to round it; the Mirror avoids doing the same
+work several times on an object that is identical on many sides.
 
 ### D-010: The concept in the scene is the reference (Stated, E1)
 
@@ -148,8 +150,76 @@ middle of the wing. A leftover crease that does not change the form is fine.
 
 Where a body part passes through (sleeve, pants, boots, shirt), the opening is
 closed with extrude → scale inward → Merge at Center. The single center vertex
-is then pushed inside the sleeve/limb. Same logic in E1 on the knot and wing
-junction of the bow.
+is then pushed inside the sleeve/limb.
+With Subdivision, do not merge: Merge at Center makes a fan of triangles (see
+D-023). E1 `Laço`: the wing end is squeezed to ~1 mm inside the knot, not merged,
+so it stays all quads.
+
+### D-023: No triangles under Subdivision (Stated, E1)
+
+Subdivision turns triangles into bad normals and changes how shading renders
+around them. On any mesh with Subdivision, the ideal is zero triangles.
+
+### D-024: Model one unit, repeat with Array (Stated, E1)
+
+`Estrelas`: a single star with the ideal modeling, then an Array (Geometry
+Nodes). One object is easier to edit and to isolate with `/` than ten copies in a
+circular array that move the mesh around.
+
+### D-025: Thin parts get a small volume in games (Stated, E1)
+
+`Asas 2` / `Orelhas 2`: a small Solidify so the cartilage is not a flat plane.
+No volume is common in games, but engines render one side of the face by
+default; a flat plane would need a double-sided material. Visual choice here: a
+small volume looks better.
+
+### D-026: Shrinkwrap is a general fitting tool (Stated, E1)
+
+Uses: place a Lattice on a mesh, dress clothes over a character's body,
+retopology, align objects on top of others. Its options (wrap method, vertex
+group, offset) make each use a different setup.
+
+E1 `Fita Azul` (align on top of another object): the hat was resized and the
+ribbon no longer fit. Two Shrinkwraps, each limited to a vertex group (one ring
+of 14 vertices each):
+
+- `1.003`: Nearest Surface Point, group `Shrwink2`, keeps the ring on the hat's
+  surface (for when the top face of the hat changes size: more pyramid, inverted
+  pyramid, more cylindrical);
+- `2.003`: Nearest Vertex, group `ShrinkWrap`, snaps the ring onto the hat's
+  vertices (the ribbon's base vertices were extracted from the hat, see D-029).
+
+Both are disabled: the fit already happened, and they stay as a backup to redo
+it if the hat changes again (see D-006: disabled modifiers may be intentional).
+
+### D-027: On thin strips, the Bevel rounds the rim, not Subdivision (Stated, E1)
+
+`Fita Azul`: Subdivision → Solidify → Bevel (Weight). Subdivision works poorly on
+long rectangular faces. Subdivision over the thickness would round the rim, but
+it pulls the rounding toward the center of the mesh and fights the distance
+between the top and bottom faces. The Bevel after Solidify does the rounding.
+
+### D-030: Subdivision position: animation logic vs. modeling logic (Stated, E1)
+
+Animation logic puts Subdivision last. Modeling logic puts it where the final
+form needs it (E1 `Fita Azul`, `Chapéu`: before Solidify/Bevel). When the order
+changes nothing in the result, either is fine (E1 `Asas 2`: Solidify before
+Mirror, indifferent).
+
+### D-031: Check density with Optimal Display off (Stated, E1)
+
+Subdivision's "Optimal Display" hides the subdivided edges. To judge quad
+density in wireframe, turn it off.
+
+### D-028: Boolean is for hard-surface (Stated, E1)
+
+Windows, doors, shelves, straight props. Rarely used in organic character
+modeling. Its slot in the stack waits for a hard-surface example.
+
+### D-029: A part that sits on another starts from its faces (Stated, E1)
+
+`Fita Azul`: the base vertices of the ribbon were extracted from the hat, so the
+ribbon starts matching the surface it sits on.
 
 ---
 
@@ -184,11 +254,12 @@ Solidify.
 
 ## Coincidences
 
-- E1 `Fita Azul`: the Shrinkwraps have very specific functions, exclusive to this
-  model.
+- E1 `Fita Azul`: the specific Shrinkwrap settings are exclusive to this model;
+  the general idea is D-026.
+- E1 vertex group names `ShrinkWrap` / `Shrwink2`: working names, not a naming
+  rule.
 - E1 Mirror merge threshold: 0.0001 on `Laço`, 0.001 on `Laço Nó`.
 
 ## Open questions
 
-- Modifier stack order: to be rebuilt from E1 `Chapéu`, `Fita Azul`,
-  `Estrelas`, `Asas`.
+- Boolean slot in the stack: needs a hard-surface example.

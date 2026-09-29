@@ -97,7 +97,26 @@ Every task follows these steps, in order:
   (D-012). For thickness, prefer extruding the faces that need it (D-013).
 - **Close openings simply** where a body part passes through (sleeves, pants,
   boots, collars): extrude → scale inward → Merge at Center, then push the
-  center vertex inside the limb (D-022).
+  center vertex inside the limb. With Subdivision, do not merge (it makes
+  triangles): squeeze the opening closed and hide it inside the other part
+  (D-022).
+- **Model one unit, repeat with Array.** One well-modeled star + Array, not ten
+  copies (D-024).
+- **Thin parts get a small volume in games** (ears, wing membranes): engines
+  render one side of a face by default, so a flat plane would need a
+  double-sided material (D-025).
+- **A part that sits on another starts from its faces** (duplicate/extract
+  them), so it matches the surface from the start (D-029).
+- **Shrinkwrap fits one thing onto another**: clothes over a body, an object on
+  top of another, a Lattice onto a mesh, retopology. Limit each Shrinkwrap to a
+  vertex group and pick the wrap method per job (Nearest Surface Point to stay on
+  the surface, Nearest Vertex to snap onto vertices). Once the fit is done, a
+  Shrinkwrap may stay disabled as a backup to redo it (D-026).
+- **Thin strips** (ribbons, belts, straps): round the rim with a Bevel after
+  Solidify, not with Subdivision. Subdivision handles long rectangular faces
+  poorly and pulls the rounding toward the center (D-027).
+- **Boolean is for hard-surface** (windows, doors, shelves, straight props).
+  Avoid it on organic characters (D-028).
 - **Crease holds the silhouette** where Subdivision would pull the shape out of
   place, e.g. a part entering another (D-021).
 - **No loose geometry.** Vertices and edges without faces are an error; clean
@@ -105,16 +124,14 @@ Every task follows these steps, in order:
 - Seams: mark them only if they help you find your way in the mesh. On a model
   that already has textures, remove the seams you added when that edit is done
   (D-018).
-- Quads. Triangles and n-gons only on flat faces that no modifier deforms; the
-  auditor flags them as `WARN`.
+- Quads. **Under Subdivision, zero triangles**: they break the normals and
+  the shading around them (D-023). Without Subdivision, triangles and n-gons
+  only on flat faces; the auditor flags them as `WARN`, and as `ERROR` on a
+  mesh with Subdivision.
 - Regions that will deform (rigging, bending): extra edge loops. Spacing and
   count: **[TBD — from examples]**.
 
 ## Modifier stack
-
-> **Under revision.** The table below is the first draft. E1 shows stacks that
-> contradict it (`Chapéu`: Subdivision → Bevel → Smooth by Angle). It will be
-> rewritten from the examples.
 
 Confirmed so far:
 
@@ -122,27 +139,30 @@ Confirmed so far:
   multiplies the segments (5 set → 10 out) (D-016).
 - Subdivision: only **Levels Viewport** matters. The level comes from the density
   of the whole model and the target (game vs. animation). No part may have a
-  density out of proportion to the rest (D-015).
+  density out of proportion to the rest (D-015). To judge it in wireframe,
+  turn Subdivision's **Optimal Display off** (restore it afterwards) (D-031).
+- Subdivision position: last for meshes that will be animated; otherwise
+  where the final form needs it, as in the table below. When the order changes
+  nothing in the result, either is fine (D-030).
 
 Use only the modifiers the part needs, always in this order. Helpers insert
 each modifier at its canonical slot regardless of call order.
 
-| # | Modifier        | Use for                                   | Defaults (draft)                                  |
-|---|-----------------|-------------------------------------------|---------------------------------------------------|
-| 1 | Mirror          | symmetry                                  | axis X, clipping on, bisect on                    |
-| 2 | Array           | repetition                                | merge on; relative or object offset               |
-| 3 | Boolean         | holes and cuts from live cutters          | solver Exact                                      |
-| 4 | Bevel           | edge rounding / highlight                 | limit Angle 30°, segments 2–3, clamp overlap on   |
-| 5 | Solidify        | thickness of sheet parts                  | even thickness on                                 |
-| 6 | Subdivision     | smooth / soft forms                       | viewport 1–2, render 2                            |
-| 7 | Weighted Normal | shading of low-poly hard-surface          | keep sharp on, weight 50                          |
+**Order for modeling** (rebuilt from E1):
 
-Open points on the order **[TBD]**:
+| # | Modifier        | Use for                                        | E1 evidence                          |
+|---|-----------------|------------------------------------------------|--------------------------------------|
+| 1 | Shrinkwrap      | re-fit a part onto another (D-026)             | `Fita Azul`                          |
+| 2 | Mirror          | symmetry; clipping + merge on                  | `Laço`, `Chifre`, `Asas`             |
+| 3 | Boolean         | hard-surface holes and cuts (D-028)            | none yet (slot **[TBD]**)            |
+| 4 | Subdivision     | smooth / soft forms                            | `Laço`, `Chapéu`, `Fita Azul`        |
+| 5 | Solidify        | thickness, after Subdivision                   | `Fita Azul`                          |
+| 6 | Bevel           | localized (limit Weight); rounds strip rims    | `Chapéu`, `Fita Azul` (D-016, D-027) |
+| 7 | Array           | repeat the finished unit (D-024)               | `Estrelas` (Geometry Nodes Array)    |
+| 8 | Smooth by Angle | shading, last                                  | `Chapéu`, `Asas 2`                   |
 
-- Bevel before Solidify rounds only the outline of a sheet; Solidify before
-  Bevel also rounds the thickness rim. Which one is the default?
-- Subdivision and Weighted Normal usually belong to different pipelines (smooth
-  subd vs low-poly hard-surface). Can both appear on the same part?
+Weighted Normal: no evidence in E1 yet. Boolean slot: **[TBD]** until a
+hard-surface example.
 
 **Modifier names** stay at their defaults (D-006). Never leave an unused
 modifier behind: a second Armature created by re-parenting is removed, and the
