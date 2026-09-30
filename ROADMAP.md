@@ -230,7 +230,8 @@ piece goes.
    `check_targets()`. First result: E1 and round 5 pass all 15 lines, the
    modeler's B1 edit fails 5 (fuller, wider): which reference the targets
    follow is question H.
-2. **A technique library.** Named techniques in each example's `EXAMPLE.md`,
+2. **(Done: `models/TECHNIQUES.md` and the bow tie's "Techniques"; the
+   pointer in `SKILL.md` is proposed, not written.) A technique library.** Named techniques in each example's `EXAMPLE.md`,
    one block each: when to use it, how (in cage words), how to measure it,
    the source. Already there in draft: the pinch into the knot, the heart
    lobes, the 10-vertex round knot, the silhouette rim on the Y plane, the
@@ -239,7 +240,8 @@ piece goes.
 3. **Measures kept with each example** (`measures.json`, started for the
    bow tie): read instead of re-measured; each new example gets one when
    it is catalogued.
-4. **Rule candidates with a count.** A list in `DECISIONS.md` of items seen
+4. **(Done: "Rule candidates" in `DECISIONS.md`.) Rule candidates with a
+   count.** A list in `DECISIONS.md` of items seen
    once (Provisional) with the case that would promote them; at the end of
    a session the AI asks about the ones that got a second case. Today's
    candidates: the marks convention; "remove a loop that carries no shape,
@@ -248,7 +250,9 @@ piece goes.
 5. **(Done: `poly_budget` in every sync.) Poly budget warning.** The task's target holds the reference's face
    count; the sync warns past it (for example 20% over). "Muito high poly"
    would have been caught before the modeler saw it.
-6. **Editability measured.** `cage_dips` today; next, how even the cage's
+6. **(Done: `editability()`, E1's numbers in `measures.json`. The offset's
+   evenness is a number to compare, not a grade: E1 is less even than the
+   modeler's B1 edit.) Editability measured.** `cage_dips` today; next, how even the cage's
    offset from the surface is, and pole count and placement against the
    reference's. The modeler's cage is the yardstick.
 7. **(Done: `models/FEEDBACK.md`, first one in `ai/B1-opus-cage/NEXT.md`.)
@@ -275,5 +279,5 @@ piece goes.
 | 3 | Part 2 items 1, 5, 7 (targets, poly budget, session brief) (**done**) | cheap, and each round gets cheaper |
 | 4 | Phase 1 whitelist complete (**done**) | covers the loop work of the next examples |
 | 5 | Phase 5 marks report and annotations (**done**) | the modeler's way of pointing, made reliable |
-| 6 | Part 2 items 2, 4, 6 (technique library, candidates, editability) | turns B1's lessons into reusable knowledge |
+| 6 | Part 2 items 2, 4, 6 (technique library, candidates, editability) (**done**) | turns B1's lessons into reusable knowledge |
 | 7 | Phase 3 and a transfer test on a new task | when the bow tie is accepted |

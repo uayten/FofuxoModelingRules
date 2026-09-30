@@ -792,6 +792,12 @@ def main():
     check(abs(cmp_["size_mm"]["this"][0] - cmp_["size_mm"]["ref"][0] / 2) < 2.0 and "top" in cmp_,
           f"compare against the source file ({cmp_['size_mm']})")
     check("Laço.001" not in bpy.data.objects and set(bpy.data.libraries) == libs, "the borrowed reference is gone, library too")
+    ed = fc.editability("Laço", ref="Laço", blend=SOURCE)
+    this, ref_ = ed["this"], ed["ref"]
+    check(ref_["offset_mm"]["pinned"] > 0 and this["offset_mm"]["cv"] is not None and "3" in this["poles"]
+          and this["poles"]["3"]["count"] == ref_["poles"]["3"]["count"] == 1 and len(ed["compare"]) == 4
+          and "Laço.001" not in bpy.data.objects,
+          f"editability next to the modeler's cage ({ed['compare']})")
     r = fc.sync("Laço")
     check(not any(i["code"] == "cage_dips" for i in r["issues"]), "the modeler's wing has no dips")
     check("modifiers" not in r, "modifiers left out of a quiet report")

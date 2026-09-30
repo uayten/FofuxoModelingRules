@@ -15,6 +15,7 @@
 - [Whys](#whys)
 - [AI deductions](#ai-deductions)
 - [What the modeler's edit of B1 teaches](#what-the-modelers-edit-of-b1-teaches)
+- [Techniques](#techniques)
 - [Rules that came from it](#rules-that-came-from-it)
 - [Only this model](#only-this-model)
 - [Open questions](#open-questions)
@@ -141,6 +142,97 @@ on another heart-shaped (or lobed) part.
 4. Make lobes fuller than the front view suggests: half depth at the lobe's
    widest point about a quarter of the part's full height (16.8 of 69.8 mm),
    sections n 3.1-3.5.
+
+## Techniques
+
+One block each: when to use it, how in cage words (and the Fofuxo Cage line
+that does it), how to measure it, and where it comes from. Indexed in
+`models/TECHNIQUES.md`; a session reads a block only when the concept shows
+that form.
+
+### Pinch into a knot
+
+- **When:** a part enters another and the concept shows a fold or a
+  narrowing there (the wing into the knot).
+- **How:** the h 0 row stays within about 1.5 mm of the Y plane from the knot
+  to half the width; the row next to it sits close to it (a tight loop);
+  crease 1.0 on the X-plane column where the part enters (D-021). Tighten with
+  `mesh edge_slide loop vA-vB factor=...`.
+- **Measure:** `section w 0.15 waist` and `section w 0.3 waist` 0.28-0.32
+  (E1), opening to 0.6 at 55% and 0.85 past 70%.
+- **Source:** E1, B1 round 5. D-039 (Stated).
+
+### Spacing sets how round a turn is
+
+- **When:** a corner comes out too round or too sharp under Subdivision.
+- **How:** edges close together keep a turn crisp; spread apart, they round
+  it. `mesh edge_slide`, `mesh space_edge_loops_evenly ring vA-vB ring vB-vC`.
+- **Measure:** the section's exponent n (higher = boxier) and `profile`.
+- **Source:** B1 round 6 (the heart's lobe spread apart). D-039, the other
+  side (Stated).
+
+### Loops end on the outline's turning points
+
+- **When:** a lobed or heart-shaped silhouette.
+- **How:** mark the outline's corners, bulges and dents on the concept; give
+  each a rim vertex; every loop across the part ends on one. Count last.
+  B1's tip: upper corner, upper bulge, lower bulge, dent.
+- **Measure:** the view sheet's outline over the concept; `profile front`.
+- **Source:** the modeler's B1 edit. Item 25 (Provisional).
+
+### Fuller lobes than the front view asks for
+
+- **When:** round, soft parts seen from the front only.
+- **How:** push the lobe out in depth: `mesh shrink_fatten faces ...
+  value=0.6mm falloff=smooth radius=20%`, or pull its marked seams
+  (`mesh translate seam d=+3% falloff=smooth radius=25%`).
+- **Measure:** half depth at the lobe's widest point about a quarter of the
+  part's full height (16.8 of 69.8 mm); sections n 3.1-3.5.
+- **Source:** the modeler's B1 edit. AI deduction, pending.
+
+### A round part with few vertices
+
+- **When:** a knot, a button, a round section (D-051).
+- **How:** 10 cage vertices per 1/8 with Subdivision; `mesh tosphere` or
+  LoopTools relax on a closed loop off the mirror planes.
+- **Measure:** sections n about 2.5.
+- **Source:** E1's knot, B1 round 4. D-051 (Stated).
+
+### The silhouette rim on the Y plane
+
+- **When:** a mirrored part seen from the front.
+- **How:** the longest loop (L1) lies on the Y plane and draws the front
+  outline from the knot to the tip.
+- **Measure:** the view sheet's outline over the concept; `profile front`.
+- **Source:** E1. AI deduction, pending.
+
+### The cage bigger than the result
+
+- **When:** always with Subdivision: it pulls the surface in.
+- **How:** place the result, not the cage: `target v22 w 945 d 440`, or
+  `fit` to a captured surface.
+- **Measure:** `editability`: offset median 2.7 mm on E1's wing (2.2 on the
+  knot); the result 9 mm shorter and 11 mm thinner than the cage.
+- **Source:** E1. AI deduction, pending.
+
+### A lighter cage: remove a loop that carries no shape
+
+- **When:** the cage has more loops than the reference, or a loop gives the
+  outline nothing ("muito high poly").
+- **How:** the modeler marks it; `dissolve sharp` (or `mesh dissolve_edges
+  seam`); then `fit` to the surface captured before.
+- **Measure:** `poly_budget` in the sync; `deviation` within 0.3 mm of before.
+- **Source:** B1 round 5. D-045 (Stated).
+
+### A covering part hides the junction
+
+- **When:** one part sits over where two others meet (the knot over the
+  wings).
+- **How:** widen the covering part's front and back; keep its sides in where
+  the other part passes, so it hugs it (`cage_dips` flags those vertices: on
+  purpose).
+- **Measure:** the covering part's width against the concept's (+11% on B1).
+- **Source:** the modeler's B1 edit. D-057 (Provisional).
 
 ## Rules that came from it
 

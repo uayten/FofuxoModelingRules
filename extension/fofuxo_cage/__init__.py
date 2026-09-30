@@ -18,6 +18,7 @@ from . import cage_format, concept, frame, mesh_io, marks, mesh_ops, modifier_in
 from . import instance as instance_mod
 from . import lock as lock_mod
 from .concept import find_box, sample
+from .editability import editability
 from .instance import InstanceError, absorb, instance, is_ai, release_mcp, review, say
 from .lock import LockError, lock, unlock
 from .mesh_ops import MeshOpError, ensure_looptools, help_text as mesh_help, select

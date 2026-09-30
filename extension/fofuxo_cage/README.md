@@ -41,6 +41,7 @@ cage mesh (the base mesh under Subdivision):
 - [Use](#use)
 - [Mesh op](#mesh-op)
 - [Shape tools](#shape-tools)
+  - [Editability](#editability)
   - [Task targets](#task-targets)
 - [View sheet](#view-sheet)
 - [Text format](#text-format)
@@ -374,6 +375,21 @@ fofuxo_cage.rebuild("Laço Nó", "Laço Nó", "knot", blend=".../human/Laço.ble
 
 `models/example/laco/measures.json` keeps these measures for the modeler's
 bow tie, so a session reads them instead of measuring again.
+
+### Editability
+
+```python
+fofuxo_cage.editability("Laço", ref="Laço", blend="models/example/laco/human/Laço.blend")
+```
+
+How easy the cage is to edit, beside a reference cage (the modeler's is the
+yardstick): the offset from each cage vertex to where it lands (median,
+p10, p90 in mm, and `cv`, the spread over the mean, with vertices pinned by
+a crease 1 edge left out), the poles by valence and where they sit (fractions
+of the half size from the mirror planes), the `cage_dips` vertices, and the
+counts; `compare` puts them side by side. Numbers to compare, not a grade:
+the modeler's E1 wing has a less even margin (cv 0.60) than the modeler's
+B1 edit (0.36). E1's numbers are in `measures.json`.
 
 ### Task targets
 

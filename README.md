@@ -27,17 +27,19 @@ skill/fofuxo-modeling-rules/   the skill (SKILL.md)
 extension/fofuxo_cage/         Blender extension: cage text round trip
 models/
   FEEDBACK.md                  how interviews and feedback become rules
+  TECHNIQUES.md                named techniques, indexed by the form they answer
   example/
     CATALOG.md                 every example, its status, when to read it
     <name>/                    reference material
-      EXAMPLE.md               how it was made, whys, AI deductions
+      EXAMPLE.md               how it was made, whys, AI deductions, techniques
+      measures.json            the example's measures (shape, editability)
       concept.png              the concept image
       human/                   the modeler's files (E ids)
       ai/                      AI models accepted as references
   tasks/<name>/                a challenge and its attempts
     start.blend                starting file, concept packed
-    prompt.md, target.md       what is asked and what to reach
-    ai/                        AI runs (T ids), one folder per run
+    prompt.md, target.md       what is asked and what to reach (numeric targets)
+    ai/                        AI runs (T ids), one folder per run, each with NEXT.md
     human/                     human work on the task
 DECISIONS.md                   every rule, why, and where it came from
 ROADMAP.md                     what to build next: Blender's tools for the AI, learning from use

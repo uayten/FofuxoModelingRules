@@ -484,6 +484,25 @@ Solidify.
 
 ---
 
+## Rule candidates
+
+Items seen once (Provisional, AI deductions, proposals), each with the case
+that would promote it. At the end of a session the AI asks about the ones
+that got their second case (`ROADMAP.md`, Part 2, item 4).
+
+| Candidate | Cases so far | A second case would be | Status |
+|---|---|---|---|
+| Marks are messages: sharp or seam on a loop = "this loop"; crease = "pinch here" | sharp on a loop to remove (B1 round 5); seams on edges to pull (B1 round 6) | the modeler using a crease to say "pinch here" | proposed; the tool reports marks on every sync; to confirm |
+| A loop earns its place by ending on a turning point of the outline (item 25) | the modeler's B1 edit: the loop removed in round 5 went back in another place, ending on the rim | a second lobed or heart-shaped part where the modeler places loops the same way | Provisional |
+| Lobes fuller than the front view asks for: half depth about a quarter of the full height, sections n 3.1-3.5 | the modeler's B1 edit | the next lobed part (hat brim, skirt ruffle) | AI deduction, pending |
+| A covering part hides the junction it makes with another (D-057) | the B1 knot, 11% wider, sides kept in | a belt, button or ribbon over another part | Provisional |
+| The cage is bigger than the result on purpose (a steady margin) | E1 (wing 9 mm shorter and 11 mm thinner after Subdivision) | any other modeler cage: the margin measured with `editability` | AI deduction, pending |
+| Cage text by loops, permille of a frame (D-049, D-050) | T1, B1 | a second task run with the same format | Provisional (tool) |
+
+Promoted already: "a tight row next to a thin row keeps a pinch" (D-039,
+second case in B1 round 5); "remove a loop that carries no shape, refit the
+volume" (D-045, second case in B1 round 5).
+
 ## Coincidences
 
 - E1 `Fita Azul`: the specific Shrinkwrap settings are exclusive to this model;

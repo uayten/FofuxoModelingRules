@@ -9,6 +9,12 @@
       },
       "stack": ["Mirror (MIRROR)", "Subdivision (SUBSURF)"],
       "size_mm": [126.1, 28.9, 68.7],
+      "editability": {
+        "columns": "fofuxo_cage.editability: cage-to-result offset in mm (cv = std/mean over the vertices not pinned by a crease 1 edge), poles by valence and place (fractions of the half size), cage dips",
+        "offset_mm": {"median": 2.67, "p10": 1.14, "p90": 6.18, "cv": 0.6, "pinned": 6, "farthest": ["v1 6.4", "v16 6.3", "v19 6.3"], "closest": ["v23 0.4", "v26 0.8", "v22 1.1"]},
+        "poles": {"3": {"count": 1, "at": ["v10 at w0.61 d0.85 h0.92"]}},
+        "dips": []
+      },
       "profile_top": {
         "columns": "fraction of width, half depth, half depth at h 0 (mm)",
         "rows": [
@@ -110,6 +116,12 @@
       },
       "stack": ["Mirror (MIRROR)", "Subdivision (SUBSURF)"],
       "size_mm": [29.7, 26.0, 35.1],
+      "editability": {
+        "columns": "fofuxo_cage.editability: cage-to-result offset in mm (cv = std/mean over the vertices not pinned by a crease 1 edge), poles by valence and place (fractions of the half size), cage dips",
+        "offset_mm": {"median": 2.19, "p10": 0.22, "p90": 3.62, "cv": 0.73, "pinned": 0, "farthest": ["v0 4.3", "v7 3.5", "v4 3.4"], "closest": ["v9 0.1", "v8 0.2", "v5 0.5"]},
+        "poles": {"3": {"count": 1, "at": ["v0 at w0.96 d0.84 h0.77"]}},
+        "dips": ["v5"]
+      },
       "profile_top": {
         "columns": "fraction of width, half depth, half depth at h 0 (mm)",
         "rows": [
