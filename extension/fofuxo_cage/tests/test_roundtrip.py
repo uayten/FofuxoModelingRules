@@ -4,6 +4,7 @@ Run from the repository root:
     blender -b --factory-startup --python extension/fofuxo_cage/tests/test_roundtrip.py --python-exit-code 1
 """
 
+import faulthandler
 import json
 import os
 import re
@@ -16,6 +17,7 @@ from pathlib import Path
 
 import bmesh
 import bpy
+from mathutils import Vector
 
 HERE = Path(__file__).resolve()
 REPO = HERE.parents[3]
@@ -23,6 +25,8 @@ SOURCE = REPO / "models" / "example" / "laco" / "human" / "Laço.blend"
 sys.path.insert(0, str(HERE.parents[2]))
 
 import fofuxo_cage as fc  # noqa: E402
+
+faulthandler.enable()  # a crash inside Blender prints the Python line that caused it
 
 fc.register()  # operators and panel, as when Blender enables the extension
 SYNC = sys.modules["fofuxo_cage.sync"]
@@ -599,6 +603,90 @@ def main():
           f"targets measured: {tg['in']} in, {tg['out']} out ({tg['results'][2]})")
     target_md.unlink()
     check(not [i for i in fc.sync("Laço")["issues"] if i["code"] == "poly_budget"], "no target.md, no budget")
+
+    print("11j. the rest of the topology tools (Phase 1)")
+    faces0 = sorted(tuple(sorted(ids_list[i] for i in p.vertices)) for p in obj.data.polygons)
+    edges0 = {tuple(sorted((ids_list[a], ids_list[b]))) for a, b in (e.vertices for e in obj.data.edges)}
+    inner = next(e for e in obj.data.edges if e.vertices[0] in free and e.vertices[1] in free
+                 and sum(1 for p in obj.data.polygons if e.key in p.edge_keys) == 2)
+    ea, eb = ids_list[inner.vertices[0]], ids_list[inner.vertices[1]]
+    r = fc.edit("Laço", f"mesh edge_rotate v{ea}-v{eb}")
+    check(r["action"] == "pushed" and "all quads" in r["ops"][0], f"edge_rotate keeps quads ({r['ops'][0][:90]})")
+    after_rotate = sorted(tuple(sorted(ids_list[i] for i in p.vertices)) for p in obj.data.polygons)
+    check(after_rotate != faces0 and len(after_rotate) == len(faces0), "the faces around it changed")
+    edge_ids = lambda: {tuple(sorted((ids_list[a], ids_list[b]))) for a, b in (e.vertices for e in obj.data.edges)}
+    turned = next(iter(edge_ids() - edges0))
+    r = fc.edit("Laço", f"mesh edge_rotate v{turned[0]}-v{turned[1]} use_ccw=on")
+    back = sorted(tuple(sorted(ids_list[i] for i in p.vertices)) for p in obj.data.polygons)
+    check(r["action"] == "pushed" and back == faces0, "turned back counter-clockwise: the same faces again")
+    quad_verts = quad_ids.split()  # ids, not the polygon: a topology change frees Blender's arrays
+    r = fc.edit("Laço", f"mesh delete faces {' '.join(quad_verts)}")
+    check(r["action"] == "pushed" and len(obj.data.polygons) == len(faces0) - 1
+          and any(i["code"] == "open_edge" for i in r["issues"]), f"delete leaves a hole, warned ({r['ops'][0][:70]})")
+    r = fc.edit("Laço", f"mesh edge_face_add {' '.join(quad_verts)}")
+    check(r["action"] == "pushed" and len(obj.data.polygons) == len(faces0), "edge_face_add closes it")
+    for line in ("mesh remove_doubles all threshold=0.01mm", "mesh tris_convert_to_quads all",
+                 "mesh dissolve_limited all angle_limit=0.5deg delimit=seam,sharp"):
+        r = fc.edit("Laço", line)
+        check(r["action"] == "pushed" and "nothing changed" in r["ops"][0], f"{line.split()[1]}: nothing to do here")
+    for line in (f"mesh edge_collapse v{ea}-v{eb}", f"mesh merge v{ea} v{eb}", "mesh unsubdivide all",
+                 f"mesh offset_edge_loops_slide loop v{fa}-v{fb}"):
+        before = co_list(obj)
+        r = fc.edit("Laço", line)
+        ok = (r["action"] == "error" and "quads" in r["error"] and co_list(obj) == before) or \
+             (r["action"] == "pushed" and all(len(p.vertices) == 4 for p in obj.data.polygons))
+        check(ok, f"{line.split()[1]}: never leaves anything but quads ({r['action']}: "
+                  f"{(r.get('error') or r['ops'][0])[:80]})")
+        if r["action"] == "pushed":
+            check(False, f"{line.split()[1]} changed the cage; the later checks need it back")
+    r = fc.edit("Laço", "mesh dissolve_limited all angle_limit=5")
+    check(r["action"] == "error" and "angle" in r["error"], f"an angle needs a unit ({r.get('error')})")
+
+    # bridge and fill on a plain grid: a row of faces deleted, then closed again
+    bpy.ops.mesh.primitive_grid_add(x_subdivisions=4, y_subdivisions=4, size=0.04, location=(0, 0, 0.3))
+    grid = bpy.context.active_object
+    grid.name = "Grid"
+    fc.sync("Grid")
+    gids = [d.value for d in grid.data.attributes[fc.mesh_io.ID_ATTR].data]
+    ys = sorted({round(v.co.y, 6) for v in grid.data.vertices})
+    row = lambda y: sorted((v for v in grid.data.vertices if round(v.co.y, 6) == y), key=lambda v: v.co.x)
+    r1, r2 = row(ys[1]), row(ys[2])
+    strip = "faces " + " ".join(f"v{gids[v.index]}" for v in r1 + r2)
+    edges = " ".join(f"v{gids[a.index]}-v{gids[b.index]}" for r_ in (r1, r2) for a, b in zip(r_, r_[1:]))
+    gf0 = len(grid.data.polygons)
+    l2 = f"loop v{gids[row(ys[2])[1].index]}-v{gids[row(ys[2])[2].index]}"
+    across = [f"ring v{gids[row(ys[j])[1].index]}-v{gids[row(ys[j + 1])[1].index]}" for j in (1, 2)]
+    even = [tuple(v.co) for v in grid.data.vertices]
+    fc.edit("Grid", f"mesh translate {l2} d=+3mm")
+    r = fc.edit("Grid", f"mesh space_edge_loops_evenly {' '.join(across)}")
+    check(r["action"] == "pushed" and all((Vector(a) - v.co).length < 1e-6 for a, v in zip(even, grid.data.vertices)),
+          f"space_edge_loops_evenly puts a moved row back ({(r.get('ops') or [r.get('error')])[0][:70]})")
+    rd = fc.edit("Grid", f"mesh delete {strip}")
+    holes = len(grid.data.polygons)
+    r = fc.edit("Grid", f"mesh bridge_edge_loops {edges}")
+    check(r["action"] == "pushed" and len(grid.data.polygons) == gf0 and holes < gf0
+          and all(len(p.vertices) == 4 for p in grid.data.polygons),
+          f"bridge_edge_loops closes a deleted row ({holes} -> {len(grid.data.polygons)} faces)")
+    # fill_grid needs a closed border: a 2 x 2 block in the middle, its center vertex goes with it
+    by_pos = {(round(v.co.x, 6), round(v.co.y, 6)): gids[v.index] for v in grid.data.vertices}
+    xs = sorted({k[0] for k in by_pos})
+    ring = [(1, 1), (2, 1), (3, 1), (3, 2), (3, 3), (2, 3), (1, 3), (1, 2)]
+    ring_ids = [by_pos[(xs[i], ys[j])] for i, j in ring]
+    block = "faces " + " ".join(f"v{v}" for v in ring_ids + [by_pos[(xs[2], ys[2])]])
+    border = " ".join(f"v{a}-v{b}" for a, b in zip(ring_ids, ring_ids[1:] + ring_ids[:1]))
+    rd = fc.edit("Grid", f"mesh delete {block}")
+    holes, nv = len(grid.data.polygons), len(grid.data.vertices)
+    r = fc.edit("Grid", f"mesh fill_grid {border}")
+    check(r["action"] == "pushed" and holes == gf0 - 4 and len(grid.data.polygons) == gf0
+          and all(len(p.vertices) == 4 for p in grid.data.polygons),
+          f"fill_grid closes a deleted block ({holes} -> {len(grid.data.polygons)} faces, "
+          f"{nv} -> {len(grid.data.vertices)} verts; {rd.get('error') or ''}{r.get('error') or ''})")
+    nv, nf = len(grid.data.vertices), len(grid.data.polygons)
+    r = fc.edit("Grid", f"mesh subdivide_edgering ring v{by_pos[(xs[0], ys[0])]}-v{by_pos[(xs[1], ys[0])]}")
+    check(r["action"] == "pushed" and len(grid.data.vertices) == nv + 5 and len(grid.data.polygons) == nf + 4
+          and all(len(p.vertices) == 4 for p in grid.data.polygons),
+          f"subdivide_edgering cuts a column of quads ({(r.get('ops') or [r.get('error')])[0][:70]})")
+    bpy.data.objects.remove(grid)
 
     for v, co in zip(obj.data.vertices, shape0):  # back to the shape the later checks expect
         v.co = co

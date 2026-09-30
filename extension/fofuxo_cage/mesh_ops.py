@@ -26,6 +26,7 @@ LoopTools (circle, relax, space...) is a Blender extension; ensure_looptools
 enables it or installs it from extensions.blender.org.
 """
 
+import math
 import random
 import re
 from contextlib import contextmanager
@@ -145,11 +146,20 @@ def _value(param, raw, key, rna, frame):
             raise MeshOpError(f"{key} takes a factor from 0 to 1, not {raw!r}")
         return v
     if unit == "enum":
-        items = [i.identifier for i in rna.properties[param.prop].enum_items] if rna is not None else []
-        match = next((i for i in items if i.lower() == raw.lower()), None)  # LoopTools' items are lower case
-        if match is None:
-            raise MeshOpError(f"{key} takes one of {[i.lower() for i in items]}, not {raw!r}")
-        return match
+        prop = rna.properties[param.prop] if rna is not None else None
+        items = [i.identifier for i in prop.enum_items] if prop is not None else []
+        chosen = raw.split(",") if prop is not None and prop.is_enum_flag else [raw]
+        # Any case: LoopTools' items are lower case, Blender's upper.
+        matches = [next((i for i in items if i.lower() == c.lower()), None) for c in chosen]
+        if None in matches:
+            raise MeshOpError(f"{key} takes {'one or more of' if len(chosen) > 1 or prop.is_enum_flag else 'one of'} "
+                              f"{[i.lower() for i in items]}, not {raw!r}")
+        return set(matches) if prop.is_enum_flag else matches[0]
+    if unit == "angle":
+        m = re.fullmatch(r"([-+]?\d*\.?\d+)\s*(deg|rad)", raw.lower())
+        if not m:
+            raise MeshOpError(f"{key} is an angle: write it with a unit, e.g. 5deg, not {raw!r}")
+        return math.radians(float(m[1])) if m[2] == "deg" else float(m[1])
     if unit == "length":
         return _length(raw, key, frame)
     if unit == "axis":
@@ -343,7 +353,76 @@ OPS = {
         "factor": P("factor", "factor", "0 to 1: how far toward the mirrored position"),
         "use_center": P("use_center", "bool", "snap middle vertices onto the plane"),
     }),
+    # Phase 1: the rest of the topology tools.
+    "offset_edge_loops_slide": Op("mesh.offset_edge_loops_slide", "EDGE", "two new loops on either side of the "
+                                  "selected one, slid apart (a loop that ends on a mirror plane leaves triangles: "
+                                  "refused)", {
+        "cap": P("use_cap_endpoint", "bool", "extend the loop's open ends"),
+        "slide": P("value", "float", "how far apart, -1 to 1"),
+    }, build=lambda op, values, sel, obj: {
+        "MESH_OT_offset_edge_loops": {"use_cap_endpoint": values.get("cap", False)},
+        "TRANSFORM_OT_edge_slide": {"value": values.get("slide", 0.5)}},
+        rna=lambda: _merged_rna(bpy.ops.mesh.offset_edge_loops, bpy.ops.transform.edge_slide)),
+    "space_edge_loops_evenly": Op("mesh.space_edge_loops_evenly", "EDGE", "space parallel loops evenly between "
+                                  "the outer two: select the rings across them, two or more deep "
+                                  "(ring vA-vB ring vB-vC), not the loops", {
+        "factor": P("factor", "float", "how far toward even, 0 to 1"),
+        "interpolation": P("interpolation", "enum", "the curve along the ring"),
+        "lock": P("lock", "bool", "keep the loops' shape"),
+    }),
+    "dissolve_limited": Op("mesh.dissolve_limited", None, "dissolve edges and vertices flatter than an angle: a "
+                           "lighter cage where it carries no shape (D-045)", {
+        "angle_limit": P("angle_limit", "angle", "the angle below which an edge goes, e.g. 5deg"),
+        "use_dissolve_boundaries": P("use_dissolve_boundaries", "bool", "also on open borders"),
+        "delimit": P("delimit", "enum", "keep edges that are normal, material, seam, sharp or uv borders "
+                                        "(comma-separated)"),
+    }),
+    "unsubdivide": Op("mesh.unsubdivide", None, "undo a grid's subdivisions", {
+        "iterations": P("iterations", "int", "how many times (default 2)"),
+    }),
+    "edge_collapse": Op("mesh.edge_collapse", "EDGE", "collapse each edge to one vertex at its middle"),
+    "merge": Op("mesh.merge", "VERT", "merge the selected vertices into one", {
+        "type": P("type", "enum", "center, first, last or collapse (each connected group)"),
+    }, defaults={"type": "CENTER"}),
+    "remove_doubles": Op("mesh.remove_doubles", "VERT", "merge vertices closer than a distance (Merge by Distance)", {
+        "threshold": P("threshold", "length", "the distance, mm or %"),
+        "use_centroid": P("use_centroid", "bool", "merge at the middle"),
+        "use_unselected": P("use_unselected", "bool", "also onto unselected vertices"),
+    }),
+    "edge_rotate": Op("mesh.edge_rotate", "EDGE", "turn an edge inside its two faces (flow, poles)", {
+        "use_ccw": P("use_ccw", "bool", "counter-clockwise"),
+    }),
+    "tris_convert_to_quads": Op("mesh.tris_convert_to_quads", "FACE", "join triangles into quads", {
+        "face_threshold": P("face_threshold", "angle", "largest angle between the faces, e.g. 40deg"),
+        "shape_threshold": P("shape_threshold", "angle", "largest shape error, e.g. 40deg"),
+    }),
+    "bridge_edge_loops": Op("mesh.bridge_edge_loops", "EDGE", "join two open edge loops with faces (list their "
+                            "edges: a loop walker on a border takes the whole border)", {
+        "number_cuts": P("number_cuts", "int", "loops across the bridge"),
+        "interpolation": P("interpolation", "enum", "linear, path or surface"),
+        "smoothness": P("smoothness", "float", "bulge of the new loops"),
+        "twist_offset": P("twist_offset", "int", "turn one loop by this many edges"),
+        "use_merge": P("use_merge", "bool", "merge the loops instead of bridging"),
+        "merge_factor": P("merge_factor", "factor", "where they merge, 0 to 1"),
+    }),
+    "fill_grid": Op("mesh.fill_grid", "EDGE", "fill a hole with a grid of quads from its border edges", {
+        "span": P("span", "int", "rows of the grid"),
+        "offset": P("offset", "int", "turn the grid by this many edges"),
+        "use_interp_simple": P("use_interp_simple", "bool", "simple interpolation"),
+    }),
+    "delete": Op("mesh.delete", None, "delete the selection (a hole left for bridge_edge_loops or fill_grid)", {
+        "type": P("type", "enum", "face (default: the faces and what only they used), vert, edge, edge_face or "
+                                  "only_face (leaves their edges: loose, refused)"),
+    }, defaults={"type": "FACE"}),
+    "edge_face_add": Op("mesh.edge_face_add", "VERT", "a face from the selected vertices (the F key)"),
 }
+
+
+def _merged_rna(*ops):
+    """The properties of a macro's operators, for checking its parameters."""
+    class Merged:
+        properties = {p.identifier: p for op in ops for p in op.get_rna_type().properties}
+    return Merged
 
 
 def help_text():
@@ -389,7 +468,13 @@ def editing(obj, take_lock=True):
     ts = bpy.context.tool_settings
     saved = {k: tuple(v) if k == "mesh_select_mode" else v for k in _TOOL_SETTINGS for v in [getattr(ts, k)]}
     ctx = _view3d_context()
+    # Edit Mode operators skip an object outside the 3D View's Local View (the
+    # human's `/`): bring it in for the op.
+    space = ctx["area"].spaces.active if "area" in ctx else None
+    local = space is not None and space.local_view is not None and not obj.local_view_get(space)
     try:
+        if local:
+            obj.local_view_set(space, True)
         for o in selected:
             o.select_set(False)
         view_layer.objects.active = obj
@@ -410,6 +495,8 @@ def editing(obj, take_lock=True):
         for o in selected:
             if o.name in view_layer.objects:
                 o.select_set(True)
+        if local and obj.name in bpy.data.objects:
+            obj.local_view_set(space, False)
         if take_lock and not was_locked:
             unlock(obj.name)
 

@@ -236,6 +236,25 @@ print(fofuxo_cage.mesh_help())               # the operators and their parameter
 | `looptools_space` | LoopTools space | `influence` (0 to 100), `interpolation`, `lock_x/y/z` |
 | `symmetrize` | `mesh.symmetrize` | `direction` (negative_x ... positive_z), `threshold` (length): for a part modeled whole; on a mirrored half it crosses the plane and is refused |
 | `symmetry_snap` | `mesh.symmetry_snap` | `direction`, `threshold`, `factor`, `use_center` |
+| `offset_edge_loops_slide` | `mesh.offset_edge_loops_slide` | `cap`, `slide`: two loops beside the selected one. A loop that ends on a mirror plane leaves triangles (refused) |
+| `space_edge_loops_evenly` | `mesh.space_edge_loops_evenly` | `factor`, `interpolation`, `lock`. Select the rings across the loops, two or more deep (`ring vA-vB ring vB-vC`), not the loops |
+| `dissolve_limited` | `mesh.dissolve_limited` | `angle_limit` (an angle: `5deg`), `use_dissolve_boundaries`, `delimit` (`seam,sharp`...) |
+| `unsubdivide` | `mesh.unsubdivide` | `iterations` |
+| `edge_collapse` | `mesh.edge_collapse` | none |
+| `merge` | `mesh.merge` | `type` (center, first, last, collapse) |
+| `remove_doubles` | `mesh.remove_doubles` (Merge by Distance) | `threshold` (length), `use_centroid`, `use_unselected` |
+| `edge_rotate` | `mesh.edge_rotate` | `use_ccw` |
+| `tris_convert_to_quads` | `mesh.tris_convert_to_quads` | `face_threshold`, `shape_threshold` (angles) |
+| `bridge_edge_loops` | `mesh.bridge_edge_loops` | `number_cuts`, `interpolation`, `smoothness`, `twist_offset`, `use_merge`, `merge_factor`. List the two loops' edges: on a border, a `loop` walker takes the whole border |
+| `fill_grid` | `mesh.fill_grid` | `span`, `offset`, `use_interp_simple`: a hole with a closed border |
+| `delete` | `mesh.delete` | `type`: face (default: the faces and what only they used), vert, edge, edge_face, only_face (leaves loose edges: refused) |
+| `edge_face_add` | `mesh.edge_face_add` (F) | none |
+
+The ops that merge or collapse (`edge_collapse`, `merge`, `unsubdivide`)
+leave triangles on a quad cage and are refused there; they are for meshes
+that come with doubles or grids. A 3D View in Local View (the human's `/`)
+takes the object in for the op and lets it out after: Blender's Edit Mode
+operators skip an object outside it.
 
 The shaping ops are the ones that move a region the way a modeler would
 (the round-5 lesson: moving single vertices bends the cage). `translate`

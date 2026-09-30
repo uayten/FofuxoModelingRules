@@ -100,6 +100,21 @@ syncs, `select(name, text)` previews a selection. Checked on copies:
 
 Each row gets a line in the whitelist and a test on the E1 copy.
 
+**Status: done (2026-09-29).** Every row is in the whitelist, plus `delete`
+and `edge_face_add` (a hole to bridge or fill). Tests on the E1 copy and on
+a plain grid made in the test: `edge_rotate` there and back, `delete` +
+`edge_face_add`, `bridge_edge_loops` over a deleted row, `fill_grid` over a
+deleted block, `subdivide_edgering`, `space_edge_loops_evenly` putting a
+moved row back; `edge_collapse`, `merge`, `unsubdivide` and
+`offset_edge_loops_slide` on a loop that ends on a plane are refused (they
+leave triangles on the cage). Found on the way:
+- a 3D View left in Local View made every Edit Mode operator skip an object
+  outside it (`CANCELLED`, nothing said): the op now takes the object into
+  the Local View and lets it out after;
+- `space_edge_loops_evenly` works on the rings across the loops, two deep;
+- `bridge_edge_loops` needs the two loops' edges listed: on a border, the
+  `loop` walker selects the whole border.
+
 ### Phase 2: shaping without moving vertices one by one
 
 The round-5 lesson: moving single vertices bends the cage; Blender's shaping
@@ -244,7 +259,7 @@ piece goes.
 | 1b | The AI's own Blender and the human's review (D-058, **done**) | the AI tests every tool alone, the human reviews in a normal Blender |
 | 2 | Phase 2: pull with falloff, slide, smooth, to sphere (**done**) | the next edits on B1 are shaping, not topology |
 | 3 | Part 2 items 1, 5, 7 (targets, poly budget, session brief) (**done**) | cheap, and each round gets cheaper |
-| 4 | Phase 1 whitelist complete | covers the loop work of the next examples |
+| 4 | Phase 1 whitelist complete (**done**) | covers the loop work of the next examples |
 | 5 | Phase 5 marks report and annotations | the modeler's way of pointing, made reliable |
 | 6 | Part 2 items 2, 4, 6 (technique library, candidates, editability) | turns B1's lessons into reusable knowledge |
 | 7 | Phase 3 and a transfer test on a new task | when the bow tie is accepted |
