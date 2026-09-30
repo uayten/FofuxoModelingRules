@@ -84,6 +84,9 @@ Every task follows these steps, in order:
      narrows in depth toward the center, a figure eight, not a flat bar.
      Forms that look round in the concept get round cross-sections, not boxy
      ones (D-041).
+   - **techniques**: look each form up in `models/TECHNIQUES.md` and read
+     only its block (when, how, how to measure). One marked pending or
+     Provisional is a lead, not a rule: use it, measure it, say so.
 5. **Plan** — decompose the object into parts. For each part, write one line:
    base primitive, modifier stack, cutters, parametric or not. For anything
    with more than one part, show the plan in your reply before building.
@@ -141,6 +144,12 @@ Every task follows these steps, in order:
   on. A bow symmetric in X, Y and Z is modeled as 1/8 (D-009). Keep the merge
   distance very small (0.1 mm): vertices weld only when they touch the plane,
   never because they came close to it (D-054).
+- **Except cylinders: model them whole** and edit them with extrudes and
+  loops cut around them. Cutting a cylinder and mirroring it is tempting,
+  and wrong: a cap cut on the planes comes out uneven (D-061). A cap: keep
+  only the top's outer loop, extrude it, scale it in X and Y toward the
+  center, Grid Fill the new loop (D-061), the grid turned to run through the
+  loop's X and Y extremes, so the mesh could be cut in quarters (D-062).
 - **Model the half on -Y**, the side the front view sees, so the vertices you
   edit are in front of their mirror copy (D-055).
 - Closed volume vs. sheet + Solidify is an artistic choice: follow the concept

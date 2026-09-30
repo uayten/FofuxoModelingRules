@@ -173,7 +173,20 @@ to start from.
 - **Sit on another part (D-029):** extract faces of the body, then
   Shrinkwrap through the modifier ops already there.
 
-**Plan (step 7, not built; waiting for the modeler).** Every operator named
+**Status: built (2026-09-29), revised after the modeler's review of a top
+hat: cylinders whole (D-061), caps of quads, smaller vertex marks in the
+views, `h92%` accepted for planes.** `start_part()`, regions in the selection
+grammar (`h>900`, `faces h>900`), `resize` (added when the first real build
+needed it), the extrudes, `inset`, `spin`, `screw`, `bevel`, `bisect`,
+`separate`, `extract` and the `join` op; `rip` and `knife_project` left out
+(they need the mouse or the view). Tests: a quarter cylinder grown into a
+hat (inset, extrudes, bisect, resize, bevel), extract + Shrinkwrap onto it,
+separate and join back, spin and screw on a disc. A top hat from seven
+lines as a check of the toolkit (extension README, "New parts"); it found
+the missing `resize`, a region read as a parameter, and a bug in the text:
+wide values ran together (`500-10000`), now always spaced.
+
+**The plan it followed.** Every operator named
 here exists in Blender 5.2.2 with the parameters used (checked); whether each
 runs under the 3D View override is for the tests:
 
@@ -214,8 +227,8 @@ runs under the 3D View override is for the tests:
 
 - **Marks are messages.** Every sync lists the marks found since the last
   one (`sharp: v9-v8 ...`, `seam: v15-v27 v23-v27`) under `marks`, so none
-  goes unseen. Proposed meanings, to confirm with the modeler: sharp or
-  seam on a loop = "this loop" (remove, move, look), crease = "pinch here".
+  goes unseen. The meanings (D-060, confirmed): sharp or seam on a loop =
+  "this loop" (remove, move, look), crease = "pinch here".
   Once acted on, the AI clears its marks and says so.
 - **Annotations.** Strokes drawn with Blender's Annotate tool read as 3D
   points; the sync names the vertices under each stroke. A way to say
@@ -230,7 +243,7 @@ runs under the 3D View override is for the tests:
   low?`) that the AI asks about, as `models/FEEDBACK.md` describes.
 
 **Status: done (2026-09-29).** Every sync reports `marks` (new and cleared,
-with the proposed reading, still to confirm), `annotations` (new strokes and
+with their reading, D-060), `annotations` (new strokes and
 the vertices under each, a stroke on the mirror copy counting for the
 modeled side) and `blender_by_loop` (the human's moves grouped by loop: the
 tool gives the shape of an edit, the AI reads the intent and asks).
@@ -255,11 +268,10 @@ piece goes.
    Round 5 showed it works: the pinch went from "fraco" to the modeler's
    ratios in one pass once it was measured.
    Done: a ` ```targets ` block in `target.md`, measured by
-   `check_targets()`. First result: E1 and round 5 pass all 15 lines, the
-   modeler's B1 edit fails 5 (fuller, wider): which reference the targets
-   follow is question H.
-2. **(Done: `models/TECHNIQUES.md` and the bow tie's "Techniques"; the
-   pointer in `SKILL.md` is proposed, not written.) A technique library.** Named techniques in each example's `EXAMPLE.md`,
+   `check_targets()`. The targets come from the modeler's latest edit
+   (D-059): it passes 15/15, round 5 fails on what the modeler changed.
+2. **(Done: `models/TECHNIQUES.md`, the bow tie's "Techniques", and the
+   pointer in `SKILL.md`'s workflow, step 4.) A technique library.** Named techniques in each example's `EXAMPLE.md`,
    one block each: when to use it, how (in cage words), how to measure it,
    the source. Already there in draft: the pinch into the knot, the heart
    lobes, the 10-vertex round knot, the silhouette rim on the Y plane, the
@@ -331,4 +343,4 @@ piece goes.
 | 4 | Phase 1 whitelist complete (**done**) | covers the loop work of the next examples |
 | 5 | Phase 5 marks report and annotations (**done**) | the modeler's way of pointing, made reliable |
 | 6 | Part 2 items 2, 4, 6 (technique library, candidates, editability) (**done**) | turns B1's lessons into reusable knowledge |
-| 7 | Phase 3 and a transfer test on a new task | when the bow tie is accepted |
+| 7 | Phase 3 (**built**) and a transfer test on a new task (waiting for the part) | when the bow tie is accepted |

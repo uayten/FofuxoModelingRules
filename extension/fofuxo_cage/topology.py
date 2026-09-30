@@ -77,10 +77,10 @@ def group_vertices(loops, vert_count):
         for loop in loops:
             run, cur = [], []
             for i in loop + [None]:
-                if i is None or taken[i]:
+                if i is None or taken[i] or i in cur:  # a loop can pass a pole twice
                     if len(cur) > len(run):
                         run = cur
-                    cur = []
+                    cur = [] if i is None or taken[i] else [i]
                 else:
                     cur.append(i)
             if len(run) >= 2 and (best is None or len(run) > len(best)):

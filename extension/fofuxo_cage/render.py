@@ -161,8 +161,13 @@ class Panel:
         self.img[ys, xs] = self.img[ys, xs] * (1 - alpha) + color * alpha
 
     def dot(self, p, color, r=2):
-        x, y = int(p[0]), int(p[1])
-        self.img[max(y - r, 0):min(y + r + 1, PANEL), max(x - r, 0):min(x + r + 1, PANEL)] = color
+        """A filled disc (a square hid the edges around a vertex)."""
+        x, y = int(round(p[0])), int(round(p[1]))
+        for dy in range(-r, r + 1):
+            span = int((r * r + r - dy * dy) ** 0.5) if r * r + r >= dy * dy else -1
+            if span < 0 or not 0 <= y + dy < PANEL:
+                continue
+            self.img[y + dy, max(x - span, 0):min(x + span + 1, PANEL)] = color
 
     def text(self, x, y, s, color=TEXT, scale=2, bg=True):
         mask = font.text_mask(s, scale)
@@ -258,6 +263,64 @@ def _context_triangles(obj, depsgraph):
     return np.concatenate(tris) if tris else np.zeros((0, 3, 3))
 
 
+RING_MIN = 6  # vertices: a closed loop this long around an axis is drawn as one colored ring
+
+
+def _rings(mesh, base):
+    """Cylinder loops: closed edge loops that lie in a plane across one axis and
+    go once around it. [(vertex indices in order, axis index)]; the view draws
+    each as one colored ring with one label instead of a number per vertex.
+
+    Walked by direction, not by valence: at each vertex the loop takes the edge
+    in its plane that turns least (a grid fill leaves valence-3 corners on the
+    loop around it, where an edge loop would stop)."""
+    nbrs = [[] for _ in range(len(base))]
+    for e in mesh.edges:
+        a, b = e.vertices
+        nbrs[a].append(b)
+        nbrs[b].append(a)
+    tol = 1e-4  # m: a loop within 0.1 mm of its plane
+    seen_edges, out = set(), []
+    for e in mesh.edges:
+        a0, b0 = e.vertices
+        for k in range(3):
+            if abs(base[a0, k] - base[b0, k]) > tol or frozenset((a0, b0)) in seen_edges:
+                continue
+            plane = base[a0, k]
+            loop, prev, cur, turn = [a0], a0, b0, 0.0
+            others = [j for j in range(3) if j != k]
+            while cur != a0 and len(loop) <= 256:
+                d0 = base[cur, others] - base[prev, others]
+                best, best_ang = None, math.radians(70)
+                for nxt in nbrs[cur]:
+                    if nxt == prev or abs(base[nxt, k] - plane) > tol:
+                        continue
+                    d1 = base[nxt, others] - base[cur, others]
+                    if d1 @ d1 < 1e-12:  # straight across the plane: not a step around it
+                        continue
+                    ang = math.atan2(d0[0] * d1[1] - d0[1] * d1[0], d0 @ d1)
+                    if abs(ang) < abs(best_ang):
+                        best, best_ang = nxt, ang
+                if best is None or best in loop[1:]:
+                    break
+                loop.append(cur)
+                turn += best_ang
+                prev, cur = cur, best
+            if cur != a0 or len(loop) < RING_MIN:
+                continue
+            d0 = base[a0, others] - base[prev, others]  # the turn back at the start
+            d1 = base[loop[1], others] - base[a0, others]
+            turn += math.atan2(d0[0] * d1[1] - d0[1] * d1[0], d0 @ d1)
+            if abs(abs(turn) - 2 * math.pi) > 0.3:  # once around, not a figure eight
+                continue
+            edges = {frozenset(p) for p in zip(loop, loop[1:] + loop[:1])}
+            if edges & seen_edges:
+                continue
+            seen_edges |= edges
+            out.append((loop, k))
+    return out
+
+
 class Scene:
     """Everything a sheet draws for one object."""
 
@@ -281,6 +344,7 @@ class Scene:
         self.labels = [str(vid) for vid in ids]
         self.colors = _vertex_colors(len(self.base), faces, ids)
         self.poles = _pole_indices(obj, mirror)
+        self.rings = _rings(mesh, self.base)
         # The fit follows the object itself; the related parts may run off the panel.
         pts = [self.cage_co, ev_co]
         self.lo = np.min([p.min(axis=0) for p in pts], axis=0)
@@ -298,7 +362,7 @@ class Scene:
         span = max(max(np.ptp(corners @ c.right), np.ptp(corners @ c.up)) for c in cams)
         return (PANEL - 2 * PAD) * FILL / max(span, 1e-6), center
 
-    def cage_panel(self, cam, scale, center, frame=None, focus=None, ghost=False, normals=False):
+    def cage_panel(self, cam, scale, center, frame=None, focus=None, ghost=False, normals=False, ring_frame=None):
         """focus: ids to label (the others get small gray dots); ghost: fill
         only the base part and draw the mirror copies as faint wire; normals:
         a tick along the result's normal at each vertex."""
@@ -315,7 +379,30 @@ class Scene:
                 panel.line(px[a], px[b], WIRE)
         n = len(self.base)
         hidden = _hidden(panel, self.cage_co, n)
-        keep = list(range(n))
+        # Cylinder loops: colored edges and one label each; their vertices get no numbers.
+        in_ring = set()
+        ring_pts, ring_labels, ring_colors, ring_hidden = [], [], [], []
+        for r, (loop, k) in enumerate(self.rings):
+            color = PALETTE[r % len(PALETTE)]
+            for a, b in zip(loop, loop[1:] + loop[:1]):
+                for off in ((0, 0), (1, 0), (0, 1)):  # 2 px wide
+                    panel.line(px[a] + off, px[b] + off, color)
+            in_ring |= set(loop)
+            end = max(loop, key=lambda i: (px[i][0], -px[i][1]))  # the loop's point furthest right
+            fr = frame or ring_frame  # names a ring by where it sits, the way a region selects it
+            value = fr.axes[k].to_value(self.base[loop, k].mean()) if fr is not None else None
+            ring_pts.append(px[end])
+            ring_labels.append(f"{'wdh'[k]}{value:.0f}" if value is not None else f"ring{r + 1}")
+            ring_colors.append(color)
+            ring_hidden.append(bool(hidden[end]))
+        dup = {lab for lab in ring_labels if ring_labels.count(lab) > 1}  # one plane, two rings: add the width
+        for r, (loop, k) in enumerate(self.rings):
+            if ring_labels[r] in dup:
+                others = [j for j in range(3) if j != k]
+                co = self.base[loop][:, others]
+                width = 2 * np.linalg.norm(co - co.mean(axis=0), axis=1).mean() * 1000
+                ring_labels[r] += f" ({width:.0f}mm)"
+        keep = [i for i in range(n) if i not in in_ring]
         if focus is not None:
             wanted = {str(v).lstrip("v") for v in focus}
             keep = [i for i in range(n) if self.labels[i] in wanted]
@@ -328,16 +415,17 @@ class Scene:
                 panel.line(px[i], tip, self.colors[i])
         for i in keep:
             if i in self.poles:  # a pole gets a dark ring
-                panel.dot(px[i], WIRE, r=5)
-                panel.dot(px[i], WHITE, r=4)
+                panel.dot(px[i], WIRE, r=4)
+                panel.dot(px[i], WHITE, r=3)
             if hidden[i]:  # hollow: behind the model
-                panel.dot(px[i], self.colors[i], r=3)
+                panel.dot(px[i], self.colors[i], r=2)
                 panel.dot(px[i], WHITE, r=1)
             else:
-                panel.dot(px[i], WIRE, r=3)
-                panel.dot(px[i], self.colors[i], r=2)
-        _place_labels(panel, px[keep], [self.labels[i] for i in keep], mask,
-                      [self.colors[i] for i in keep], [hidden[i] for i in keep])
+                panel.dot(px[i], WIRE, r=2)
+                panel.dot(px[i], self.colors[i], r=1)
+        _place_labels(panel, np.array(list(px[keep]) + ring_pts),
+                      [self.labels[i] for i in keep] + ring_labels, mask,
+                      [self.colors[i] for i in keep] + ring_colors, [hidden[i] for i in keep] + ring_hidden)
         panel.text(4, 4, f"{cam.name}  cage")
         return panel
 
@@ -731,14 +819,16 @@ def render_sheet(obj, ids, depsgraph, frame, path, title="", concept=None):
     return _compose(rows, title, path)
 
 
-def render_views(obj, ids, depsgraph, views, path, title="", focus=None, ghost=False, normals=False):
+def render_views(obj, ids, depsgraph, views, path, title="", focus=None, ghost=False, normals=False,
+                 ring_frame=None):
     """Any cameras x cage / subdivision. views: preset names ("front", "top",
     "left"...), "yaw,pitch" strings or (yaw, pitch) pairs in degrees. focus,
     ghost, normals: see Scene.cage_panel."""
     scene = Scene(obj, ids, depsgraph)
     cams = [Camera(v) for v in views]
     scale, center = scene.fit(cams)
-    rows = [[scene.cage_panel(c, scale, center, focus=focus, ghost=ghost, normals=normals).img,
+    rows = [[scene.cage_panel(c, scale, center, focus=focus, ghost=ghost, normals=normals,
+                              ring_frame=ring_frame).img,
              scene.sub_panel(c, scale, center)[0].img] for c in cams]
     return _compose(rows, title, path)
 

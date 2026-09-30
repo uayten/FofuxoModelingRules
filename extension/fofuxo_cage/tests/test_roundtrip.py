@@ -918,6 +918,103 @@ def main():
     bpy.ops.wm.open_mainfile(filepath=ai_file)
     obj = bpy.data.objects["Laço"]
 
+    print("15. a part from nothing (Phase 3)")
+    quads = lambda o: all(len(p.vertices) == 4 for p in o.data.polygons)
+    r = fc.start_part("Box", "cube", size=(30, 20, 10), at=(0, 0, 700))
+    box = bpy.data.objects["Box"]
+    check(quads(box) and [m.type for m in box.modifiers] == ["MIRROR", "SUBSURF"]
+          and all(v.co.x <= 1e-9 and v.co.y <= 1e-9 for v in box.data.vertices) and "w X- 15.0" in r["frame"],
+          f"start_part: a cube cut to its X- Y- quarter and mirrored, framed ({r['count']}; {r['frame']})")
+    bpy.data.objects.remove(box)
+    r = fc.start_part("Hat", "cylinder", size=(60, 60, 40), vertices=16, at=(0, 0, 500))
+    hat = bpy.data.objects["Hat"]
+    rims = {}
+    for v in hat.data.vertices:
+        rims.setdefault(round(v.co.z, 5), []).append(round(Vector((v.co.x, v.co.y)).length, 5))
+    top = rims[max(rims)]
+    check(quads(hat) and [m.type for m in hat.modifiers] == ["SUBSURF"] and len(hat.data.vertices) == 82
+          and len(hat.data.polygons) == 80 and top.count(0.03) == 16 and top.count(0.024) == 16
+          and "w X -30.0..30.0" in r["frame"],
+          f"start_part: a whole cylinder (D-061), each cap a ring of quads at 80% and a grid ({r['count']})")
+    def cap_mirrors(o):  # both caps could be cut in quarters: every vertex has its X and Y mirror
+        zs = [v.co.z for v in o.data.vertices]
+        ok = True
+        for z in (max(zs), min(zs)):
+            cap = [v.co.copy() for v in o.data.vertices if abs(v.co.z - z) < 1e-6]
+            for p_ in cap:
+                for m in (Vector((-p_.x, p_.y, p_.z)), Vector((p_.x, -p_.y, p_.z))):
+                    ok &= any((m - q).length < 1e-5 for q in cap)
+        return ok
+
+    check(cap_mirrors(hat), "the caps' grids line up with the X and Y extremes (they could be mirrored)")
+    rings = fc.render._rings(hat.data, fc.render.np.array([tuple(v.co) for v in hat.data.vertices]))
+    check(len(rings) == 4 and all(len(loop) == 16 and k == 2 for loop, k in rings),
+          f"the view finds its 4 cylinder loops, drawn as rings ({[len(loop) for loop, _ in rings]})")
+    for line in ("mesh delete faces h>999",                  # the modeler's way to a cap: the rim stays,
+                 "mesh extrude_scale h>999 w=80% d=80%",     # E, S, Shift+Z: it closes toward the axis,
+                 "mesh fill_grid border span=4"):            # then Grid Fill on the new loop
+        r = fc.edit("Hat", line)
+        check(r["action"] == "pushed" and quads(hat), f"{line.split()[1]} ({(r.get('ops') or [r.get('error')])[0][:80]})")
+    check(len(hat.data.vertices) == 82 and len(hat.data.polygons) == 80 and cap_mirrors(hat),
+          "the top rebuilt the same way, its grid lined up with X and Y")
+    steps = (("mesh bisect all plane=h92%", "+16 v"),                  # a loop of quads at the top
+             ("mesh bisect all plane=h5%", "+16 v"),                   # the brim's thickness
+             ("mesh bisect all plane=h9%", "+16 v"),                   # where the crown starts
+             ("mesh inset faces h>999 thickness=10%", "+16 v"),        # a ring on the top
+             ("mesh extrude_region_move faces h>999 h=+3%", "v"),
+             ("mesh extrude_region_shrink_fatten faces h<1 value=1mm", "v"))
+    for line, added in steps:
+        r = fc.edit("Hat", line)
+        note = (r.get("ops") or [r.get("error")])[0]
+        check(r["action"] == "pushed" and added in note and "all quads" in note and quads(hat),
+              f"{line.split()[1]} {line.split()[-1]} ({note[:80]})")
+    rim = max(Vector((v.co.x, v.co.y)).length for v in hat.data.vertices if v.co.z < -0.0195)
+    r = fc.edit("Hat", "mesh resize h<60 w=200% d=200%")                # the brim, around the axis
+    rim2 = max(Vector((v.co.x, v.co.y)).length for v in hat.data.vertices if v.co.z < -0.0195)
+    check(r["action"] == "pushed" and abs(rim2 - rim * 2) < 1e-6 and quads(hat),
+          f"resize pulls the bottom out into a brim around the axis ({rim * 1000:.1f} -> {rim2 * 1000:.1f} mm)")
+    r = fc.edit("Hat", "mesh resize h<3 w=wide")
+    check(r["action"] == "error" and "percentage" in r["error"], "a scale needs a percentage")
+    before = len(hat.data.polygons)
+    r = fc.edit("Hat", "mesh bevel h>915 h<925 width=1mm segments=2")
+    check((r["action"] == "pushed" and len(hat.data.polygons) > before and quads(hat))
+          or (r["action"] == "error" and "quads" in r["error"]),
+          f"bevel the top loop: quads or refused ({(r.get('ops') or [r.get('error')])[0][:90]})")
+    r = fc.edit("Hat", "mesh bisect all plane=h500 clear=sideways")
+    check(r["action"] == "error" and "above, below or none" in r["error"], "a bad bisect side refused")
+    faces_a = len(hat.data.polygons)
+    r = fc.edit("Hat", "mesh extract faces h>700")
+    made = [o for o in bpy.data.objects if o.name.startswith("Hat.")]
+    check(r["action"] == "pushed" and len(made) == 1 and len(hat.data.polygons) == faces_a
+          and len(made[0].data.polygons) > 0 and "fofuxo_cage_lock" not in made[0]
+          and fc.mesh_ops.TAG_ATTR not in made[0].data.attributes,
+          f"extract copies the crown into a new object, the hat kept ({(r.get('ops') or [''])[0][-60:]})")
+    k = len(made[0].data.polygons)
+    part = made[0].name  # a part that sits on another (D-029): extracted, then shrinkwrapped onto it
+    r = fc.edit(part, "add SHRINKWRAP", "set Shrinkwrap target Hat")
+    check(r["action"] == "pushed" and made[0].modifiers["Shrinkwrap"].target == hat,
+          f"the extracted part shrinkwraps onto the hat ({r.get('ops') or r.get('error')})")
+    bpy.data.objects.remove(made[0])
+    r = fc.edit("Hat", "mesh separate faces h>700")
+    made = [o for o in bpy.data.objects if o.name.startswith("Hat.")]
+    check(r["action"] == "pushed" and len(made) == 1 and len(hat.data.polygons) == faces_a - k,
+          f"separate moves it out ({len(hat.data.polygons)} faces left)")
+    joined = made[0].name
+    r = fc.edit("Hat", f"join {joined}")
+    ids_now = fc.cage_format.parse(Path(r["text"]).read_text("utf-8")).verts
+    check(r["action"] == "pushed" and len(hat.data.polygons) == faces_a and joined not in bpy.data.objects
+          and len(ids_now) == len(hat.data.vertices), f"join brings it back, every vertex with its own id ({r.get('ops')})")
+    fc.start_part("Disc", "plane", size=(20, 20, 10), mirror="", at=(0, 0, 600))
+    disc = bpy.data.objects["Disc"]
+    r = fc.edit("Disc", "mesh spin v1-v3 steps=3 angle=90deg axis=w")
+    check(r["action"] == "pushed" and len(disc.data.polygons) == 4 and quads(disc),
+          f"spin sweeps an edge ({(r.get('ops') or [r.get('error')])[0][:70]})")
+    r = fc.edit("Disc", "mesh screw v0-v1 steps=4 turns=1 axis=h")
+    check(r["action"] == "pushed" and len(disc.data.polygons) == 8 and quads(disc),
+          f"screw ({(r.get('ops') or [r.get('error')])[0][:70]})")
+    for o in (hat, disc):
+        bpy.data.objects.remove(o)
+
     print(f"\nsidecar: {text_path.parent}")
     print(text_path.read_text("utf-8")[:2400])
 

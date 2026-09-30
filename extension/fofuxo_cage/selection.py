@@ -6,12 +6,16 @@
                          between its consecutive vertices
     plane-x/y/z          every edge on that mirror plane
     sharp, seam, crease  every edge with that mark (crease: weight above 0)
+    border               every open edge (one face only): a hole's rim
     loop vA-vB           the edge loop through edge vA-vB (Blender's
                          select_edge_loop_multi)
     ring vA-vB           the edge ring through edge vA-vB (select_edge_ring_multi)
     path vA vB           the shortest path of edges from vA to vB
                          (shortest_path_select)
     faces vA vB vC ...   every face whose vertices are all in the list
+    h>900 w<500          the vertices whose base value (permille of the frame)
+                         meets every comparison in a row (<, <=, >, >=)
+    faces h>900          every face whose vertices all meet them
     all                  everything
 
 Terms add up. parse() and check() run in Object Mode before anything
@@ -30,6 +34,7 @@ ID_ATTR = "fofuxo_cage_id"
 MARKS = {"sharp": "sharp_edge", "seam": "uv_seam", "crease": "crease_edge"}
 _VID = re.compile(r"v(\d+)")
 _PAIR = re.compile(r"v(\d+)-v(\d+)")
+_CMP = re.compile(r"([wdh])(<=|>=|<|>)(-?\d+(?:\.\d+)?)")
 
 
 class SelectionError(ValueError):
@@ -62,6 +67,10 @@ def parse(tokens, cage):
             terms.append(("path", int(ends[0][1]), int(ends[1][1])))
             i += 3
             continue
+        if t == "faces" and i + 1 < len(toks) and _CMP.fullmatch(toks[i + 1]):
+            i, region = _region(toks, i + 1)
+            terms.append(("faces_where", region))
+            continue
         if t == "faces":
             ids = []
             i += 1
@@ -69,8 +78,12 @@ def parse(tokens, cage):
                 ids.append(int(toks[i][1:]))
                 i += 1
             if len(ids) < 3:
-                raise SelectionError("'faces' takes the vertices of the faces: faces vA vB vC vD")
+                raise SelectionError("'faces' takes the vertices of the faces: faces vA vB vC vD, or faces h>900")
             terms.append(("faces", tuple(ids)))
+            continue
+        if _CMP.fullmatch(t):
+            i, region = _region(toks, i)
+            terms.append(("where", region))
             continue
         m = _PAIR.fullmatch(t)
         if m:
@@ -86,13 +99,33 @@ def parse(tokens, cage):
             terms.append(("mark", t))
         elif t == "all":
             terms.append(("all",))
+        elif t == "border":
+            terms.append(("border",))
         else:
             raise SelectionError(f"unknown selection {tokens[i]!r}; use vN, vA-vB, a loop label, plane-x/y/z, "
-                                 "sharp, seam, crease, loop vA-vB, ring vA-vB, path vA vB, faces vA vB vC vD or all")
+                                 "sharp, seam, crease, loop vA-vB, ring vA-vB, path vA vB, faces vA vB vC vD, "
+                                 "h>900 (a region), faces h>900, border or all")
         i += 1
     if not terms:
         raise SelectionError("nothing selected")
     return terms
+
+
+def _region(toks, i):
+    """Consecutive comparisons from toks[i]: ((axis index, op, value), ...)."""
+    out = []
+    while i < len(toks) and _CMP.fullmatch(toks[i]):
+        m = _CMP.fullmatch(toks[i])
+        out.append(("wdh".index(m[1]), m[2], float(m[3])))
+        i += 1
+    return i, tuple(out)
+
+
+_OPS = {"<": lambda a, b: a < b, "<=": lambda a, b: a <= b, ">": lambda a, b: a > b, ">=": lambda a, b: a >= b}
+
+
+def _meets(values, region):
+    return all(_OPS[op](values[k], v) for k, op, v in region)
 
 
 def check(mesh, terms):
@@ -137,7 +170,7 @@ def _walk(obj, bm, op, ctx):
     return bm, {e.index for e in bm.edges if e.select}
 
 
-def resolve(obj, terms, ctx):
+def resolve(obj, terms, ctx, frame=None):
     """Select what the terms name in Edit Mode. Returns {"verts", "edges",
     "faces": sets of indices, "seed": index of the first edge named}."""
     ts = bpy.context.tool_settings
@@ -195,6 +228,15 @@ def resolve(obj, terms, ctx):
         elif kind == "faces":
             want = {by_id[v] for v in term[1]}
             faces |= {f.index for f in bm.faces if set(f.verts) <= want}
+        elif kind == "border":
+            edges |= {e.index for e in bm.edges if len(e.link_faces) < 2}
+        elif kind in ("where", "faces_where"):
+            frame = frame or _frame(obj)
+            inside = {v for v in bm.verts if _meets(frame.to_values(v.co), term[1])}
+            if kind == "where":
+                verts |= {v.index for v in inside}
+            else:
+                faces |= {f.index for f in bm.faces if set(f.verts) <= inside}
         elif kind == "all":
             faces |= {f.index for f in bm.faces}
             edges |= {e.index for e in bm.edges}
@@ -205,7 +247,19 @@ def resolve(obj, terms, ctx):
     if not (verts or edges or faces):
         raise SelectionError("the selection is empty")
     apply(obj, {"verts": verts, "edges": edges, "faces": faces})
+    bm = bmesh.from_edit_mesh(obj.data)  # read back: vertices bring the edges and faces they close
+    edges |= {e.index for e in bm.edges if e.select}
+    faces |= {f.index for f in bm.faces if f.select}
     return {"verts": verts, "edges": edges, "faces": faces, "seed": seed}
+
+
+def _frame(obj):
+    """The object's frame, from its sync state: region comparisons are in permille of it."""
+    from .shape import _frame as frame_of
+    try:
+        return frame_of(obj)
+    except Exception as e:
+        raise SelectionError(f"{e}") from None
 
 
 def apply(obj, sel):
@@ -222,6 +276,8 @@ def apply(obj, sel):
         bm.edges[i].select_set(True)
     for i in sel["faces"]:
         bm.faces[i].select_set(True)
+    if sel["verts"]:
+        bm.select_flush_mode()  # as in Blender: selected vertices select the edges and faces they close
     bmesh.update_edit_mesh(obj.data)
 
 

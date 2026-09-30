@@ -10,6 +10,7 @@
     dissolve <selection>                  remove an edge loop (see mesh_ops)
     cut <vA-vB> [N]                       cut N loops across the ring of edge vA-vB
     mesh <operator> <selection> [k=v ...] run a Blender mesh operator (see mesh_ops)
+    join <object>                         join another mesh object into this one (it goes away)
 
 Values: lengths with a unit (0.1mm, 2cm), angles with a unit (30deg), on/off,
 axis flags as letters (XZ, - for none), an object name or - for none.
@@ -30,7 +31,7 @@ import bpy
 
 from . import mesh_ops, modifier_info, selection
 
-VERBS = ("add", "remove", "reorder", "set", "apply", "crease", "dissolve", "cut", "mesh")
+VERBS = ("add", "remove", "reorder", "set", "apply", "crease", "dissolve", "cut", "mesh", "join")
 # Names Blender gives new modifiers (checked on 5.2), so a batch can refer to
 # a modifier it adds and new modifiers keep their default names (D-006).
 DEFAULT_NAMES = {
@@ -200,6 +201,13 @@ def check_all(obj, lines, cage, frame=None, next_id=0):
             except selection.SelectionError as e:
                 raise ObjectOpError(f"{line!r}: {e}") from None
             out.append((line, lambda terms=terms, value=value: f"{_set_crease(obj, terms, value)} edges"))
+        elif v == "join":
+            if len(args) != 1:
+                raise ObjectOpError(f"{line!r}: expected 'join <object>'")
+            other = bpy.data.objects.get(args[0])
+            if other is None or other.type != "MESH" or other is obj:
+                raise ObjectOpError(f"{line!r}: no other mesh object named {args[0]!r}")
+            out.append((line, _joiner(obj, args[0])))
         elif v in ("mesh", "dissolve", "cut"):
             try:
                 runner = mesh_ops.check_line(obj, v, args, line, cage, frame, counter)
@@ -217,6 +225,19 @@ def check_all(obj, lines, cage, frame=None, next_id=0):
         except mesh_ops.MeshOpError as e:
             raise ObjectOpError(str(e)) from None
     return out
+
+
+def _joiner(obj, name):
+    def run():
+        other = bpy.data.objects.get(name)
+        if other is None:
+            raise ObjectOpError(f"no object {name!r}")
+        before = len(obj.data.vertices)
+        with bpy.context.temp_override(object=obj, active_object=obj, selected_objects=[obj, other],
+                                       selected_editable_objects=[obj, other]):
+            _run(bpy.ops.object.join)
+        return f"joined {name}: {before} -> {len(obj.data.vertices)} vertices"
+    return run
 
 
 def _mesh_runner(runner):

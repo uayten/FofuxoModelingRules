@@ -628,4 +628,5 @@ def views(name, views=None, render_name=None, focus=None, ghost=False, normals=F
     path.parent.mkdir(parents=True, exist_ok=True)
     title = f"{obj.name}   " + "   ".join(render_mod.Camera(v).name for v in views)
     return {"render": str(render_mod.render_views(obj, ids, _depsgraph(), views, path, title,
-                                                  focus=focus, ghost=ghost, normals=normals))}
+                                                  focus=focus, ghost=ghost, normals=normals,
+                                                  ring_frame=state and state["frame"]))}

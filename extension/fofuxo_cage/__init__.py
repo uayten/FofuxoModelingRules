@@ -21,6 +21,7 @@ from .concept import find_box, sample
 from .editability import editability
 from .instance import InstanceError, absorb, instance, is_ai, release_mcp, review, say
 from .lock import LockError, lock, unlock
+from .parts import PartError, start_part
 from .mesh_ops import MeshOpError, ensure_looptools, help_text as mesh_help, select
 from .shape import ShapeError, capture, compare, deviation, fit, profile, rebuild, sections
 from .targets import TargetError, check as check_targets

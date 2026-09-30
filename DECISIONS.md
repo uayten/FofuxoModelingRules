@@ -450,6 +450,51 @@ way back), and a human's Blender stops its own MCP server while the AI's
 instance runs. Replaces locking the human's Blender (`lock`) for the AI's
 normal work.
 
+### D-059: The modeler's latest edit is the reference (Stated, B1)
+
+"A última versão que eu editei é a principal, é bom tirar as regras de lá.
+Mas no final o concept é um direcionamento inicial, não a malha final."
+When the modeler has edited a task's model, that edit wins over the older
+example (E1) for the task's numeric targets and for the rules drawn from it;
+the concept stays a first direction (D-056). The bow tie's targets now come
+from `human/B1-human-edit.blend` (question H).
+
+### D-061: Cylinders are modeled whole: extrudes and loops around (Stated)
+
+The modeler, on a top hat the AI built from a quarter cylinder with Mirror:
+"eu não cortaria a cartola e colocaria mirror, mesmo sendo tentador de fazer
+isso. a melhor forma de editar cilindros é fazendo extrudes e cortar loops em
+volta do cilindro." An exception to D-009 for cylinders. What went wrong
+there: an inset on the quarter cap put extra vertices off the circle (v30
+and v32, 5 degrees from their neighbours), a lumpy top under Subdivision. In
+Fofuxo Cage, `start_part` keeps a cylinder whole; loops go around it with
+`bisect` or `loopcut_slide`.
+
+A cylinder's cap, the modeler's way: delete the whole top but its outer
+loop; extrude the loop, scale it (S, then Shift+Z: X and Y only) toward the
+center; Grid Fill the new inner loop. The cap is a ring of quads around a
+grid of quads (`mesh delete faces h>999`, `mesh extrude_scale h>999 w=80%
+d=80%`, `mesh fill_grid border`).
+
+### D-062: A grid fill lines up with the X and Y extremes (Stated)
+
+"Quando você aplicar o grid fill, você precisa rotacionar ele para ficar
+alinhado com os vértices extremos do eixo X e os vértices extremos do eixo
+Y. Imagine que você fosse aplicar um mirror, como a malha deveria ficar para
+ser possível você cortar e utilizar 1/4 do modelo 3D para ser recriado com
+mirror." A good practice even where it changes nothing in the result: the
+grid's lines run through the loop's extreme vertices, so the mesh can be cut
+in quarters and mirrored. Fofuxo Cage's `fill_grid` turns the grid until it
+is mirror symmetric on X and Y (unless an offset is given).
+
+### D-060: Marks are messages (Stated, B1)
+
+The modeler points at the model with marks: sharp or seam on a loop means
+"this loop" (remove it, move it, look at it); crease means "pinch here".
+Seen in B1 round 5 (a sharp loop to remove) and round 6 (seams to pull);
+confirmed by the modeler. Fofuxo Cage reports the marks new or cleared on
+every sync, and the AI clears its marks once acted on and says so.
+
 ### D-040: Silhouette overlap as an audit check (Stated, T1)
 
 The auditor compares the evaluated mesh's front silhouette with the concept.
@@ -492,14 +537,14 @@ that got their second case (`ROADMAP.md`, Part 2, item 4).
 
 | Candidate | Cases so far | A second case would be | Status |
 |---|---|---|---|
-| Marks are messages: sharp or seam on a loop = "this loop"; crease = "pinch here" | sharp on a loop to remove (B1 round 5); seams on edges to pull (B1 round 6) | the modeler using a crease to say "pinch here" | proposed; the tool reports marks on every sync; to confirm |
 | A loop earns its place by ending on a turning point of the outline (item 25) | the modeler's B1 edit: the loop removed in round 5 went back in another place, ending on the rim | a second lobed or heart-shaped part where the modeler places loops the same way | Provisional |
 | Lobes fuller than the front view asks for: half depth about a quarter of the full height, sections n 3.1-3.5 | the modeler's B1 edit | the next lobed part (hat brim, skirt ruffle) | AI deduction, pending |
 | A covering part hides the junction it makes with another (D-057) | the B1 knot, 11% wider, sides kept in | a belt, button or ribbon over another part | Provisional |
 | The cage is bigger than the result on purpose (a steady margin) | E1 (wing 9 mm shorter and 11 mm thinner after Subdivision) | any other modeler cage: the margin measured with `editability` | AI deduction, pending |
 | Cage text by loops, permille of a frame (D-049, D-050) | T1, B1 | a second task run with the same format | Provisional (tool) |
 
-Promoted already: "a tight row next to a thin row keeps a pinch" (D-039,
+Promoted already: marks are messages (D-060, confirmed by the modeler);
+"a tight row next to a thin row keeps a pinch" (D-039,
 second case in B1 round 5); "remove a loop that carries no shape, refit the
 volume" (D-045, second case in B1 round 5).
 

@@ -39,6 +39,7 @@ cage mesh (the base mesh under Subdivision):
 
 - [Install](#install)
 - [Use](#use)
+- [New parts](#new-parts)
 - [Mesh op](#mesh-op)
 - [Shape tools](#shape-tools)
   - [Editability](#editability)
@@ -76,7 +77,7 @@ result = fofuxo_cage.sync("Laço")
 | `ops` | the ops applied, with the vertex count of each |
 | `blender_edits`, `blender_deltas` | vertices the human changed in Blender since the last sync, and by how much |
 | `blender_by_loop` | the same moves grouped by the text's loops: `L2 3/5 d+21.5%` (3 of its 5 vertices, d by 21.5% on average), the shape of an edit to read an intent from and ask about |
-| `marks` | edges the human marked (sharp, seam, crease) new or cleared since the last sync, with the proposed reading |
+| `marks` | edges the human marked (sharp, seam, crease) new or cleared since the last sync, with their reading (D-060) |
 | `annotations` | Annotate strokes new since the last sync, with the vertices under each |
 | `render` | path of the view sheet (`<object>.png` next to the text) |
 | `issues` | validation results, `ERROR` or `WARN`, with the vertices involved |
@@ -132,9 +133,9 @@ The modeler points at the model in Blender; every sync reads it (ROADMAP,
 Phase 5):
 
 - **Marks** (Mark Sharp, Mark Seam, crease): `marks` lists the ones new or
-  cleared since the last sync. Proposed readings, to confirm with the
-  modeler: sharp or seam on a loop = "this loop" (remove it, move it, look
-  at it); crease = "pinch here". The selection grammar reads them (`mesh
+  cleared since the last sync, with their reading (D-060): sharp or seam on
+  a loop = "this loop" (remove it, move it, look at it); crease = "pinch
+  here". The selection grammar reads them (`mesh
   translate seam ...`). Once acted on, the AI clears them (`mesh mark_seam
   seam clear=on`, `mesh mark_sharp sharp clear=on`, `crease crease 0`) and
   the next sync says so.
@@ -205,10 +206,45 @@ subdivision panels, written to `<object>.views.png` (or
 `<object>.<render_name>.png`). `focus=[13, 14]` labels only those vertices
 (the rest are small gray dots), `ghost=True` fills only the base part and
 draws the mirror copies as faint wire, `normals=True` adds a tick along the
-result's normal at each vertex. A view is a preset (`front`, `back`, `left`,
+result's normal at each vertex. Cylinder loops (closed loops in a plane across an axis, once around it) are
+drawn as colored rings with one label each, named by where they sit in the
+frame (`h920`, the value a region selects: `h>915 h<925`; two rings in one
+plane add their width, `h1000 (69mm)`); only the vertices on no such loop
+get numbers. Vertex marks are small discs. A view is a preset (`front`, `back`, `left`,
 `right`, `top`, `bottom`), a `"yaw,pitch"` string or a `(yaw, pitch)` pair in
 degrees: yaw 0 looks from the front, 90 from the right; pitch > 0 looks from
 above. The default is 3/4 from above, 3/4 from below and 3/4 from the back.
+
+## New parts
+
+```python
+fofuxo_cage.start_part("Cartola", "cylinder", size=(80, 80, 90), vertices=16)
+fofuxo_cage.edit("Cartola", "mesh bisect all plane=h92%")            # a loop of quads at the top
+fofuxo_cage.edit("Cartola", "mesh bisect all plane=h5%", "mesh bisect all plane=h9%")
+fofuxo_cage.edit("Cartola", "mesh resize h<60 w=200% d=200%")        # the brim, around the axis
+```
+
+`start_part(name, primitive, size, mirror=None, subdivision=1, parent=None,
+at=(0, 0, 0), sides=None, **settings)` adds a `cylinder`, `sphere`, `cube`
+or `plane` with Blender's operator (`settings` go to it: `vertices=16`,
+`segments=24`...) and sizes it in mm (full w, d, h). A cylinder stays whole
+(D-061: edited with extrudes and loops cut around it, not cut and mirrored)
+and each cap is the modeler's: the rim extruded and scaled in X and Y to 80%
+(a ring of quads), then a grid fill turned to line up with the X and Y
+extremes (D-062; the vertex count must divide by 4). Other primitives are cut on the mirror planes with `bisect` so only the
+modeled side stays (`mirror="XY"` by default; X-, Y-, Z+ unless `sides` says
+otherwise: the front view sees -Y, D-055) and get Mirror (clipping, merge
+0.1 mm, D-054). Then Subdivision, the frame set to the size, and a sync. The part is then edited
+with the text's ops. A new part has no ids to name yet: regions (`h<6`,
+`faces h>900`) select by where the vertices are.
+
+A first top hat built from a quarter cylinder with Mirror was judged bad by
+the modeler: a cylinder is modeled whole (D-061). What that build showed:
+scaling around the part's axis was missing (now `resize`); a region with `>=`
+was read as a parameter (fixed); an inset on a quarter cap put vertices off
+the circle (a lumpy top: rebuilt with `delete faces h>999` and
+`fill_grid h>999 span=4` once the Mirror was applied); and plane values are
+permille (`h92`) unless written in % (`h92%`), which the build got wrong.
 
 ## Mesh op
 
@@ -235,10 +271,13 @@ print(fofuxo_cage.mesh_help())               # the operators and their parameter
 | `L3` | the edges between the consecutive vertices of a loop label |
 | `plane-x`, `plane-y`, `plane-z` | every edge on that mirror plane |
 | `sharp`, `seam`, `crease` | every edge the human marked so (crease: weight above 0) |
+| `border` | every open edge (a hole's rim) |
 | `loop vA-vB` | the edge loop through vA-vB (Blender's `select_edge_loop_multi`) |
 | `ring vA-vB` | the edge ring through vA-vB (`select_edge_ring_multi`) |
 | `path vA vB` | the shortest path of edges from vA to vB (`shortest_path_select`) |
 | `faces vA vB vC vD` | every face whose vertices are all in the list |
+| `h>900`, `w<500 h>=100` | a region: the vertices whose base value (permille) meets every comparison in a row (`<`, `<=`, `>`, `>=`); the edges and faces they close come with them |
+| `faces h>900` | every face whose vertices all meet the comparisons |
 | `all` | everything |
 
 **Operators** (the whitelist; anything else is refused with the list):
@@ -273,9 +312,19 @@ print(fofuxo_cage.mesh_help())               # the operators and their parameter
 | `edge_rotate` | `mesh.edge_rotate` | `use_ccw` |
 | `tris_convert_to_quads` | `mesh.tris_convert_to_quads` | `face_threshold`, `shape_threshold` (angles) |
 | `bridge_edge_loops` | `mesh.bridge_edge_loops` | `number_cuts`, `interpolation`, `smoothness`, `twist_offset`, `use_merge`, `merge_factor`. List the two loops' edges: on a border, a `loop` walker takes the whole border |
-| `fill_grid` | `mesh.fill_grid` | `span`, `offset`, `use_interp_simple`: a hole with a closed border |
+| `fill_grid` | `mesh.fill_grid` | `span`, `offset`, `use_interp_simple`: a hole with a closed border. Without `offset` the grid is turned until it is mirror symmetric on X and Y (D-062) |
+| `extrude_scale` | `mesh.extrude_region` + `transform.resize` | `w`, `d`, `h` in % around the object's origin; leave `h` out for X and Y only (E, S, Shift+Z): a cap's ring closing inward |
 | `delete` | `mesh.delete` | `type`: face (default: the faces and what only they used), vert, edge, edge_face, only_face (leaves loose edges: refused) |
 | `edge_face_add` | `mesh.edge_face_add` (F) | none |
+| `resize` | `transform.resize` around the object's origin | `w`, `d`, `h` in % (`200%`); proportional editing. A ring pulled out into a brim |
+| `extrude_region_shrink_fatten` | `mesh.extrude_region_shrink_fatten` | `value` (length, out along the normals), `even` |
+| `extrude_region_move`, `extrude_context_move` | the extrude macros | `w`, `d`, `h` (the move, as `translate`) |
+| `inset` | `mesh.inset` | `thickness`, `depth` (lengths), `use_even_offset`, `use_individual`, `use_boundary` |
+| `spin`, `screw` | `mesh.spin`, `mesh.screw` | `steps`, `angle` (spin), `turns` (screw), `axis` (w, d, h): around that axis through the object's origin |
+| `bevel` | `mesh.bevel` | `width` (length), `segments`, `affect` (edges, vertices), `profile` |
+| `bisect` | `mesh.bisect` | `plane` (`h250`: an axis and a value in permille), `clear` (above, below, none), `fill` |
+| `separate` | `mesh.separate` | `type` (selected, material, loose): the selection becomes a new object |
+| `extract` | `mesh.duplicate` + `mesh.separate` | none: a copy of the selection becomes a new object, the original kept (a part that sits on another, D-029: then `add SHRINKWRAP at first` and `set Shrinkwrap target <part>`) |
 | `mark_seam`, `mark_sharp` | `mesh.mark_seam`, `mesh.mark_sharp` | `clear`: clear the mark (the AI clears the modeler's marks once acted on) |
 
 The ops that merge or collapse (`edge_collapse`, `merge`, `unsubdivide`)
@@ -556,7 +605,9 @@ forms
     (the selection grammar of the [mesh op](#mesh-op)), e.g. `crease plane-x
     1.0` to pinch where a part enters another;
   - `mesh <operator> <selection> [key=value ...]`: one of Blender's mesh
-    operators; see [Mesh op](#mesh-op). `dissolve <selection>` and
+    operators; see [Mesh op](#mesh-op).
+  - `join <object>`: join another mesh object into this one (it goes away;
+    its vertices get fresh ids). `dissolve <selection>` and
     `cut <vA-vB> [N]` are its aliases for removing and cutting loops.
 
   A place is `first`, `last`, a 1-based position, `before <modifier>` or

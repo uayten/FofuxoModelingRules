@@ -125,7 +125,7 @@ def fmt_value(value):
 def _whd(values):
     if values is None:
         return f"{'-':>6}" + " " * 12
-    return "".join(f"{fmt_value(c):>6}" for c in values)
+    return "".join(f" {fmt_value(c):>5}" for c in values)  # a space always: wide values never run together
 
 
 def write(cage):

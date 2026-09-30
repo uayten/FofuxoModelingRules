@@ -162,6 +162,26 @@ def _value(param, raw, key, rna, frame):
         return math.radians(float(m[1])) if m[2] == "deg" else float(m[1])
     if unit == "length":
         return _length(raw, key, frame)
+    if unit == "percent":
+        m = re.fullmatch(r"(\d*\.?\d+)%", raw)
+        if not m:
+            raise MeshOpError(f"{key} takes a percentage like 150%, not {raw!r}")
+        return float(m[1]) / 100
+    if unit == "choice":
+        if raw.lower() not in ("above", "below", "none"):
+            raise MeshOpError(f"{key} takes above, below or none, not {raw!r}")
+        return raw.lower()
+    if unit == "letter":
+        if raw.lower() not in ("w", "d", "h"):
+            raise MeshOpError(f"{key} takes a frame axis: w, d or h, not {raw!r}")
+        return "wdh".index(raw.lower())
+    if unit == "plane":
+        m = re.fullmatch(r"([wdh])(-?\d*\.?\d+)(%?)", raw.lower())
+        if not m or frame is None:
+            raise MeshOpError(f"{key} takes a frame axis and a value in permille or %, e.g. h920 or h92%, "
+                              f"not {raw!r}")
+        k = "wdh".index(m[1])
+        return k, frame.axes[k].to_local(float(m[2]) * (10 if m[3] else 1))
     if unit == "axis":
         k = "wdh".index(key)
         sign = -1.0 if frame is not None and frame.axes[k].side == "-" else 1.0  # + moves away from the plane
@@ -175,8 +195,10 @@ class Op:
     """A whitelisted operator. needs: the element kind the selection must
     hold (VERT, EDGE, FACE, SEED for one edge, or None)."""
 
-    def __init__(self, idname, needs, doc, params=None, defaults=None, build=None, rna=None, looptools=False):
+    def __init__(self, idname, needs, doc, params=None, defaults=None, build=None, rna=None, looptools=False,
+                 call=None):
         self.idname, self.needs, self.doc = idname, needs, doc
+        self.call = call  # runs several operators in a row (extract)
         self.params = params or {}
         self.defaults = defaults or {}
         self.build = build
@@ -248,6 +270,122 @@ def _circle(op, values, sel, obj):
     if "radius" in values:
         out["custom_radius"] = True
     return out
+
+
+def _axis_world(obj, k):
+    """A frame axis (0 w, 1 d, 2 h) as a world direction."""
+    return tuple((obj.matrix_world.to_3x3() @ Vector([1.0 if i == k else 0.0 for i in range(3)])).normalized())
+
+
+def _extrude_move(kind):
+    def build(op, values, sel, obj):
+        local = Vector([values.get(a, 0.0) for a in "wdh"])
+        return {f"MESH_OT_{kind}": {}, "TRANSFORM_OT_translate": {
+            "value": tuple(obj.matrix_world.to_3x3() @ local), "orient_type": "GLOBAL", "mirror": False, "snap": False}}
+    return build
+
+
+def _resize(op, values, sel, obj):
+    """Scale along the frame axes around the object's origin, where its mirror planes meet."""
+    return {"value": tuple(values.get(a, 1.0) for a in "wdh"), "orient_type": "LOCAL",
+            "center_override": tuple(obj.matrix_world.translation), "mirror": False, "snap": False,
+            **_proportional(values, obj)}
+
+
+def _extrude_fatten(op, values, sel, obj):
+    scale = max(obj.matrix_world.to_scale())
+    return {"MESH_OT_extrude_region": {}, "TRANSFORM_OT_shrink_fatten": {
+        "value": values.get("value", 0.0) * scale, "use_even_offset": values.get("even", True)}}
+
+
+def _around(op, values, sel, obj):
+    """spin and screw: around a frame axis through the object's origin (where its mirror planes meet)."""
+    out = {k: v for k, v in _plain(op, {k: v for k, v in values.items() if k != "axis"}, obj).items()}
+    out["axis"] = _axis_world(obj, values.get("axis", 2))
+    out["center"] = tuple(obj.matrix_world.translation)
+    return out
+
+
+def _bisect(op, values, sel, obj):
+    if "plane" not in values:
+        raise MeshOpError("bisect needs a plane: plane=h250 (an axis and a value in permille of the frame)")
+    k, c = values["plane"]
+    local = Vector([c if i == k else 0.0 for i in range(3)])
+    keep = values.get("clear", "none")
+    return {"plane_co": tuple(obj.matrix_world @ local), "plane_no": _axis_world(obj, k),
+            "use_fill": values.get("fill", False), "clear_inner": keep == "below", "clear_outer": keep == "above"}
+
+
+def _extrude_scale(kwargs):
+    """Extrude the selection, then scale the new part around the object's origin
+    (in Blender: E, then S, Shift+Z for X and Y only)."""
+    if "FINISHED" not in bpy.ops.mesh.extrude_region(mirror=False):
+        return {"CANCELLED"}
+    return bpy.ops.transform.resize(**kwargs)
+
+
+def _symmetric(bm, new_verts, rim, tol=1e-5):
+    """Is the filled grid mirror symmetric across the X and Y planes through the rim's center?"""
+    import numpy as np
+
+    pts = np.array([tuple(v.co) for v in new_verts] + [tuple(v.co) for v in rim])
+    center = np.array([tuple(v.co) for v in rim]).mean(axis=0)
+    rel = pts - center
+    for k in (0, 1):
+        flipped = rel.copy()
+        flipped[:, k] = -flipped[:, k]
+        d = np.linalg.norm(flipped[:, None, :] - rel[None, :, :], axis=2).min(axis=1)
+        if d.max() > tol:
+            return False
+    return True
+
+
+def fill_grid_aligned(**kwargs):
+    """Grid Fill the selected loop, turned so its lines run through the loop's
+    extreme vertices on X and Y: the mesh could be cut in quarters and rebuilt
+    with Mirror (the modeler's good practice). Tries each turn of the grid and
+    keeps the first mirror symmetric on both; none is: the plain fill. An
+    explicit offset is used as given."""
+    import bmesh
+
+    if "offset" in kwargs:
+        return bpy.ops.mesh.fill_grid(**kwargs)
+    obj = bpy.context.edit_object
+    bm = bmesh.from_edit_mesh(obj.data)
+    rim_keys = [tuple(round(c, 7) for c in v.co) for v in bm.verts if v.select]
+    count = len(bm.verts)
+    for offset in range(len(rim_keys)):
+        result = bpy.ops.mesh.fill_grid(offset=offset, **kwargs)
+        if "FINISHED" not in result:
+            return result
+        bm = bmesh.from_edit_mesh(obj.data)
+        bm.verts.ensure_lookup_table()
+        keys = set(rim_keys)
+        rim = [v for v in bm.verts if tuple(round(c, 7) for c in v.co) in keys]
+        if _symmetric(bm, list(bm.verts)[count:], rim):
+            return result
+        bpy.ops.mesh.delete(type="FACE")  # the fill's faces (still selected) and its inner vertices
+        _select_rim(obj, rim_keys)
+    return bpy.ops.mesh.fill_grid(offset=0, **kwargs)
+
+
+def _select_rim(obj, rim_keys):
+    import bmesh
+
+    bm = bmesh.from_edit_mesh(obj.data)
+    keys = set(rim_keys)
+    for el in (*bm.verts, *bm.edges, *bm.faces):
+        el.select_set(False)
+    for e in bm.edges:
+        if all(tuple(round(c, 7) for c in v.co) in keys for v in e.verts) and len(e.link_faces) < 2:
+            e.select_set(True)
+    bmesh.update_edit_mesh(obj.data)
+
+def _extract(kwargs):
+    """Duplicate the selection and separate the copy into a new object (D-029)."""
+    if "FINISHED" not in bpy.ops.mesh.duplicate():
+        return {"CANCELLED"}
+    return bpy.ops.mesh.separate(type="SELECTED")
 
 
 PROPORTIONAL = {
@@ -405,11 +543,13 @@ OPS = {
         "use_merge": P("use_merge", "bool", "merge the loops instead of bridging"),
         "merge_factor": P("merge_factor", "factor", "where they merge, 0 to 1"),
     }),
-    "fill_grid": Op("mesh.fill_grid", "EDGE", "fill a hole with a grid of quads from its border edges", {
+    "fill_grid": Op("mesh.fill_grid", "EDGE", "fill a hole with a grid of quads from its border edges, turned "
+                    "to run through the loop's extreme vertices on X and Y (it could be cut in quarters and "
+                    "mirrored) unless an offset is given", {
         "span": P("span", "int", "rows of the grid"),
         "offset": P("offset", "int", "turn the grid by this many edges"),
         "use_interp_simple": P("use_interp_simple", "bool", "simple interpolation"),
-    }),
+    }, call=lambda kwargs: fill_grid_aligned(**kwargs)),
     "delete": Op("mesh.delete", None, "delete the selection (a hole left for bridge_edge_loops or fill_grid)", {
         "type": P("type", "enum", "face (default: the faces and what only they used), vert, edge, edge_face or "
                                   "only_face (leaves their edges: loose, refused)"),
@@ -422,6 +562,67 @@ OPS = {
     "mark_sharp": Op("mesh.mark_sharp", "EDGE", "mark the edges sharp", {
         "clear": P("clear", "bool", "clear the mark instead"),
     }),
+    # Phase 3: growing, cutting and splitting parts.
+    "resize": Op("transform.resize", "VERT", "scale the selection along the frame axes around the object's "
+                 "origin (the mirror planes' meeting point): a ring pulled out into a brim, a part made wider", {
+        "w": P("value", "percent", "scale along w, e.g. 150%"), "d": P("value", "percent", "along d"),
+        "h": P("value", "percent", "along h"),
+        **PROPORTIONAL,
+    }, build=_resize),
+    "extrude_scale": Op("transform.resize", None, "extrude the selection and scale the new part around the object's "
+                        "origin: a loop closing toward the center (E, S, Shift+Z), a flare", {
+        "w": P("value", "percent", "scale along w, e.g. 80%"), "d": P("value", "percent", "along d"),
+        "h": P("value", "percent", "along h (leave it out to keep the height: Shift+Z)"),
+    }, build=_resize, call=_extrude_scale),
+    "extrude_region_shrink_fatten": Op("mesh.extrude_region_shrink_fatten", None, "extrude the selected faces "
+                                       "out along their normals (a brim, a rim, a thickness)", {
+        "value": P("value", "length", "how far, mm or % of the frame's largest axis; + outward"),
+        "even": P("use_even_offset", "bool", "keep the thickness even (default on)"),
+    }, build=_extrude_fatten),
+    "extrude_region_move": Op("mesh.extrude_region_move", None, "extrude the selection as one region and move "
+                              "it along the frame axes", {
+        "w": P("value", "axis", "move along w: % of the frame's w or mm"),
+        "d": P("value", "axis", "along d"), "h": P("value", "axis", "along h"),
+    }, build=_extrude_move("extrude_region")),
+    "extrude_context_move": Op("mesh.extrude_context_move", None, "extrude what is selected as it is (faces, "
+                               "edges or vertices) and move it", {
+        "w": P("value", "axis", "move along w"), "d": P("value", "axis", "along d"),
+        "h": P("value", "axis", "along h"),
+    }, build=_extrude_move("extrude_context")),
+    "inset": Op("mesh.inset", "FACE", "inset the selected faces: a ring of new faces inside their border", {
+        "thickness": P("thickness", "length", "how far in, mm or %"),
+        "depth": P("depth", "length", "raise (+) or sink (-) the inner faces"),
+        "use_even_offset": P("use_even_offset", "bool", "even thickness at corners"),
+        "use_individual": P("use_individual", "bool", "each face on its own"),
+        "use_boundary": P("use_boundary", "bool", "inset open borders too (default on)"),
+    }),
+    "spin": Op("mesh.spin", None, "sweep the selection around a frame axis through the object's origin", {
+        "steps": P("steps", "int", "how many copies along the sweep"),
+        "angle": P("angle", "angle", "how far, e.g. 90deg"),
+        "axis": P("axis", "letter", "w, d or h (default h)"),
+    }, build=_around),
+    "screw": Op("mesh.screw", None, "sweep the selection around a frame axis, rising each turn", {
+        "steps": P("steps", "int", "steps per turn"),
+        "turns": P("turns", "int", "how many turns"),
+        "axis": P("axis", "letter", "w, d or h (default h)"),
+    }, build=_around),
+    "bevel": Op("mesh.bevel", None, "bevel edges (or vertices): the edge becomes a strip of faces", {
+        "width": P("offset", "length", "the bevel's width, mm or %"),
+        "segments": P("segments", "int", "faces across the bevel"),
+        "affect": P("affect", "enum", "edges or vertices"),
+        "profile": P("profile", "factor", "0.5 round, higher boxier"),
+    }),
+    "bisect": Op("mesh.bisect", None, "cut the selection with a plane across a frame axis", {
+        "plane": P("plane_co", "plane", "the plane: an axis and a value in permille, e.g. h250"),
+        "clear": P("clear", "choice", "above, below or none: the side of the plane to delete"),
+        "fill": P("use_fill", "bool", "fill the cut"),
+    }, build=_bisect),
+    "separate": Op("mesh.separate", None, "move the selection into a new object (by selection, material or "
+                   "loose parts)", {
+        "type": P("type", "enum", "selected (default), material or loose"),
+    }, defaults={"type": "SELECTED"}),
+    "extract": Op("mesh.separate", None, "copy the selection into a new object, the original kept: a part that "
+                  "sits on another (D-029); then add SHRINKWRAP and set its target", call=_extract),
 }
 
 
@@ -569,6 +770,23 @@ def _failure(issues):
     return "; ".join(words)
 
 
+def _adopt(obj):
+    """A part split off by an op: selectable, no AI lock, no tag; its ids are its own."""
+    if LOCK_PROP in obj:
+        obj.hide_select = bool(obj[LOCK_PROP])
+        del obj[LOCK_PROP]
+    if obj.type == "MESH" and TAG_ATTR in obj.data.attributes:
+        obj.data.attributes.remove(obj.data.attributes[TAG_ATTR])
+
+
+def _remove_objects(objects):
+    for o in objects:
+        data = o.data if o.type == "MESH" else None
+        bpy.data.objects.remove(o)
+        if data is not None and data.users == 0:
+            bpy.data.meshes.remove(data)
+
+
 class Runner:
     """One mesh op, checked and ready to run on an object."""
 
@@ -593,17 +811,18 @@ class Runner:
             surface = shape.Surface(dense0, tris, "before")
         backup = bmesh.new()
         backup.from_mesh(mesh)
+        objects0 = set(bpy.data.objects)
         try:
             by_tag = _tag(mesh)
             with editing(obj, take_lock) as ctx:
                 try:
-                    sel = selection.resolve(obj, self.terms, ctx)
+                    sel = selection.resolve(obj, self.terms, ctx, self.frame)  # the copy has no sync state
                 except SelectionError as e:
                     raise MeshOpError(str(e)) from None
                 self._needs(sel)
                 kwargs = self.op.kwargs(self.values, sel, obj)
                 with bpy.context.temp_override(**ctx):
-                    result = self.op.op()(**kwargs)
+                    result = self.op.call(kwargs) if self.op.call else self.op.op()(**kwargs)
                 if "FINISHED" not in result:
                     raise MeshOpError(f"Blender refused {self.op.idname} ({result})")
             _retag(mesh, by_tag)
@@ -614,9 +833,13 @@ class Runner:
                 raise MeshOpError(_failure(errors))
         except Exception:
             _restore(mesh, backup)
+            _remove_objects(set(bpy.data.objects) - objects0)
             raise
         finally:
             backup.free()
+        created = [o for o in bpy.data.objects if o not in objects0]
+        for o in created:
+            _adopt(o)
         self.counter["next_id"] = max([self.counter["next_id"], *[i + 1 for i in ids]])
         co1 = {vid: tuple(v.co) for vid, v in zip(ids, mesh.vertices)}
         added, removed = sorted(set(co1) - set(co0)), sorted(set(co0) - set(co1))
@@ -639,6 +862,8 @@ class Runner:
             profiles = shape.profile_change(dense0, dense1)
             if profiles:
                 parts.append("profile " + ", ".join(profiles))
+        if created:
+            parts.append("new object " + ", ".join(o.name for o in created) + " (sync it for its own text)")
         note = ", ".join(parts)
         if moved and self.frame is not None:
             note += "; " + " ".join(_deltas(self.frame, co0, moved))
@@ -657,9 +882,9 @@ class Runner:
 def _split(tokens):
     params, rest = {}, []
     for t in tokens:
-        if "=" in t:
-            k, _, v = t.partition("=")
-            params[k.lower()] = v
+        m = re.fullmatch(r"([A-Za-z_]+)=(.*)", t)  # a region like h>=900 is a selection, not a parameter
+        if m:
+            params[m[1].lower()] = m[2]
         else:
             rest.append(t)
     return rest, params
@@ -726,6 +951,7 @@ def crease(obj, terms, value):
 
 def precheck(obj, runners):
     """Run the batch's mesh ops on a temporary copy; the first failure is raised."""
+    objects0 = set(bpy.data.objects)
     copy = obj.copy()
     copy.data = obj.data.copy()
     if LOCK_PROP in copy:
@@ -744,9 +970,7 @@ def precheck(obj, runners):
             finally:
                 runner.counter = saved
     finally:
-        mesh = copy.data
-        bpy.data.objects.remove(copy)
-        bpy.data.meshes.remove(mesh)
+        _remove_objects(set(bpy.data.objects) - objects0)  # the copy and any part split off it
 
 
 def select(name, text, cage=None):

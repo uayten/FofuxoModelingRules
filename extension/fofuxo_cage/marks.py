@@ -2,7 +2,7 @@
 
 Marks are the edges the modeler marks in Blender (sharp, seam, crease). Every
 sync reports the ones new since the last sync, and the ones cleared, so none
-goes unseen. Proposed readings, to confirm with the modeler: sharp or seam on
+goes unseen. The readings (D-060, confirmed by the modeler): sharp or seam on
 a loop = "this loop" (remove it, move it, look at it); crease = "pinch here".
 Once acted on, the AI clears its marks (mesh mark_seam <edges> clear=on,
 mark_sharp ... clear=on, crease <edges> 0) and says so.
@@ -22,7 +22,7 @@ from mathutils import Vector
 
 from . import mesh_io, topology
 
-READING = ("proposed, to confirm with the modeler: sharp or seam on a loop = 'this loop'; crease = 'pinch here'")
+READING = "sharp or seam on a loop = 'this loop'; crease = 'pinch here' (D-060)"
 NEAR = 0.06  # of the frame's largest axis: how far from a stroke a vertex is still under it
 _LINE = re.compile(r"(crease|bevel)\s+([\d.]+)\s+(.*)|(seam|sharp)\s+(.*)")
 
