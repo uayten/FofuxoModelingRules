@@ -173,6 +173,34 @@ to start from.
 - **Sit on another part (D-029):** extract faces of the body, then
   Shrinkwrap through the modifier ops already there.
 
+**Plan (step 7, not built; waiting for the modeler).** Every operator named
+here exists in Blender 5.2.2 with the parameters used (checked); whether each
+runs under the 3D View override is for the tests:
+
+1. `fofuxo_cage.start_part(name, primitive, size, mirror="XY", subdivision=1,
+   parent=None, at=None)`: `primitive_cylinder_add` / `uv_sphere_add` /
+   `cube_add` / `circle_add` with its vertex counts, then `bisect` with
+   `clear_outer` to keep the modeled side (D-034, model on -Y, D-055), Mirror
+   with merge 0.1 mm (D-054) and Subdivision, the frame set from `size` (mm)
+   and a first sync. One call gives a cage the AI edits with text.
+2. Grow, in the whitelist, lengths in mm or % of the frame:
+   `extrude_region_shrink_fatten` (out along the normals), `extrude_region_move`
+   (along w, d, h), `extrude_context_move`, `inset` (thickness, depth),
+   `spin` (steps, angle, around a frame axis through a frame point), `screw`,
+   `bevel` (width, segments, edges or vertices), `bisect` (a plane given as
+   `w 500` or `h 250`).
+3. Split and join: `separate` (the new object synced with its own text and
+   fresh ids), `split`; object `join` as an object op. `rip` picks its side
+   by the mouse and `knife_project` projects from the view: each in only if
+   a test shows it runs from text; the interactive knife has no EXEC mode.
+4. Sit on another part (D-029): `duplicate` + `separate` the body's faces
+   into a new part, then `add SHRINKWRAP` and `set Shrinkwrap target <body>`
+   with the stack ops already there.
+5. Tests: a hat-like part from a cylinder (start, extrude the brim, inset
+   and extrude the crown, bevel, bisect), all quads and fresh ids at every
+   step; a separated part and a joined one; a ribbon extracted and
+   shrinkwrapped.
+
 ### Phase 4: marks, normals and data
 
 - `mark_seam`, `mark_sharp`, crease and bevel weight by selection (the AI
@@ -265,6 +293,29 @@ piece goes.
 9. **Transfer tests.** A new task (the hat, T2) run with and without the
    technique library, judged blind as in T1: do the rules carry to a part
    the AI has not seen?
+
+   **Plan (step 7, not run; waiting for the modeler).**
+   - **The part.** The hat is the obvious task but not a clean transfer:
+     D-024, D-026 and D-029 came from it, so the skill already knows it.
+     Cleaner: a part no rule came from. In E1: `Chifre` (horn, Mirror +
+     Subdivision, 57 vertices, the bow's kind of cage) or `Sobrancelha`
+     (eyebrow, 58 vertices); outside E1: the skirt ruffles, once the modeler
+     has a file. The modeler picks.
+   - **Task folder** `models/tasks/<part>/`: `start.blend` with the concept
+     packed and the part removed; `prompt.md`; `target.md` with numeric
+     targets from the modeler's part, hidden from the runs (the AI reads
+     only the concept and the prompt).
+   - **Runs**, same model (Opus 5.5), same prompt, same tools (Fofuxo Cage,
+     its own Blender): T2-A with `models/TECHNIQUES.md` and the bow tie's
+     techniques; T2-B without them. Neither reads the part's own example
+     nor opens E1 (the modeler's part is in it).
+   - **Judged** blind by the modeler, as in T1: the two results as "model 1"
+     and "model 2" in a random order, in a review Blender each; then the
+     numbers (`check_targets`, `editability` against the modeler's part).
+     Cost and time per run in each `report.md` (item 8).
+   - **The question it answers:** does a run with the library get closer
+     to the modeler's part, in the modeler's eyes and in the numbers, than
+     one without?
 10. **The modeler's edits as examples.** When the modeler fixes an AI cage
     in Blender, save the edit in `human/` (the README convention) and file
     the deltas with their why: each fix is a small example of a technique.
