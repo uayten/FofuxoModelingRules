@@ -415,6 +415,13 @@ OPS = {
                                   "only_face (leaves their edges: loose, refused)"),
     }, defaults={"type": "FACE"}),
     "edge_face_add": Op("mesh.edge_face_add", "VERT", "a face from the selected vertices (the F key)"),
+    # Phase 4/5: marks, so the AI can clear the modeler's once acted on (or mark for the modeler).
+    "mark_seam": Op("mesh.mark_seam", "EDGE", "mark the edges as seams", {
+        "clear": P("clear", "bool", "clear the mark instead"),
+    }),
+    "mark_sharp": Op("mesh.mark_sharp", "EDGE", "mark the edges sharp", {
+        "clear": P("clear", "bool", "clear the mark instead"),
+    }),
 }
 
 

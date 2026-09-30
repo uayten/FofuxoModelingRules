@@ -14,7 +14,7 @@ import sys
 
 import bpy
 
-from . import cage_format, concept, frame, mesh_io, mesh_ops, modifier_info, object_ops, ops, render, selection, targets as targets_mod, topology, validate
+from . import cage_format, concept, frame, mesh_io, marks, mesh_ops, modifier_info, object_ops, ops, render, selection, targets as targets_mod, topology, validate
 from . import instance as instance_mod
 from . import lock as lock_mod
 from .concept import find_box, sample
@@ -23,7 +23,8 @@ from .lock import LockError, lock, unlock
 from .mesh_ops import MeshOpError, ensure_looptools, help_text as mesh_help, select
 from .shape import ShapeError, capture, compare, deviation, fit, profile, rebuild, sections
 from .targets import TargetError, check as check_targets
-from .sync import SyncError, edit, flip, set_frame, sync, views  # sync shadows the submodule name on purpose
+from .marks import clear_annotations
+from .sync import SyncError, annotations, edit, flip, set_frame, sync, views  # sync shadows the submodule name on purpose
 
 ALIAS = "fofuxo_cage"
 

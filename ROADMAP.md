@@ -201,6 +201,20 @@ to start from.
   deltas come with a guess of the intent (`L1 rim up 4%: the silhouette was
   low?`) that the AI asks about, as `models/FEEDBACK.md` describes.
 
+**Status: done (2026-09-29).** Every sync reports `marks` (new and cleared,
+with the proposed reading, still to confirm), `annotations` (new strokes and
+the vertices under each, a stroke on the mirror copy counting for the
+modeled side) and `blender_by_loop` (the human's moves grouped by loop: the
+tool gives the shape of an edit, the AI reads the intent and asks).
+`mark_seam` / `mark_sharp` with `clear=on` and `clear_annotations()` clear
+what was acted on; `absorb()` brings the strokes from the review Blender.
+The modeler's B1 edit read this way into a copy of round 5: `L2 3/5
+d+21.5%`, `L3 4/5 d+10.2% h-15.6%`, `L4 4/5 d+12.0%`, `L1 6/7 w+0.4%`
+(deeper lobes, the rim kept), seams new on v23-v32 v27-v32. Found on the
+way: a removed vertex's id could come back on a new one when a loop cut
+interpolated it (`+v22` in that read); an id below `next_id` that the last
+sync did not have now gets a fresh one.
+
 ## Part 2: learning from use
 
 What would improve the modeling as the modeler uses the tool, and where each
@@ -260,6 +274,6 @@ piece goes.
 | 2 | Phase 2: pull with falloff, slide, smooth, to sphere (**done**) | the next edits on B1 are shaping, not topology |
 | 3 | Part 2 items 1, 5, 7 (targets, poly budget, session brief) (**done**) | cheap, and each round gets cheaper |
 | 4 | Phase 1 whitelist complete (**done**) | covers the loop work of the next examples |
-| 5 | Phase 5 marks report and annotations | the modeler's way of pointing, made reliable |
+| 5 | Phase 5 marks report and annotations (**done**) | the modeler's way of pointing, made reliable |
 | 6 | Part 2 items 2, 4, 6 (technique library, candidates, editability) | turns B1's lessons into reusable knowledge |
 | 7 | Phase 3 and a transfer test on a new task | when the bow tie is accepted |

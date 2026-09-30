@@ -15,6 +15,8 @@ work of ROADMAP steps 1 to 3. Read this first; the modeler may edit it.
   is the modeler's call.
 - **24, 25**: the AI's deductions from the edit (EXAMPLE.md, "What the
   modeler's edit of B1 teaches"), Provisional until confirmed.
+- The marks' proposed readings (every sync now reports them): sharp or seam
+  on a loop = "this loop", crease = "pinch here". To confirm with the modeler.
 - Which file the next round starts from: the round-5 `B1.blend` or the
   modeler's `human/B1-human-edit.blend` (called "modelagem correta").
 

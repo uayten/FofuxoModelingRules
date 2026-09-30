@@ -44,7 +44,16 @@ def ensure_ids(mesh, snapshot_co=None, next_id=0, write=True):
     nxt = max([next_id - 1, *ids, *known], default=-1) + 1
     fresh = []
     for vid, idxs in by_id.items():
-        if len(idxs) < 2 and vid >= 0:
+        # An id below next_id that the last sync did not have belonged to a
+        # removed vertex: one that comes back (interpolated by a loop cut) is new.
+        stale = snapshot_co is not None and vid not in snapshot_co and 0 <= vid < next_id
+        if len(idxs) < 2 and vid >= 0 and not stale:
+            continue
+        if stale:
+            for i in idxs:
+                ids[i] = nxt
+                fresh.append(nxt)
+                nxt += 1
             continue
         keep = None
         if vid >= 0:

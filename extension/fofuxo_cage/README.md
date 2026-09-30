@@ -74,6 +74,9 @@ result = fofuxo_cage.sync("Laço")
 | `moved`, `deltas` | vertices the push moved, and by how much in percent of the frame |
 | `ops` | the ops applied, with the vertex count of each |
 | `blender_edits`, `blender_deltas` | vertices the human changed in Blender since the last sync, and by how much |
+| `blender_by_loop` | the same moves grouped by the text's loops: `L2 3/5 d+21.5%` (3 of its 5 vertices, d by 21.5% on average), the shape of an edit to read an intent from and ask about |
+| `marks` | edges the human marked (sharp, seam, crease) new or cleared since the last sync, with the proposed reading |
+| `annotations` | Annotate strokes new since the last sync, with the vertices under each |
 | `render` | path of the view sheet (`<object>.png` next to the text) |
 | `issues` | validation results, `ERROR` or `WARN`, with the vertices involved |
 | `frame`, `size`, `count` | the frame, base and evaluated sizes (mm) and counts |
@@ -121,6 +124,29 @@ is editing. The human can always take over: Esc while the input is blocked,
 or **Unlock** in the 3D View sidebar (Fofuxo tab). The next sync then warns
 `human_took_over`: the AI stops and asks. A lock survives a save (the object's
 selectability is kept in a custom property), and `unlock` restores it.
+
+### Marks and annotations
+
+The modeler points at the model in Blender; every sync reads it (ROADMAP,
+Phase 5):
+
+- **Marks** (Mark Sharp, Mark Seam, crease): `marks` lists the ones new or
+  cleared since the last sync. Proposed readings, to confirm with the
+  modeler: sharp or seam on a loop = "this loop" (remove it, move it, look
+  at it); crease = "pinch here". The selection grammar reads them (`mesh
+  translate seam ...`). Once acted on, the AI clears them (`mesh mark_seam
+  seam clear=on`, `mesh mark_sharp sharp clear=on`, `crease crease 0`) and
+  the next sync says so.
+- **Annotations** (the Annotate tool in the 3D View, the scene's
+  annotation): `annotations` lists the strokes new since the last sync with
+  the base vertices whose result lies within 6% of the frame from the
+  stroke, in the stroke's order. A stroke on the mirror copy counts for the
+  modeled side; one drawn in screen space has no depth and comes without
+  vertices (the nearest is named when none is close). `annotations(name)`
+  lists every stroke; `clear_annotations(layer=None)` removes the strokes the
+  AI acted on.
+- In the review Blender both travel back with `absorb()`: marks are the
+  mesh's, the strokes are brought into the AI's scene.
 
 ### Two Blenders: the AI's and the human's review
 
@@ -249,6 +275,7 @@ print(fofuxo_cage.mesh_help())               # the operators and their parameter
 | `fill_grid` | `mesh.fill_grid` | `span`, `offset`, `use_interp_simple`: a hole with a closed border |
 | `delete` | `mesh.delete` | `type`: face (default: the faces and what only they used), vert, edge, edge_face, only_face (leaves loose edges: refused) |
 | `edge_face_add` | `mesh.edge_face_add` (F) | none |
+| `mark_seam`, `mark_sharp` | `mesh.mark_seam`, `mesh.mark_sharp` | `clear`: clear the mark (the AI clears the modeler's marks once acted on) |
 
 The ops that merge or collapse (`edge_collapse`, `merge`, `unsubdivide`)
 leave triangles on a quad cage and are refused there; they are for meshes

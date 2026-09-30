@@ -15,6 +15,7 @@ from . import cage_format, mesh_io, topology, validate
 from . import concept as concept_mod
 from .lock import took_over
 from . import object_ops
+from . import marks as marks_mod
 from . import targets as targets_mod
 from . import ops as ops_mod
 from . import render as render_mod
@@ -57,10 +58,11 @@ def _load_state(path):
         "frame": Frame.from_json(data["frame"]) if "frame" in data else None,
         "concept": data.get("concept"),
         "text": data["text"],
+        "annotations": data.get("annotations", []),
     }
 
 
-def _save_state(path, now, text, frame, concept=None):
+def _save_state(path, now, text, frame, concept=None, annotations=()):
     path.parent.mkdir(parents=True, exist_ok=True)
     data = {
         "version": STATE_VERSION,
@@ -70,6 +72,7 @@ def _save_state(path, now, text, frame, concept=None):
         "frame": frame.to_json(),
         "concept": concept,
         "text": text,
+        "annotations": list(annotations),
     }
     path.write_text(json.dumps(data), "utf-8")
 
@@ -125,6 +128,23 @@ def _deltas(frame, before, after):
         parts = [f"{n}{(y - x) / 10:+.1f}%" for n, x, y in zip("wdh", a, b) if abs(y - x) >= 0.5]
         if parts:
             out.append(f"v{vid} " + " ".join(parts))
+    return out
+
+
+def _by_loop(frame, groups, before, after, moved):
+    """The human's moves grouped by the loops of the text, e.g. "L1 7/7 h+4.0%"
+    (7 of its 7 vertices moved, h by 4% on average): the shape of an edit,
+    for the AI to read an intent from and ask about."""
+    moved = set(moved)
+    out = []
+    for label, ids in groups:
+        hit = [v for v in ids if v in moved and v in before and v in after]
+        if len(hit) < 2:
+            continue
+        d = [[(b - a) / 10 for a, b in zip(frame.to_values(before[v]), frame.to_values(after[v]))] for v in hit]
+        mean = [sum(col) / len(col) for col in zip(*d)]
+        parts = [f"{n}{m:+.1f}%" for n, m in zip("wdh", mean) if abs(m) >= 0.05]
+        out.append(f"{label or 'rest'} {len(hit)}/{len(ids)} " + (" ".join(parts) or "moved, no mean shift"))
     return out
 
 
@@ -282,6 +302,9 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
             report["blender_edits"] = ([f"v{v}" for v in md["moved"]] + [f"+v{v}" for v in md["added"]]
                                        + [f"-v{v}" for v in md["removed"]])
             report["blender_deltas"] = _deltas(frame, state["co"], {v: now["co"][v] for v in md["moved"]})
+            by_loop = _by_loop(frame, cage_format.parse(state["text"]).groups, state["co"], now["co"], md["moved"])
+            if by_loop:
+                report["blender_by_loop"] = by_loop
 
     if push is not None:
         if push["added"] or push["removed"] or push["faces"]:
@@ -358,6 +381,19 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
     if not verbose and "stack_changes" not in report:
         report.pop("modifiers", None)
     return report
+
+
+def annotations(name):
+    """Every Annotate stroke with the vertices under it (not only the new ones)."""
+    obj = bpy.data.objects.get(name)
+    if obj is None or obj.type != "MESH":
+        raise SyncError(f"no mesh object named {name!r}")
+    p = paths(obj)
+    state = _load_state(p["state"])
+    if state is None:
+        raise SyncError(f"sync {name} first: the frame lives in its sync state")
+    ids, _ = mesh_io.ensure_ids(obj.data, state["co"], state["next_id"], write=False)
+    return marks_mod.read(obj, ids, _depsgraph(), state["frame"], seen=None)[0]
 
 
 def edit(name, *lines, **kwargs):
@@ -471,7 +507,14 @@ def _write(obj, p, ids, frame, forms, report, concept=None, render=True):
             report["stack_changes"] = [line for line in now if line not in old]
     p["text"].parent.mkdir(parents=True, exist_ok=True)
     p["text"].write_text(new_text, "utf-8")
-    _save_state(p["state"], mesh_io.mesh_state(obj.data, ids), new_text, frame, concept)
+    # The modeler points: marks new or cleared since the last sync, strokes not seen before.
+    found = marks_mod.diff(cage_format.parse(before["text"]).edges if before else None, cage.edges)
+    if found:
+        report["marks"] = found
+    strokes, seen = marks_mod.read(obj, ids, dg, frame, before["annotations"] if before else [])
+    if strokes:
+        report["annotations"] = strokes
+    _save_state(p["state"], mesh_io.mesh_state(obj.data, ids), new_text, frame, concept, seen)
     report["frame"] = cage.header["frame"]
     report["size"] = cage.header["size"]
     report["count"] = cage.header["count"]

@@ -469,6 +469,25 @@ def replace_from(path, names):
 _KINDS = ("objects", "meshes", "materials", "images", "textures", "node_groups", "collections")
 
 
+def _take_annotations(path):
+    """The human's Annotate strokes in the review become this scene's, so the
+    sync names the vertices under them. Marks need nothing: they are the mesh's."""
+    with bpy.data.libraries.load(str(path), link=False) as (src, dst):
+        dst.annotations = list(src.annotations)
+    loaded = [a for a in dst.annotations if a is not None]
+    if not loaded:
+        return
+    scene = bpy.context.scene
+    old = scene.annotation
+    scene.annotation = loaded[0]
+    for extra in loaded[1:]:
+        bpy.data.annotations.remove(extra)
+    if old is not None and old is not loaded[0] and old.users == 0:
+        name = old.name
+        bpy.data.annotations.remove(old)
+        loaded[0].name = name
+
+
 def _copy_modifiers(src, dst):
     dst.modifiers.clear()
     for m in src.modifiers:
@@ -498,6 +517,7 @@ def absorb(names=None, sync=True):
         return {"changed": False, "note": "the human has not saved the review since it was written or absorbed"}
     names = list(names or state["objects"])
     done = replace_from(path, names)
+    _take_annotations(path)
     state["absorbed"] = mtime
     _save_review_state(state)
     out = {"changed": True, "objects": done}
@@ -507,8 +527,8 @@ def absorb(names=None, sync=True):
             if bpy.data.objects[name].type != "MESH":
                 continue
             r = sync_fn(name, render=False)
-            out[name] = {k: r[k] for k in ("action", "blender_edits", "blender_deltas", "stack_changes", "error")
-                         if k in r}
+            out[name] = {k: r[k] for k in ("action", "blender_edits", "blender_deltas", "blender_by_loop", "stack_changes", "marks",
+                                           "annotations", "error") if k in r}
             out[name]["issues"] = [f"{i['level']} {i['code']} {' '.join(i['verts'])}" for i in r["issues"]]
     say(f"absorbed the human's review: {', '.join(done)}")
     return out

@@ -226,6 +226,14 @@ def main():
     r = fc.sync("Laço")
     check(r["action"] in ("unchanged", "pushed"), f"recovered ({r['action']})")
 
+    print("9a. an id of a removed vertex never comes back")
+    tiny = bpy.data.meshes.new("tiny")
+    tiny.from_pydata([(0, 0, 0), (1, 0, 0), (0, 1, 0)], [], [(0, 1, 2)])
+    tiny.attributes.new(fc.mesh_io.ID_ATTR, "INT", "POINT").data.foreach_set("value", [0, 5, 7])
+    got, fresh = fc.mesh_io.ensure_ids(tiny, {0: (0, 0, 0), 5: (1, 0, 0)}, 8)
+    check(got == [0, 5, 8] and fresh == [8], f"v7, removed at the last sync, comes back as v8 ({got})")
+    bpy.data.meshes.remove(tiny)
+
     print("9. human loop cut")
     old = {i: tuple(v.co) for i, v in enumerate(obj.data.vertices)}
     n_ring = loop_cut(obj, (3, 22))
@@ -688,6 +696,64 @@ def main():
           f"subdivide_edgering cuts a column of quads ({(r.get('ops') or [r.get('error')])[0][:70]})")
     bpy.data.objects.remove(grid)
 
+    print("11k. the modeler points: marks and annotations")
+    fc.sync("Laço")
+    # Blender drops the seam attribute when no edge has one left
+    seam = obj.data.attributes.get("uv_seam") or obj.data.attributes.new("uv_seam", "BOOLEAN", "EDGE")
+    pair_edges = [e for e in obj.data.edges if e.vertices[0] in free and e.vertices[1] in free][:2]
+    names = sorted(f"v{min(ids_list[e.vertices[0]], ids_list[e.vertices[1]])}-v{max(ids_list[e.vertices[0]], ids_list[e.vertices[1]])}"
+                   for e in pair_edges)
+    for e in pair_edges:
+        seam.data[e.index].value = True
+    obj.data.update()
+    r = fc.sync("Laço")
+    check(r.get("marks", {}).get("new", {}).get("seam") == names and "this loop" in r["marks"]["reading"],
+          f"new seams reported with the proposed reading ({r.get('marks')})")
+    check("marks" not in fc.sync("Laço"), "reported once")
+    r = fc.edit("Laço", "mesh mark_seam " + " ".join(names) + " clear=on")
+    check(r["action"] == "pushed" and r.get("marks", {}).get("cleared", {}).get("seam") == names,
+          f"the AI clears them and the sync says so ({r.get('marks')})")
+    r = fc.edit("Laço", f"crease {names[0]} 0.5")
+    check(r.get("marks", {}).get("new", {}).get("crease 0.5") == [names[0]], f"a crease is a mark too ({r.get('marks')})")
+    fc.edit("Laço", f"crease {names[0]} 0")
+
+    dg = bpy.context.evaluated_depsgraph_get()
+    per_vertex = fc.mesh_io.evaluated(obj, dg)[0]
+    va, vb = pick, nbr
+    pts = [obj.matrix_world @ Vector(per_vertex[i]) for i in (va, vb)]
+    annot = bpy.data.annotations.new("Annotations")
+    bpy.context.scene.annotation = annot
+    layer = annot.layers.new("Note")
+    stroke = layer.frames.new(1).strokes.new()
+    stroke.display_mode = "3DSPACE"
+    steps = [pts[0].lerp(pts[1], t / 6) for t in range(7)]
+    stroke.points.add(len(steps))
+    for p_, c in zip(stroke.points, steps):
+        p_.co = c
+    mirrored = layer.frames[0].strokes.new()  # the same stroke drawn on the mirror copy (across Y)
+    mirrored.display_mode = "3DSPACE"
+    mirrored.points.add(len(steps))
+    to_local = obj.matrix_world.inverted()
+    for p_, c in zip(mirrored.points, steps):
+        local = to_local @ c
+        local.y = -local.y  # across the object's own Y plane
+        p_.co = obj.matrix_world @ local
+    r = fc.sync("Laço")
+    notes = r.get("annotations", [])
+    want = {f"v{ids_list[va]}", f"v{ids_list[vb]}"}
+    check(len(notes) == 2 and all(want <= set(n["verts"]) for n in notes),
+          f"each stroke names the vertices under it, on either side of the plane ({notes})")
+    check("annotations" not in fc.sync("Laço") and len(fc.annotations("Laço")) == 2, "new strokes reported once, all listed on request")
+    check(fc.clear_annotations() == 2 and not fc.annotations("Laço"), "the AI clears the strokes it acted on")
+    label, loop_ids = fc.cage_format.parse(text_path.read_text("utf-8")).groups[0]
+    idx = index_of(obj)
+    for vid in loop_ids:  # the human lifts a whole loop in Blender
+        obj.data.vertices[idx[vid]].co.z += 0.0005
+    obj.data.update()
+    r = fc.sync("Laço")
+    check(any(s_.startswith(f"{label} {len(loop_ids)}/{len(loop_ids)} ") and " h+" in f" {s_}"
+              for s_ in r.get("blender_by_loop", [])), f"the human's moves grouped by loop ({r.get('blender_by_loop')})")
+
     for v, co in zip(obj.data.vertices, shape0):  # back to the shape the later checks expect
         v.co = co
     obj.data.update()
@@ -795,6 +861,19 @@ def main():
     moved_vid = sorted(hid)[5]
     human.data.vertices[hid[moved_vid]].co.z += 0.002
     human.modifiers["Subdivision"].render_levels = 3
+    # the human also marks a seam and draws a stroke over the moved vertex
+    hseam = human.data.attributes.get("uv_seam") or human.data.attributes.new("uv_seam", "BOOLEAN", "EDGE")
+    hedge = next(e for e in human.data.edges if hid[moved_vid] in e.vertices)
+    hseam.data[hedge.index].value = True
+    hpair = "v%d-v%d" % tuple(sorted(d.value for d in (human.data.attributes[fc.mesh_io.ID_ATTR].data[i]
+                                                       for i in hedge.vertices)))
+    note = bpy.data.annotations.new("Annotations")
+    bpy.context.scene.annotation = note
+    st = note.layers.new("Note").frames.new(1).strokes.new()
+    st.display_mode = "3DSPACE"
+    st.points.add(2)
+    where = human.matrix_world @ human.data.vertices[hid[moved_vid]].co
+    st.points[0].co, st.points[1].co = where, where
     time.sleep(1.1)  # a save the file's time can tell from the first one
     bpy.ops.wm.save_mainfile()
     bpy.ops.wm.open_mainfile(filepath=ai_file)  # back in the AI's Blender
@@ -804,6 +883,9 @@ def main():
     check(ab["changed"] and rep.get("action") == "pulled" and f"v{moved_vid}" in rep.get("blender_edits", []),
           f"absorb: the human's move comes back as a Blender edit ({rep})")
     check(bpy.data.objects["Laço"].modifiers["Subdivision"].render_levels == 3, "and the modifier change")
+    check(rep.get("marks", {}).get("new", {}).get("seam") == [hpair], f"the human's seam comes back as a mark ({rep.get('marks')})")
+    check(any(f"v{moved_vid}" in n["verts"] for n in rep.get("annotations", [])),
+          f"and the stroke, with the vertex under it ({rep.get('annotations')})")
     check(not [o for o in bpy.data.objects if o.name.startswith("Laço.")] and len(bpy.data.materials) == mats0
           and not [m for m in bpy.data.meshes if m.users == 0], "no leftover objects, meshes or materials")
     check(fc.absorb()["changed"] is False, "a second absorb finds nothing new")
