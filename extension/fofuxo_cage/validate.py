@@ -135,3 +135,34 @@ def check_editability(obj, ids, depsgraph, mirror):
     return [_issue("WARN", "cage_dips", "the cage dips inward under a convex surface: on purpose (a part "
                                         "hugging another, D-057)? If not, it is hard to edit: move the vertex "
                                         "out and let its neighbours carry the shape", dips)]
+
+
+def check_orientation(obj, depsgraph):
+    """A closed result whose faces point inward (negative signed volume): the
+    normals were flipped as a whole. Open results say nothing and are skipped."""
+    import numpy as np
+
+    ev = obj.evaluated_get(depsgraph)
+    me = ev.to_mesh()
+    try:
+        if not len(me.polygons):
+            return []
+        bm = bmesh.new()
+        try:
+            bm.from_mesh(me)
+            if any(e.is_boundary for e in bm.edges):
+                return []
+        finally:
+            bm.free()
+        me.calc_loop_triangles()
+        co = np.empty(len(me.vertices) * 3)
+        me.vertices.foreach_get("co", co)
+        tris = np.empty(len(me.loop_triangles) * 3, dtype=int)
+        me.loop_triangles.foreach_get("vertices", tris)
+    finally:
+        ev.to_mesh_clear()
+    p = co.reshape(-1, 3)[tris.reshape(-1, 3)]
+    volume = np.einsum("ij,ij->i", p[:, 0], np.cross(p[:, 1], p[:, 2])).sum() / 6
+    if volume < 0:
+        return [_issue("WARN", "inside_out", "the faces point inward: mesh normals_make_consistent all")]
+    return []

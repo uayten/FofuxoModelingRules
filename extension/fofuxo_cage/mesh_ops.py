@@ -167,6 +167,10 @@ def _value(param, raw, key, rna, frame):
         if not m:
             raise MeshOpError(f"{key} takes a percentage like 150%, not {raw!r}")
         return float(m[1]) / 100
+    if unit == "text":
+        if not re.fullmatch(r"[\w .-]+", raw):
+            raise MeshOpError(f"{key} takes a name, not {raw!r}")
+        return raw
     if unit == "choice":
         if raw.lower() not in ("above", "below", "none"):
             raise MeshOpError(f"{key} takes above, below or none, not {raw!r}")
@@ -381,6 +385,20 @@ def _select_rim(obj, rim_keys):
             e.select_set(True)
     bmesh.update_edit_mesh(obj.data)
 
+def _vertex_group(assign):
+    def call(kwargs):
+        """Put the selected vertices in (or take them out of) a vertex group, made if missing."""
+        obj = bpy.context.edit_object
+        name = kwargs.get("group", "Group")
+        group = obj.vertex_groups.get(name) or obj.vertex_groups.new(name=name)
+        obj.vertex_groups.active_index = group.index
+        if not assign:
+            return bpy.ops.object.vertex_group_remove_from()
+        bpy.context.tool_settings.vertex_group_weight = kwargs.get("weight", 1.0)
+        return bpy.ops.object.vertex_group_assign()
+    return call
+
+
 def _extract(kwargs):
     """Duplicate the selection and separate the copy into a new object (D-029)."""
     if "FINISHED" not in bpy.ops.mesh.duplicate():
@@ -555,6 +573,26 @@ OPS = {
                                   "only_face (leaves their edges: loose, refused)"),
     }, defaults={"type": "FACE"}),
     "edge_face_add": Op("mesh.edge_face_add", "VERT", "a face from the selected vertices (the F key)"),
+    # Phase 4: normals, vertex groups, UV.
+    "normals_make_consistent": Op("mesh.normals_make_consistent", None, "turn every face outward (the sync warns "
+                                  "when the result is inside out)", {
+        "inside": P("inside", "bool", "turn them inward instead"),
+    }),
+    "flip_normals": Op("mesh.flip_normals", None, "flip the selected faces"),
+    "vertex_group_assign": Op("object.vertex_group_assign", "VERT", "put the selected vertices in a vertex group "
+                              "(made if missing): for Shrinkwrap, Displace, a later rig", {
+        "group": P("group", "text", "the group's name"),
+        "weight": P("weight", "factor", "0 to 1 (default 1)"),
+    }, build=lambda op, values, sel, obj: dict(values), call=_vertex_group(True)),
+    "vertex_group_remove_from": Op("object.vertex_group_remove_from", "VERT", "take the selected vertices out of "
+                                   "a vertex group", {
+        "group": P("group", "text", "the group's name"),
+    }, build=lambda op, values, sel, obj: dict(values), call=_vertex_group(False)),
+    "unwrap": Op("uv.unwrap", None, "unwrap the selected faces along their seams (mark_seam first, e.g. "
+                 "mesh mark_seam sharp)", {
+        "method": P("method", "enum", "angle_based, conformal or minimum_stretch"),
+        "margin": P("margin", "float", "space between islands, 0 to 1"),
+    }),
     # Phase 4/5: marks, so the AI can clear the modeler's once acted on (or mark for the modeler).
     "mark_seam": Op("mesh.mark_seam", "EDGE", "mark the edges as seams", {
         "clear": P("clear", "bool", "clear the mark instead"),
@@ -933,15 +971,19 @@ def check_line(obj, verb, args, line, cage, frame, counter):
     return Runner(obj, line, op, name, terms, values, frame, counter)
 
 
-def crease(obj, terms, value):
-    """Set the crease weight of the selected edges; returns how many."""
+EDGE_WEIGHTS = {"crease": "crease_edge", "bevel_weight": "bevel_weight_edge"}
+
+
+def crease(obj, terms, value, kind="crease"):
+    """Set the crease (or bevel weight) of the selected edges; returns how many."""
     with editing(obj) as ctx:
         try:
             sel = selection.resolve(obj, terms, ctx)
         except SelectionError as e:
             raise MeshOpError(str(e)) from None
         bm = bmesh.from_edit_mesh(obj.data)
-        layer = bm.edges.layers.float.get("crease_edge") or bm.edges.layers.float.new("crease_edge")
+        name = EDGE_WEIGHTS[kind]
+        layer = bm.edges.layers.float.get(name) or bm.edges.layers.float.new(name)
         bm.edges.ensure_lookup_table()
         for i in sel["edges"]:
             bm.edges[i][layer] = value

@@ -325,6 +325,9 @@ print(fofuxo_cage.mesh_help())               # the operators and their parameter
 | `bisect` | `mesh.bisect` | `plane` (`h250`: an axis and a value in permille), `clear` (above, below, none), `fill` |
 | `separate` | `mesh.separate` | `type` (selected, material, loose): the selection becomes a new object |
 | `extract` | `mesh.duplicate` + `mesh.separate` | none: a copy of the selection becomes a new object, the original kept (a part that sits on another, D-029: then `add SHRINKWRAP at first` and `set Shrinkwrap target <part>`) |
+| `normals_make_consistent`, `flip_normals` | the same | `inside`: every face outward (or inward); the sync warns `inside_out` when a closed result points inward |
+| `vertex_group_assign`, `vertex_group_remove_from` | the object ops | `group` (a name, made if missing), `weight` (0 to 1): for Shrinkwrap, Displace, a later rig |
+| `unwrap` | `uv.unwrap` | `method`, `margin`: after `mesh mark_seam ...` (seams from marks: `mesh mark_seam sharp`) |
 | `mark_seam`, `mark_sharp` | `mesh.mark_seam`, `mesh.mark_sharp` | `clear`: clear the mark (the AI clears the modeler's marks once acted on) |
 
 The ops that merge or collapse (`edge_collapse`, `merge`, `unsubdivide`)
@@ -439,6 +442,20 @@ of the half size from the mirror planes), the `cage_dips` vertices, and the
 counts; `compare` puts them side by side. Numbers to compare, not a grade:
 the modeler's E1 wing has a less even margin (cv 0.60) than the modeler's
 B1 edit (0.36). E1's numbers are in `measures.json`.
+
+### Cost per round
+
+```python
+fofuxo_cage.round_start("B1 round 7")
+...
+fofuxo_cage.round_end(tokens=180000)   # tokens from the AI session's usage
+```
+
+Counts minutes, syncs, ops applied, renders and measures (dense
+evaluations) between the two calls, appends them to `<file>.cage/rounds.json`
+and returns a `report_line` for the run's `report.md`: `Cost: 14.2 min, 9
+syncs, 23 ops, 5 renders, 12 measures, 180k tokens.` The tokens come from the
+AI's session; the extension cannot see them.
 
 ### Task targets
 
@@ -607,7 +624,9 @@ forms
   - `mesh <operator> <selection> [key=value ...]`: one of Blender's mesh
     operators; see [Mesh op](#mesh-op).
   - `join <object>`: join another mesh object into this one (it goes away;
-    its vertices get fresh ids). `dissolve <selection>` and
+    its vertices get fresh ids).
+  - `bevel_weight <selection> <value>`: the edges' bevel weight (0 to 1), for
+    a Bevel limited by weight; shown as `bevel` in the edges section. `dissolve <selection>` and
     `cut <vA-vB> [N]` are its aliases for removing and cutting loops.
 
   A place is `first`, `last`, a 1-based position, `before <modifier>` or

@@ -7,6 +7,7 @@
                                           set Mirror merge_threshold 0.1mm, set Mirror use_axis XZ
     apply <modifier>                      apply a modifier to the mesh (destructive)
     crease <selection> <value>            e.g. crease plane-x 1.0, crease v2-v16 0.5
+    bevel_weight <selection> <value>      the edges' bevel weight, for a Bevel limited by weight
     dissolve <selection>                  remove an edge loop (see mesh_ops)
     cut <vA-vB> [N]                       cut N loops across the ring of edge vA-vB
     mesh <operator> <selection> [k=v ...] run a Blender mesh operator (see mesh_ops)
@@ -31,7 +32,7 @@ import bpy
 
 from . import mesh_ops, modifier_info, selection
 
-VERBS = ("add", "remove", "reorder", "set", "apply", "crease", "dissolve", "cut", "mesh", "join")
+VERBS = ("add", "remove", "reorder", "set", "apply", "crease", "bevel_weight", "dissolve", "cut", "mesh", "join")
 # Names Blender gives new modifiers (checked on 5.2), so a batch can refer to
 # a modifier it adds and new modifiers keep their default names (D-006).
 DEFAULT_NAMES = {
@@ -186,21 +187,21 @@ def check_all(obj, lines, cage, frame=None, next_id=0):
             need(args[0])
             names.remove(args[0])
             out.append((line, _applier(obj, args[0])))
-        elif v == "crease":
+        elif v in ("crease", "bevel_weight"):
             if len(args) < 2:
-                raise ObjectOpError(f"{line!r}: expected 'crease <edges> <value>'")
+                raise ObjectOpError(f"{line!r}: expected '{v} <edges> <value>'")
             try:
                 value = float(args[-1])
             except ValueError:
-                raise ObjectOpError(f"{line!r}: the crease value must be a number from 0 to 1") from None
+                raise ObjectOpError(f"{line!r}: the {v} value must be a number from 0 to 1") from None
             if not 0.0 <= value <= 1.0:
-                raise ObjectOpError(f"{line!r}: the crease value must be from 0 to 1")
+                raise ObjectOpError(f"{line!r}: the {v} value must be from 0 to 1")
             try:
                 terms = selection.parse(args[:-1], cage)
                 selection.check(obj.data, [t for t in terms if t[0] != "mark"])
             except selection.SelectionError as e:
                 raise ObjectOpError(f"{line!r}: {e}") from None
-            out.append((line, lambda terms=terms, value=value: f"{_set_crease(obj, terms, value)} edges"))
+            out.append((line, lambda terms=terms, value=value, v=v: f"{_set_crease(obj, terms, value, v)} edges"))
         elif v == "join":
             if len(args) != 1:
                 raise ObjectOpError(f"{line!r}: expected 'join <object>'")
@@ -299,9 +300,9 @@ def _applier(obj, name):
     return run
 
 
-def _set_crease(obj, terms, value):
-    """Set the crease of the edges the selection names; returns how many."""
+def _set_crease(obj, terms, value, kind="crease"):
+    """Set the crease (or bevel weight) of the edges the selection names; returns how many."""
     try:
-        return mesh_ops.crease(obj, terms, value)
+        return mesh_ops.crease(obj, terms, value, kind)
     except mesh_ops.MeshOpError as e:
         raise ObjectOpError(str(e)) from None

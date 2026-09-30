@@ -84,3 +84,8 @@ the next session reads it first, instead of the whole history (fewer tokens;
 - **Do not touch**: files that are records (the modeler's edits, a finished
   round's `.blend`);
 - **Start**: the file to open and the first call.
+
+Each round's `report.md` ends with its cost: `fofuxo_cage.round_start(label)`
+when the round begins, `round_end(tokens=...)` when it ends (the tokens from
+the session's usage); the `report_line` goes in the report (ROADMAP, Part 2,
+item 8).

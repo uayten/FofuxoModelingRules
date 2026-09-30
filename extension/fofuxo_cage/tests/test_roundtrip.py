@@ -1015,6 +1015,43 @@ def main():
     for o in (hat, disc):
         bpy.data.objects.remove(o)
 
+    print("16. normals, edge data, vertex groups, UV (Phase 4)")
+    inside = lambda r_: any(i["code"] == "inside_out" for i in r_["issues"])
+    r = fc.sync("Laço")
+    check(not inside(r), "the bow's result faces outward")
+    r = fc.edit("Laço", "mesh flip_normals all")
+    check(r["action"] == "pushed" and inside(r), f"flipped: the sync warns inside_out ({[i['code'] for i in r['issues']]})")
+    r = fc.edit("Laço", "mesh normals_make_consistent all")
+    check(r["action"] == "pushed" and not inside(r), "normals_make_consistent turns it back out")
+    label = fc.cage_format.parse(text_path.read_text("utf-8")).groups[0][0]
+    r = fc.edit("Laço", f"bevel_weight {label} 0.7")
+    edges = fc.cage_format.parse(text_path.read_text("utf-8")).edges
+    check(r["action"] == "pushed" and any(line.startswith("bevel 0.7") for line in edges),
+          f"bevel weight on a loop, shown in the edges section ({r.get('ops')})")
+    r = fc.edit("Laço", "mesh vertex_group_assign h>500 group=Top weight=0.5")
+    fr = frame_of(obj)
+    top = obj.vertex_groups.get("Top")
+    members = [v for v in obj.data.vertices if top and any(g.group == top.index for g in v.groups)]
+    check(r["action"] == "pushed" and members and all(fr.to_values(v.co)[2] > 500 for v in members)
+          and all(abs(g.weight - 0.5) < 1e-6 for v in members for g in v.groups if g.group == top.index),
+          f"a vertex group from a region, with its weight ({len(members)} vertices)")
+    r = fc.edit("Laço", "mesh vertex_group_remove_from all group=Top")
+    check(r["action"] == "pushed" and not any(g.group == top.index for v in obj.data.vertices for g in v.groups),
+          "and emptied")
+    r = fc.edit("Laço", "mesh mark_seam plane-x")
+    r = fc.edit("Laço", "mesh unwrap all margin=0.02")
+    check(r["action"] == "pushed" and len(obj.data.uv_layers) > 0, f"seams from a selection, then unwrap ({r.get('ops') or r.get('error')})")
+    r = fc.edit("Laço", "mesh vertex_group_assign h>500 group=a/b")
+    check(r["action"] == "error" and "name" in r["error"], "a group name with a slash refused")
+    fc.round_start("test round")
+    fc.edit("Laço", "mesh vertices_smooth L1 factor=0.1")
+    fc.views("Laço", ["front"], render_name="cost")
+    cost = fc.round_end(tokens=1234)
+    rows = json.loads((Path(bpy.data.filepath).with_suffix(".cage") / "rounds.json").read_text("utf-8"))
+    check(cost["syncs"] >= 1 and cost["ops"] >= 1 and cost["renders"] >= 2 and cost["measures"] >= 2
+          and rows[-1]["round"] == "test round" and "1k tokens" in cost["report_line"],
+          f"the round's cost counted and kept ({cost['report_line']})")
+
     print(f"\nsidecar: {text_path.parent}")
     print(text_path.read_text("utf-8")[:2400])
 

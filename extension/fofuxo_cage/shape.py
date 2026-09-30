@@ -91,6 +91,7 @@ def _mesh_arrays(obj):
 
 
 def dense(obj, levels=DENSE_LEVELS):
+    sys.modules[f"{__package__}.rounds"].count("measures")
     with _levels(obj, levels):
         co, _, tris = _mesh_arrays(obj)
     return co, tris

@@ -16,6 +16,7 @@ from . import concept as concept_mod
 from .lock import took_over
 from . import object_ops
 from . import marks as marks_mod
+from . import rounds as rounds_mod
 from . import targets as targets_mod
 from . import ops as ops_mod
 from . import render as render_mod
@@ -368,10 +369,15 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
     report["issues"] += validate.check_mesh(obj, ids, mirror, sides, has_subsurf)
     if has_subsurf and not any(i["level"] == "ERROR" for i in report["issues"]):
         report["issues"] += validate.check_editability(obj, ids, _depsgraph(), mirror)
+    report["issues"] += validate.check_orientation(obj, _depsgraph())
     report["issues"] += targets_mod.budget_issues(obj)  # the task's poly budget (target.md)
     if "Y" in mirror and sides.get("Y") == "+":
         report["issues"].append(_warn("modeled_behind", "the base mesh is on +Y, behind its mirror copy in the "
                                                         "front view: model on -Y (flip(name, 'd'), D-055)"))
+    rounds_mod.count("syncs")
+    rounds_mod.count("ops", len(report.get("ops", [])))
+    if report.get("render"):
+        rounds_mod.count("renders")
     # The push already ran the position checks that check_mesh repeats.
     unique = []
     for issue in report["issues"]:
@@ -627,6 +633,7 @@ def views(name, views=None, render_name=None, focus=None, ghost=False, normals=F
     path = p["render"].with_name(f"{p['render'].stem}.{render_name or 'views'}.png")
     path.parent.mkdir(parents=True, exist_ok=True)
     title = f"{obj.name}   " + "   ".join(render_mod.Camera(v).name for v in views)
+    rounds_mod.count("renders")
     return {"render": str(render_mod.render_views(obj, ids, _depsgraph(), views, path, title,
                                                   focus=focus, ghost=ghost, normals=normals,
                                                   ring_frame=state and state["frame"]))}

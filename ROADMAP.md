@@ -203,9 +203,11 @@ runs under the 3D View override is for the tests:
    `bevel` (width, segments, edges or vertices), `bisect` (a plane given as
    `w 500` or `h 250`).
 3. Split and join: `separate` (the new object synced with its own text and
-   fresh ids), `split`; object `join` as an object op. `rip` picks its side
-   by the mouse and `knife_project` projects from the view: each in only if
-   a test shows it runs from text; the interactive knife has no EXEC mode.
+   fresh ids), `split`; object `join` as an object op. `rip` and
+   `knife_project` tested and left out: `rip` returns PASS_THROUGH without
+   the mouse; `knife_project` finishes without cutting in background (the
+   view's matrices update only when the window draws). `bisect` does the
+   straight cuts.
 4. Sit on another part (D-029): `duplicate` + `separate` the body's faces
    into a new part, then `add SHRINKWRAP` and `set Shrinkwrap target <body>`
    with the stack ops already there.
@@ -215,6 +217,12 @@ runs under the 3D View override is for the tests:
    shrinkwrapped.
 
 ### Phase 4: marks, normals and data
+
+**Status: done (2026-09-29).** `mark_seam`, `mark_sharp`, `crease` and
+`bevel_weight` by selection; `normals_make_consistent`, `flip_normals`, and an
+`inside_out` warning on every sync (a closed result with a negative volume);
+`vertex_group_assign` / `vertex_group_remove_from` with a weight; `unwrap`
+after seams from marks.
 
 - `mark_seam`, `mark_sharp`, crease and bevel weight by selection (the AI
   can mark for the human too).
@@ -300,7 +308,8 @@ piece goes.
    to read, measures to trust, what not to touch. Written at the end of
    each session, read first in the next: fewer tokens than re-reading the
    history, and the modeler can edit it.
-8. **Cost per round.** Time and tokens in each `report.md` (still "not
+8. **(Done: `round_start()` / `round_end()`, `rounds.json`, a line for
+   `report.md`; tokens from the session.) Cost per round.** Time and tokens in each `report.md` (still "not
    measured"), to see whether the tools actually make rounds cheaper.
 9. **Transfer tests.** A new task (the hat, T2) run with and without the
    technique library, judged blind as in T1: do the rules carry to a part
