@@ -351,7 +351,7 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
                 fresh = list(fresh) + more
             if targets:
                 _run_targets(obj, ids, frame, targets, target_lines, now, report)
-            _undo_push(f"Fofuxo Cage: sync {name}")
+            _undo_push(f"LLM sync {name}")
 
     if fresh:
         report["issues"].append(_warn("new_ids", "vertices new since the last sync got fresh ids", fresh))
@@ -603,7 +603,7 @@ def flip(name, axis="d", render=True):
     ids, _ = mesh_io.ensure_ids(obj.data, None, state["next_id"], write=False)
     forms = cage_format.parse(p["text"].read_text("utf-8")).forms
     _write(obj, p, ids, Frame(tuple(axes)), forms, report, state.get("concept"), render)
-    _undo_push(f"Fofuxo Cage: flip {name} {axis}")
+    _undo_push(f"LLM flip {name} {axis}")
     report["issues"] = [i for i in report["issues"] if i["code"] != "modeled_behind"]  # from the sync before
     report["action"] = "flipped"
     report["frame"] = Frame(tuple(axes)).text()

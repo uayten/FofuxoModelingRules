@@ -66,7 +66,7 @@ def lock(name, ui=True):
     obj.hide_select = True
     _state["taken_over"] = False
     names = ", ".join(o.name for o in _locked_objects())
-    _state["message"] = f"Fofuxo Cage: the AI is editing {names}"
+    _state["message"] = f"The LLM is editing {names}"
     if ui and not _state["ui"] and bpy.context.window_manager.windows:  # no windows in background
         _start_block()
     _set_header(_state["message"] + ("   (Esc to take over)" if _state["ui"] else ""))
@@ -123,7 +123,7 @@ class FOFUXO_OT_block_input(bpy.types.Operator):
     """Swallow input while the AI edits; Esc hands control back to the human"""
 
     bl_idname = "fofuxo_cage.block_input"
-    bl_label = "Fofuxo Cage: block input"
+    bl_label = "LLM editing: block input"
 
     def invoke(self, context, event):
         context.window_manager.modal_handler_add(self)
@@ -155,10 +155,10 @@ class FOFUXO_OT_unlock(bpy.types.Operator):
 
 
 class FOFUXO_PT_lock(bpy.types.Panel):
-    bl_label = "Fofuxo Cage"
+    bl_label = "LLM"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Fofuxo"
+    bl_category = "LLM"
 
     def draw(self, context):
         locked = _locked_objects()
@@ -166,7 +166,7 @@ class FOFUXO_PT_lock(bpy.types.Panel):
         if not locked:
             col.label(text="Nothing locked")
             return
-        col.label(text="The AI is editing:", icon="LOCKED")
+        col.label(text="The LLM is editing:", icon="LOCKED")
         for obj in locked:
             col.label(text=obj.name)
         col.operator(FOFUXO_OT_unlock.bl_idname, icon="UNLOCKED")

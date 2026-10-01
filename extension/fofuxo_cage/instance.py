@@ -36,9 +36,12 @@ COLLECT = "review.collect.json"  # the AI asks the human's Blender to save the r
 OPS_LOG = "review.ops.jsonl"  # every operator the human runs in the review, one JSON line each
 RECORD = 0.5  # s, how often the human's Blender copies its new operators to OPS_LOG
 POLL = 3.0  # s, how often a human's Blender looks for the AI instance and updates
-NOTICE = ("Fofuxo Cage: Blender exclusivo da AI",
-          "Esta janela é controlada pela AI. Não edite aqui.",
-          "Para ver ou editar o modelo, a AI abre outro Blender para você.")
+NOTICE = ("Blender de uso exclusivo do LLM",
+          "Esta janela é de uso exclusivo do LLM.",
+          "Para editar ou ver o modelo, requisite acesso na conversa e o seu modelo abrirá",
+          "um novo Blender ou liberará a edição usando essa janela.",
+          "Não feche essa janela enquanto estiver trabalhando em conjunto com a LLM",
+          "na modelagem de um objeto.")
 _state = {"handles": [], "review_seen": None, "update_seen": None, "message": ""}
 
 
@@ -194,7 +197,7 @@ class FOFUXO_OT_ai_screen(bpy.types.Operator):
     """Swallow every input event in the AI's own Blender"""
 
     bl_idname = "fofuxo_cage.ai_screen"
-    bl_label = "Fofuxo Cage: AI screen"
+    bl_label = "LLM screen"
 
     def invoke(self, context, event):
         context.window_manager.modal_handler_add(self)
@@ -442,7 +445,7 @@ def _poll_human():
             release_mcp()
             print("Fofuxo Cage: an AI instance is running; this Blender's MCP server stopped")
         if _pending_update():
-            _set_header("Fofuxo Cage: the AI has a newer version of this review. Fofuxo tab > Load AI update")
+            _set_header("The LLM has a newer version of this review: LLM tab > Load LLM update")
         _answer_collect()
     except Exception as e:  # a poll never breaks the human's Blender
         print(f"Fofuxo Cage: poll failed: {e!r}")
@@ -527,27 +530,27 @@ class FOFUXO_OT_load_update(bpy.types.Operator):
     """Replace the reviewed objects with the AI's newer version (save your own edits first: the AI reads what you save)"""
 
     bl_idname = "fofuxo_cage.load_update"
-    bl_label = "Load AI update"
+    bl_label = "Load LLM update"
 
     def execute(self, context):
         notice = _pending_update()
         if notice is None:
-            self.report({"WARNING"}, "No update from the AI")
+            self.report({"WARNING"}, "No update from the LLM")
             return {"CANCELLED"}
         info = _review_info()
         names = replace_from(info["source"], notice["objects"])
         info["loaded"] = notice["written"]
         context.scene[REVIEW_PROP] = json.dumps(info)
         _set_header(None)
-        self.report({"INFO"}, f"Loaded the AI's update: {', '.join(names)}")
+        self.report({"INFO"}, f"Loaded the LLM's update: {', '.join(names)}")
         return {"FINISHED"}
 
 
 class FOFUXO_PT_review(bpy.types.Panel):
-    bl_label = "Fofuxo Review"
+    bl_label = "LLM review"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Fofuxo"
+    bl_category = "LLM"
 
     @classmethod
     def poll(cls, context):
@@ -556,9 +559,9 @@ class FOFUXO_PT_review(bpy.types.Panel):
     def draw(self, context):
         info = _review_info(context.scene)
         col = self.layout.column()
-        col.label(text="A review of the AI's model", icon="INFO")
+        col.label(text="A review of the LLM's model", icon="INFO")
         col.label(text=Path(info["source"]).name)
-        col.label(text="Save (Ctrl+S): the AI reads it")
+        col.label(text="Done? Tell the LLM: it saves and reads it")
         if _pending_update():
             col.operator(FOFUXO_OT_load_update.bl_idname, icon="IMPORT")
 
