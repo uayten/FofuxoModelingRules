@@ -8,3 +8,9 @@
 # Python
 __pycache__/
 *.pyc
+
+# Fofuxo Cage review session files (the human's Blender; absorbed into the AI's .blend)
+**/*.cage/review.blend
+**/*.cage/review.json
+**/*.cage/review.*.json
+**/*.cage/review.ops.jsonl

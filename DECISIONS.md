@@ -545,6 +545,174 @@ Changes log; `round_start(label, plan=...)` refuses an incomplete plan and
 the sync warns past its budget. With a human in the session the plan waits
 for an OK (this settles step 5's "[TBD]").
 
+### D-066: Read a photo for its form, not for its pixels (Stated, P1)
+
+The P1 hat plan (`models/tasks/chapeu-cowboy/ai/P1/plan.md`) turned a 3/4
+photo into millimeters by perspective arithmetic (camera yaw and pitch,
+projected ellipses, mm per px at the crown's depth). The modeler: "não são
+para serem utilizadas por cima do modelo para 'copiar' a referência. [...]
+Ele observaria a forma, entenderia onde deve ser maior, onde deve ser menor,
+onde deve curvar, quão grande deve ser o vão etc." and "Você precisa escolher
+se precisa de mais referências ou não."
+
+How to apply: from a concept with perspective, read proportions and turning
+points (wider here, narrower there, where it curves and how much, the size of
+an opening against the whole); one known size anchors the scale (a hat: the
+head opening). Other references (front, side, other angles) only help to
+understand the form, never to be traced or overlaid; the AI decides whether
+it needs them and says why in the plan's Read.
+
+### D-067: Start from the lowest cage, add loops where detail asks (Stated, P1)
+
+P1 decided every cut before building (bisects at fixed heights, the top's
+grid moved by computed regions). The modeler: "Todas as peças bem low poly e
+ir acrescentando loops onde eu precisar de mais detalhes."
+
+How to apply: the plan's first cage is the fewest vertices that hold the
+silhouette; each later loop is named in the plan with where it goes and the
+check that calls for it. A loop the check does not call for is not added.
+
+### D-068: In a soft model every part gets Subdivision (Stated, P1)
+
+P1 left the buckle and the band's tail without Subdivision. The modeler's
+build: the hat and brim, the band "com subdivision igual ao chapéu", the tail
+and the buckle each with Mirror and Subdivision.
+
+How to apply: on a soft (not hard-surface) asset, small mirrored parts get
+Subdivision too, and a part wrapped on another uses the same level, so the
+density matches (D-015). D-053 still holds for a cage already dense enough.
+
+### D-069: One render per stage that changes the silhouette (Stated, P1)
+
+P1 had four renders for seven stages, none after the crown; a wrong shape
+would show only a stage later and cost two stages. The modeler asked whether
+more renders would mean less rework; agreed.
+
+How to apply: a stage that changes the outline or an inner form ends with
+one render of it; a stage that does not (thickness, materials, counts) ends
+with measures only. `select()` previews still check which vertices a region
+takes; the render checks the form they make.
+
+### D-070: More than one route can be right (Stated, P1)
+
+P1 built the band as a new cylinder and gave extracting it from the crown
+(D-029) as the other route. The modeler: "Assim como na programação, no 3D
+existem várias formas de se chegar no mesmo resultado, essa alternativa
+também pode estar certa."
+
+How to apply: the plan names the route it takes and why, in one line, and
+the other route when one exists. A route is refused only when it cannot reach
+the form or breaks a hard limit.
+
+### D-071: A cylinder goes to half and Mirror once the details start (Stated, C1)
+
+The C1 hat was kept whole (D-061) through the brim's curl and the crown's
+pinch and crease, every edit made twice, once per side. The modeler: "quando
+começamos a adicionar os detalhes da dobra da aba do chapéu, eu teria deixado
+de lado o cilindro completo e deletaria metade do modelo e aplicaria o
+mirror. o cilindro foi ótimo no começo, mas agora fazer edições nos dois
+lados é muito trabalhoso." Also: no face or vertex count to worry about on
+this hat; the form first.
+
+How to apply: D-061 holds for the start (extrudes and loops around a whole
+cylinder, the cap as a ring around a grid). When the work turns to details
+symmetric in X, cut on the plane through vertices already there (the grid
+lined up by D-062, or a cap refilled so a row of vertices runs on the
+plane), delete the X+ half (D-055) and `add MIRROR`.
+
+
+### D-072: After the modeler's edit, the AI saves, absorbs and closes (Stated, C1)
+
+The modeler edited the C1 hat in the review Blender and said so, without
+saving; `absorb()` found nothing new. The modeler: "coloque na regra que
+depois que eu fizer uma edição, é pra você salvar, importar a edição e
+fechar o blender."
+
+How to apply: when the modeler says the edit is done, `collect()`: their
+Blender saves the review and closes, then `absorb()` brings it in. Never
+close it before its save is in (the edit would be lost).
+For C1 the review Blender predated `collect()`; it was saved with Ctrl+S
+through the screen, then closed.
+
+### D-073: "Delete edge" is Blender's Delete > Edges: it opens a hole (Seen, C1)
+
+The modeler asked, on the C1 hat's top, to "delete" the edge v126-v130; the
+AI ran `dissolve_edges`, which merges the two faces (a 5-sided face, refused
+under Subdivision). The modeler's own edit in the review deleted the edge
+and the faces on it: the patch and half of the mountain's top went away,
+leaving the hole where the side dent is built next (an egg's loop of quads,
+then Grid Fill).
+
+How to apply: "deletar a edge" / X > Edges is `mesh delete <edges>
+type=edge` (faces on it go too); "dissolve" is `dissolve_edges` (faces
+merge). When the wording leaves it open, the hole is the likely intent when
+a new loop or a fill comes next.
+
+### D-074: Close a hole with the fewest faces, shape it after (Seen, C1)
+
+Watched in the C1 review (the middle dent, 343 operators logged): the
+modeler closed the hole first, the ridge extruded in place (E, then cancel
+the move) and pulled to the plane, four faces made with F2, and only then
+gave it its form.
+
+How to apply: a hole or a new region gets its topology with the fewest
+faces (`extrude_region_move` with no move, `edge_face_add`, `fill_grid`);
+the shape comes in later steps, never in the same op.
+
+### D-075: Small steps, each group checked (Seen, approved, C1)
+
+The modeler's middle dent: about 60 moves of 1 to 10 mm in 10 minutes, and a
+look at the result (Object Mode, Subdivision on and off) about every 20 s.
+The AI had computed whole shapes at once and checked once.
+
+How to apply: move in steps of at most about 10 mm; after a group of 3 to 5
+steps, one cheap check of the region (a render of that region or a
+measure). A whole shape computed at once is the exception, said in the plan.
+
+### D-076: Tidy tools before vertex-by-vertex moves (Seen, approved, C1)
+
+The modeler rounded a ring with LoopTools Circle (flatten), evened loops
+with LoopTools Space, slid vertices along the surface with edge and vertex
+slide, and lined a row up by scaling one axis to 0.
+
+How to apply: a ring that should be round: `looptools_circle`; loops spaced
+unevenly: `looptools_space`; a vertex that should stay on the surface:
+`edge_slide` / `vert_slide`; a row that should be level: `resize` with that
+axis at 0%. Moving each vertex by hand comes after these.
+
+### D-077: Undo is part of the method (Seen, approved, C1)
+
+LoopTools Circle was run, undone and run again twice before it stayed.
+
+How to apply: an op that did not give the form is undone and tried again
+with other settings; it counts as a step of the plan, not a leave from it.
+
+### D-078: Both the cage and the result must make sense (Stated, C1)
+
+The modeler turned Subdivision off and on many times "para avaliar a malha
+low poly e a high poly, se ambas faziam sentido. Geralmente eu sempre deixo
+as duas fazendo sentido. O que é fazer sentido? R: As faces estão mais ou
+menos com o mesmo tamanho e espaçamento das faces ao lado."
+
+How to apply: check the cage and the subdivided result, not only the
+result: each face about the size of its neighbours and the loops about
+evenly spaced, in both. An uneven cage is fixed even when the result looks
+right.
+
+### D-079: The modeler records, the AI converts (Stated, C1)
+
+"Acredito que é uma boa alternativa eu ir fazendo e salvando todos os meu
+passos, no final você avalia e converte o que for melhor para você fazer.
+[...] precisamos de um ambiente propício para isso, com ferramentas que você
+consegue utilizar para replicar tudo o que eu faço." In the Sculpt the
+modeler used Grab and Smooth, with large changes.
+
+How to apply: the review Blender records every operator, the ids each one
+moved and how far, and the Sculpt's changes with the brush that made them
+(`review.ops.jsonl`). After a recorded session the AI writes what it
+understood and turns the steps into ops it can run (Grab: `translate` with
+`falloff=smooth` at the brush radius; Smooth: `vertices_smooth` or
+`looptools_relax` on the region), and into techniques when they repeat.
 ### D-060: Marks are messages (Stated, B1)
 
 The modeler points at the model with marks: sharp or seam on a loop means

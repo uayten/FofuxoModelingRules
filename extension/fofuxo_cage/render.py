@@ -8,8 +8,10 @@ and in background mode.
 - render_views: any cameras (yaw, pitch in degrees) x cage / subdivision, for
   3/4 views, views from above or below, the back.
 
-Cage panels label the base vertices with their id numbers, placed away from
-the model with a leader line to each vertex. Each vertex, its leader and its
+Cage panels label what the mesh attributes ask for (labels.py): the vertices
+marked fofuxo_show_vertex with their ids, the edges marked fofuxo_loop as
+loops, the faces marked fofuxo_show_face; labels are placed away from the
+model with a leader line to each point. Each vertex, its leader and its
 label share one color, and vertices that share a face never share a color.
 Leaders avoid crossing each other and passing over other vertices. Parent,
 children and siblings are drawn gray in the subdivision panels and join the
@@ -24,7 +26,7 @@ import numpy as np
 from mathutils import Vector
 
 from . import concept as concept_mod
-from . import font, mesh_io, topology
+from . import font, labels as labels_mod, mesh_io, topology
 
 PANEL = 480
 GAP = 6
@@ -273,10 +275,56 @@ def _context_triangles(obj, depsgraph, extra=()):
     return np.concatenate(tris) if tris else np.zeros((0, 3, 3))
 
 
-def _rings(mesh, base):
-    """Cylinder loops, each drawn as one colored ring with one label instead of
-    a number per vertex: topology.rings on the base mesh."""
-    return topology.rings([tuple(e.vertices) for e in mesh.edges], base)
+ON_PLANE = 1e-5  # m: a base vertex this close to a mirror plane is welded to its copy
+
+
+def _weld_map(base, mirror_axes):
+    """Index in the mirrored cage (_mirror_copies order) -> the index that
+    stands for the same point: a vertex on a mirror plane and its copy across
+    that plane are one vertex, so a loop cut by the plane closes again."""
+    choices = [(1.0, -1.0) if a in mirror_axes else (1.0,) for a in topology.AXES]
+    signs = list(itertools.product(*choices))
+    index = {s: k for k, s in enumerate(signs)}
+    n = len(base)
+    on = np.abs(base) < ON_PLANE
+    weld = np.empty(n * len(signs), dtype=int)
+    for k, s in enumerate(signs):
+        for i in range(n):
+            canon = tuple(1.0 if on[i, j] else s[j] for j in range(3))
+            weld[k * n + i] = index[canon] * n + i
+    return weld
+
+
+def _loops(mesh, base, cage_co, cage_edges, weld):
+    """The runs of edges marked fofuxo_loop, each drawn as one line with one
+    label; a run cut by a mirror plane closes again across it. Nothing is
+    found by itself: the sheet shows what the attributes ask for. Each:
+    {"edges": [(a, b)] in cage indices, "verts": set of base indices,
+    "axis": the axis the loop lies flat across, or None}."""
+    marked = labels_mod.loop_edges(mesh)
+    if not any(marked):
+        return []
+    n, m = len(base), len(mesh.edges)
+    runs = sorted({tuple(sorted((int(weld[a]), int(weld[b]))))
+                   for j, (a, b) in enumerate(cage_edges) if marked[j % m] and weld[a] != weld[b]})
+    parent = {}
+
+    def root(x):
+        while parent.setdefault(x, x) != x:
+            x = parent[x]
+        return x
+
+    for a, b in runs:
+        parent[root(a)] = root(b)
+    groups = {}
+    for a, b in runs:
+        groups.setdefault(root(a), []).append((a, b))
+    out = []
+    for edges in groups.values():
+        pts = sorted({i for e in edges for i in e})
+        flat = [k for k in range(3) if np.ptp(cage_co[pts, k]) < 1e-4]
+        out.append({"edges": edges, "verts": {i % n for i in pts}, "axis": flat[0] if len(flat) == 1 else None})
+    return out
 
 
 class Scene:
@@ -304,8 +352,11 @@ class Scene:
         self.labels = [str(vid) for vid in ids]
         self.colors = _vertex_colors(len(self.base), faces, ids)
         self.poles = _pole_indices(obj, mirror)
-        self.rings = _rings(mesh, self.base)
-        self.whole = not mirror  # the text's L labels start with these rings
+        weld = _weld_map(self.base, mirror)
+        self.loops = _loops(mesh, self.base, self.cage_co, self.cage_edges, weld)
+        self.show = labels_mod.vertex_show(mesh)
+        self.face_centers = [(f"f{p.index}", self.base[list(p.vertices)].mean(axis=0))
+                             for p, on in zip(mesh.polygons, labels_mod.face_show(mesh)) if on]
         # The fit follows the object itself; the related parts may run off the panel.
         pts = [self.cage_co, ev_co]
         self.lo = np.min([p.min(axis=0) for p in pts], axis=0)
@@ -340,33 +391,42 @@ class Scene:
                 panel.line(px[a], px[b], WIRE)
         n = len(self.base)
         hidden = _hidden(panel, self.cage_co, n)
-        # Cylinder loops: colored edges and one label each; their vertices get no numbers.
+        # Marked loops: colored edges and one label each.
         in_ring = set()
         ring_pts, ring_labels, ring_colors, ring_hidden = [], [], [], []
-        for r, (loop, k) in enumerate(self.rings):
+        for r, lp in enumerate(self.loops):
             color = PALETTE[r % len(PALETTE)]
-            for a, b in zip(loop, loop[1:] + loop[:1]):
+            for a, b in lp["edges"]:
                 for off in ((0, 0), (1, 0), (0, 1)):  # 2 px wide
                     panel.line(px[a] + off, px[b] + off, color)
-            in_ring |= set(loop)
+            in_ring |= lp["verts"]
+            loop = sorted({i for e in lp["edges"] for i in e})
             end = max(loop, key=lambda i: (px[i][0], -px[i][1]))  # the loop's point furthest right
             fr = frame or ring_frame  # names a ring by where it sits, the way a region selects it
-            value = fr.axes[k].to_value(self.base[loop, k].mean()) if fr is not None and k is not None else None
+            k = lp["axis"]
+            value = fr.axes[k].to_value(self.cage_co[loop, k].mean()) if fr is not None and k is not None else None
             ring_pts.append(px[end])
-            if value is not None:
-                ring_labels.append(f"{'wdh'[k]}{value:.0f}")
-            else:  # a tilted ring: its loop label, as the cage text has it
-                ring_labels.append(f"L{r + 1}" if self.whole else f"ring{r + 1}")
+            if value is not None:  # flat across an axis: named by its plane, the way a region selects it
+                ring_labels.append(f"{'wdh'[k]}{int(round(value)) or 0}")  # never -0
+            else:
+                ring_labels.append(f"loop{r + 1}")
             ring_colors.append(color)
-            ring_hidden.append(bool(hidden[end]))
+            ring_hidden.append(bool(hidden[end % n]))
         dup = {lab for lab in ring_labels if ring_labels.count(lab) > 1}  # one plane, two rings: add the width
-        for r, (loop, k) in enumerate(self.rings):
+        for r, lp in enumerate(self.loops):
+            k = lp["axis"]
             if ring_labels[r] in dup and k is not None:
                 others = [j for j in range(3) if j != k]
-                co = self.base[loop][:, others]
+                co = self.cage_co[sorted({i for e in lp["edges"] for i in e})][:, others]
                 width = 2 * np.linalg.norm(co - co.mean(axis=0), axis=1).mean() * 1000
                 ring_labels[r] += f" ({width:.0f}mm)"
-        keep = [i for i in range(n) if i not in in_ring]
+        # fofuxo_show_vertex: only the marked vertices get their ids; the others a small dot.
+        keep = [i for i in range(n) if self.show[i]]
+        for i in range(n):
+            if not self.show[i] and i not in in_ring:
+                panel.dot(px[i], WIRE, r=1)
+        face_pts = [panel.to_px(c[None])[0][0] for _, c in self.face_centers]
+        face_labels = [lab for lab, _ in self.face_centers]
         if focus is not None:
             wanted = {str(v).lstrip("v") for v in focus}
             keep = [i for i in range(n) if self.labels[i] in wanted]
@@ -387,9 +447,12 @@ class Scene:
             else:
                 panel.dot(px[i], WIRE, r=2)
                 panel.dot(px[i], self.colors[i], r=1)
-        _place_labels(panel, np.array(list(px[keep]) + ring_pts),
-                      [self.labels[i] for i in keep] + ring_labels, mask,
-                      [self.colors[i] for i in keep] + ring_colors, [hidden[i] for i in keep] + ring_hidden)
+        for p in face_pts:
+            panel.dot(p, TEXT, r=1)
+        _place_labels(panel, np.array(list(px[keep]) + ring_pts + face_pts),
+                      [self.labels[i] for i in keep] + ring_labels + face_labels, mask,
+                      [self.colors[i] for i in keep] + ring_colors + [TEXT] * len(face_pts),
+                      [hidden[i] for i in keep] + ring_hidden + [False] * len(face_pts))
         panel.text(4, 4, f"{cam.name}  cage")
         return panel
 
@@ -669,6 +732,9 @@ def _outline(mask):
 
 # --- concept ------------------------------------------------------------------
 
+PERSPECTIVE = "fofuxo_perspective"  # an Image Empty property: a photo, not an orthographic view
+
+
 def _concept_images():
     """Image Empties in the scene with their pixels."""
     out = []
@@ -720,6 +786,20 @@ def _draw_concept(panel, obj, images):
     return drawn
 
 
+def _draw_photo(panel, pixels):
+    """The whole image fitted into the panel, at no scene scale."""
+    h, w = pixels.shape[:2]
+    k = max(w, h) / PANEL
+    ys, xs = np.mgrid[0:PANEL, 0:PANEL]
+    sx = ((xs - (PANEL - w / k) / 2) * k).astype(int)
+    sy = (h - 1 - ((ys - (PANEL - h / k) / 2) * k)).astype(int)
+    ok = (sx >= 0) & (sx < w) & (sy >= 0) & (sy < h)
+    panel.img[:] = 0.95
+    rgba = pixels[np.clip(sy, 0, h - 1), np.clip(sx, 0, w - 1)]
+    a = rgba[..., 3:4] * ok[..., None]
+    panel.img[:] = panel.img * (1 - a) + rgba[..., :3] * a
+
+
 def _draw_concept_crop(panel, frame, concept):
     """Front view: the concept box stretched over the frame. False if unusable."""
     ys, xs = np.mgrid[0:PANEL, 0:PANEL] + 0.5
@@ -768,11 +848,16 @@ def render_sheet(obj, ids, depsgraph, frame, path, title="", concept=None):
         cage = scene.cage_panel(cam, scale, center, frame)
         sub, mask = scene.sub_panel(cam, scale, center, frame)
         cpanel = Panel(cam, scale, center)
+        photo = [px for e, px in images if e.get(PERSPECTIVE)]
         if cam.name == "front" and concept and _draw_concept_crop(cpanel, frame, concept):
             drawn = True
         else:
-            drawn = _draw_concept(cpanel, obj, images)
-        if drawn:
+            drawn = _draw_concept(cpanel, obj, [i for i in images if not i[0].get(PERSPECTIVE)])
+        if not drawn and cam.name == "front" and photo:
+            # A photo in perspective is looked at beside the model, never under its outline (D-066).
+            _draw_photo(cpanel, photo[0])
+            cpanel.text(4, 4, "concept (perspective, no outline)")
+        elif drawn:
             _grid(cpanel, frame)
             cpanel.img[_outline(mask)] = OUTLINE
             cpanel.text(4, 4, f"{cam.name}  concept + outline")

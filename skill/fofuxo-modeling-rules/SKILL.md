@@ -100,6 +100,11 @@ Every task follows these steps, in order:
      narrows in depth toward the center, a figure eight, not a flat bar.
      Forms that look round in the concept get round cross-sections, not boxy
      ones (D-041).
+   - **a photo or a view in perspective** (D-066): read the form, not the
+     pixels: where it is wider and narrower, where it curves and how much,
+     how big an opening is against the whole. One known size sets the scale
+     (a hat: the head opening). Other references only help to understand
+     the form, never to be traced; decide whether you need them and say why.
    - **techniques**: look each form up in `models/TECHNIQUES.md` and read
      only its block (when, how, how to measure). One marked pending or
      Provisional is a lead, not a rule: use it, measure it, say so.
@@ -119,7 +124,21 @@ Every task follows these steps, in order:
    its check. A step that leaves the plan goes in Changes with its why. A
    check that fails twice in a row stops the build: write what it showed,
    revise the plan, then go on. Past the budget the sync warns
-   (`round_budget`): stop and revise, do not keep trying.
+   (`round_budget`): stop and revise, do not keep trying. The way a modeler
+   builds (watched, C1):
+   - a hole or new region first gets its faces, as few as close it
+     (extrude in place, `edge_face_add`, `fill_grid`); the shape comes after
+     (D-074);
+   - shape in steps of at most about 10 mm, one cheap check of the region
+     every 3 to 5 steps (D-075);
+   - tidy before moving vertices one by one: `looptools_circle` for a ring
+     that should be round, `looptools_space` for uneven loops,
+     `edge_slide` / `vert_slide` to stay on the surface, `resize` with an
+     axis at 0% to level a row (D-076);
+   - an op that did not give the form is undone and tried again; that is a
+     step, not a failure (D-077);
+   - the cage and the subdivided result must both make sense: each face
+     about the size of its neighbours, loops about evenly spaced (D-078).
 7. **Look** — compare the shape with the concept before anything else (D-032).
    Check **each object alone first** (Local View, `/`), then **all together**
    (D-042):
@@ -178,6 +197,9 @@ Every task follows these steps, in order:
   only the top's outer loop, extrude it, scale it in X and Y toward the
   center, Grid Fill the new loop (D-061), the grid turned to run through the
   loop's X and Y extremes, so the mesh could be cut in quarters (D-062).
+  Once the base form is there and the work turns to symmetric details (a
+  hat's brim curl, crown pinch and crease), delete half and add Mirror:
+  editing both sides by hand costs double (D-071).
 - **Model the half on -Y**, the side the front view sees, so the vertices you
   edit are in front of their mirror copy (D-055).
 - Closed volume vs. sheet + Solidify is an artistic choice: follow the concept
@@ -248,11 +270,15 @@ Confirmed so far:
   nothing in the result, either is fine (D-030).
 - **Subdivision only for a cage that needs it**: a cage dense enough to carry
   its shape goes without; Subdivision is for a lower-poly cage (D-053).
+- **On a soft model every part gets Subdivision**: small mirrored parts too,
+  and a part wrapped on another at the same level, so density matches (D-068).
 - The AI adds, removes, sets and reorders modifiers, and applies one only in
   specific cases, decided case by case and reported (D-052).
 
-Use only the modifiers the part needs, always in this order. Helpers insert
-each modifier at its canonical slot regardless of call order.
+Use only the modifiers the part needs, always in this order. `start_part`
+builds its stack in this order; `add` puts a modifier last, as Blender does,
+so place it: `add MIRROR at first`, `add SOLIDIFY after Subdivision` (or
+`reorder <modifier> to <place>` later).
 
 **Order for modeling** (rebuilt from E1):
 

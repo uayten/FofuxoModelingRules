@@ -20,7 +20,10 @@ Copy the skeleton below and fill every section. Numbers, not adjectives:
 
 ## Read
 - Scale: <mm per px of the concept>; the body against the concept: <the
-  landmark compared, the gap in mm and what moves> (D-063).
+  landmark compared, the gap in mm and what moves> (D-063). With no body or
+  a photo in perspective: <the one known size that anchors the scale>, and
+  the form read as proportions, not pixel arithmetic (D-066).
+- Other references: <none, or which views and what they settle> (D-066).
 - The part as drawn: <visible size in mm, turning points of the outline>.
 - What the 3D needs (D-064): <base width × depth, how it tapers, what goes on
   behind a covering part>; the side and top views in numbers.
@@ -28,13 +31,18 @@ Copy the skeleton below and fill every section. Numbers, not adjectives:
 ## Parts
 | part | primitive, size (mm), vertices | at (mm) | on / parent | collection, material |
 
+Route: <the route taken and why, in one line; the other route if one
+exists> (D-070).
+
 ## Stack
 Per part, in order: modifier, its settings, why (rule number).
 
 ## Commands
 Numbered, in order, each the exact call or text line and what it should give
 (counts, the ring it makes, the size it reaches). Group them in stages; each
-stage ends with one check from Checks.
+stage ends with one check from Checks. The first cage is the fewest
+vertices that hold the silhouette; each later loop says where it goes and
+which check calls for it (D-067).
 1. `start_part("<name>", "cylinder", size=(..), vertices=8, at=(..), on="<body>")`: 8 sides, caps of quads
 2. `edit("<name>", "mesh loopcut_slide ring v0-v1 number_cuts=4")`: 6 rings, L1 at the base
 3. `edit("<name>", "mesh resize L2 w=150% d=150% around=selection")`: the brim 120 mm across
@@ -42,8 +50,9 @@ stage ends with one check from Checks.
 
 ## Checks
 After which stage, which measure or render, and the number it must give
-(with a tolerance). One render per stage at most: views of the stage's part
-with the body around it; measures (`sections(name, "rings")`, `profile`,
+(with a tolerance). One render for each stage that changes the outline or an
+inner form, none for the others (D-069): views of the stage's part with the
+body around it; measures (`sections(name, "rings")`, `profile`,
 sizes) are cheaper than renders.
 
 ## Budget

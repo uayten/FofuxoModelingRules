@@ -9,6 +9,8 @@ modeler's use of the tool turns into rules and examples.
   every mark read and answered.
 - Turn each round of feedback into measurable targets, named techniques and
   rules, with less re-reading and fewer tokens per session.
+- Have the AI say how it will build a model, and the modeler judge that
+  method, before any modeling (Part 2, item 11).
 
 ## Contents
 
@@ -362,14 +364,55 @@ piece goes.
 10. **The modeler's edits as examples.** When the modeler fixes an AI cage
     in Blender, save the edit in `human/` (the README convention) and file
     the deltas with their why: each fix is a small example of a technique.
-11. **(Done: SKILL step 5, `skill/fofuxo-modeling-rules/PLAN.md`,
-    `round_start(label, plan=...)`, D-065.) A written plan before modeling.**
-    The T2 runs cost about 180-220k tokens a horn, most of it finding
-    commands by trial. `plan.md` holds the reading in numbers, the parts, the
-    stack in order, the exact commands with what each gives, the checks, a
-    budget, the risks and a Changes log; `round_start` refuses an incomplete
-    plan, the sync warns past the budget, the cost line shows plan against
-    done. Next: the third T2 pair with a plan, to measure the saving.
+11. **The modeling plan, reviewed by the modeler before any modeling
+    (D-065).** The T2 runs cost about 180-220k tokens a horn, most of it
+    finding commands by trial, and two judged pairs showed the method was
+    wrong before the shape was (D-063, D-064). The AI now says how it would
+    build the model and the modeler judges the method first. The horn task
+    (`models/tasks/chifre/`) stays as it is; the plan is validated on a new
+    concept.
+
+    **Built (2026-10-01):** SKILL step 5 and
+    `skill/fofuxo-modeling-rules/PLAN.md` (the sections: Read, Parts, Stack,
+    Commands, Checks, Budget, Risks, Changes); `round_start(label,
+    plan=...)` refuses an incomplete plan, the sync warns past its budget
+    (`round_budget`), the cost line shows plan against done.
+
+    **To validate, in order** (on a new concept, not the dragon: the
+    modeler's choice, 2026-10-01, to see the AI build from nothing):
+    1. **The task.** `models/tasks/chapeu-cowboy/`: `concept.jpg` (a straw
+       cowboy hat, a 3/4 photo: perspective, not an orthographic front),
+       `prompt.md` and `start.blend` with the concept as an Image Empty. No
+       body to sit on and no modeler's part to measure against: the modeler's
+       judgment is the reference. Asked of the modeler before the prompt is
+       written: the size (a real adult hat, or a stylized game asset at
+       another scale) and the poly budget.
+    2. **A plan, written blind.** A fresh context (a subagent) reads
+       `SKILL.md`, `PLAN.md`, the README's op tables and the task, and
+       writes only `models/tasks/chapeu-cowboy/ai/P1/plan.md`; Blender only
+       to read the scene, no modeling call. Not read: `ROADMAP.md`,
+       `DECISIONS.md` (the skill carries the rules), the other tasks' runs.
+    3. **The modeler reviews the method.** The session shows the plan to the
+       modeler in Portuguese, section by section: how the photo is read (the
+       perspective, the crown's pinch and dents, the brim's curl up at the
+       sides and down at front and back, the band), the primitive and how the
+       shape is reached, the modifiers and their order, the commands, the
+       checks, the budget. The modeler marks each one good, wrong or missing,
+       and says how they would build it.
+    4. **The answers become rules.** Each correction of method goes to
+       `DECISIONS.md`, and to `PLAN.md` or `SKILL.md` when it changes how
+       every plan is written. Steps 2-3 again (P2, ...) with the corrected
+       skill until the modeler approves the plan.
+    5. **The approved plan, built.** A run builds it in its own Blender: its
+       cost (minutes, syncs, renders, tokens) against the T2 horns' 180-220k,
+       its Changes log (how far the build left the plan), and the modeler's
+       verdict on the hat.
+
+    **Validated when** the modeler approves the method in at most two
+    reviews and the hat built from it costs at most half of a T2 horn (about
+    100k tokens) and is judged good. A second new concept, chosen by the
+    modeler, then checks that the plan carries. What a review cannot settle
+    goes to the open questions in `DECISIONS.md`.
 
 ## Order
 
@@ -383,4 +426,4 @@ piece goes.
 | 5 | Phase 5 marks report and annotations (**done**) | the modeler's way of pointing, made reliable |
 | 6 | Part 2 items 2, 4, 6 (technique library, candidates, editability) (**done**) | turns B1's lessons into reusable knowledge |
 | 7 | Phase 3 (**built**) and a transfer test on the horn (two pairs **judged**: D-063, D-064) | when the bow tie is accepted |
-| 8 | Part 2 item 11: a written plan before modeling (**done**), then the third T2 pair | the runs cost too much (D-065) |
+| 8 | Part 2 item 11: the modeling plan (**built**), reviewed by the modeler on a new concept (a cowboy hat, from nothing), then built from the approved plan | the runs cost too much, and the method was wrong before the shape (D-063 to D-065) |

@@ -1,0 +1,748 @@
+{
+ "saved": 1790839875.8197248,
+ "operators": [
+  {
+   "op": "MESH_OT_looptools_relax",
+   "name": "Relax",
+   "props": {
+    "input": "selected",
+    "interpolation": "cubic",
+    "iterations": "1",
+    "regular": true
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": false,
+    "deselect_all": true,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     838,
+     388
+    ]
+   }
+  },
+  {
+   "op": "MESH_OT_loop_select",
+   "name": "Loop Select",
+   "props": {
+    "delimit_edge_loop": [
+     "OUTER_CORNERS",
+     "NGONS"
+    ],
+    "delimit_face_loop": [],
+    "extend": false,
+    "deselect": false,
+    "toggle": true,
+    "object_index": 0,
+    "edge_index": 92,
+    "vert_index": -1,
+    "face_index": -1
+   }
+  },
+  {
+   "op": "MESH_OT_loop_select",
+   "name": "Loop Select",
+   "props": {
+    "delimit_edge_loop": [
+     "OUTER_CORNERS",
+     "NGONS"
+    ],
+    "delimit_face_loop": [],
+    "extend": false,
+    "deselect": false,
+    "toggle": true,
+    "object_index": 0,
+    "edge_index": 92,
+    "vert_index": -1,
+    "face_index": -1
+   }
+  },
+  {
+   "op": "MESH_OT_looptools_relax",
+   "name": "Relax",
+   "props": {
+    "input": "selected",
+    "interpolation": "cubic",
+    "iterations": "1",
+    "regular": true
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": false,
+    "deselect_all": true,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     808,
+     395
+    ]
+   }
+  },
+  {
+   "op": "MESH_OT_loop_select",
+   "name": "Loop Select",
+   "props": {
+    "delimit_edge_loop": [
+     "OUTER_CORNERS",
+     "NGONS"
+    ],
+    "delimit_face_loop": [],
+    "extend": false,
+    "deselect": false,
+    "toggle": true,
+    "object_index": 0,
+    "edge_index": 116,
+    "vert_index": -1,
+    "face_index": -1
+   }
+  },
+  {
+   "op": "MESH_OT_loop_select",
+   "name": "Loop Select",
+   "props": {
+    "delimit_edge_loop": [
+     "OUTER_CORNERS",
+     "NGONS"
+    ],
+    "delimit_face_loop": [],
+    "extend": false,
+    "deselect": false,
+    "toggle": true,
+    "object_index": 0,
+    "edge_index": 116,
+    "vert_index": -1,
+    "face_index": -1
+   }
+  },
+  {
+   "op": "MESH_OT_loop_select",
+   "name": "Loop Select",
+   "props": {
+    "delimit_edge_loop": [
+     "OUTER_CORNERS",
+     "NGONS"
+    ],
+    "delimit_face_loop": [],
+    "extend": false,
+    "deselect": false,
+    "toggle": true,
+    "object_index": 0,
+    "edge_index": 123,
+    "vert_index": -1,
+    "face_index": -1
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": true,
+    "deselect_all": false,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     826,
+     434
+    ]
+   }
+  },
+  {
+   "op": "MESH_OT_looptools_relax",
+   "name": "Relax",
+   "props": {
+    "input": "selected",
+    "interpolation": "cubic",
+    "iterations": "1",
+    "regular": true
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": false,
+    "deselect_all": true,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     519,
+     419
+    ]
+   }
+  },
+  {
+   "op": "MESH_OT_select_mode",
+   "name": "Select Mode",
+   "props": {
+    "use_extend": false,
+    "use_expand": false,
+    "type": "VERT",
+    "action": "TOGGLE"
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": false,
+    "deselect_all": true,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     512,
+     440
+    ]
+   }
+  },
+  {
+   "op": "MESH_OT_shortest_path_pick",
+   "name": "Pick Shortest Path",
+   "props": {
+    "edge_mode": "SELECT",
+    "use_face_step": false,
+    "use_topology_distance": false,
+    "use_fill": false,
+    "skip": 0,
+    "nth": 1,
+    "offset": 0,
+    "index": 64
+   }
+  },
+  {
+   "op": "TRANSFORM_OT_translate",
+   "name": "Move",
+   "props": {
+    "value": [
+     0.01063871942460537,
+     -0.01136413961648941,
+     -0.0077825444750487804
+    ],
+    "orient_type": "GLOBAL",
+    "orient_matrix": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "orient_matrix_type": "GLOBAL",
+    "constraint_axis": [
+     false,
+     false,
+     false
+    ],
+    "mirror": true,
+    "use_proportional_edit": false,
+    "proportional_edit_falloff": "SMOOTH",
+    "proportional_size": 0.0630393922328949,
+    "use_proportional_connected": false,
+    "use_proportional_projected": false,
+    "snap": false,
+    "snap_elements": [
+     "VERTEX"
+    ],
+    "use_snap_project": false,
+    "snap_target": "CLOSEST",
+    "use_snap_self": true,
+    "use_snap_edit": true,
+    "use_snap_nonedit": true,
+    "use_snap_selectable": false,
+    "snap_point": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "snap_align": false,
+    "snap_normal": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "gpencil_strokes": false,
+    "cursor_transform": false,
+    "texture_space": false,
+    "remove_on_cancel": false,
+    "use_duplicated_keyframes": false,
+    "view2d_edge_pan": false,
+    "release_confirm": false,
+    "use_accurate": false,
+    "use_automerge_and_split": false,
+    "translate_origin": false
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": false,
+    "deselect_all": true,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     342,
+     599
+    ]
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": true,
+    "deselect_all": false,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     394,
+     670
+    ]
+   }
+  },
+  {
+   "op": "TRANSFORM_OT_translate",
+   "name": "Move",
+   "props": {
+    "value": [
+     0.007123453542590141,
+     -0.007429962046444416,
+     -0.004915290977805853
+    ],
+    "orient_type": "GLOBAL",
+    "orient_matrix": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "orient_matrix_type": "GLOBAL",
+    "constraint_axis": [
+     false,
+     false,
+     false
+    ],
+    "mirror": true,
+    "use_proportional_edit": false,
+    "proportional_edit_falloff": "SMOOTH",
+    "proportional_size": 0.0630393922328949,
+    "use_proportional_connected": false,
+    "use_proportional_projected": false,
+    "snap": false,
+    "snap_elements": [
+     "VERTEX"
+    ],
+    "use_snap_project": false,
+    "snap_target": "CLOSEST",
+    "use_snap_self": true,
+    "use_snap_edit": true,
+    "use_snap_nonedit": true,
+    "use_snap_selectable": false,
+    "snap_point": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "snap_align": false,
+    "snap_normal": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "gpencil_strokes": false,
+    "cursor_transform": false,
+    "texture_space": false,
+    "remove_on_cancel": false,
+    "use_duplicated_keyframes": false,
+    "view2d_edge_pan": false,
+    "release_confirm": false,
+    "use_accurate": false,
+    "use_automerge_and_split": false,
+    "translate_origin": false
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": false,
+    "deselect_all": true,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     447,
+     589
+    ]
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": true,
+    "deselect_all": false,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     470,
+     630
+    ]
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": false,
+    "deselect_all": true,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     482,
+     635
+    ]
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": true,
+    "deselect_all": false,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     455,
+     568
+    ]
+   }
+  },
+  {
+   "op": "TRANSFORM_OT_translate",
+   "name": "Move",
+   "props": {
+    "value": [
+     0.0025687129236757755,
+     -0.0027697004843503237,
+     -0.0031622019596397877
+    ],
+    "orient_type": "GLOBAL",
+    "orient_matrix": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "orient_matrix_type": "GLOBAL",
+    "constraint_axis": [
+     false,
+     false,
+     false
+    ],
+    "mirror": true,
+    "use_proportional_edit": false,
+    "proportional_edit_falloff": "SMOOTH",
+    "proportional_size": 0.0630393922328949,
+    "use_proportional_connected": false,
+    "use_proportional_projected": false,
+    "snap": false,
+    "snap_elements": [
+     "VERTEX"
+    ],
+    "use_snap_project": false,
+    "snap_target": "CLOSEST",
+    "use_snap_self": true,
+    "use_snap_edit": true,
+    "use_snap_nonedit": true,
+    "use_snap_selectable": false,
+    "snap_point": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "snap_align": false,
+    "snap_normal": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "gpencil_strokes": false,
+    "cursor_transform": false,
+    "texture_space": false,
+    "remove_on_cancel": false,
+    "use_duplicated_keyframes": false,
+    "view2d_edge_pan": false,
+    "release_confirm": false,
+    "use_accurate": false,
+    "use_automerge_and_split": false,
+    "translate_origin": false
+   }
+  },
+  {
+   "op": "TRANSFORM_OT_translate",
+   "name": "Move",
+   "props": {
+    "value": [
+     -0.0002732828725129366,
+     0.00417424738407135,
+     -0.0009606434032320976
+    ],
+    "orient_type": "GLOBAL",
+    "orient_matrix": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "orient_matrix_type": "GLOBAL",
+    "constraint_axis": [
+     false,
+     false,
+     false
+    ],
+    "mirror": true,
+    "use_proportional_edit": false,
+    "proportional_edit_falloff": "SMOOTH",
+    "proportional_size": 0.0630393922328949,
+    "use_proportional_connected": false,
+    "use_proportional_projected": false,
+    "snap": false,
+    "snap_elements": [
+     "VERTEX"
+    ],
+    "use_snap_project": false,
+    "snap_target": "CLOSEST",
+    "use_snap_self": true,
+    "use_snap_edit": true,
+    "use_snap_nonedit": true,
+    "use_snap_selectable": false,
+    "snap_point": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "snap_align": false,
+    "snap_normal": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "gpencil_strokes": false,
+    "cursor_transform": false,
+    "texture_space": false,
+    "remove_on_cancel": false,
+    "use_duplicated_keyframes": false,
+    "view2d_edge_pan": false,
+    "release_confirm": false,
+    "use_accurate": false,
+    "use_automerge_and_split": false,
+    "translate_origin": false
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": false,
+    "deselect_all": true,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     769,
+     558
+    ]
+   }
+  },
+  {
+   "op": "VIEW3D_OT_select",
+   "name": "Select",
+   "props": {
+    "extend": false,
+    "deselect": false,
+    "toggle": true,
+    "deselect_all": false,
+    "select_passthrough": false,
+    "center": false,
+    "enumerate": false,
+    "object": false,
+    "location": [
+     775,
+     608
+    ]
+   }
+  },
+  {
+   "op": "TRANSFORM_OT_translate",
+   "name": "Move",
+   "props": {
+    "value": [
+     0.000550650991499424,
+     0.012305677868425846,
+     -0.0020474488846957684
+    ],
+    "orient_type": "GLOBAL",
+    "orient_matrix": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "orient_matrix_type": "GLOBAL",
+    "constraint_axis": [
+     false,
+     false,
+     false
+    ],
+    "mirror": true,
+    "use_proportional_edit": false,
+    "proportional_edit_falloff": "SMOOTH",
+    "proportional_size": 0.0630393922328949,
+    "use_proportional_connected": false,
+    "use_proportional_projected": false,
+    "snap": false,
+    "snap_elements": [
+     "VERTEX"
+    ],
+    "use_snap_project": false,
+    "snap_target": "CLOSEST",
+    "use_snap_self": true,
+    "use_snap_edit": true,
+    "use_snap_nonedit": true,
+    "use_snap_selectable": false,
+    "snap_point": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "snap_align": false,
+    "snap_normal": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "gpencil_strokes": false,
+    "cursor_transform": false,
+    "texture_space": false,
+    "remove_on_cancel": false,
+    "use_duplicated_keyframes": false,
+    "view2d_edge_pan": false,
+    "release_confirm": false,
+    "use_accurate": false,
+    "use_automerge_and_split": false,
+    "translate_origin": false
+   }
+  },
+  {
+   "op": "OBJECT_OT_editmode_toggle",
+   "name": "Edit Mode",
+   "props": {}
+  }
+ ]
+}

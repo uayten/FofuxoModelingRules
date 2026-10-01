@@ -1026,9 +1026,43 @@ def main():
     mm = next(m for m in spike.modifiers if m.type == "MIRROR")
     check(abs(mm.merge_threshold - 0.0001) < 1e-9 and mm.use_clip, "add MIRROR: merge 0.1 mm and clipping (D-054)")
     bpy.data.objects.remove(spike)
-    rings = fc.render._rings(hat.data, fc.render.np.array([tuple(v.co) for v in hat.data.vertices]))
+    rings = fc.topology.rings([tuple(e.vertices) for e in hat.data.edges],
+                              fc.render.np.array([tuple(v.co) for v in hat.data.vertices]))
     check(len(rings) == 4 and all(len(loop) == 16 and k == 2 for loop, k in rings),
-          f"the view finds its 4 cylinder loops, drawn as rings ({[len(loop) for loop, _ in rings]})")
+          f"topology finds the cylinder's 4 loops ({[len(loop) for loop, _ in rings]})")
+    half = hat.copy()
+    half.data = hat.data.copy()
+    bpy.context.scene.collection.objects.link(half)
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(half.data)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.x > 1e-6], context="VERTS")
+    for v in bm.verts:
+        if abs(v.co.x) < 1e-6:
+            v.co.x = 0.0
+    bm.to_mesh(half.data)
+    bm.free()
+    half.modifiers.new("Mirror", "MIRROR")
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    scene = fc.render.Scene(half, list(range(len(half.data.vertices))), depsgraph)
+    check(not scene.loops and not any(scene.show), "no attributes: the sheet labels nothing by itself")
+    ring_co = {tuple(round(c, 6) for c in hat.data.vertices[i].co) for i in rings[0][0]}
+    on_ring = [tuple(round(c, 6) for c in v.co) in ring_co for v in half.data.vertices]
+    attr = half.data.attributes.new(fc.labels.LOOP, "BOOLEAN", "EDGE")
+    rim = [e.index for e in half.data.edges
+           if all(on_ring[i] for i in e.vertices)]
+    for j in rim:
+        attr.data[j].value = True
+    show = half.data.attributes.new(fc.labels.SHOW_VERTEX, "BOOLEAN", "POINT")
+    show.data[0].value = True
+    scene = fc.render.Scene(half, list(range(len(half.data.vertices))), depsgraph)
+    check(len(scene.loops) == 1 and len(scene.loops[0]["edges"]) == 16 and scene.loops[0]["axis"] == 2
+          and scene.show[0] and not any(scene.show[1:]),
+          f"fofuxo_loop on a half's rim: one loop, closed across the mirror ({[len(lp['edges']) for lp in scene.loops]} edges), "
+          "fofuxo_show_vertex labels only its vertex")
+    check(fc.labels.shown([1, 1, 2, 0, 2]) == [False, False, True, False, True] and not any(fc.labels.shown([0, 0])),
+          "levels: only the highest level present is shown, 0 never")
+    bpy.data.objects.remove(half)
     for line in ("mesh delete faces h>999",                  # the modeler's way to a cap: the rim stays,
                  "mesh extrude_scale h>999 w=80% d=80%",     # E, S, Shift+Z: it closes toward the axis,
                  "mesh fill_grid border span=4"):            # then Grid Fill on the new loop

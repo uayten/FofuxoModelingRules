@@ -177,6 +177,7 @@ python extension/fofuxo_cage/launcher.py models/tasks/laco/ai/B1-opus-cage/B1.bl
 ```python
 fofuxo_cage.review(["Concept", "Laço", "Laço Nó"])   # default: every object in the scene
 fofuxo_cage.absorb()                                  # what the human saved comes back
+fofuxo_cage.collect()                                 # the human says they edited: their Blender saves, closes, absorb
 ```
 
 - `review(names)` saves the AI's file and opens a normal Blender that loads
@@ -194,6 +195,25 @@ fofuxo_cage.absorb()                                  # what the human saved com
   nothing new returns `{"changed": false}`. References between the objects
   (a Mirror's object, a parent) and materials go to the AI's own datablocks;
   nothing loaded is left behind.
+- `collect(names=None, close=True, timeout=20)`: once the human says they
+  edited the review, the AI does not wait for a Ctrl+S. It writes
+  `review.collect.json`; the human's Blender sees it on its next poll (every
+  3 s), saves the review and, with `close`, quits; then `absorb()` runs and
+  the result says `closed`. A Blender started with an older Fofuxo Cage does
+  not answer: `collect` stops after `timeout` and says so.
+- The review Blender records the human's work: every 0.5 s it copies the
+  operators new in Blender's own history (which keeps only the last few) to
+  `review.ops.jsonl`, one line each with its settings, and an `UNDO` or
+  `REDO` line on each undo and redo. Each operator line also carries
+  `selected` (the vertex ids selected in Edit Mode) and `moved` (`{id: [dw,
+  dd, dh]}` in mm, every vertex that moved since the last line). Sculpt
+  strokes, which Blender does not list, come as `SCULPT` lines: the brush,
+  `radius_px`, `strength` and `moved`, one line per stroke (the changes until
+  a 0.5 s pause). A change of topology writes a `TOPOLOGY` line. `absorb()`
+  (and so `collect()`) returns the lines since the last absorb as
+  `operators`: the steps, not only the result. A Grab stroke reads as
+  `translate ... falloff=smooth` over the region it moved; Smooth as
+  `vertices_smooth` or `looptools_relax` on it.
 
 ## Other views
 
@@ -243,8 +263,11 @@ and each cap is the modeler's: the rim extruded and scaled in X and Y to 80%
 extremes (D-062; the vertex count must divide by 4). Other primitives are cut on the mirror planes with `bisect` so only the
 modeled side stays (`mirror="XY"` by default; X-, Y-, Z+ unless `sides` says
 otherwise: the front view sees -Y, D-055) and get Mirror (clipping, merge
-0.1 mm, D-054; a Mirror added later with `add MIRROR` gets the same). Then
-Subdivision, the frame set to the size, and a sync. `parent` parents the part
+0.1 mm, D-054; a Mirror added later with `add MIRROR` gets the same).
+`mirror` takes the axes to keep mirrored (`"X"`, `"XY"`, `""` for none).
+Then Subdivision at level `subdivision` (`0`: none), the frame set to the
+size, and a sync. `at` is in mm, in the parent's space when `parent` is
+given. `parent` parents the part
 and puts it in the parent's collection; `on="Dragão Corpo"` (D-063) puts it
 in the collection of the body it sits on, without parenting, and every sheet
 draws that body around it. The part is then edited
@@ -530,7 +553,7 @@ background mode. About 0.7 s for the bow tie.
 
 | | cage | subdivision | concept |
 |---|---|---|---|
-| **front** (w, h) | mirrored cage, base vertices with id numbers, poles ringed | shaded result, base cage wire | concept box + the result's outline in blue |
+| **front** (w, h) | mirrored cage; the ids, loops and faces the attributes mark (below), poles ringed | shaded result, base cage wire | concept box + the result's outline in blue |
 | **top** (w, d) | same | same | an Image Empty facing this view, if any |
 | **side** (d, h) | same | same | same |
 
@@ -555,6 +578,38 @@ Vertex labels:
 Every panel carries the frame grid: thin lines at a step that stays readable,
 the mirror plane (0) in blue and the frame edge (1000) in orange, labeled in
 permille. All panels share one scale.
+
+**Loops and labels.** The sheet labels nothing by itself: what it shows
+lives in mesh attributes (Object Data > Attributes), which the modeler edits
+by hand and the AI by call. Without them the cage is drawn with a small dot
+per vertex and no numbers.
+
+| attribute | domain, type | effect |
+|---|---|---|
+| `fofuxo_show_vertex` | Vertex, Integer | the vertex's id |
+| `fofuxo_loop` | Edge, Integer | each connected run of shown edges is drawn as one colored loop with one label: the value of its plane when it lies flat across an axis (`h80`), else `loop1`, `loop2`... A loop cut by a mirror plane closes again across it (a vertex on the plane and its copy are one) |
+| `fofuxo_show_face` | Face, Integer | the face's id (`f12`, as in the text's faces) at its center |
+
+Each works in **levels**: only the elements with the highest value present
+in that attribute are shown, and 0 never is. Mark everything with 1 to see
+the whole; mark a few with 2 and the sheet narrows to them; mark others with
+3 later and they become the view; mark everything with 1 again to reset.
+
+```python
+fofuxo_cage.show("Chapéu", "all", level=1)              # every id
+fofuxo_cage.show("Chapéu", "h>555")                     # a new level (highest + 1): only these
+fofuxo_cage.show("Chapéu", "v12", level="add")          # join the level shown
+fofuxo_cage.mark_loop("Chapéu", "loop v117-v118")       # a new level: only this loop
+fofuxo_cage.mark_loop("Chapéu", "v86 v87 v88 v135 v89", level="add")  # and the brim's edge: loop2
+fofuxo_cage.show_faces("Chapéu", "faces h>800")
+```
+
+The calls take any selection (`select()`'s terms): `mark_loop` marks the
+edges between selected vertices, `show_faces` the faces whose vertices are
+all selected. `level=None` opens a new level, `"add"` joins the one shown,
+`0` clears, a number sets it; every call opens a new level by default, so a
+stage shows only what it works on. A Boolean attribute made by hand counts
+as level 1.
 
 ## Text format
 

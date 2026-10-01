@@ -1,0 +1,10437 @@
+[
+ {
+  "t": 1790840157.38,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    726,
+    299
+   ]
+  }
+ },
+ {
+  "t": 1790840166.47,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    589,
+    430
+   ]
+  }
+ },
+ {
+  "t": 1790840166.47,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840172.0,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 513,
+   "xmax": 656,
+   "ymin": 478,
+   "ymax": 606,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840173.01,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.020744409412145615,
+    -1.1196421567660764e-09,
+    0.008333222940564156
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840174.01,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 440,
+   "xmax": 650,
+   "ymin": 407,
+   "ymax": 515,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840175.02,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.010460855439305305,
+    -3.5733258019199354e-10,
+    0.0026595392264425755
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840176.02,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 399,
+   "xmax": 534,
+   "ymin": 377,
+   "ymax": 420,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840177.03,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0037233554758131504,
+    -2.858660808069402e-10,
+    0.0021276313345879316
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840178.54,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 380,
+   "xmax": 608,
+   "ymin": 440,
+   "ymax": 644,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840180.55,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0037233554758131504,
+    -1.905773872046268e-10,
+    0.001418420928530395
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840182.06,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    680,
+    216
+   ]
+  }
+ },
+ {
+  "t": 1790840182.56,
+  "op": "MESH_OT_loopcut_slide",
+  "name": "Loop Cut and Slide",
+  "props": {
+   "MESH_OT_loopcut": {
+    "number_cuts": 1,
+    "smoothness": 0.0,
+    "falloff": "INVERSE_SQUARE",
+    "object_index": -1,
+    "edge_index": -1,
+    "mesh_select_mode_init": [
+     false,
+     false,
+     false
+    ]
+   },
+   "TRANSFORM_OT_edge_slide": {
+    "value": 0.0,
+    "single_side": false,
+    "use_even": false,
+    "flipped": false,
+    "use_clamp": true,
+    "mirror": false,
+    "snap": false,
+    "snap_elements": [
+     "INCREMENT"
+    ],
+    "use_snap_project": false,
+    "snap_target": "CLOSEST",
+    "use_snap_self": true,
+    "use_snap_edit": true,
+    "use_snap_nonedit": true,
+    "use_snap_selectable": false,
+    "snap_point": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "correct_uv": true,
+    "release_confirm": false,
+    "use_accurate": false
+   }
+  }
+ },
+ {
+  "t": 1790840185.58,
+  "op": "MESH_OT_select_mode",
+  "name": "Select Mode",
+  "props": {
+   "use_extend": false,
+   "use_expand": false,
+   "type": "EDGE",
+   "action": "TOGGLE"
+  }
+ },
+ {
+  "t": 1790840187.09,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    591,
+    374
+   ]
+  }
+ },
+ {
+  "t": 1790840187.09,
+  "op": "MESH_OT_select_mode",
+  "name": "Select Mode",
+  "props": {
+   "use_extend": false,
+   "use_expand": false,
+   "type": "VERT",
+   "action": "TOGGLE"
+  }
+ },
+ {
+  "t": 1790840187.59,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    587,
+    372
+   ]
+  }
+ },
+ {
+  "t": 1790840189.61,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.010467948392033577,
+    0.006127579603344202,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840190.62,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    543,
+    283
+   ]
+  }
+ },
+ {
+  "t": 1790840191.12,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.008425421081483364,
+    0.0017872108146548271,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840191.63,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    536,
+    400
+   ]
+  }
+ },
+ {
+  "t": 1790840192.13,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    523,
+    391
+   ]
+  }
+ },
+ {
+  "t": 1790840193.64,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    533,
+    388
+   ]
+  }
+ },
+ {
+  "t": 1790840194.14,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    519,
+    393
+   ]
+  }
+ },
+ {
+  "t": 1790840194.65,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    532,
+    392
+   ]
+  }
+ },
+ {
+  "t": 1790840195.65,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.007914789952337742,
+    -0.0017872108146548271,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840218.78,
+  "op": "MESH_OT_select_mode",
+  "name": "Select Mode",
+  "props": {
+   "use_extend": false,
+   "use_expand": false,
+   "type": "EDGE",
+   "action": "TOGGLE"
+  }
+ },
+ {
+  "t": 1790840219.79,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    689,
+    250
+   ]
+  }
+ },
+ {
+  "t": 1790840220.29,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    686,
+    208
+   ]
+  }
+ },
+ {
+  "t": 1790840224.31,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    504,
+    209
+   ]
+  }
+ },
+ {
+  "t": 1790840224.81,
+  "op": "MESH_OT_select_mode",
+  "name": "Select Mode",
+  "props": {
+   "use_extend": false,
+   "use_expand": false,
+   "type": "VERT",
+   "action": "TOGGLE"
+  }
+ },
+ {
+  "t": 1790840224.81,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    493,
+    206
+   ]
+  }
+ },
+ {
+  "t": 1790840228.83,
+  "op": "MESH_OT_select_mode",
+  "name": "Select Mode",
+  "props": {
+   "use_extend": false,
+   "use_expand": false,
+   "type": "EDGE",
+   "action": "TOGGLE"
+  }
+ },
+ {
+  "t": 1790840228.83,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    582,
+    162
+   ]
+  }
+ },
+ {
+  "t": 1790840230.86,
+  "op": "MESH_OT_extrude_region_move",
+  "name": "Extrude Region and Move",
+  "props": {
+   "MESH_OT_extrude_region": {
+    "use_normal_flip": false,
+    "use_dissolve_ortho_edges": false,
+    "mirror": false
+   },
+   "TRANSFORM_OT_translate": {
+    "value": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "orient_type": "GLOBAL",
+    "orient_matrix": [
+     [
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "orient_matrix_type": "GLOBAL",
+    "constraint_axis": [
+     false,
+     false,
+     false
+    ],
+    "mirror": false,
+    "use_proportional_edit": false,
+    "proportional_edit_falloff": "SMOOTH",
+    "proportional_size": 1.0,
+    "use_proportional_connected": false,
+    "use_proportional_projected": false,
+    "snap": false,
+    "snap_elements": [
+     "INCREMENT"
+    ],
+    "use_snap_project": false,
+    "snap_target": "CLOSEST",
+    "use_snap_self": true,
+    "use_snap_edit": true,
+    "use_snap_nonedit": true,
+    "use_snap_selectable": false,
+    "snap_point": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "snap_align": false,
+    "snap_normal": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "gpencil_strokes": false,
+    "cursor_transform": false,
+    "texture_space": false,
+    "remove_on_cancel": false,
+    "use_duplicated_keyframes": false,
+    "view2d_edge_pan": false,
+    "release_confirm": false,
+    "use_accurate": false,
+    "use_automerge_and_split": false,
+    "translate_origin": false
+   }
+  }
+ },
+ {
+  "t": 1790840245.94,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 459,
+   "xmax": 744,
+   "ymin": 476,
+   "ymax": 637,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840246.95,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.005417580716311932,
+    -1.6543174816141537e-11,
+    0.0001231268106494099
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840248.46,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 609,
+   "xmax": 662,
+   "ymin": 250,
+   "ymax": 306,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840249.97,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.007756991311907768,
+    -5.955542725644136e-10,
+    0.004432565066963434
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840250.98,
+  "op": "SCULPT_OT_sculptmode_toggle",
+  "name": "Sculpt Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840254.0,
+  "op": "WM_OT_radial_control",
+  "name": "Radial Control",
+  "props": {
+   "data_path_primary": "tool_settings.sculpt.brush.size",
+   "data_path_secondary": "tool_settings.sculpt.unified_paint_settings.size",
+   "use_secondary": "tool_settings.sculpt.unified_paint_settings.use_unified_size",
+   "rotation_path": "tool_settings.sculpt.brush.texture_slot.angle",
+   "color_path": "tool_settings.sculpt.brush.cursor_color_add",
+   "fill_color_path": "",
+   "fill_color_override_path": "",
+   "fill_color_override_test_path": "",
+   "zoom_path": "",
+   "image_id": "tool_settings.sculpt.brush",
+   "secondary_tex": false,
+   "release_confirm": false
+  }
+ },
+ {
+  "t": 1790840255.51,
+  "op": "WM_OT_radial_control",
+  "name": "Radial Control",
+  "props": {
+   "data_path_primary": "tool_settings.sculpt.brush.size",
+   "data_path_secondary": "tool_settings.sculpt.unified_paint_settings.size",
+   "use_secondary": "tool_settings.sculpt.unified_paint_settings.use_unified_size",
+   "rotation_path": "tool_settings.sculpt.brush.texture_slot.angle",
+   "color_path": "tool_settings.sculpt.brush.cursor_color_add",
+   "fill_color_path": "",
+   "fill_color_override_path": "",
+   "fill_color_override_test_path": "",
+   "zoom_path": "",
+   "image_id": "tool_settings.sculpt.brush",
+   "secondary_tex": false,
+   "release_confirm": false
+  }
+ },
+ {
+  "t": 1790840256.52,
+  "op": "WM_OT_radial_control",
+  "name": "Radial Control",
+  "props": {
+   "data_path_primary": "tool_settings.sculpt.brush.size",
+   "data_path_secondary": "tool_settings.sculpt.unified_paint_settings.size",
+   "use_secondary": "tool_settings.sculpt.unified_paint_settings.use_unified_size",
+   "rotation_path": "tool_settings.sculpt.brush.texture_slot.angle",
+   "color_path": "tool_settings.sculpt.brush.cursor_color_add",
+   "fill_color_path": "",
+   "fill_color_override_path": "",
+   "fill_color_override_test_path": "",
+   "zoom_path": "",
+   "image_id": "tool_settings.sculpt.brush",
+   "secondary_tex": false,
+   "release_confirm": false
+  }
+ },
+ {
+  "t": 1790840257.52,
+  "op": "WM_OT_radial_control",
+  "name": "Radial Control",
+  "props": {
+   "data_path_primary": "tool_settings.sculpt.brush.size",
+   "data_path_secondary": "tool_settings.sculpt.unified_paint_settings.size",
+   "use_secondary": "tool_settings.sculpt.unified_paint_settings.use_unified_size",
+   "rotation_path": "tool_settings.sculpt.brush.texture_slot.angle",
+   "color_path": "tool_settings.sculpt.brush.cursor_color_add",
+   "fill_color_path": "",
+   "fill_color_override_path": "",
+   "fill_color_override_test_path": "",
+   "zoom_path": "",
+   "image_id": "tool_settings.sculpt.brush",
+   "secondary_tex": false,
+   "release_confirm": false
+  }
+ },
+ {
+  "t": 1790840284.28,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840289.81,
+  "op": "MESH_OT_loopcut_slide",
+  "name": "Loop Cut and Slide",
+  "props": {
+   "MESH_OT_loopcut": {
+    "number_cuts": 1,
+    "smoothness": 0.0,
+    "falloff": "INVERSE_SQUARE",
+    "object_index": -1,
+    "edge_index": -1,
+    "mesh_select_mode_init": [
+     false,
+     false,
+     false
+    ]
+   },
+   "TRANSFORM_OT_edge_slide": {
+    "value": 0.0,
+    "single_side": false,
+    "use_even": false,
+    "flipped": false,
+    "use_clamp": true,
+    "mirror": false,
+    "snap": false,
+    "snap_elements": [
+     "INCREMENT"
+    ],
+    "use_snap_project": false,
+    "snap_target": "CLOSEST",
+    "use_snap_self": true,
+    "use_snap_edit": true,
+    "use_snap_nonedit": true,
+    "use_snap_selectable": false,
+    "snap_point": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "correct_uv": true,
+    "release_confirm": false,
+    "use_accurate": false
+   }
+  }
+ },
+ {
+  "t": 1790840290.82,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    724,
+    289
+   ]
+  }
+ },
+ {
+  "t": 1790840291.32,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    624,
+    323
+   ]
+  }
+ },
+ {
+  "t": 1790840291.82,
+  "op": "MESH_OT_f2",
+  "name": "Make Edge/Face",
+  "props": {}
+ },
+ {
+  "t": 1790840292.32,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    643,
+    339
+   ]
+  }
+ },
+ {
+  "t": 1790840292.32,
+  "op": "MESH_OT_f2",
+  "name": "Make Edge/Face",
+  "props": {}
+ },
+ {
+  "t": 1790840292.83,
+  "op": "MESH_OT_f2",
+  "name": "Make Edge/Face",
+  "props": {}
+ },
+ {
+  "t": 1790840293.85,
+  "op": "MESH_OT_f2",
+  "name": "Make Edge/Face",
+  "props": {}
+ },
+ {
+  "t": 1790840299.4,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840302.93,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    608,
+    447
+   ]
+  }
+ },
+ {
+  "t": 1790840302.93,
+  "op": "SCULPT_OT_sculptmode_toggle",
+  "name": "Sculpt Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840304.45,
+  "op": "WM_OT_radial_control",
+  "name": "Radial Control",
+  "props": {
+   "data_path_primary": "tool_settings.sculpt.brush.size",
+   "data_path_secondary": "tool_settings.sculpt.unified_paint_settings.size",
+   "use_secondary": "tool_settings.sculpt.unified_paint_settings.use_unified_size",
+   "rotation_path": "tool_settings.sculpt.brush.texture_slot.angle",
+   "color_path": "tool_settings.sculpt.brush.cursor_color_add",
+   "fill_color_path": "",
+   "fill_color_override_path": "",
+   "fill_color_override_test_path": "",
+   "zoom_path": "",
+   "image_id": "tool_settings.sculpt.brush",
+   "secondary_tex": false,
+   "release_confirm": false
+  }
+ },
+ {
+  "t": 1790840312.04,
+  "op": "WM_OT_radial_control",
+  "name": "Radial Control",
+  "props": {
+   "data_path_primary": "tool_settings.sculpt.brush.size",
+   "data_path_secondary": "tool_settings.sculpt.unified_paint_settings.size",
+   "use_secondary": "tool_settings.sculpt.unified_paint_settings.use_unified_size",
+   "rotation_path": "tool_settings.sculpt.brush.texture_slot.angle",
+   "color_path": "tool_settings.sculpt.brush.cursor_color_add",
+   "fill_color_path": "",
+   "fill_color_override_path": "",
+   "fill_color_override_test_path": "",
+   "zoom_path": "",
+   "image_id": "tool_settings.sculpt.brush",
+   "secondary_tex": false,
+   "release_confirm": false
+  }
+ },
+ {
+  "t": 1790840329.74,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840330.75,
+  "op": "MESH_OT_select_all",
+  "name": "(De)select All",
+  "props": {
+   "action": "SELECT"
+  }
+ },
+ {
+  "t": 1790840331.75,
+  "op": "MESH_OT_mark_sharp",
+  "name": "Mark Sharp",
+  "props": {
+   "clear": true,
+   "use_verts": false
+  }
+ },
+ {
+  "t": 1790840332.77,
+  "op": "SCULPT_OT_sculptmode_toggle",
+  "name": "Sculpt Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840341.35,
+  "op": "WM_OT_radial_control",
+  "name": "Radial Control",
+  "props": {
+   "data_path_primary": "tool_settings.sculpt.brush.size",
+   "data_path_secondary": "tool_settings.sculpt.unified_paint_settings.size",
+   "use_secondary": "tool_settings.sculpt.unified_paint_settings.use_unified_size",
+   "rotation_path": "tool_settings.sculpt.brush.texture_slot.angle",
+   "color_path": "tool_settings.sculpt.brush.cursor_color_add",
+   "fill_color_path": "",
+   "fill_color_override_path": "",
+   "fill_color_override_test_path": "",
+   "zoom_path": "",
+   "image_id": "tool_settings.sculpt.brush",
+   "secondary_tex": false,
+   "release_confirm": false
+  }
+ },
+ {
+  "t": 1790840350.93,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840351.93,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    652,
+    243
+   ]
+  }
+ },
+ {
+  "t": 1790840352.43,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 640,
+   "xmax": 646,
+   "ymin": 266,
+   "ymax": 267,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840352.43,
+  "op": "MESH_OT_loop_select",
+  "name": "Loop Select",
+  "props": {
+   "delimit_edge_loop": [
+    "NGONS",
+    "OUTER_CORNERS"
+   ],
+   "delimit_face_loop": [],
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "object_index": 0,
+   "edge_index": 74,
+   "vert_index": -1,
+   "face_index": -1
+  }
+ },
+ {
+  "t": 1790840352.94,
+  "op": "MESH_OT_loop_select",
+  "name": "Loop Select",
+  "props": {
+   "delimit_edge_loop": [
+    "NGONS",
+    "OUTER_CORNERS"
+   ],
+   "delimit_face_loop": [],
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "object_index": 0,
+   "edge_index": 74,
+   "vert_index": -1,
+   "face_index": -1
+  }
+ },
+ {
+  "t": 1790840354.45,
+  "op": "MESH_OT_looptools_circle",
+  "name": "Circle",
+  "props": {
+   "custom_radius": false,
+   "fit": "best",
+   "flatten": true,
+   "influence": 100.0,
+   "lock_x": false,
+   "lock_y": false,
+   "lock_z": false,
+   "radius": 1.0,
+   "angle": 0.0,
+   "regular": true
+  }
+ },
+ {
+  "t": 1790840358.68,
+  "op": "UNDO"
+ },
+ {
+  "t": 1790840362.51,
+  "op": "MESH_OT_looptools_circle",
+  "name": "Circle",
+  "props": {
+   "custom_radius": false,
+   "fit": "best",
+   "flatten": true,
+   "influence": 100.0,
+   "lock_x": false,
+   "lock_y": false,
+   "lock_z": false,
+   "radius": 1.0,
+   "angle": 0.0,
+   "regular": true
+  }
+ },
+ {
+  "t": 1790840365.95,
+  "op": "UNDO"
+ },
+ {
+  "t": 1790840366.53,
+  "op": "MESH_OT_select_mode",
+  "name": "Select Mode",
+  "props": {
+   "use_extend": false,
+   "use_expand": false,
+   "type": "VERT",
+   "action": "TOGGLE"
+  }
+ },
+ {
+  "t": 1790840367.54,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    546,
+    356
+   ]
+  }
+ },
+ {
+  "t": 1790840367.54,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    546,
+    356
+   ]
+  }
+ },
+ {
+  "t": 1790840369.04,
+  "op": "MESH_OT_looptools_circle",
+  "name": "Circle",
+  "props": {
+   "custom_radius": false,
+   "fit": "best",
+   "flatten": true,
+   "influence": 100.0,
+   "lock_x": false,
+   "lock_y": false,
+   "lock_z": false,
+   "radius": 1.0,
+   "angle": 0.0,
+   "regular": true
+  }
+ },
+ {
+  "t": 1790840373.56,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0037059613969177008,
+    -0.009529615752398968,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840375.07,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0005294230650179088,
+    -0.0010588461300358176,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840379.09,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    716,
+    309
+   ]
+  }
+ },
+ {
+  "t": 1790840379.6,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    700,
+    270
+   ]
+  }
+ },
+ {
+  "t": 1790840380.61,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.01817215420305729,
+    0.0,
+    0.0
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    true,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840382.12,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    627,
+    289
+   ]
+  }
+ },
+ {
+  "t": 1790840382.12,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    607,
+    286
+   ]
+  }
+ },
+ {
+  "t": 1790840384.13,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 624,
+   "xmax": 669,
+   "ymin": 76,
+   "ymax": 488,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840388.15,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0,
+    0.01556604914367199,
+    0.0
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    true,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840393.68,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    412,
+    290
+   ]
+  }
+ },
+ {
+  "t": 1790840394.19,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 20
+  }
+ },
+ {
+  "t": 1790840395.69,
+  "op": "MESH_OT_looptools_space",
+  "name": "Space",
+  "props": {
+   "influence": 100.0,
+   "input": "selected",
+   "interpolation": "cubic",
+   "lock_x": false,
+   "lock_y": false,
+   "lock_z": false
+  }
+ },
+ {
+  "t": 1790840396.7,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    400,
+    380
+   ]
+  }
+ },
+ {
+  "t": 1790840397.7,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 24
+  }
+ },
+ {
+  "t": 1790840398.21,
+  "op": "MESH_OT_looptools_space",
+  "name": "Space",
+  "props": {
+   "influence": 100.0,
+   "input": "selected",
+   "interpolation": "cubic",
+   "lock_x": false,
+   "lock_y": false,
+   "lock_z": false
+  }
+ },
+ {
+  "t": 1790840399.72,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    412,
+    188
+   ]
+  }
+ },
+ {
+  "t": 1790840399.72,
+  "op": "MESH_OT_select_mode",
+  "name": "Select Mode",
+  "props": {
+   "use_extend": false,
+   "use_expand": false,
+   "type": "EDGE",
+   "action": "TOGGLE"
+  }
+ },
+ {
+  "t": 1790840400.22,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    446,
+    170
+   ]
+  }
+ },
+ {
+  "t": 1790840400.22,
+  "op": "MESH_OT_loop_select",
+  "name": "Loop Select",
+  "props": {
+   "delimit_edge_loop": [
+    "NGONS",
+    "OUTER_CORNERS"
+   ],
+   "delimit_face_loop": [],
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "object_index": 0,
+   "edge_index": 11,
+   "vert_index": -1,
+   "face_index": -1
+  }
+ },
+ {
+  "t": 1790840400.72,
+  "op": "MESH_OT_loop_select",
+  "name": "Loop Select",
+  "props": {
+   "delimit_edge_loop": [
+    "NGONS",
+    "OUTER_CORNERS"
+   ],
+   "delimit_face_loop": [],
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "object_index": 0,
+   "edge_index": 11,
+   "vert_index": -1,
+   "face_index": -1
+  }
+ },
+ {
+  "t": 1790840401.23,
+  "op": "MESH_OT_loop_select",
+  "name": "Loop Select",
+  "props": {
+   "delimit_edge_loop": [
+    "NGONS",
+    "OUTER_CORNERS"
+   ],
+   "delimit_face_loop": [],
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "object_index": 0,
+   "edge_index": 54,
+   "vert_index": -1,
+   "face_index": -1
+  }
+ },
+ {
+  "t": 1790840402.24,
+  "op": "MESH_OT_loop_select",
+  "name": "Loop Select",
+  "props": {
+   "delimit_edge_loop": [
+    "NGONS",
+    "OUTER_CORNERS"
+   ],
+   "delimit_face_loop": [],
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "object_index": 0,
+   "edge_index": 71,
+   "vert_index": -1,
+   "face_index": -1
+  }
+ },
+ {
+  "t": 1790840402.74,
+  "op": "MESH_OT_loop_select",
+  "name": "Loop Select",
+  "props": {
+   "delimit_edge_loop": [
+    "NGONS",
+    "OUTER_CORNERS"
+   ],
+   "delimit_face_loop": [],
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "object_index": 0,
+   "edge_index": 73,
+   "vert_index": -1,
+   "face_index": -1
+  }
+ },
+ {
+  "t": 1790840404.24,
+  "op": "MESH_OT_loop_select",
+  "name": "Loop Select",
+  "props": {
+   "delimit_edge_loop": [
+    "NGONS",
+    "OUTER_CORNERS"
+   ],
+   "delimit_face_loop": [],
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "object_index": 0,
+   "edge_index": 72,
+   "vert_index": -1,
+   "face_index": -1
+  }
+ },
+ {
+  "t": 1790840404.75,
+  "op": "MESH_OT_looptools_space",
+  "name": "Space",
+  "props": {
+   "influence": 100.0,
+   "input": "selected",
+   "interpolation": "cubic",
+   "lock_x": false,
+   "lock_y": false,
+   "lock_z": false
+  }
+ },
+ {
+  "t": 1790840407.28,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840407.78,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840408.78,
+  "op": "MESH_OT_select_mode",
+  "name": "Select Mode",
+  "props": {
+   "use_extend": false,
+   "use_expand": false,
+   "type": "VERT",
+   "action": "TOGGLE"
+  }
+ },
+ {
+  "t": 1790840409.29,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    574,
+    287
+   ]
+  }
+ },
+ {
+  "t": 1790840411.31,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0019174979534000158,
+    -0.001194983720779419,
+    -0.0001316061825491488
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840412.31,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840418.86,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    764,
+    466
+   ]
+  }
+ },
+ {
+  "t": 1790840421.87,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840422.88,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    633,
+    548
+   ]
+  }
+ },
+ {
+  "t": 1790840424.39,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    546,
+    603
+   ]
+  }
+ },
+ {
+  "t": 1790840426.41,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0,
+    0.0,
+    0.006979469209909439
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840428.42,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    701,
+    624
+   ]
+  }
+ },
+ {
+  "t": 1790840428.92,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 80
+  }
+ },
+ {
+  "t": 1790840430.43,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0,
+    -0.0,
+    -0.002429969608783722
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840430.93,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    714,
+    649
+   ]
+  }
+ },
+ {
+  "t": 1790840430.93,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    733,
+    676
+   ]
+  }
+ },
+ {
+  "t": 1790840432.44,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0,
+    -0.0,
+    -0.003327748505398631
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840437.97,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 665,
+   "xmax": 776,
+   "ymin": 456,
+   "ymax": 612,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840438.98,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0024625370278954506,
+    -1.1028784135946879e-10,
+    0.0008208454819396138
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840440.0,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 402,
+   "xmax": 590,
+   "ymin": 442,
+   "ymax": 642,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840441.01,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0030781710520386696,
+    -8.271587581543116e-11,
+    0.0006156340823508799
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840441.51,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 649,
+   "xmax": 776,
+   "ymin": 464,
+   "ymax": 604,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840442.02,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.000923451385460794,
+    1.3785980169933598e-11,
+    -0.00010260568524245173
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840443.02,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840443.52,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840445.53,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    725,
+    333
+   ]
+  }
+ },
+ {
+  "t": 1790840446.55,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.003570777829736471,
+    0.00013230480544734746,
+    0.000266531715169549
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840447.05,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    736,
+    430
+   ]
+  }
+ },
+ {
+  "t": 1790840448.06,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 81
+  }
+ },
+ {
+  "t": 1790840449.56,
+  "op": "TRANSFORM_OT_edge_slide",
+  "name": "Edge Slide",
+  "props": {
+   "value": 0.21426117420196533,
+   "single_side": false,
+   "use_even": false,
+   "flipped": false,
+   "use_clamp": true,
+   "mirror": true,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "correct_uv": false,
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840450.07,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    788,
+    464
+   ]
+  }
+ },
+ {
+  "t": 1790840450.57,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    751,
+    429
+   ]
+  }
+ },
+ {
+  "t": 1790840451.57,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0007563474355265498,
+    -0.0004182187549304217,
+    -0.0013173884944990277
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840452.07,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    767,
+    448
+   ]
+  }
+ },
+ {
+  "t": 1790840452.07,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0007090910221450031,
+    -0.00011527429160196334,
+    0.0003529464593157172
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840453.07,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    745,
+    409
+   ]
+  }
+ },
+ {
+  "t": 1790840454.08,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840465.15,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840469.68,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 478,
+   "xmax": 975,
+   "ymin": 403,
+   "ymax": 599,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840471.19,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0,
+    -0.0,
+    -0.00602828711271286
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840474.21,
+  "op": "TRANSFORM_OT_resize",
+  "name": "Resize",
+  "props": {
+   "value": [
+    1.0,
+    1.0,
+    0.6105450391769409
+   ],
+   "mouse_dir_constraint": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "INCREMENT"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "center_override": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840476.22,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 388,
+   "xmax": 496,
+   "ymin": 332,
+   "ymax": 436,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840481.27,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    885,
+    277
+   ]
+  }
+ },
+ {
+  "t": 1790840482.27,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    980,
+    303
+   ]
+  }
+ },
+ {
+  "t": 1790840483.28,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -4.556608673273257e-19,
+    -0.0012312685139477253,
+    0.002052114112302661
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840484.28,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -1.3669826536807653e-19,
+    -0.0003078171284869313,
+    0.0006156342569738626
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840484.78,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    825,
+    293
+   ]
+  }
+ },
+ {
+  "t": 1790840485.28,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -6.834913268403827e-20,
+    -0.000923451385460794,
+    0.0003078171284869313
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840485.28,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    724,
+    293
+   ]
+  }
+ },
+ {
+  "t": 1790840486.29,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    3.417456375707972e-19,
+    -0.0007182399276643991,
+    -0.0015390855260193348
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840486.29,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    551,
+    286
+   ]
+  }
+ },
+ {
+  "t": 1790840486.79,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    4.3287783171577764e-19,
+    0.002257325453683734,
+    -0.0019495084416121244
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840487.79,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    631,
+    166
+   ]
+  }
+ },
+ {
+  "t": 1790840488.29,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 599,
+   "xmax": 647,
+   "ymin": 126,
+   "ymax": 180,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840489.3,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    2.050473980521148e-19,
+    0.004001622553914785,
+    -0.000923451385460794
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840489.81,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    723,
+    211
+   ]
+  }
+ },
+ {
+  "t": 1790840490.31,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    4.784439029388737e-19,
+    -0.0003078171284869313,
+    -0.0021547197829931974
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840490.82,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    759,
+    188
+   ]
+  }
+ },
+ {
+  "t": 1790840491.32,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    4.100947961042296e-19,
+    0.0006156342569738626,
+    -0.001846902770921588
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840491.32,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    776,
+    245
+   ]
+  }
+ },
+ {
+  "t": 1790840491.83,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    1.5948130097962457e-19,
+    -3.5411962468950747e-35,
+    -0.0007182399276643991
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840493.83,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    721,
+    335
+   ]
+  }
+ },
+ {
+  "t": 1790840494.34,
+  "op": "TRANSFORM_OT_vert_slide",
+  "name": "Vertex Slide",
+  "props": {
+   "value": 0.19065281748771667,
+   "use_even": false,
+   "flipped": false,
+   "use_clamp": true,
+   "direction": [
+    0.014417012222111225,
+    0.031782858073711395,
+    0.9993908405303955
+   ],
+   "mirror": true,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "correct_uv": false,
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840495.86,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    624,
+    247
+   ]
+  }
+ },
+ {
+  "t": 1790840496.37,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0015932773239910603,
+    -0.0018820236437022686,
+    -0.002738715847954154
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840496.87,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    672,
+    209
+   ]
+  }
+ },
+ {
+  "t": 1790840496.87,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0007351528038270772,
+    -0.0007353443652391434,
+    -0.000998992589302361
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840499.89,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    780,
+    455
+   ]
+  }
+ },
+ {
+  "t": 1790840499.89,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    790,
+    502
+   ]
+  }
+ },
+ {
+  "t": 1790840501.39,
+  "op": "TRANSFORM_OT_edge_slide",
+  "name": "Edge Slide",
+  "props": {
+   "value": -0.5363013744354248,
+   "single_side": false,
+   "use_even": false,
+   "flipped": false,
+   "use_clamp": true,
+   "mirror": true,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "correct_uv": false,
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840502.4,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    728,
+    471
+   ]
+  }
+ },
+ {
+  "t": 1790840502.9,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    742,
+    516
+   ]
+  }
+ },
+ {
+  "t": 1790840504.43,
+  "op": "TRANSFORM_OT_edge_slide",
+  "name": "Edge Slide",
+  "props": {
+   "value": -0.32783424854278564,
+   "single_side": false,
+   "use_even": false,
+   "flipped": false,
+   "use_clamp": true,
+   "mirror": true,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "correct_uv": false,
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840504.43,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    651,
+    489
+   ]
+  }
+ },
+ {
+  "t": 1790840504.93,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    668,
+    547
+   ]
+  }
+ },
+ {
+  "t": 1790840505.95,
+  "op": "TRANSFORM_OT_edge_slide",
+  "name": "Edge Slide",
+  "props": {
+   "value": 0.1700543314218521,
+   "single_side": false,
+   "use_even": false,
+   "flipped": false,
+   "use_clamp": true,
+   "mirror": true,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "correct_uv": false,
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840507.46,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840518.04,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    877,
+    342
+   ]
+  }
+ },
+ {
+  "t": 1790840519.56,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840520.56,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    448,
+    351
+   ]
+  }
+ },
+ {
+  "t": 1790840521.06,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 30
+  }
+ },
+ {
+  "t": 1790840523.58,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.010035444982349873,
+    0.0012392214266583323,
+    0.002018997445702553
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840524.08,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    359,
+    308
+   ]
+  }
+ },
+ {
+  "t": 1790840525.08,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 26
+  }
+ },
+ {
+  "t": 1790840526.59,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 24
+  }
+ },
+ {
+  "t": 1790840527.6,
+  "op": "TRANSFORM_OT_resize",
+  "name": "Resize",
+  "props": {
+   "value": [
+    1.0,
+    1.0,
+    0.0
+   ],
+   "mouse_dir_constraint": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "INCREMENT"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "center_override": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840529.61,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0,
+    -0.0,
+    -0.0019377493299543858
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840529.61,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840533.15,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    784,
+    282
+   ]
+  }
+ },
+ {
+  "t": 1790840533.15,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840534.66,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    603,
+    240
+   ]
+  }
+ },
+ {
+  "t": 1790840536.68,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    575,
+    246
+   ]
+  }
+ },
+ {
+  "t": 1790840537.18,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 54
+  }
+ },
+ {
+  "t": 1790840539.7,
+  "op": "TRANSFORM_OT_edge_slide",
+  "name": "Edge Slide",
+  "props": {
+   "value": -0.3444806635379791,
+   "single_side": false,
+   "use_even": false,
+   "flipped": false,
+   "use_clamp": true,
+   "mirror": true,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "correct_uv": false,
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840540.7,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0010860634502023458,
+    0.0008058655657805502,
+    -0.003352526808157563
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840541.71,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    698,
+    263
+   ]
+  }
+ },
+ {
+  "t": 1790840542.72,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 65
+  }
+ },
+ {
+  "t": 1790840543.73,
+  "op": "TRANSFORM_OT_edge_slide",
+  "name": "Edge Slide",
+  "props": {
+   "value": -0.22759637236595154,
+   "single_side": false,
+   "use_even": false,
+   "flipped": false,
+   "use_clamp": true,
+   "mirror": true,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "correct_uv": false,
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840545.76,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.000663821236230433,
+    0.0005705823423340917,
+    -0.0030677912291139364
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840546.26,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    783,
+    347
+   ]
+  }
+ },
+ {
+  "t": 1790840547.27,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0027892026118934155,
+    0.0005287479143589735,
+    0.000766946526709944
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840547.27,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    762,
+    299
+   ]
+  }
+ },
+ {
+  "t": 1790840547.77,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0012373484205454588,
+    0.00017968783504329622,
+    0.0007412838167510927
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840548.77,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    728,
+    248
+   ]
+  }
+ },
+ {
+  "t": 1790840549.78,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    713,
+    252
+   ]
+  }
+ },
+ {
+  "t": 1790840550.78,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0037982044741511345,
+    -0.0004593155754264444,
+    -0.0006148082902655005
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840556.34,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    523,
+    357
+   ]
+  }
+ },
+ {
+  "t": 1790840557.35,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 24
+  }
+ },
+ {
+  "t": 1790840558.86,
+  "op": "MESH_OT_looptools_circle",
+  "name": "Circle",
+  "props": {
+   "custom_radius": false,
+   "fit": "best",
+   "flatten": true,
+   "influence": 100.0,
+   "lock_x": false,
+   "lock_y": false,
+   "lock_z": false,
+   "radius": 1.0,
+   "angle": 0.0,
+   "regular": true
+  }
+ },
+ {
+  "t": 1790840564.39,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.003970672842115164,
+    -0.006617788225412369,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840564.89,
+  "op": "MESH_OT_select_mode",
+  "name": "Select Mode",
+  "props": {
+   "use_extend": false,
+   "use_expand": false,
+   "type": "EDGE",
+   "action": "TOGGLE"
+  }
+ },
+ {
+  "t": 1790840565.4,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    685,
+    292
+   ]
+  }
+ },
+ {
+  "t": 1790840565.9,
+  "op": "MESH_OT_loop_select",
+  "name": "Loop Select",
+  "props": {
+   "delimit_edge_loop": [
+    "NGONS",
+    "OUTER_CORNERS"
+   ],
+   "delimit_face_loop": [],
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "object_index": 0,
+   "edge_index": 128,
+   "vert_index": -1,
+   "face_index": -1
+  }
+ },
+ {
+  "t": 1790840565.9,
+  "op": "MESH_OT_loop_select",
+  "name": "Loop Select",
+  "props": {
+   "delimit_edge_loop": [
+    "NGONS",
+    "OUTER_CORNERS"
+   ],
+   "delimit_face_loop": [],
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "object_index": 0,
+   "edge_index": 128,
+   "vert_index": -1,
+   "face_index": -1
+  }
+ },
+ {
+  "t": 1790840566.9,
+  "op": "MESH_OT_looptools_circle",
+  "name": "Circle",
+  "props": {
+   "custom_radius": false,
+   "fit": "best",
+   "flatten": true,
+   "influence": 100.0,
+   "lock_x": false,
+   "lock_y": false,
+   "lock_z": false,
+   "radius": 1.0,
+   "angle": 0.0,
+   "regular": true
+  }
+ },
+ {
+  "t": 1790840568.07,
+  "op": "UNDO"
+ },
+ {
+  "t": 1790840570.93,
+  "op": "MESH_OT_looptools_space",
+  "name": "Space",
+  "props": {
+   "influence": 100.0,
+   "input": "selected",
+   "interpolation": "cubic",
+   "lock_x": false,
+   "lock_y": false,
+   "lock_z": false
+  }
+ },
+ {
+  "t": 1790840572.94,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840572.94,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    932,
+    400
+   ]
+  }
+ },
+ {
+  "t": 1790840586.05,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840587.06,
+  "op": "MESH_OT_select_mode",
+  "name": "Select Mode",
+  "props": {
+   "use_extend": false,
+   "use_expand": false,
+   "type": "VERT",
+   "action": "TOGGLE"
+  }
+ },
+ {
+  "t": 1790840587.56,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    763,
+    284
+   ]
+  }
+ },
+ {
+  "t": 1790840589.07,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    740,
+    267
+   ]
+  }
+ },
+ {
+  "t": 1790840591.58,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0,
+    -0.0,
+    -0.007804069668054581
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840593.09,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    672,
+    305
+   ]
+  }
+ },
+ {
+  "t": 1790840595.11,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0,
+    -0.0,
+    -0.0022438017185777426
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840596.12,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    672,
+    296
+   ]
+  }
+ },
+ {
+  "t": 1790840596.62,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    692,
+    314
+   ]
+  }
+ },
+ {
+  "t": 1790840598.64,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0,
+    -0.0,
+    -0.005108949262648821
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840599.14,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    747,
+    342
+   ]
+  }
+ },
+ {
+  "t": 1790840599.65,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    757,
+    352
+   ]
+  }
+ },
+ {
+  "t": 1790840599.65,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    746,
+    339
+   ]
+  }
+ },
+ {
+  "t": 1790840600.15,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    758,
+    356
+   ]
+  }
+ },
+ {
+  "t": 1790840601.66,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0,
+    -0.0,
+    -0.003311608685180545
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840603.68,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    583,
+    309
+   ]
+  }
+ },
+ {
+  "t": 1790840603.68,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    581,
+    319
+   ]
+  }
+ },
+ {
+  "t": 1790840604.18,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    566,
+    322
+   ]
+  }
+ },
+ {
+  "t": 1790840605.18,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0,
+    -0.0,
+    -0.0006258506909944117
+   ],
+   "orient_type": "LOCAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "LOCAL",
+   "constraint_axis": [
+    false,
+    false,
+    true
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840605.69,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840610.22,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    594,
+    327
+   ]
+  }
+ },
+ {
+  "t": 1790840610.22,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840611.23,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    575,
+    315
+   ]
+  }
+ },
+ {
+  "t": 1790840611.73,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    570,
+    334
+   ]
+  }
+ },
+ {
+  "t": 1790840612.74,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0013357634888961911,
+    -0.0005288707907311618,
+    4.751958826432201e-09
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840613.24,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    596,
+    376
+   ]
+  }
+ },
+ {
+  "t": 1790840614.76,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    643,
+    351
+   ]
+  }
+ },
+ {
+  "t": 1790840615.76,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0019770185463130474,
+    -0.0017973193898797035,
+    -7.345099584199488e-05
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840616.26,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    601,
+    321
+   ]
+  }
+ },
+ {
+  "t": 1790840616.77,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0022651972249150276,
+    -0.00010781234595924616,
+    0.0006057569407857955
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840617.28,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    580,
+    274
+   ]
+  }
+ },
+ {
+  "t": 1790840618.29,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    594,
+    251
+   ]
+  }
+ },
+ {
+  "t": 1790840618.79,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    496,
+    234
+   ]
+  }
+ },
+ {
+  "t": 1790840619.29,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 65
+  }
+ },
+ {
+  "t": 1790840620.81,
+  "op": "TRANSFORM_OT_edge_slide",
+  "name": "Edge Slide",
+  "props": {
+   "value": -0.3436139225959778,
+   "single_side": false,
+   "use_even": false,
+   "flipped": false,
+   "use_clamp": true,
+   "mirror": true,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "correct_uv": false,
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840621.82,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    723,
+    339
+   ]
+  }
+ },
+ {
+  "t": 1790840622.82,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 67
+  }
+ },
+ {
+  "t": 1790840625.33,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0006567561067640781,
+    0.0006913226097822189,
+    -0.007337668444961309
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840625.84,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    820,
+    291
+   ]
+  }
+ },
+ {
+  "t": 1790840626.84,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    838,
+    294
+   ]
+  }
+ },
+ {
+  "t": 1790840627.35,
+  "op": "MESH_OT_shortest_path_pick",
+  "name": "Pick Shortest Path",
+  "props": {
+   "edge_mode": "SELECT",
+   "use_face_step": false,
+   "use_topology_distance": false,
+   "use_fill": false,
+   "skip": 0,
+   "nth": 1,
+   "offset": 0,
+   "index": 64
+  }
+ },
+ {
+  "t": 1790840628.35,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.002129199681803584,
+    0.0005151093355379999,
+    1.162071328053571e-09
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840628.85,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840636.39,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840636.89,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    771,
+    230
+   ]
+  }
+ },
+ {
+  "t": 1790840637.4,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    746,
+    260
+   ]
+  }
+ },
+ {
+  "t": 1790840637.9,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    781,
+    234
+   ]
+  }
+ },
+ {
+  "t": 1790840637.9,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    787,
+    286
+   ]
+  }
+ },
+ {
+  "t": 1790840639.41,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -2.4020821001613513e-05,
+    -0.0034411437809467316,
+    -4.754234783632683e-09
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840639.92,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.00023100728867575526,
+    -0.0002883891575038433,
+    0.00036157260183244944
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840640.42,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    873,
+    220
+   ]
+  }
+ },
+ {
+  "t": 1790840640.93,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": true,
+   "deselect_all": false,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    829,
+    318
+   ]
+  }
+ },
+ {
+  "t": 1790840641.94,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0002525308227632195,
+    -0.002460274612531066,
+    -0.00036520202411338687
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840642.44,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    770,
+    109
+   ]
+  }
+ },
+ {
+  "t": 1790840643.45,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    757,
+    115
+   ]
+  }
+ },
+ {
+  "t": 1790840644.45,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0007605725550092757,
+    0.0006922505563125014,
+    0.0011726678349077702
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840644.96,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840701.28,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    683,
+    356
+   ]
+  }
+ },
+ {
+  "t": 1790840702.29,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840702.79,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    471,
+    339
+   ]
+  }
+ },
+ {
+  "t": 1790840704.3,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0065787192434072495,
+    -0.005543133243918419,
+    0.0019371004309505224
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840704.8,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    476,
+    405
+   ]
+  }
+ },
+ {
+  "t": 1790840705.31,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0008255111170001328,
+    -0.00026618954143486917,
+    0.0004891346325166523
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840705.81,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    521,
+    460
+   ]
+  }
+ },
+ {
+  "t": 1790840707.33,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.003445482812821865,
+    -0.0029176396783441305,
+    0.0040322779677808285
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840708.85,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    601,
+    75
+   ]
+  }
+ },
+ {
+  "t": 1790840709.85,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.008527932688593864,
+    -0.0005632340325973928,
+    0.0015291752060875297
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840715.9,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    414,
+    216
+   ]
+  }
+ },
+ {
+  "t": 1790840716.92,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0089644780382514,
+    0.0021255025640130043,
+    0.00034378725104033947
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840717.42,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    412,
+    211
+   ]
+  }
+ },
+ {
+  "t": 1790840717.92,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.005275710951536894,
+    0.0013545738765969872,
+    4.437812617386072e-11
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840723.47,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 237,
+   "xmax": 388,
+   "ymin": 199,
+   "ymax": 344,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840724.48,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0,
+    1.8968713266787063e-09,
+    -0.014117950573563576
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840724.98,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    438,
+    169
+   ]
+  }
+ },
+ {
+  "t": 1790840725.48,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0030883022118359804,
+    3.5566338763004524e-10,
+    -0.0026471156161278486
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840729.03,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    547,
+    329
+   ]
+  }
+ },
+ {
+  "t": 1790840730.54,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.011304005049169064,
+    -0.0016769147478044033,
+    -0.004625880625098944
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840733.57,
+  "op": "VIEW3D_OT_select_box",
+  "name": "Box Select",
+  "props": {
+   "xmin": 413,
+   "xmax": 447,
+   "ymin": 435,
+   "ymax": 494,
+   "wait_for_input": true,
+   "mode": "SET"
+  }
+ },
+ {
+  "t": 1790840734.57,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.00441186036914587,
+    2.963861933658052e-10,
+    -0.002205930184572935
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840735.08,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    462,
+    403
+   ]
+  }
+ },
+ {
+  "t": 1790840735.58,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.002647116081789136,
+    0.0,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840737.09,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.002205930184572935,
+    -5.927723589760348e-11,
+    0.0004411860427353531
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840737.09,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    445,
+    463
+   ]
+  }
+ },
+ {
+  "t": 1790840738.1,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    428,
+    471
+   ]
+  }
+ },
+ {
+  "t": 1790840739.1,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0017647441709414124,
+    0.0,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840739.1,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840739.61,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    632,
+    177
+   ]
+  }
+ },
+ {
+  "t": 1790840742.12,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    507,
+    361
+   ]
+  }
+ },
+ {
+  "t": 1790840742.63,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840742.63,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    517,
+    449
+   ]
+  }
+ },
+ {
+  "t": 1790840743.64,
+  "op": "TRANSFORM_OT_vert_slide",
+  "name": "Vertex Slide",
+  "props": {
+   "value": 0.18951411545276642,
+   "use_even": false,
+   "flipped": false,
+   "use_clamp": true,
+   "direction": [
+    0.6309405565261841,
+    0.5887938737869263,
+    -0.5052086114883423
+   ],
+   "mirror": true,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "correct_uv": false,
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840744.15,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    551,
+    525
+   ]
+  }
+ },
+ {
+  "t": 1790840745.15,
+  "op": "TRANSFORM_OT_vert_slide",
+  "name": "Vertex Slide",
+  "props": {
+   "value": 0.0,
+   "use_even": false,
+   "flipped": false,
+   "use_clamp": true,
+   "direction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "mirror": true,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "correct_uv": false,
+   "release_confirm": false,
+   "use_accurate": false
+  }
+ },
+ {
+  "t": 1790840745.15,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    463,
+    379
+   ]
+  }
+ },
+ {
+  "t": 1790840746.16,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.00164653523825109,
+    -0.00300850672647357,
+    0.0010058974148705602
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840746.66,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    431,
+    304
+   ]
+  }
+ },
+ {
+  "t": 1790840747.17,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0009973089909180999,
+    -0.0016414880519732833,
+    0.0006476542330347002
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840752.74,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840752.74,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    642,
+    177
+   ]
+  }
+ },
+ {
+  "t": 1790840758.8,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    746,
+    251
+   ]
+  }
+ },
+ {
+  "t": 1790840758.8,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840759.32,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    763,
+    235
+   ]
+  }
+ },
+ {
+  "t": 1790840759.81,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0007623696583323181,
+    0.0031130092684179544,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840760.32,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    666,
+    244
+   ]
+  }
+ },
+ {
+  "t": 1790840761.32,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0,
+    -0.00362125551328063,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840761.82,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    634,
+    287
+   ]
+  }
+ },
+ {
+  "t": 1790840762.83,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.008513128384947777,
+    0.006607203744351864,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840763.33,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    639,
+    331
+   ]
+  }
+ },
+ {
+  "t": 1790840763.83,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0006353080971166492,
+    0.0004447155515663326,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840764.34,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    712,
+    302
+   ]
+  }
+ },
+ {
+  "t": 1790840765.34,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    -0.0020329859107732773,
+    -0.004701278638094664,
+    0.0
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840769.38,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    627,
+    569
+   ]
+  }
+ },
+ {
+  "t": 1790840770.89,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0014273192500695586,
+    -0.006251584738492966,
+    -0.001414707861840725
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840770.89,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    722,
+    527
+   ]
+  }
+ },
+ {
+  "t": 1790840771.4,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.00289881881326437,
+    -0.0041656456887722015,
+    -0.001994436839595437
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840771.9,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    788,
+    480
+   ]
+  }
+ },
+ {
+  "t": 1790840772.9,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    767,
+    483
+   ]
+  }
+ },
+ {
+  "t": 1790840773.92,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.004264107905328274,
+    -0.0026259622536599636,
+    -0.0025730817578732967
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840774.42,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    803,
+    426
+   ]
+  }
+ },
+ {
+  "t": 1790840774.92,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    825,
+    347
+   ]
+  }
+ },
+ {
+  "t": 1790840775.43,
+  "op": "TRANSFORM_OT_translate",
+  "name": "Move",
+  "props": {
+   "value": [
+    0.0015906831249594688,
+    -0.0003034414257854223,
+    -0.0008902136469259858
+   ],
+   "orient_type": "GLOBAL",
+   "orient_matrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "orient_matrix_type": "GLOBAL",
+   "constraint_axis": [
+    false,
+    false,
+    false
+   ],
+   "mirror": true,
+   "use_proportional_edit": false,
+   "proportional_edit_falloff": "SMOOTH",
+   "proportional_size": 0.0630393922328949,
+   "use_proportional_connected": false,
+   "use_proportional_projected": false,
+   "snap": false,
+   "snap_elements": [
+    "VERTEX"
+   ],
+   "use_snap_project": false,
+   "snap_target": "CLOSEST",
+   "use_snap_self": true,
+   "use_snap_edit": true,
+   "use_snap_nonedit": true,
+   "use_snap_selectable": false,
+   "snap_point": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "snap_align": false,
+   "snap_normal": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "gpencil_strokes": false,
+   "cursor_transform": false,
+   "texture_space": false,
+   "remove_on_cancel": false,
+   "use_duplicated_keyframes": false,
+   "view2d_edge_pan": false,
+   "release_confirm": false,
+   "use_accurate": false,
+   "use_automerge_and_split": false,
+   "translate_origin": false
+  }
+ },
+ {
+  "t": 1790840781.48,
+  "op": "OBJECT_OT_editmode_toggle",
+  "name": "Edit Mode",
+  "props": {}
+ },
+ {
+  "t": 1790840781.99,
+  "op": "VIEW3D_OT_select",
+  "name": "Select",
+  "props": {
+   "extend": false,
+   "deselect": false,
+   "toggle": false,
+   "deselect_all": true,
+   "select_passthrough": false,
+   "center": false,
+   "enumerate": false,
+   "object": false,
+   "location": [
+    825,
+    226
+   ]
+  }
+ }
+]

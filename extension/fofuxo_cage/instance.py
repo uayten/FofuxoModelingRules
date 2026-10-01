@@ -32,6 +32,9 @@ MARKER = Path(tempfile.gettempdir()) / "fofuxo_cage_ai.json"
 REVIEW_PROP = "fofuxo_review"
 UPDATE_NOTICE = "review.update.json"
 OPENED = "review.opened.json"
+COLLECT = "review.collect.json"  # the AI asks the human's Blender to save the review (and close)
+OPS_LOG = "review.ops.jsonl"  # every operator the human runs in the review, one JSON line each
+RECORD = 0.5  # s, how often the human's Blender copies its new operators to OPS_LOG
 POLL = 3.0  # s, how often a human's Blender looks for the AI instance and updates
 NOTICE = ("Fofuxo Cage: Blender exclusivo da AI",
           "Esta janela é controlada pela AI. Não edite aqui.",
@@ -253,6 +256,179 @@ def _on_save_pre(*_args):
         _focus(False)
 
 
+def _plain(v):
+    if isinstance(v, (bool, int, float, str)) or v is None:
+        return v
+    if isinstance(v, dict):
+        return v
+    try:
+        return [_plain(x) for x in v]
+    except TypeError:
+        return str(v)
+
+
+_rec = {"last": None}
+
+
+def _signature(op):
+    return (op.as_pointer(), op.bl_idname, json.dumps(_op_record(op)["props"], sort_keys=True, default=str))
+
+
+def _op_record(op):
+    props = {}
+    for p in op.properties.bl_rna.properties:
+        if p.identifier == "rna_type":
+            continue
+        try:
+            v = getattr(op.properties, p.identifier)
+        except AttributeError:
+            continue
+        if hasattr(v, "bl_rna"):  # a nested operator (a macro's step): its own settings
+            v = {q.identifier: _plain(getattr(v, q.identifier, None))
+                 for q in v.bl_rna.properties if q.identifier != "rna_type"}
+        props[p.identifier] = _plain(v)
+    return {"op": op.bl_idname, "name": op.name, "props": props}
+
+
+def _log(lines):
+    if not lines or _review_info() is None or not bpy.data.filepath:
+        return
+    with Path(bpy.data.filepath).with_name(OPS_LOG).open("a", encoding="utf-8") as f:
+        for line in lines:
+            f.write(json.dumps({"t": round(time.time(), 2), **line}, default=str) + "\n")
+
+
+MOVED_MIN = 0.05  # mm: a vertex that moved less is left out of a "moved" record
+
+
+def _mesh_state():
+    """(object name, mode, ids, positions in mm, selected ids) of the active
+    reviewed mesh, read the way its mode keeps it (bmesh in Edit Mode)."""
+    from .mesh_io import ID_ATTR
+
+    obj = bpy.context.object
+    info = _review_info()
+    if obj is None or obj.type != "MESH" or obj.name not in info.get("objects", []):
+        return None
+    if obj.mode == "EDIT":
+        import bmesh
+        bm = bmesh.from_edit_mesh(obj.data)
+        layer = bm.verts.layers.int.get(ID_ATTR)
+        ids = [v[layer] if layer else v.index for v in bm.verts]
+        co = [tuple(c * 1000 for c in v.co) for v in bm.verts]
+        sel = [i for v, i in zip(bm.verts, ids) if v.select]
+    else:
+        attr = obj.data.attributes.get(ID_ATTR)
+        ids = [d.value for d in attr.data] if attr else list(range(len(obj.data.vertices)))
+        co = [tuple(c * 1000 for c in v.co) for v in obj.data.vertices]
+        sel = []
+    return obj.name, obj.mode, ids, co, sel
+
+
+def _moved(before, after):
+    """{id: [dw, dd, dh] mm} for the vertices that moved, or None when the
+    topology changed (another count or order of ids)."""
+    if before is None or before[0] != after[0] or before[2] != after[2]:
+        return None
+    out = {}
+    for vid, a, b in zip(after[2], before[3], after[3]):
+        d = [round(y - x, 2) for x, y in zip(a, b)]
+        if max(abs(x) for x in d) >= MOVED_MIN:
+            out[str(vid)] = d
+    return out
+
+
+def _sculpt_record(moved):
+    ts = bpy.context.tool_settings
+    brush = ts.sculpt.brush if ts and ts.sculpt else None
+    out = {"op": "SCULPT", "moved": moved}
+    if brush is not None:
+        # Blender 5 keeps the unified size and strength per paint mode; 4.x on tool_settings
+        ups = getattr(ts.sculpt, "unified_paint_settings", None) or getattr(ts, "unified_paint_settings", None)
+        out["brush"] = brush.name
+        out["radius_px"] = ups.size if ups and ups.use_unified_size else brush.size
+        out["strength"] = round(ups.strength if ups and ups.use_unified_strength else brush.strength, 3)
+    return out
+
+
+def _record_ops():
+    """Blender keeps only its last operators; this copies each new one to
+    OPS_LOG as it comes, so the AI reads the whole session, undos included.
+    Each operator also carries the ids selected and how far each vertex moved
+    since the last record; Sculpt strokes (which Blender does not list) come
+    as SCULPT lines: the brush and the vertices it moved."""
+    try:
+        if _review_info() is None:
+            return RECORD
+        ops = list(bpy.context.window_manager.operators)
+        sigs = [_signature(op) for op in ops]
+        start = 0
+        if _rec["last"] is not None:
+            start = next((i + 1 for i in range(len(sigs) - 1, -1, -1) if sigs[i] == _rec["last"]), 0)
+        lines = [_op_record(op) for op in ops[start:]]
+        if sigs:
+            _rec["last"] = sigs[-1]
+        state = _mesh_state()
+        if state is not None:
+            moved = _moved(_rec.get("snap"), state)
+            if lines:
+                lines[-1]["selected"] = state[4]
+                if moved is None and _rec.get("snap") is not None:
+                    lines.append({"op": "TOPOLOGY", "object": state[0], "verts": len(state[2])})
+                elif moved:
+                    lines[-1]["moved"] = moved
+                _rec["snap"], _rec["sculpt_pending"] = state, False
+            elif state[1] == "SCULPT":
+                # a stroke: changes keep coming; it is written once a poll sees none
+                now = _moved(_rec.get("tick"), state)
+                if now:
+                    _rec["sculpt_pending"] = True
+                elif _rec.get("sculpt_pending"):
+                    total = _moved(_rec.get("snap"), state)
+                    if total:
+                        lines.append(_sculpt_record(total))
+                    _rec["snap"], _rec["sculpt_pending"] = state, False
+            elif _rec.get("snap") is None or _rec["snap"][0] != state[0]:
+                _rec["snap"] = state
+            _rec["tick"] = state
+        _log(lines)
+    except Exception as e:  # recording never breaks the human's Blender
+        print(f"Fofuxo Cage: operator recorder: {e!r}")
+    return RECORD
+
+
+def _start_recording():
+    """From now on: what is in the history already (opening the review) is not the human's."""
+    ops = list(bpy.context.window_manager.operators)
+    _rec["last"] = _signature(ops[-1]) if ops else None
+    _rec["snap"] = _rec["tick"] = None
+    _rec["sculpt_pending"] = False
+    if not bpy.app.timers.is_registered(_record_ops):
+        bpy.app.timers.register(_record_ops, first_interval=RECORD, persistent=True)
+
+
+@bpy.app.handlers.persistent
+def _on_undo_human(*_args):
+    if not is_ai():
+        _log([{"op": "UNDO"}])
+        try:  # the mesh went back (or forward): moves are counted from here
+            _rec["snap"] = _rec["tick"] = _mesh_state()
+            _rec["sculpt_pending"] = False
+        except Exception:
+            pass
+
+
+@bpy.app.handlers.persistent
+def _on_redo_human(*_args):
+    if not is_ai():
+        _log([{"op": "REDO"}])
+        try:  # the mesh went back (or forward): moves are counted from here
+            _rec["snap"] = _rec["tick"] = _mesh_state()
+            _rec["sculpt_pending"] = False
+        except Exception:
+            pass
+
+
 @bpy.app.handlers.persistent
 def _on_save_post(*_args):
     if is_ai() and bpy.context.window_manager.windows:
@@ -267,9 +443,36 @@ def _poll_human():
             print("Fofuxo Cage: an AI instance is running; this Blender's MCP server stopped")
         if _pending_update():
             _set_header("Fofuxo Cage: the AI has a newer version of this review. Fofuxo tab > Load AI update")
+        _answer_collect()
     except Exception as e:  # a poll never breaks the human's Blender
         print(f"Fofuxo Cage: poll failed: {e!r}")
     return POLL
+
+
+def _answer_collect():
+    """The AI's collect(): save the review where the human left it and, when
+    asked, close this Blender."""
+    if _review_info() is None or not bpy.data.filepath:
+        return
+    request = Path(bpy.data.filepath).with_name(COLLECT)
+    try:
+        ask = json.loads(request.read_text("utf-8"))
+    except (OSError, ValueError):
+        return
+    request.unlink(missing_ok=True)
+    win = bpy.context.window_manager.windows[0]
+    with bpy.context.temp_override(window=win):
+        bpy.ops.wm.save_mainfile()
+    print("Fofuxo Cage: saved the review for the AI")
+    if ask.get("close"):
+        bpy.app.timers.register(_quit, first_interval=0.5)
+
+
+def _quit():
+    win = bpy.context.window_manager.windows[0]
+    with bpy.context.temp_override(window=win):
+        bpy.ops.wm.quit_blender()
+    return None
 
 
 def _set_header(text):
@@ -316,6 +519,7 @@ def open_review(source, names, out, units=None):
     # The first save is the AI's version: absorb counts only saves after it.
     Path(out).with_name(OPENED).write_text(json.dumps({"mtime": Path(out).stat().st_mtime, "pid": os.getpid()}),
                                            "utf-8")
+    _start_recording()
     return [o.name for o in dst.objects]
 
 
@@ -413,7 +617,7 @@ def review(names=None, launch=True, save=True):
     code = (f"import fofuxo_cage; fofuxo_cage.instance_mod.open_review({bpy.data.filepath!r}, {names!r}, "
             f"{str(path)!r}, {units!r})")
     command = [bpy.app.binary_path, "--python-expr", code]
-    for stale in (UPDATE_NOTICE, OPENED):
+    for stale in (UPDATE_NOTICE, OPENED, OPS_LOG, COLLECT):
         (root / stale).unlink(missing_ok=True)
     pid = None
     if launch:
@@ -422,7 +626,7 @@ def review(names=None, launch=True, save=True):
                                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         pid = proc.pid
         say(f"review opened for the human: {', '.join(names)}")
-    state.update(review=str(path), objects=names, pid=pid, written=time.time(), absorbed=None)
+    state.update(review=str(path), objects=names, pid=pid, written=time.time(), absorbed=None, ops_read=0)
     _save_review_state(state)
     return {"review": str(path), "pid": pid, "launched": bool(pid), "command": command}
 
@@ -521,6 +725,13 @@ def absorb(names=None, sync=True):
     state["absorbed"] = mtime
     _save_review_state(state)
     out = {"changed": True, "objects": done}
+    try:  # what the human ran since the last absorb, from the review's recorder
+        lines = path.with_name(OPS_LOG).read_text("utf-8").splitlines()
+        out["operators"] = [json.loads(x) for x in lines[state.get("ops_read", 0):] if x.strip()]
+        state["ops_read"] = len(lines)
+        _save_review_state(state)
+    except (OSError, ValueError):
+        pass
     if sync:
         from .sync import sync as sync_fn
         for name in done:
@@ -531,6 +742,42 @@ def absorb(names=None, sync=True):
                                            "annotations", "error") if k in r}
             out[name]["issues"] = [f"{i['level']} {i['code']} {' '.join(i['verts'])}" for i in r["issues"]]
     say(f"absorbed the human's review: {', '.join(done)}")
+    return out
+
+
+def collect(names=None, close=True, timeout=20.0):
+    """After the human edits the review: ask their Blender to save it (and
+    close, by default), wait for the save, then absorb() it. The human
+    Blender answers on its next poll (every few seconds)."""
+    state = _load_review_state()
+    path = Path(state.get("review", ""))
+    if not state or not path.exists():
+        raise InstanceError("no review to collect: call review() first")
+    pid = state.get("pid")
+    if not _alive(pid):
+        out = absorb(names)
+        out["closed"] = True
+        out["note"] = "the human's Blender was already closed; read what it last saved"
+        return out
+    before = path.stat().st_mtime
+    path.with_name(COLLECT).write_text(json.dumps({"close": close, "written": time.time()}), "utf-8")
+    end = time.time() + timeout
+    while time.time() < end and path.stat().st_mtime == before:
+        time.sleep(0.25)
+    if path.stat().st_mtime == before:
+        path.with_name(COLLECT).unlink(missing_ok=True)
+        raise InstanceError(f"the human's Blender did not save the review in {timeout:.0f} s "
+                            "(an older Fofuxo Cage there? ask the human to save)")
+    time.sleep(0.5)  # let the save finish writing
+    out = absorb(names)
+    if close:
+        while time.time() < end + 10 and _alive(pid):
+            time.sleep(0.25)
+        out["closed"] = not _alive(pid)
+        if out["closed"]:
+            state = _load_review_state()
+            state["pid"] = None
+            _save_review_state(state)
     return out
 
 
@@ -551,14 +798,18 @@ def register():
         bpy.app.timers.register(_setup_ai, first_interval=0.5, persistent=True)
     else:
         bpy.app.timers.register(_poll_human, first_interval=POLL, persistent=True)
+        bpy.app.handlers.undo_post.append(_on_undo_human)
+        bpy.app.handlers.redo_post.append(_on_redo_human)
 
 
 def unregister():
-    for timer in (_setup_ai, _poll_human):
+    for timer in (_setup_ai, _poll_human, _record_ops):
         if bpy.app.timers.is_registered(timer):
             bpy.app.timers.unregister(timer)
     for handlers, fn in ((bpy.app.handlers.load_post, _on_load), (bpy.app.handlers.save_pre, _on_save_pre),
-                         (bpy.app.handlers.save_post, _on_save_post)):
+                         (bpy.app.handlers.save_post, _on_save_post),
+                         (bpy.app.handlers.undo_post, _on_undo_human),
+                         (bpy.app.handlers.redo_post, _on_redo_human)):
         if fn in handlers:
             handlers.remove(fn)
     screen_off()
