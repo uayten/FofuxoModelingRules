@@ -414,6 +414,23 @@ piece goes.
     modeler, then checks that the plan carries. What a review cannot settle
     goes to the open questions in `DECISIONS.md`.
 
+12. **Rename Fofuxo Cage to LLM Modeling Bridge.** The modeler's choice
+    (2026-10-01): "Fofuxo" may stay in file names and the repo's name, never
+    in what a user sees in Blender. Done so far: the extension's display
+    name (manifest), the READMEs, and every label, panel, tab, header and
+    undo name in Blender (they say "LLM"). To do:
+    - the files and the module: `extension/fofuxo_cage/` to
+      `extension/fofuxo-bridge/`, the extension id and the import name
+      (`fofuxo_cage`, used by every call), the launcher;
+    - the data names saved in `.blend` files (`fofuxo_cage_id`,
+      `fofuxo_cage_lock`, `fofuxo_show_vertex`, `fofuxo_loop`,
+      `fofuxo_show_face`, `fofuxo_review`, `fofuxo_on`,
+      `fofuxo_perspective`) and the `<file>.cage/` folders, with a migration
+      that renames them when an old file is opened, so saved files keep
+      working;
+    - "Fofuxo Cage" and "cage text" in `SKILL.md`, `DECISIONS.md`, this
+      roadmap, the console messages and the tests.
+
 ## Order
 
 | Step | What | Why first |
@@ -427,3 +444,4 @@ piece goes.
 | 6 | Part 2 items 2, 4, 6 (technique library, candidates, editability) (**done**) | turns B1's lessons into reusable knowledge |
 | 7 | Phase 3 (**built**) and a transfer test on the horn (two pairs **judged**: D-063, D-064) | when the bow tie is accepted |
 | 8 | Part 2 item 11: the modeling plan (**built**), reviewed by the modeler on a new concept (a cowboy hat, from nothing), then built from the approved plan | the runs cost too much, and the method was wrong before the shape (D-063 to D-065) |
+| 9 | Part 2 item 12: rename to LLM Modeling Bridge, files to `fofuxo-bridge` (the display names **done**) | the name a user sees says what the tool is |

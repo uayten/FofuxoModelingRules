@@ -2,8 +2,8 @@ schema_version = "1.0.0"
 
 id = "fofuxo_cage"
 version = "0.1.0"
-name = "Fofuxo Cage"
-tagline = "Text round trip of cage meshes between an AI and a human"
+name = "LLM Modeling Bridge"
+tagline = "Lets a text LLM model in Blender with Blender's own tools"
 maintainer = "Antônio Froz"
 type = "add-on"
 

@@ -1,5 +1,8 @@
 # Fofuxo Modeling Rules
 
+> [!TIP]
+> English version → [README.md](README.md) (under construction)
+
 As ferramentas e as etapas para que uma LLM de texto, como o Claude, consiga
 modelar no Blender: uma skill com as regras e o passo a passo de um modelador
 humano (ler o concept, planejar, construir por etapas, conferir), e uma
@@ -12,10 +15,11 @@ e a deixa trabalhar em dupla com o modelador, que revisa, corrige e ensina.
 - [Exemplo: um chapéu de cowboy](#exemplo-um-chapéu-de-cowboy)
 - [Como funciona](#como-funciona)
   - [A skill](#a-skill)
-  - [A extensão Fofuxo Cage](#a-extensão-fofuxo-cage)
+  - [A extensão LLM Modeling Bridge](#a-extensão-llm-modeling-bridge)
   - [O ciclo com o modelador](#o-ciclo-com-o-modelador)
 - [Estrutura](#estrutura)
 - [Estado atual](#estado-atual)
+- [Roadmap](#roadmap)
 - [Convenções](#convenções)
 - [Por que existe](#por-que-existe)
 
@@ -72,7 +76,7 @@ fluxo:
    Circle e Space, slides), desfazer quando não deu certo.
 5. Olhar, auditar e entregar com um relatório e a linha de custo.
 
-### A extensão Fofuxo Cage
+### A extensão LLM Modeling Bridge
 
 Uma extensão do Blender (`extension/fofuxo_cage/`, com o
 [README próprio](extension/fofuxo_cage/README.md), em inglês) que faz a ponte
@@ -127,7 +131,10 @@ ROADMAP.md                     o que construir a seguir
   rodada C1, em andamento; resumo em
   `models/tasks/chapeu-cowboy/HANDOFF.md`).
 - **Regras**: D-001 a D-079 no `DECISIONS.md`.
-- **Próximos passos**: no `ROADMAP.md`, Parte 2, item 11.
+
+## Roadmap
+
+O que vem a seguir está no [ROADMAP.md](ROADMAP.md) (em inglês).
 
 ## Convenções
 
@@ -152,8 +159,8 @@ ROADMAP.md                     o que construir a seguir
 
 A skill começou de um arquivo humano (E1) e de uma pergunta: do que uma IA
 precisa para modelar como esse modelador? O teste T1 mostrou que os modelos
-erram mais na execução do que na percepção, e daí veio a extensão Fofuxo
-Cage (D-048). As rodadas dos chifres (T2) mostraram que o método errava antes
+erram mais na execução do que na percepção, e daí veio a extensão LLM
+Modeling Bridge (D-048). As rodadas dos chifres (T2) mostraram que o método errava antes
 da forma e que achar comandos por tentativa custava caro, e daí veio o plano
 revisado antes de modelar (D-065). No chapéu de cowboy o método mudou de
 novo: modelar por etapas, com o modelador corrigindo no meio, e aprender

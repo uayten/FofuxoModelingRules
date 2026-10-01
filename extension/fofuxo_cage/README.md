@@ -1,4 +1,4 @@
-# Fofuxo Cage
+# LLM Modeling Bridge
 
 A Blender extension that lets an AI and a human take turns editing the same
 cage mesh (the base mesh under Subdivision):
@@ -55,7 +55,7 @@ cage mesh (the base mesh under Subdivision):
 
 Preferences > Get Extensions > Repositories > **+** > Add Local Repository,
 pointing at the `extension/` folder of this repository (module name
-`fofuxo`). Then enable *Fofuxo Cage*. Code changes load on the next Blender
+`fofuxo`). Then enable *LLM Modeling Bridge*. Code changes load on the next Blender
 start (or by disabling and enabling the extension).
 
 ## Use
@@ -123,7 +123,7 @@ next sync reports them as Blender edits.
 
 While locked, the 3D View header and the status bar say which objects the AI
 is editing. The human can always take over: Esc while the input is blocked,
-or **Unlock** in the 3D View sidebar (Fofuxo tab). The next sync then warns
+or **Unlock** in the 3D View sidebar (LLM tab). The next sync then warns
 `human_took_over`: the AI stops and asks. A lock survives a save (the object's
 selectability is kept in a custom property), and `unlock` restores it.
 
@@ -162,12 +162,12 @@ python extension/fofuxo_cage/launcher.py models/tasks/laco/ai/B1-opus-cage/B1.bl
   the MCP port (9876) and prints `{"started": true, "pid": ..., "listeners":
   [...]}`. If an AI instance is already running it starts nothing; open the
   file there instead.
-- The AI's instance shows one black area with the notice "Fofuxo Cage:
+- The AI's instance shows one black area with the notice "LLM Modeling Bridge:
   Blender exclusivo da AI" (Blender's focus mode: no top bar, no status
   bar), swallows every input event (the window's close button still works)
   and keeps its MCP server on. Saving writes the file's own layout, not the
   focus mode. `say(text)` adds a status line under the notice.
-- A human's Blender with Fofuxo Cage looks every 3 s for a live AI instance
+- A human's Blender with LLM Modeling Bridge looks every 3 s for a live AI instance
   and then stops its own MCP server, so the MCP always reaches the AI's
   (Blender's server binds with `SO_REUSEADDR`: on Windows two Blenders can
   hold the port and nothing tells which one answers). An older Blender
@@ -186,7 +186,7 @@ fofuxo_cage.collect()                                 # the human says they edit
   `<file>.cage/review.blend`. The human edits there and saves (Ctrl+S).
 - While that Blender is open, `review()` again only writes
   `review.update.json`: the human's Blender shows it in the 3D View header,
-  and **Load AI update** in the Fofuxo tab replaces those objects with the
+  and **Load LLM update** in the LLM tab replaces those objects with the
   AI's saved version (mesh, modifiers, transform).
 - `absorb()` does the same the other way: mesh, modifiers and transform of
   the reviewed objects come from `review.blend` into the AI's objects, and
@@ -199,7 +199,7 @@ fofuxo_cage.collect()                                 # the human says they edit
   edited the review, the AI does not wait for a Ctrl+S. It writes
   `review.collect.json`; the human's Blender sees it on its next poll (every
   3 s), saves the review and, with `close`, quits; then `absorb()` runs and
-  the result says `closed`. A Blender started with an older Fofuxo Cage does
+  the result says `closed`. A Blender started with an older LLM Modeling Bridge does
   not answer: `collect` stops after `timeout` and says so.
 - The review Blender records the human's work: every 0.5 s it copies the
   operators new in Blender's own history (which keeps only the last few) to
