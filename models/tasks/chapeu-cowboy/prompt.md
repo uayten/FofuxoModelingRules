@@ -1,4 +1,4 @@
-# Task: straw cowboy hat (ROADMAP, Part 2, item 11)
+# Task: straw cowboy hat (ROADMAP item 1; D-065)
 
 The first concept built from nothing: no body to sit on, no modeler's part to
 measure against. The modeler's judgment is the reference.

@@ -16,7 +16,7 @@ what was decided, what the tools now do and what comes next.
 
 ## State in one paragraph
 
-ROADMAP Part 2, item 11 (the modeling plan reviewed before modeling), on a new
+ROADMAP item 1 (the modeling plan reviewed before modeling, D-065), on a new
 concept: a straw cowboy hat from a 3/4 photo, real adult size, no body. A
 blind plan (P1, written by a subagent) was reviewed by the modeler; the
 method was corrected, then the modeler asked to model **in the conversation,
@@ -147,11 +147,11 @@ Blenders"; tests pass, 244 checks):
    band row (the modeler's chosen route); buckle and tail (Mirror X and
    Subdivision); materials; the face count no longer a limit.
 5. Close the round (`round_end`) and write `ai/C1/report.md` with the cost
-   line; then ROADMAP item 11 step 5's verdict.
+   line; then the modeler's verdict (ROADMAP item 1).
 
 ## Opening prompt for the next conversation
 
-> Projeto FofuxoModelingRules, chapéu de cowboy (ROADMAP Parte 2, item 11).
+> Projeto FofuxoModelingRules, chapéu de cowboy (ROADMAP, item 1).
 > Ler primeiro: `models/tasks/chapeu-cowboy/HANDOFF.md`, depois
 > `models/tasks/chapeu-cowboy/ai/C1/plan.md` (seção Changes) e, do
 > `DECISIONS.md`, só D-066 a D-079. Abrir o Blender da AI com
