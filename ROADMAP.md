@@ -132,14 +132,64 @@ tools, and learns from the modeler's use of them.
     tie; the hat and the skirt ruffles (E1) get theirs when catalogued, so
     the LLM reads them instead of measuring again.
 
+12. **Fewer tokens per model: measure, then cut.** The modeler's goal is a
+    model from an approved plan without the cost of the T2 horns (180-220k
+    tokens a horn); nothing is promised yet. Each problem below was seen in
+    the C1 session (about 560k tokens of context, half of it messages), with
+    its solution, or marked to think of one.
+    1. **Nobody knows where the tokens go.** Solution: `round_end` writes the
+       cost by kind: renders made (count, pixels), tool reports (sync, edit,
+       absorb: count and characters), the agent's own text where it can be
+       read. Think of a solution for counting what the agent reads outside
+       the extension (files, images it opens), and for the real token cost
+       of an image of a given size.
+    2. **The context piles up.** Every new message re-reads the whole
+       conversation, so a long session costs more per turn as it grows.
+       Solution: one stage or one tool per session, opened from a brief
+       (`HANDOFF.md`, `NEXT.md`) instead of the history; the brief written at
+       the end of each session.
+    3. **Images bigger than the question.** About 25 sheets and renders were
+       read, most with three views where one mattered. Solution: a render of
+       the region the stage changed, one view when one is enough, at the
+       smallest size that still reads; the full sheet only when the whole
+       object is in question.
+    4. **Reports longer than needed.** `sync`, `edit` and `absorb` return
+       every op's profile and surface lines and lists of dozens of vertices.
+       Solution: a short answer by default (action, counts, issues, what
+       moved by region), the full report on request.
+    5. **Throwaway scripts.** Regex edits of the cage text to set many
+       vertices' positions, the Workbench render, reading a region's ids:
+       written ad hoc several times, 1-3k tokens each. Solution: one call
+       each (`set_positions`, a Workbench render call, a region-ids call).
+    6. **Raw recorder logs.** The modeler's 343 operators were read as JSON
+       and summed up by the agent. Solution: `absorb` sums them itself
+       (operators by kind, moves by region, undos), the raw log on request.
+    7. **A blind subagent for the plan.** P1 alone cost about 140k tokens and
+       its method was replaced. Solution: the plan written in the
+       conversation, short, and reviewed there.
+    8. **Tools built in the middle of modeling.** Debugging the sheet, the
+       recorder and their tests inside the modeling session filled its
+       context. Solution: tools in sessions of their own. Think of a solution
+       for a tool need found mid-stage (the modeler asks for it now): how to
+       build it apart and come back to the stage without losing it.
+    9. **Commands found by trial.** Solution: the modeler's recorded steps
+       (item 3) become techniques with their ops, run instead of found. Think
+       of a solution for why the technique library did not carry in the T2
+       horns (twice the run without it was judged better: D-063, D-064), so
+       recorded techniques do carry.
+    10. **Docs read whole.** The README's op tables and the skill are long.
+        Solution: a short card of the ops (one line each) and the skill read
+        by section.
+
 ## Order
 
 | Step | What | Why first |
 |---|---|---|
-| 1 | Item 3: the recorder in a real review | the next steps of the hat are recorded sessions |
-| 2 | Item 1: finish the hat and judge the method | the open run; every rule since D-066 is waiting on its verdict |
-| 3 | Items 5 and 6: region names, the evenness check | what the hat's sessions asked for |
-| 4 | Item 4: mouse and keys | the Sculpt and the drags the recorder cannot place |
-| 5 | Item 2: a second concept | checks that the rules carry |
-| 6 | Items 7, 8, 9 | the tools and the name, once the method holds |
-| 7 | Items 10, 11 | the example catalog |
+| 1 | Item 12, its first part: measure where the tokens go | every cut after it is checked against numbers |
+| 2 | Item 3: the recorder in a real review | the next steps of the hat are recorded sessions |
+| 3 | Item 1: finish the hat and judge the method | the open run; every rule since D-066 is waiting on its verdict |
+| 4 | Items 5 and 6: region names, the evenness check | what the hat's sessions asked for |
+| 5 | Item 4: mouse and keys | the Sculpt and the drags the recorder cannot place |
+| 6 | Item 2: a second concept | checks that the rules carry |
+| 7 | Items 7, 8, 9 | the tools and the name, once the method holds |
+| 8 | Items 10, 11 | the example catalog |

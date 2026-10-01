@@ -10,6 +10,8 @@ what was decided, what the tools now do and what comes next.
 - [How the work went](#how-the-work-went)
 - [Rules that came out of it](#rules-that-came-out-of-it)
 - [Tools built during the task](#tools-built-during-the-task)
+- [Changed after the first handoff (same day)](#changed-after-the-first-handoff-same-day)
+- [Pitfalls met in C1](#pitfalls-met-in-c1)
 - [The model now](#the-model-now)
 - [Next steps](#next-steps)
 - [Opening prompt for the next conversation](#opening-prompt-for-the-next-conversation)
@@ -42,6 +44,7 @@ round `C1 build` is still open (`round_start` was called; no `round_end`).
 | `ai/C1/C1.cage/ops_egg.json` | the last 29 operators of the modeler's egg dent (before the recorder) |
 | `ai/C1/C1.cage/ops_central.json` | all 343 operators of the modeler's middle dent (the recorder's first session) |
 | `ai/C1/renders/sheet_central.png` | the latest Workbench render (3/4, front, high 3/4, top) |
+| `ai/C1/workbench_render.py` | the Workbench render code (shaded, or with the cage over it) |
 
 ## How the work went
 
@@ -116,9 +119,66 @@ Blenders"; tests pass, 244 checks):
   `selected` and how far each vertex `moved`, and `SCULPT` lines (brush,
   radius in px, strength, moved vertices). Tested only in a background
   simulation.
-- Workbench renders: the sheet's panels are too small to judge a crown; the
-  AI renders 3/4, front, high 3/4 and top with a temporary camera to
-  `ai/C1/renders/` (code in the conversation, not in the extension yet).
+- Workbench renders: the sheet's panels are too small to judge a crown.
+  `ai/C1/workbench_render.py` (`render(name, out, cage=False)`): 3/4,
+  front, high 3/4 and top with a temporary camera, optionally the cage's
+  edges and vertices drawn over the result; leaves nothing in the file.
+  Run it with `exec(open(path).read(), ns)` through the MCP. To become one
+  call of the extension (ROADMAP item 8).
+
+## Changed after the first handoff (same day)
+
+- **Name.** The extension is shown as **LLM Modeling Bridge**: the manifest,
+  the READMEs, and every label, panel, tab ("LLM"), header and undo name in
+  Blender. "Fofuxo" stays only in file, folder, module and data names
+  (`fofuxo_cage`, `fofuxo_cage_id`...); renaming those to `fofuxo-bridge`,
+  with a migration for saved files, is ROADMAP item 9.
+- **The LLM's black screen** says, in Portuguese, that the window is the
+  LLM's only, that the human asks in the conversation for a Blender of
+  their own (or for this window to be released: not built yet, ROADMAP
+  item 7), and not to close it while working together.
+- **READMEs.** `README.md` (English) is only a Tip pointing to
+  `README.pt-BR.md` (Portuguese, the full one: what the project is, the
+  comparison with Tripo, the hat as example with `images/chapeu-cowboy/`
+  (reference, a Workbench render, a cage sheet), how it works, a link to the
+  roadmap). Both open with a `> [!TIP]` to the other language.
+- **ROADMAP.md is the repository's main development file**, written for AI
+  agents: how an agent uses it, only what is left (a finished item is
+  removed, never marked done), the order of the next steps. Item 12 lists
+  the token problems seen in C1 with their solutions, or "think of a
+  solution".
+- The recorder (above) gained ids, moves and Sculpt lines after the
+  modeler's middle-dent session; `absorb()` returns them.
+
+## Pitfalls met in C1
+
+- `import fofuxo_cage.sync` (or any `import fofuxo_cage.<name>` whose name
+  is also a function of the package) replaces the function on the package
+  with the module: `fofuxo_cage.sync(...)` then fails with "module object is
+  not callable". Use `sys.modules[...]` to reach a submodule; if it
+  happened, `fofuxo_cage.sync = sys.modules["fofuxo_cage.sync"].sync`.
+- After editing the extension's code, reload in the LLM's Blender:
+  `importlib.reload(sys.modules[base + ".<module>"])`, then
+  `importlib.reload(sys.modules["fofuxo_cage"])` (`base` is the package's
+  real name, `sys.modules["fofuxo_cage"].__name__`). A review Blender
+  already open keeps the old code: close it and `review()` again.
+- Computer use: `open_application("Blender")` launches a new, empty
+  Blender; to reach the review window click its title bar (the taskbar
+  needs the "File Explorer" grant). Prefer `collect()`.
+- In background Blender, operators called from a script do not enter
+  `window_manager.operators`: the recorder's operator path can only be
+  tested with a stand-in (see the recorder test in the conversation's
+  approach) or in a real window.
+- Blender 5.2 keeps the Sculpt brush's unified size and strength in
+  `tool_settings.sculpt.unified_paint_settings`, not
+  `tool_settings.unified_paint_settings`.
+- A region selection like `h>500` also takes vertices far away (the brim's
+  curled tip); add a second condition (`w>-100`) and preview with `select()`.
+- Delete faces on a plane (`delete faces w>=500`) can leave faces whose
+  vertices read a hair under 500; delete those with a `faces vA vB ...`
+  list.
+- A file the sheet writes can be locked (OneDrive); remove it and render
+  again.
 
 ## The model now
 
@@ -135,24 +195,15 @@ Blenders"; tests pass, 244 checks):
 
 ## Next steps
 
-1. Try the new recorder in a real review (ids per operator, Sculpt lines);
-   then, if the modeler wants it, record mouse and keys too, each press and
-   release turned into the vertex under the cursor (proposed, not built).
-2. Region names as vertex groups ("crista", "fundo do ovo"), so logs and
-   plans speak of regions.
-3. An evenness check for D-078 (face size against neighbours, cage and
-   result).
-4. The hat: apply Mirror Y when the side dent is approved; Solidify
-   (`add SOLIDIFY after Subdivision`); the band extracted from the crown's
-   band row (the modeler's chosen route); buckle and tail (Mirror X and
-   Subdivision); materials; the face count no longer a limit.
-5. Close the round (`round_end`) and write `ai/C1/report.md` with the cost
-   line; then the modeler's verdict (ROADMAP item 1).
+In `ROADMAP.md`, the table "Order": it is kept up to date and wins over any
+list written here. For the hat itself, item 1 (Mirror Y, Solidify, band,
+buckle, tail, materials, the D-078 check, `round_end` and the report).
 
 ## Opening prompt for the next conversation
 
 > Projeto FofuxoModelingRules, chapéu de cowboy (ROADMAP, item 1).
-> Ler primeiro: `models/tasks/chapeu-cowboy/HANDOFF.md`, depois
+> Ler primeiro: `ROADMAP.md` (instruções para agentes e a ordem dos
+> próximos passos), `models/tasks/chapeu-cowboy/HANDOFF.md`, depois
 > `models/tasks/chapeu-cowboy/ai/C1/plan.md` (seção Changes) e, do
 > `DECISIONS.md`, só D-066 a D-079. Abrir o Blender da AI com
 > `python extension/fofuxo_cage/launcher.py models/tasks/chapeu-cowboy/ai/C1/C1.blend`.
