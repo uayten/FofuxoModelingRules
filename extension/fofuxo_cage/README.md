@@ -464,10 +464,17 @@ B1 edit (0.36). E1's numbers are in `measures.json`.
 ### Cost per round
 
 ```python
-fofuxo_cage.round_start("B1 round 7")
+fofuxo_cage.round_start("B1 round 7", plan="models/tasks/laco/ai/B1/plan.md")
 ...
 fofuxo_cage.round_end(tokens=180000)   # tokens from the AI session's usage
 ```
+
+`plan` (D-065, `skill/fofuxo-modeling-rules/PLAN.md`): the plan written
+before modeling. `round_start` refuses it when a section (Read, Parts,
+Stack, Commands, Checks, Budget, Changes) or its ` ```budget ` block is
+missing; every sync then adds a `round_budget` WARN once a count passes the
+budget, and the `report_line` ends with the plan beside what was done
+(`Plan: syncs 9/12, renders 6/5 over, ...`).
 
 Counts minutes, syncs, ops applied, renders and measures (dense
 evaluations) between the two calls, appends them to `<file>.cage/rounds.json`

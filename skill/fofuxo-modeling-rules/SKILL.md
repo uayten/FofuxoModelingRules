@@ -103,11 +103,23 @@ Every task follows these steps, in order:
    - **techniques**: look each form up in `models/TECHNIQUES.md` and read
      only its block (when, how, how to measure). One marked pending or
      Provisional is a lead, not a rule: use it, measure it, say so.
-5. **Plan** — decompose the object into parts. For each part, write one line:
-   base primitive, modifier stack, cutters, parametric or not. For anything
-   with more than one part, show the plan in your reply before building.
-   Wait for approval? **[TBD]**
-6. **Build** — only through library helpers.
+5. **Plan the build** — before any modeling call (`start_part`, `edit`, a
+   `mesh` or `add` line), write `plan.md` next to the `.blend` from
+   [PLAN.md](PLAN.md): the reading in numbers (steps 2 and 4), the parts,
+   each part's modifiers in order with their settings, the exact commands in
+   order with what each should give, the checks after each stage, a budget
+   (syncs, ops, renders, measures, minutes), the risks, and an empty Changes
+   section. Take the commands from the README's op tables or `mesh_help()`,
+   reading only the rows the plan uses. Open the round with
+   `round_start(label, plan="<path>/plan.md")`: it refuses an incomplete
+   plan. With a human in the session, show the plan and wait for an OK;
+   working alone, go on. Planning is cheap; finding the commands by trial
+   while building is what makes a round expensive.
+6. **Build** — run the plan's commands, stage by stage, each stage closed by
+   its check. A step that leaves the plan goes in Changes with its why. A
+   check that fails twice in a row stops the build: write what it showed,
+   revise the plan, then go on. Past the budget the sync warns
+   (`round_budget`): stop and revise, do not keep trying.
 7. **Look** — compare the shape with the concept before anything else (D-032).
    Check **each object alone first** (Local View, `/`), then **all together**
    (D-042):

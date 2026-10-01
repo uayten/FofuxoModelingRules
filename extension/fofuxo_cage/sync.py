@@ -378,6 +378,7 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
     rounds_mod.count("ops", len(report.get("ops", [])))
     if report.get("render"):
         rounds_mod.count("renders")
+    report["issues"] += rounds_mod.budget_issues()  # the plan's budget (SKILL, step 5)
     # The push already ran the position checks that check_mesh repeats.
     unique = []
     for issue in report["issues"]:

@@ -527,6 +527,24 @@ is wide or deeper, so that it reads as growing out of the body from every
 side; and a horn tapers as a cone from that base, not as a tube that narrows
 only near the tip. Refines D-037 (hidden forms) and D-056.
 
+### D-065: A written plan comes before modeling (Stated, T2)
+
+The modeler, after the T2 horns (about 180-220k tokens a run): "o Claude está
+muito gastão! não tem como continuar gastando tanto assim. A gente precisa
+criar uma etapa de raciocínio e planejamento, onde o Claude vai descrever
+como ele vai fazer, quais os modificadores ele vai usar, qual a ordem, quais
+os comandos ele vai utilizar. Tudo isso antes de começar a modelar
+propriamente." The runs found their commands by trial: tool calls, renders
+and scripts written while building (T2-A: 248 ops and 24 renders for one
+horn).
+
+How to apply: SKILL step 5 and `skill/fofuxo-modeling-rules/PLAN.md`: a
+`plan.md` with the reading in numbers, the parts, the stack in order, the
+exact commands and what each gives, the checks, a budget, the risks and a
+Changes log; `round_start(label, plan=...)` refuses an incomplete plan and
+the sync warns past its budget. With a human in the session the plan waits
+for an OK (this settles step 5's "[TBD]").
+
 ### D-060: Marks are messages (Stated, B1)
 
 The modeler points at the model with marks: sharp or seam on a loop means

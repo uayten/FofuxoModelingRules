@@ -85,7 +85,8 @@ the next session reads it first, instead of the whole history (fewer tokens;
   round's `.blend`);
 - **Start**: the file to open and the first call.
 
-Each round's `report.md` ends with its cost: `fofuxo_cage.round_start(label)`
+Each round starts from a written plan (`plan.md`, D-065) and its `report.md`
+ends with its cost: `fofuxo_cage.round_start(label, plan=...)`
 when the round begins, `round_end(tokens=...)` when it ends (the tokens from
 the session's usage); the `report_line` goes in the report (ROADMAP, Part 2,
 item 8).

@@ -1131,6 +1131,27 @@ def main():
           and rows[-1]["round"] == "test round" and "1k tokens" in cost["report_line"],
           f"the round's cost counted and kept ({cost['report_line']})")
 
+    print("17. the plan before modeling (D-065)")
+    plan = Path(bpy.data.filepath).parent / "plan.md"
+    plan.write_text("# Plan\n\n## Read\n## Parts\n## Stack\n## Commands\n## Checks\n## Budget\n```budget\n"
+                    "syncs 1\nrenders 5\n```\n## Risks\n", "utf-8")
+    try:
+        fc.round_start("planned", plan=plan)
+        refused = ""
+    except fc.PlanError as e:
+        refused = str(e)
+    check("Changes" in refused, f"a plan without its Changes section refused ({refused})")
+    plan.write_text(plan.read_text("utf-8") + "## Changes\n", "utf-8")
+    fc.round_start("planned", plan=plan)
+    fc.edit("Laço", "mesh vertices_smooth L1 factor=0.1", render=False)
+    r = fc.edit("Laço", "mesh vertices_smooth L1 factor=0.1", render=False)
+    warn = [i for i in r["issues"] if i["code"] == "round_budget"]
+    cost = fc.round_end()
+    check(warn and "syncs" in warn[0]["msg"] and "syncs 2/1 over" in cost["report_line"]
+          and "renders 0/5" in cost["report_line"],
+          f"past the plan's budget the sync warns, the cost line shows the plan ({cost['report_line']})")
+    plan.unlink()
+
     print(f"\nsidecar: {text_path.parent}")
     print(text_path.read_text("utf-8")[:2400])
 

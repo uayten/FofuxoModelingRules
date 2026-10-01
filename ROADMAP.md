@@ -362,6 +362,14 @@ piece goes.
 10. **The modeler's edits as examples.** When the modeler fixes an AI cage
     in Blender, save the edit in `human/` (the README convention) and file
     the deltas with their why: each fix is a small example of a technique.
+11. **(Done: SKILL step 5, `skill/fofuxo-modeling-rules/PLAN.md`,
+    `round_start(label, plan=...)`, D-065.) A written plan before modeling.**
+    The T2 runs cost about 180-220k tokens a horn, most of it finding
+    commands by trial. `plan.md` holds the reading in numbers, the parts, the
+    stack in order, the exact commands with what each gives, the checks, a
+    budget, the risks and a Changes log; `round_start` refuses an incomplete
+    plan, the sync warns past the budget, the cost line shows plan against
+    done. Next: the third T2 pair with a plan, to measure the saving.
 
 ## Order
 
@@ -374,4 +382,5 @@ piece goes.
 | 4 | Phase 1 whitelist complete (**done**) | covers the loop work of the next examples |
 | 5 | Phase 5 marks report and annotations (**done**) | the modeler's way of pointing, made reliable |
 | 6 | Part 2 items 2, 4, 6 (technique library, candidates, editability) (**done**) | turns B1's lessons into reusable knowledge |
-| 7 | Phase 3 (**built**) and a transfer test on the horn (**judged**: D-063; a second pair of runs next) | when the bow tie is accepted |
+| 7 | Phase 3 (**built**) and a transfer test on the horn (two pairs **judged**: D-063, D-064) | when the bow tie is accepted |
+| 8 | Part 2 item 11: a written plan before modeling (**done**), then the third T2 pair | the runs cost too much (D-065) |
