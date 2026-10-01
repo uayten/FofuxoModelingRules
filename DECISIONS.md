@@ -487,6 +487,46 @@ grid's lines run through the loop's extreme vertices, so the mesh can be cut
 in quarters and mirrored. Fofuxo Cage's `fill_grid` turns the grid until it
 is mirror symmetric on X and Y (unless an offset is given).
 
+### D-063: A part that sits on a body in the file is built on that body, not over the concept (Stated, T2)
+
+The modeler, judging the T2 horns: "ambos estão muito ruins, o claude tentou
+fazer por cima da referência sem levar em consideração o corpo do
+dragãozinho que já existe no arquivo." Both runs traced the concept's horns
+(tips at z 599 mm), noticed that the body's head is about 30 mm lower than
+the concept's where the horns sit, and still kept the concept's outline,
+stretching the base down into the head. The modeler's horn (E1) sits on the
+real head: its tip is at 567 mm, the concept's 599 moved down by that same
+gap, with a wide base on the head (89 × 91 mm against the runs' 50 × 49 and
+76 × 60) and no backward sweep.
+
+How to apply: when the scene already has the body a part sits on, the body
+is the reference for place and size; the concept gives the part's shape and
+its proportions against the body (height against the head, width against
+the head, where on the head). Read the concept's head, find the body's, and
+carry the part over from one to the other. When the two disagree, the body
+wins and the part moves with it. Refines D-056 (the concept is a first
+direction) and D-035 (move the concept to read it against the model).
+
+### D-064: Read the drawing for what the 3D needs, not for what it shows (Stated, T2)
+
+The modeler, judging the second pair of T2 horns: "ainda está fino na base,
+a AI não está sabendo interpretar o concept no sentido do que funciona ou não
+funciona na tradução do 2D para o 3D." Measured outside the head, in 15 mm
+bands: E1's horn leaves the head with a base of about 80 × 80 mm (w 59-80,
+d 75-79) and narrows fast to 25 × 25 at the tip, a cone; T2-D's leaves at
+42-64 × 49-51 and keeps about 65 × 50 up to its top third, a tube. The run
+took the width the front view shows and set the depth a little under it; the
+hat's brim hides the base's inner side (E1 reaches x 69 behind it, the run
+stopped at 89), and a front view shows no depth at all.
+
+How to apply (the AI's reading of this case, confirmed by the modeler): the drawn outline is
+what is left visible, not the part's size. Where something covers the part
+(the brim, the head), it continues at least as wide as its widest visible
+row; where the part meets a round body, its base footprint is as deep as it
+is wide or deeper, so that it reads as growing out of the body from every
+side; and a horn tapers as a cone from that base, not as a tube that narrows
+only near the tip. Refines D-037 (hidden forms) and D-056.
+
 ### D-060: Marks are messages (Stated, B1)
 
 The modeler points at the model with marks: sharp or seam on a loop means

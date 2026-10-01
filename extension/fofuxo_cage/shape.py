@@ -75,18 +75,20 @@ def _levels(obj, levels):
 
 
 def _mesh_arrays(obj):
-    ev = obj.evaluated_get(_depsgraph())
-    me = ev.to_mesh()
-    try:
-        me.calc_loop_triangles()
-        co = np.empty(len(me.vertices) * 3)
-        me.vertices.foreach_get("co", co)
-        nor = np.empty(len(me.vertices) * 3)
-        me.vertices.foreach_get("normal", nor)
-        tris = np.empty(len(me.loop_triangles) * 3, dtype=int)
-        me.loop_triangles.foreach_get("vertices", tris)
-    finally:
-        ev.to_mesh_clear()
+    # A part mirrored across another object is measured on its own side.
+    with mesh_io.one_side(obj):
+        ev = obj.evaluated_get(_depsgraph())
+        me = ev.to_mesh()
+        try:
+            me.calc_loop_triangles()
+            co = np.empty(len(me.vertices) * 3)
+            me.vertices.foreach_get("co", co)
+            nor = np.empty(len(me.vertices) * 3)
+            me.vertices.foreach_get("normal", nor)
+            tris = np.empty(len(me.loop_triangles) * 3, dtype=int)
+            me.loop_triangles.foreach_get("vertices", tris)
+        finally:
+            ev.to_mesh_clear()
     return co.reshape(-1, 3), nor.reshape(-1, 3), tris.reshape(-1, 3)
 
 

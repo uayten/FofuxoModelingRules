@@ -14,6 +14,12 @@ Measures: `faces`, `verts` (the base cage), `evaluated faces`, `size w|d|h`
 axis at a fraction of the part's half size from its mirror plane: the
 superellipse exponent, or depth at h 0 over the largest depth),
 `profile top|front|side <fraction>` (the largest half size in that band, mm).
+For a part mirrored across another object (a horn across the body), the
+world measures read one side, Mirror off, in mm with w d h = world x y z
+(front is -y): `world min|max|size w|d|h` (its box), `base w|d|h` (the middle
+of its open border, where it sits; closed, the middle of what is buried in
+the Mirror's object or the parent) and `tip w|d|h` (its point farthest from
+the base).
 Tolerance: `5%` or `0.05` or `1mm` both ways; `+20%` only above, `-10%`
 only below. Names with spaces go in quotes ("Laço Nó").
 
@@ -29,9 +35,10 @@ import numpy as np
 
 COUNTS = ("faces", "verts")
 _TOL = re.compile(r"([+-]?)(\d*\.?\d+)(%|mm)?")
-_VALUE = re.compile(r"(\d*\.?\d+)(mm)?")
+_VALUE = re.compile(r"(-?\d*\.?\d+)(mm)?")
 _MAX_UP = 6  # folders walked up from the .blend
-_WORDS = {"faces": 1, "verts": 1, "evaluated": 2, "size": 2, "profile": 3, "section": 4}
+_WORDS = {"faces": 1, "verts": 1, "evaluated": 2, "size": 2, "profile": 3, "section": 4,
+          "world": 3, "base": 2, "tip": 2}
 
 
 class TargetError(ValueError):
@@ -47,7 +54,7 @@ class Target:
         self.side, self.amount, self.unit = m[1], float(m[2]), m[3] or ""
 
     def limits(self):
-        span = self.value * self.amount / 100 if self.unit == "%" else self.amount
+        span = abs(self.value) * self.amount / 100 if self.unit == "%" else self.amount
         lo = self.value - span if self.side in ("", "-") else float("-inf")
         hi = self.value + span if self.side in ("", "+") else float("inf")
         return lo, hi
@@ -120,12 +127,82 @@ def budget_issues(obj, path=None):
     return issues
 
 
+def _one_side(obj):
+    """World points (m) of one side of obj (Mirror modifiers off), and the
+    middle of its open border (None when closed)."""
+    from . import shape
+
+    mirrors = [m for m in obj.modifiers if m.type == "MIRROR" and m.show_viewport]
+    try:
+        for m in mirrors:
+            m.show_viewport = False
+        with shape._levels(obj, shape.DENSE_LEVELS):
+            ev = obj.evaluated_get(shape._depsgraph())
+            me = ev.to_mesh()
+            try:
+                co = np.empty(len(me.vertices) * 3)
+                me.vertices.foreach_get("co", co)
+                edge_of_loop = np.empty(len(me.loops), dtype=int)
+                me.loops.foreach_get("edge_index", edge_of_loop)
+                verts_of_edge = np.empty(len(me.edges) * 2, dtype=int)
+                me.edges.foreach_get("vertices", verts_of_edge)
+            finally:
+                ev.to_mesh_clear()
+    finally:
+        for m in mirrors:
+            m.show_viewport = True
+        shape._depsgraph()
+    co = co.reshape(-1, 3)
+    mw = np.array(obj.matrix_world)
+    co = co @ mw[:3, :3].T + mw[:3, 3]
+    border = np.nonzero(np.bincount(edge_of_loop, minlength=len(verts_of_edge) // 2) == 1)[0]
+    ends = np.unique(verts_of_edge.reshape(-1, 2)[border])
+    if len(ends):
+        return co, co[ends].mean(axis=0)
+    # Closed: the middle of the part buried in the object it sits on.
+    host = next((m.mirror_object for m in mirrors if m.mirror_object), None) or obj.parent
+    inside = _inside(host, co) if host is not None and host.type == "MESH" else None
+    return co, (co[inside].mean(axis=0) if inside is not None and inside.any() else None)
+
+
+def _inside(host, co):
+    """Which world points lie inside the evaluated mesh of host."""
+    from mathutils import Vector
+    from mathutils.bvhtree import BVHTree
+
+    from . import shape
+
+    tree = BVHTree.FromObject(host, shape._depsgraph())
+    inv = host.matrix_world.inverted()
+    out = np.zeros(len(co), dtype=bool)
+    for i, p in enumerate(co):
+        local = inv @ Vector(p)
+        hit, normal, _, _ = tree.find_nearest(local)
+        out[i] = hit is not None and (hit - local).dot(normal) > 0
+    return out
+
+
 def _measure(obj, measure, cache):
     from . import shape
 
     words = measure.split()
     if measure in COUNTS:
         return _count(obj, measure)
+    if words[0] in ("world", "base", "tip") and words[-1] in ("w", "d", "h"):
+        if "side" not in cache:
+            cache["side"] = _one_side(obj)
+        co, base = cache["side"]
+        k = "wdh".index(words[-1])
+        if words[0] == "world" and len(words) == 3 and words[1] in ("min", "max", "size"):
+            v = {"min": co[:, k].min(), "max": co[:, k].max(), "size": np.ptp(co[:, k])}[words[1]]
+            return round(float(v) * 1000, 1)
+        if len(words) == 2:
+            if base is None:
+                return None
+            if words[0] == "base":
+                return round(float(base[k]) * 1000, 1)
+            tip = co[np.argmax(np.linalg.norm(co - base, axis=1))]
+            return round(float(tip[k]) * 1000, 1)
     if "co" not in cache:
         cache["co"], _ = shape.dense(obj)
     co = cache["co"]
@@ -172,7 +249,7 @@ def check(names=None, path=None):
         lo, hi = t.limits()
         ok = value is not None and lo <= value <= hi
         n_in += ok
-        unit = "mm" if t.measure.startswith(("size", "profile")) else ""
+        unit = "mm" if t.measure.startswith(("size", "profile", "world", "base", "tip")) else ""
         shown = "none" if value is None else f"{value:g}{unit}"
         results.append(f"{'in ' if ok else 'OUT'} {t.obj} {t.measure} = {shown} (target {t.text()})"
                        + (f"  {t.why}" if t.why else ""))

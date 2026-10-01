@@ -36,6 +36,8 @@ def parse(line):
     if len(rest) < 3:
         raise OpError(f"{line!r}: expected '{verb} <targets> <axes> <amount>%'")
     *targets, axes, amount = rest
+    if any(_AMOUNT.fullmatch(t) for t in targets):
+        raise OpError(f"{line!r}: one amount per line; split it, e.g. 'move v21 w -1%' then 'move v21 d -1%'")
     if not re.fullmatch(r"[wdh]{1,3}", axes.lower()):
         raise OpError(f"{line!r}: axes must be letters from w, d, h, not {axes!r}")
     m = _AMOUNT.fullmatch(amount)

@@ -315,13 +315,33 @@ piece goes.
    technique library, judged blind as in T1: do the rules carry to a part
    the AI has not seen?
 
-   **Plan (step 7, not run; waiting for the modeler).**
-   - **The part.** The hat is the obvious task but not a clean transfer:
-     D-024, D-026 and D-029 came from it, so the skill already knows it.
-     Cleaner: a part no rule came from. In E1: `Chifre` (horn, Mirror +
-     Subdivision, 57 vertices, the bow's kind of cage) or `Sobrancelha`
-     (eyebrow, 58 vertices); outside E1: the skirt ruffles, once the modeler
-     has a file. The modeler picks.
+   **Status: run and judged (2026-09-30).** The modeler, blind: T2-B
+   (without the techniques) better, both "muito ruins": both traced the
+   concept's horns and ignored the body already in the file. The answer so
+   far is no: the library did not carry, and the failure was one no
+   technique covers, now D-063 (a part on a body is built on the body). The
+   numbers, and what the runs found in the tools, in
+   `models/tasks/chifre/judge/results.md`. Next: fix the tools the runs hit,
+   then run T2 again with D-063 in the skill (T2-C with the techniques, T2-D
+   without) to see whether the rule closes the gap.
+   **Second pair judged (2026-10-01):** T2-D (without the techniques)
+   better again; D-063 brought the horns down onto the head, but the base
+   is still thin: the runs copy the visible outline instead of reading what
+   the 3D needs (D-064). Twice the library lost: it does not carry to the
+   horn as it stands. Open tool gaps from this pair in `judge/results.md`.
+   `models/tasks/chifre/`: `start.blend` (the posed body and its rig, the
+   concept behind it at the body's scale, no horn), `prompt.md` (the prompt
+   and what each run may read), `judge/target.md` (11 targets from E1's
+   horn, E1 11/11; out of `find()`'s reach from a run's folder). New target
+   measures for a part mirrored across another object: `world min|max|size`,
+   `base` and `tip`, one side in world mm.
+
+   **Plan (step 7).**
+   - **The part (the modeler's pick): `Chifre`**, no rule came from it. A
+     cube extruded with its loops rotated along the curve, no mirror of its
+     own (Mirror X across the body makes the pair), Subdivision 1/2, 57
+     vertices, 52 quads, open where it enters the head. The hat was not a
+     clean transfer: D-024, D-026 and D-029 came from it.
    - **Task folder** `models/tasks/<part>/`: `start.blend` with the concept
      packed and the part removed; `prompt.md`; `target.md` with numeric
      targets from the modeler's part, hidden from the runs (the AI reads
@@ -352,4 +372,4 @@ piece goes.
 | 4 | Phase 1 whitelist complete (**done**) | covers the loop work of the next examples |
 | 5 | Phase 5 marks report and annotations (**done**) | the modeler's way of pointing, made reliable |
 | 6 | Part 2 items 2, 4, 6 (technique library, candidates, editability) (**done**) | turns B1's lessons into reusable knowledge |
-| 7 | Phase 3 (**built**) and a transfer test on a new task (waiting for the part) | when the bow tie is accepted |
+| 7 | Phase 3 (**built**) and a transfer test on the horn (**judged**: D-063; a second pair of runs next) | when the bow tie is accepted |

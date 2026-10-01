@@ -1,5 +1,9 @@
 """Edge loops, vertex grouping and per-vertex flags on the base mesh (bmesh)."""
 
+import math
+
+import numpy as np
+
 PLANE_TOL = 1e-6  # m; a coordinate this close to 0 lies on the mirror plane
 AXES = "XYZ"
 
@@ -65,13 +69,21 @@ def edge_loops(bm):
     return loops
 
 
-def group_vertices(loops, vert_count):
+def group_vertices(loops, vert_count, rings=()):
     """Cover every vertex once with pieces of edge loops, longest first.
 
+    rings (from rings(), a whole part only) come first, whole and in their
+    order, so a cylinder's labels are its rings and not the longer lines that
+    run along it through a grid cap.
     Returns (loop_pieces, rest): rest holds the vertices no piece covers.
     """
     taken = [False] * vert_count
     groups = []
+    for loop in rings:
+        if not any(taken[i] for i in loop):
+            for i in loop:
+                taken[i] = True
+            groups.append(list(loop))
     while True:
         best = None
         for loop in loops:
@@ -114,3 +126,86 @@ def vertex_flags(vert, mirror_axes):
     if vert.link_faces and valence != 4:
         flags.append(f"pole{valence}")
     return tuple(flags)
+
+
+RING_MIN = 6  # vertices: a shorter closed loop is not read as a ring
+RING_TURN = math.radians(70)  # the largest turn from one edge to the next along a ring
+RING_FLAT = 0.2  # the farthest a ring's vertex may lie from its plane, in ring radii
+
+
+def _ring_from(a0, b0, nbrs, co):
+    """The closed loop that starts along a0-b0 and at each vertex takes the edge
+    that turns least (a grid fill's valence-3 corners do not stop it), or None."""
+    loop, prev, cur = [a0], a0, b0
+    while cur != a0 and len(loop) <= 256:
+        d0 = co[cur] - co[prev]
+        best, best_ang = None, RING_TURN
+        for nxt in nbrs[cur]:
+            if nxt == prev:
+                continue
+            d1 = co[nxt] - co[cur]
+            den = np.linalg.norm(d0) * np.linalg.norm(d1)
+            if den < 1e-12:
+                continue
+            ang = math.acos(max(-1.0, min(1.0, float(d0 @ d1) / den)))
+            if ang < best_ang:
+                best, best_ang = nxt, ang
+        if best is None or best in loop[1:]:
+            return None
+        loop.append(cur)
+        prev, cur = cur, best
+    return loop if cur == a0 and len(loop) >= RING_MIN else None
+
+
+def _once_around(pts):
+    """The loop's plane normal if it lies flat and goes once around, else None."""
+    c = pts - pts.mean(axis=0)
+    _, _, vt = np.linalg.svd(c)
+    normal = vt[2]
+    radius = np.linalg.norm(c, axis=1).mean()
+    if radius < 1e-9 or np.abs(c @ normal).max() > RING_FLAT * radius:
+        return None
+    u, v = c @ vt[0], c @ vt[1]
+    ang = np.arctan2(v, u)
+    turn = np.diff(np.append(ang, ang[0]))
+    turn = (turn + math.pi) % (2 * math.pi) - math.pi
+    return normal if abs(abs(turn.sum()) - 2 * math.pi) < 0.3 else None
+
+
+def rings(edges, co):
+    """Cylinder loops: closed loops that lie in a plane (any tilt) and go once
+    around. edges: vertex index pairs; co: positions (n x 3).
+    Returns [(vertex indices in order, axis index or None)], the axis when the
+    plane lies across X, Y or Z (within 0.1 mm), in order along the part.
+    Where candidates share vertices (the lines over a horn's tip cross every
+    ring) the ones that cross the fewest others are kept."""
+    co = np.asarray(co, dtype=float)
+    nbrs = [[] for _ in range(len(co))]
+    for a, b in edges:
+        nbrs[a].append(b)
+        nbrs[b].append(a)
+    found = {}
+    for a, b in edges:
+        for s, t in ((a, b), (b, a)):
+            loop = _ring_from(s, t, nbrs, co)
+            if loop is None or frozenset(loop) in found:
+                continue
+            normal = _once_around(co[loop])
+            if normal is not None:
+                found[frozenset(loop)] = (loop, normal)
+    cands = list(found.items())
+    crossings = [sum(1 for other, _ in cands if other is not key and other & key) for key, _ in cands]
+    taken, out = set(), []
+    for n, (key, (loop, normal)) in sorted(zip(crossings, cands), key=lambda x: (x[0], len(x[1][0]))):
+        if key & taken:
+            continue
+        taken |= key
+        k = int(np.argmax(np.abs(normal)))
+        flat = np.ptp(co[loop, k]) < 1e-4
+        out.append((loop, k if flat else None, co[loop].mean(axis=0)))
+    if len(out) > 1:
+        centers = np.array([c for _, _, c in out])
+        axis = np.linalg.svd(centers - centers.mean(axis=0))[2][0]
+        axis = axis if axis[int(np.argmax(np.abs(axis)))] > 0 else -axis
+        out.sort(key=lambda r: float(r[2] @ axis))
+    return [(loop, k) for loop, k, _ in out]

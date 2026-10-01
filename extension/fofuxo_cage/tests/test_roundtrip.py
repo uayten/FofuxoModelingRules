@@ -611,6 +611,38 @@ def main():
           f"targets measured: {tg['in']} in, {tg['out']} out ({tg['results'][2]})")
     target_md.unlink()
     check(not [i for i in fc.sync("Laço")["issues"] if i["code"] == "poly_budget"], "no target.md, no budget")
+    # A part mirrored across the body: one side in world mm, a negative value read.
+    horn_md = Path(bpy.data.filepath).parent / "judge-target.md"
+    horn_md.write_text("```targets\n"
+                       "Chifre  world size h  124.3mm  2mm\n"
+                       "Chifre  base d        -74.0mm  2mm   in front of the origin\n"
+                       "Chifre  tip h         567.2mm  2mm\n"
+                       "Chifre  tip w         -117.5mm 2mm   the other side, off on purpose\n```\n", "utf-8")
+    tg = fc.check_targets(path=horn_md)
+    horn = bpy.data.objects["Chifre"]
+    check(tg["in"] == 3 and tg["out"] == 1 and tg["results"][-1].startswith("OUT Chifre tip w = 117.5mm")
+          and all(m.show_viewport for m in horn.modifiers),
+          f"one side of the horn in world mm, Mirror back on ({tg['results']})")
+    horn_md.unlink()
+    # The same horn in the cage text: its own side measured, so sub and target work (T2 runs).
+    fc.sync("Chifre", render=False)
+    horn_text = lambda: SYNC.paths(horn)["text"].read_text("utf-8")
+    ht = horn_text()
+    hcage = fc.cage_format.parse(ht)
+    vid = max(hcage.verts, key=lambda v: hcage.verts[v].sub[2])
+    goal = round(hcage.verts[vid].sub[2]) - 30
+    check("one side; the Mirror across Dragão Corpo makes the other" in ht and "sub unavailable" not in ht
+          and all(v.sub for v in hcage.verts.values()),
+          "a part mirrored across the body gets its sub column, measured on its own side")
+    r = fc.edit("Chifre", f"target v{vid} h {goal}", render=False)
+    got = fc.cage_format.parse(horn_text()).verts[vid].sub[2]
+    check(r["action"] == "pushed" and abs(got - goal) <= 1 and all(m.show_viewport for m in horn.modifiers),
+          f"target on the horn's tip: h {got} for {goal}, Mirror back on ({r.get('error', '')})")
+    body = bpy.data.objects["Dragão Corpo"]
+    check(body in fc.render._related(horn) and Path(fc.views("Chifre", ["front"], render_name="ctx")["render"]).exists(),
+          "the body the Mirror uses is drawn around the horn")
+    r = fc.edit("Chifre", f"move v{vid} w -1% d -1%", render=False)
+    check(r["action"] == "error" and "one amount per line" in r["error"], f"move with two amounts explained ({r.get('error')})")
 
     print("11j. the rest of the topology tools (Phase 1)")
     faces0 = sorted(tuple(sorted(ids_list[i] for i in p.vertices)) for p in obj.data.polygons)
@@ -947,6 +979,12 @@ def main():
         return ok
 
     check(cap_mirrors(hat), "the caps' grids line up with the X and Y extremes (they could be mirrored)")
+    hat_groups = dict(fc.cage_format.parse(SYNC.paths(hat)["text"].read_text("utf-8")).groups)
+    hat_cage = fc.cage_format.parse(SYNC.paths(hat)["text"].read_text("utf-8"))
+    ring_h = [sorted({hat_cage.verts[v].base[2] for v in hat_groups[f"L{n}"]}) for n in (1, 2)]
+    check(all(len(hat_groups[f"L{n}"]) == 16 for n in (1, 2)) and all(len(h) == 1 for h in ring_h)
+          and ring_h[0][0] <= ring_h[1][0],
+          f"a whole cylinder's L labels are its rings, bottom first ({ring_h})")
     rings = fc.render._rings(hat.data, fc.render.np.array([tuple(v.co) for v in hat.data.vertices]))
     check(len(rings) == 4 and all(len(loop) == 16 and k == 2 for loop, k in rings),
           f"the view finds its 4 cylinder loops, drawn as rings ({[len(loop) for loop, _ in rings]})")

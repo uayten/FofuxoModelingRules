@@ -206,11 +206,20 @@ subdivision panels, written to `<object>.views.png` (or
 `<object>.<render_name>.png`). `focus=[13, 14]` labels only those vertices
 (the rest are small gray dots), `ghost=True` fills only the base part and
 draws the mirror copies as faint wire, `normals=True` adds a tick along the
-result's normal at each vertex. Cylinder loops (closed loops in a plane across an axis, once around it) are
-drawn as colored rings with one label each, named by where they sit in the
-frame (`h920`, the value a region selects: `h>915 h<925`; two rings in one
-plane add their width, `h1000 (69mm)`); only the vertices on no such loop
-get numbers. Vertex marks are small discs. A view is a preset (`front`, `back`, `left`,
+result's normal at each vertex. Cylinder loops (closed loops that lie in a
+plane and go once around) are drawn as colored rings with one label each: a
+ring across an axis is named by where it sits in the frame (`h920`, the value
+a region selects: `h>915 h<925`; two rings in one plane add their width,
+`h1000 (69mm)`), a tilted one (a horn's rings along its curve) by its loop
+label (`L3`). In a whole part (no Mirror of its own) these rings are the
+text's first labels, L1 at the base to Ln at the tip, so `crease L3` means a
+ring; lines that run along the part come after. Only the vertices on no ring
+get numbers. Vertex marks are small discs. The parent, children, siblings
+and the objects the modifiers use (the body a Mirror or Shrinkwrap points
+to) are drawn in gray around the part; `context=["Dragão Corpo"]` adds
+others. A part mirrored across another object (a horn across the body) is
+drawn, measured and synced on its own side: the text's `sub` column,
+`target`, `sections` and `fit` read that side, and the count line says so. A view is a preset (`front`, `back`, `left`,
 `right`, `top`, `bottom`), a `"yaw,pitch"` string or a `(yaw, pitch)` pair in
 degrees: yaw 0 looks from the front, 90 from the right; pitch > 0 looks from
 above. The default is 3/4 from above, 3/4 from below and 3/4 from the back.
@@ -475,8 +484,13 @@ Laço       profile top 0.75     14.5mm   1.5mm      the lobe's half depth from 
   `size w|d|h` (the full result, mm), `section <axis> <fraction> n|waist`
   (a cut at a fraction of the part's half size from its mirror plane: the
   superellipse exponent, or the waist ratio), `profile top|front|side
-  <fraction>` (mm). Tolerance: `5%`, `0.05` or `1mm` both ways, `+20%` only
-  above, `-10%` only below.
+  <fraction>` (mm). For a part mirrored across another object (a horn
+  across the body), one side in world mm, Mirror off, w d h = x y z:
+  `world min|max|size w|d|h`, `base w|d|h` (the middle of its open border; closed, of the part
+  buried in the Mirror's object or the parent)
+  and `tip w|d|h` (its point farthest from the base); values may be
+  negative. Tolerance: `5%`, `0.05` or `1mm` both ways, `+20%` only above,
+  `-10%` only below.
 - `fofuxo_cage.check_targets(names=None, path=None)` measures every line:
   `{"in": 14, "out": 1, "results": ["in  Laço faces = 19 (target 19 +20%) ...",
   "OUT Laço profile top 0.75 = 16.7mm (target 14.5 ±1.5mm) ..."]}`. The AI
@@ -664,8 +678,10 @@ text edit over it.
   the human in Blender or from `rebuild`, and the next sync pulls it. A mesh
   rebuilt from scratch has lost its id attribute, so the pulled vertices take
   ids from their index.
-- Mirror planes are the object's local planes; a Mirror with a mirror object
-  or bisect is not supported.
+- Mirror planes are the object's local planes. A Mirror with a mirror object
+  makes a copy of the whole part (a horn across the body): the part is
+  measured on its own side (see Other views). A Mirror with bisect is not
+  supported.
 
 ## Tests
 

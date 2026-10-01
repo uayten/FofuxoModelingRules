@@ -2,7 +2,7 @@
 
 blf cannot draw into an ImBuf in background mode (it crashes Blender 5.2), and
 Blender's Python has no Pillow, so labels are drawn from this table.
-Uppercase letters are drawn as lowercase.
+Uppercase letters are drawn as lowercase, except L (loop labels: L3, not l3).
 """
 
 import unicodedata
@@ -58,6 +58,8 @@ _ROWS = {
     "/": "....# ...#. ...#. ..#.. .#... .#... #....",
     "|": "..#.. ..#.. ..#.. ..#.. ..#.. ..#.. ..#..",
     "=": "..... ..... ##### ..... ##### ..... .....",
+    # The one uppercase: a loop label (L3) must not read as a number (13).
+    "L": "#.... #.... #.... #.... #.... #.... #####",
 }
 
 GLYPHS = {ch: np.array([[c == "#" for c in row] for row in rows.split()], dtype=bool)
@@ -66,8 +68,8 @@ WIDTH, HEIGHT = 5, 7
 
 
 def _plain(text):
-    """Lowercase ASCII: accents dropped (ç -> c), so names like Laço still read."""
-    decomposed = unicodedata.normalize("NFKD", text.lower())
+    """Lowercase ASCII but L: accents dropped (ç -> c), so names like Laço still read."""
+    decomposed = unicodedata.normalize("NFKD", "".join(ch if ch == "L" else ch.lower() for ch in text))
     return "".join(ch for ch in decomposed if not unicodedata.combining(ch))
 
 

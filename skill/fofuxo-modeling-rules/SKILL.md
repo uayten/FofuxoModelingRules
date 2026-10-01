@@ -62,6 +62,13 @@ Every task follows these steps, in order:
 2. **Read the scene** — before creating anything:
    - concept/reference images (Image Empties): they decide the visual choices
      (D-010);
+   - **the body the part sits on**, when the file has one (D-063): it sets
+     the part's place and size, the concept only its shape and its
+     proportions against the body. Measure the body where the part goes
+     (the head's height and width, the surface there), find the same
+     landmarks in the concept, and carry the part from the concept's body to
+     the real one. Where the two disagree the body wins: never trace the
+     concept over a body that does not match it;
    - the naming language and style of objects already renamed (D-001);
    - existing collections, parents and materials to reuse or follow;
    - project context (name prefixes, shared materials, target: game or
@@ -79,6 +86,12 @@ Every task follows these steps, in order:
      them. E1 bow: the wings' top and bottom edges keep converging behind the
      knot, crossing like an X, so each wing narrows almost to a point at the
      center. The concept only shows what is visible; the model must be whole;
+   - **what the 3D needs** (D-064): the outline is what is left visible, not
+     the part's size. A covered part goes on at least as wide as its widest
+     visible row; a part growing out of a round body has a base as deep as
+     it is wide or deeper, and tapers from there (a horn is a cone, not a
+     tube). Write the base's width and depth down before building, and check
+     them from the side and top, not only against the drawing;
    - **the other views**: a front concept still implies a top and a side.
      Imagine them and write them down. E1 bow from the top: each wing also
      narrows in depth toward the center, a figure eight, not a flat bar.
@@ -285,7 +298,8 @@ intentional; leave it.
   world-aligned (D-014), and **move, rotate and scale the concept's Image
   Empty** until it sits in a good position to read against the model, e.g. an
   asymmetric or tilted concept (D-035). Adjusting the reference is always
-  allowed; it never goes to render.
+  allowed; it never goes to render. A part on an existing body goes where the
+  body is, not where the concept draws it (D-063).
 
 ## Naming and collections
 

@@ -4,6 +4,8 @@ Writes touch only vertex positions and the stable id attribute. Modifiers,
 materials, parent and every other mesh attribute stay as they are.
 """
 
+from contextlib import contextmanager
+
 import bmesh
 import bpy
 
@@ -118,25 +120,50 @@ def stack_label(obj):
     return " > ".join(parts) or "none"
 
 
+def pair_mirrors(obj):
+    """Enabled Mirrors across another object (a horn across the body): each
+    makes a copy of the part on the other side."""
+    return [m for m in obj.modifiers if m.type == "MIRROR" and m.show_viewport and m.mirror_object is not None]
+
+
+@contextmanager
+def one_side(obj):
+    """The part alone while measured: its Mirrors across another object off.
+    Yields those Mirrors; with any, take a fresh depsgraph inside."""
+    pair = pair_mirrors(obj)
+    for m in pair:
+        m.show_viewport = False
+    try:
+        yield pair
+    finally:
+        for m in pair:
+            m.show_viewport = True
+        if pair:
+            _fresh_depsgraph()
+
+
 def evaluated(obj, depsgraph):
     """Evaluated positions of the base vertices (or None) and of the whole result.
 
     Base vertex i is evaluated vertex i only while the stack is Mirror and
     Subdivision; any other enabled modifier makes the per-vertex column
-    unavailable.
+    unavailable. A part mirrored across another object is measured on its own
+    side (`one_side`): the other side is a copy.
     """
-    blocking = sorted({
-        m.type for m in obj.modifiers
-        if m.show_viewport and (m.type not in INDEX_SAFE or (
-            m.type == "MIRROR" and (any(m.use_bisect_axis) or m.mirror_object is not None)))
-    })
-    ev = obj.evaluated_get(depsgraph)
-    me = ev.to_mesh()
-    try:
-        all_co = [tuple(v.co) for v in me.vertices]
-        faces = len(me.polygons)
-    finally:
-        ev.to_mesh_clear()
+    with one_side(obj) as pair:
+        if pair:
+            depsgraph = _fresh_depsgraph()
+        blocking = sorted({
+            m.type for m in obj.modifiers
+            if m.show_viewport and (m.type not in INDEX_SAFE or (m.type == "MIRROR" and any(m.use_bisect_axis)))
+        })
+        ev = obj.evaluated_get(depsgraph)
+        me = ev.to_mesh()
+        try:
+            all_co = [tuple(v.co) for v in me.vertices]
+            faces = len(me.polygons)
+        finally:
+            ev.to_mesh_clear()
     n = len(obj.data.vertices)
     per_vertex = None if blocking or len(all_co) < n else all_co[:n]
     return per_vertex, all_co, faces, blocking
@@ -205,13 +232,19 @@ def build_cage(obj, ids, depsgraph, frame, forms=()):
         bm.from_mesh(mesh)
         bm.verts.ensure_lookup_table()
         flags = [topology.vertex_flags(v, mirror) for v in bm.verts]
-        groups = topology.group_vertices(topology.edge_loops(bm), len(bm.verts))
+        # A whole part's rings come first, as the views draw them (L1 = the first ring).
+        rings = [] if mirror else [loop for loop, _ in topology.rings(
+            [tuple(e.vertices) for e in mesh.edges], [tuple(v.co) for v in mesh.vertices])]
+        groups = topology.group_vertices(topology.edge_loops(bm), len(bm.verts), rings)
     finally:
         bm.free()
 
     cage = Cage()
     base_co = [tuple(v.co) for v in mesh.vertices]
     sub_note = "" if per_vertex is not None else f"   (sub unavailable: {', '.join(blocking)})"
+    pair = pair_mirrors(obj)
+    if pair:
+        sub_note += f"   (sub: one side; the Mirror across {pair[0].mirror_object.name} makes the other)"
     cage.header = {
         "object": obj.name,
         "frame": frame.text(),

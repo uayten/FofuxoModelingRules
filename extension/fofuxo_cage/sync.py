@@ -609,7 +609,7 @@ def flip(name, axis="d", render=True):
     return report
 
 
-def views(name, views=None, render_name=None, focus=None, ghost=False, normals=False):
+def views(name, views=None, render_name=None, focus=None, ghost=False, normals=False, context=None):
     """Render any cameras of the current mesh without syncing.
 
     views: preset names ("front", "back", "left", "right", "top", "bottom"),
@@ -619,7 +619,9 @@ def views(name, views=None, render_name=None, focus=None, ghost=False, normals=F
     <object>.<render_name>.png) next to the text and returns its path.
     focus: ids to label, the rest drawn as small gray dots (e.g. [13, 14]);
     ghost: only the base part filled, the mirror copies as faint wire;
-    normals: a tick along the result's normal at each vertex.
+    normals: a tick along the result's normal at each vertex;
+    context: names of other objects to draw in gray (the body the part sits
+    on); the parent, children and the objects its modifiers use always are.
     """
     obj = bpy.data.objects.get(name)
     if obj is None or obj.type != "MESH":
@@ -636,4 +638,5 @@ def views(name, views=None, render_name=None, focus=None, ghost=False, normals=F
     rounds_mod.count("renders")
     return {"render": str(render_mod.render_views(obj, ids, _depsgraph(), views, path, title,
                                                   focus=focus, ghost=ghost, normals=normals,
-                                                  ring_frame=state and state["frame"]))}
+                                                  ring_frame=state and state["frame"],
+                                                  context=[bpy.data.objects[n] for n in context or ()]))}

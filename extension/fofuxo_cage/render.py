@@ -24,7 +24,7 @@ import numpy as np
 from mathutils import Vector
 
 from . import concept as concept_mod
-from . import font, topology
+from . import font, mesh_io, topology
 
 PANEL = 480
 GAP = 6
@@ -241,9 +241,15 @@ def _pole_indices(obj, mirror):
         bm.free()
 
 
-def _related(obj):
-    """Parent, children and siblings: the parts drawn around obj as context."""
-    out = []
+def _related(obj, extra=()):
+    """Parent, children, siblings, the objects its modifiers point to (the body
+    a Mirror or Shrinkwrap uses) and extra: the parts drawn around obj as context."""
+    out = list(extra)
+    for m in obj.modifiers:
+        for attr in ("mirror_object", "target", "object"):
+            other = getattr(m, attr, None)
+            if isinstance(other, bpy.types.Object) and other is not obj:
+                out.append(other)
     if obj.parent is not None:
         out.append(obj.parent)
         out += [c for c in obj.parent.children if c is not obj]
@@ -252,79 +258,27 @@ def _related(obj):
     return [o for o in out if o.type == "MESH" and o.visible_get() and not (o.name in seen or seen.add(o.name))]
 
 
-def _context_triangles(obj, depsgraph):
+def _context_triangles(obj, depsgraph, extra=()):
     """Evaluated triangles of the related parts, in obj's local space."""
     inv = np.array(obj.matrix_world.inverted())
     tris = []
-    for other in _related(obj):
+    for other in _related(obj, extra):
         co, faces = _evaluated(other, depsgraph)
         m = inv @ np.array(other.matrix_world)
         tris.append(_triangles(co @ m[:3, :3].T + m[:3, 3], faces))
     return np.concatenate(tris) if tris else np.zeros((0, 3, 3))
 
 
-RING_MIN = 6  # vertices: a closed loop this long around an axis is drawn as one colored ring
-
-
 def _rings(mesh, base):
-    """Cylinder loops: closed edge loops that lie in a plane across one axis and
-    go once around it. [(vertex indices in order, axis index)]; the view draws
-    each as one colored ring with one label instead of a number per vertex.
-
-    Walked by direction, not by valence: at each vertex the loop takes the edge
-    in its plane that turns least (a grid fill leaves valence-3 corners on the
-    loop around it, where an edge loop would stop)."""
-    nbrs = [[] for _ in range(len(base))]
-    for e in mesh.edges:
-        a, b = e.vertices
-        nbrs[a].append(b)
-        nbrs[b].append(a)
-    tol = 1e-4  # m: a loop within 0.1 mm of its plane
-    seen_edges, out = set(), []
-    for e in mesh.edges:
-        a0, b0 = e.vertices
-        for k in range(3):
-            if abs(base[a0, k] - base[b0, k]) > tol or frozenset((a0, b0)) in seen_edges:
-                continue
-            plane = base[a0, k]
-            loop, prev, cur, turn = [a0], a0, b0, 0.0
-            others = [j for j in range(3) if j != k]
-            while cur != a0 and len(loop) <= 256:
-                d0 = base[cur, others] - base[prev, others]
-                best, best_ang = None, math.radians(70)
-                for nxt in nbrs[cur]:
-                    if nxt == prev or abs(base[nxt, k] - plane) > tol:
-                        continue
-                    d1 = base[nxt, others] - base[cur, others]
-                    if d1 @ d1 < 1e-12:  # straight across the plane: not a step around it
-                        continue
-                    ang = math.atan2(d0[0] * d1[1] - d0[1] * d1[0], d0 @ d1)
-                    if abs(ang) < abs(best_ang):
-                        best, best_ang = nxt, ang
-                if best is None or best in loop[1:]:
-                    break
-                loop.append(cur)
-                turn += best_ang
-                prev, cur = cur, best
-            if cur != a0 or len(loop) < RING_MIN:
-                continue
-            d0 = base[a0, others] - base[prev, others]  # the turn back at the start
-            d1 = base[loop[1], others] - base[a0, others]
-            turn += math.atan2(d0[0] * d1[1] - d0[1] * d1[0], d0 @ d1)
-            if abs(abs(turn) - 2 * math.pi) > 0.3:  # once around, not a figure eight
-                continue
-            edges = {frozenset(p) for p in zip(loop, loop[1:] + loop[:1])}
-            if edges & seen_edges:
-                continue
-            seen_edges |= edges
-            out.append((loop, k))
-    return out
+    """Cylinder loops, each drawn as one colored ring with one label instead of
+    a number per vertex: topology.rings on the base mesh."""
+    return topology.rings([tuple(e.vertices) for e in mesh.edges], base)
 
 
 class Scene:
     """Everything a sheet draws for one object."""
 
-    def __init__(self, obj, ids, depsgraph):
+    def __init__(self, obj, ids, depsgraph, context=()):
         mesh = obj.data
         mirror = _mirror_axes(obj)
         base = np.empty(len(mesh.vertices) * 3, dtype=np.float32)
@@ -335,16 +289,19 @@ class Scene:
         self.cage_co, cage_faces, self.cage_edges, self.copy_of = _mirror_copies(self.base, faces, edges, mirror)
         self.cage_tris = _triangles(self.cage_co, cage_faces)
         self.base_tris = _triangles(self.base, faces)
-        ev_co, ev_faces, ev_nor = _evaluated(obj, depsgraph, normals=True)
+        # A part mirrored across another object is drawn alone; that object is context.
+        with mesh_io.one_side(obj) as pair:
+            ev_co, ev_faces, ev_nor = _evaluated(obj, mesh_io._fresh_depsgraph() if pair else depsgraph, normals=True)
         n = len(self.base)
         # Under Mirror > Subdivision base vertex i is evaluated vertex i.
         self.normals = ev_nor[:n] if len(ev_nor) >= n else None
         self.ev_tris = _triangles(ev_co, ev_faces)
-        self.context_tris = _context_triangles(obj, depsgraph)
+        self.context_tris = _context_triangles(obj, depsgraph, context)
         self.labels = [str(vid) for vid in ids]
         self.colors = _vertex_colors(len(self.base), faces, ids)
         self.poles = _pole_indices(obj, mirror)
         self.rings = _rings(mesh, self.base)
+        self.whole = not mirror  # the text's L labels start with these rings
         # The fit follows the object itself; the related parts may run off the panel.
         pts = [self.cage_co, ev_co]
         self.lo = np.min([p.min(axis=0) for p in pts], axis=0)
@@ -390,14 +347,17 @@ class Scene:
             in_ring |= set(loop)
             end = max(loop, key=lambda i: (px[i][0], -px[i][1]))  # the loop's point furthest right
             fr = frame or ring_frame  # names a ring by where it sits, the way a region selects it
-            value = fr.axes[k].to_value(self.base[loop, k].mean()) if fr is not None else None
+            value = fr.axes[k].to_value(self.base[loop, k].mean()) if fr is not None and k is not None else None
             ring_pts.append(px[end])
-            ring_labels.append(f"{'wdh'[k]}{value:.0f}" if value is not None else f"ring{r + 1}")
+            if value is not None:
+                ring_labels.append(f"{'wdh'[k]}{value:.0f}")
+            else:  # a tilted ring: its loop label, as the cage text has it
+                ring_labels.append(f"L{r + 1}" if self.whole else f"ring{r + 1}")
             ring_colors.append(color)
             ring_hidden.append(bool(hidden[end]))
         dup = {lab for lab in ring_labels if ring_labels.count(lab) > 1}  # one plane, two rings: add the width
         for r, (loop, k) in enumerate(self.rings):
-            if ring_labels[r] in dup:
+            if ring_labels[r] in dup and k is not None:
                 others = [j for j in range(3) if j != k]
                 co = self.base[loop][:, others]
                 width = 2 * np.linalg.norm(co - co.mean(axis=0), axis=1).mean() * 1000
@@ -820,11 +780,11 @@ def render_sheet(obj, ids, depsgraph, frame, path, title="", concept=None):
 
 
 def render_views(obj, ids, depsgraph, views, path, title="", focus=None, ghost=False, normals=False,
-                 ring_frame=None):
+                 ring_frame=None, context=()):
     """Any cameras x cage / subdivision. views: preset names ("front", "top",
     "left"...), "yaw,pitch" strings or (yaw, pitch) pairs in degrees. focus,
     ghost, normals: see Scene.cage_panel."""
-    scene = Scene(obj, ids, depsgraph)
+    scene = Scene(obj, ids, depsgraph, context)
     cams = [Camera(v) for v in views]
     scale, center = scene.fit(cams)
     rows = [[scene.cage_panel(c, scale, center, focus=focus, ghost=ghost, normals=normals,
