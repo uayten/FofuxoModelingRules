@@ -243,8 +243,74 @@ def _cut(tris3d, k, c):
     return np.array(segs).reshape(-1, 2, 3)
 
 
+def _cut_plane(tris3d, point, normal):
+    """Segments where the triangles cross the plane through point with normal."""
+    d = (tris3d - point) @ normal
+    segs = []
+    for tri, dd in zip(tris3d, d):
+        pts = []
+        for i in range(3):
+            j = (i + 1) % 3
+            if (dd[i] > 0) != (dd[j] > 0):
+                t = dd[i] / (dd[i] - dd[j])
+                pts.append(tri[i] + t * (tri[j] - tri[i]))
+        if len(pts) == 2:
+            segs.append(pts)
+    return np.array(segs).reshape(-1, 2, 3)
+
+
+def ring_sections(name, levels=DENSE_LEVELS):
+    """Cuts square to the part, one in the plane of each ring (topology.rings):
+    a leaning or curved part (a horn) cut across itself, not at a slant.
+
+    Per ring: its label (L1.. as the text has them on a whole part), the
+    result's superellipse exponent around the cut's own middle, and the cut's
+    width and depth in mm (its long and short sides); a ring at an end of the
+    part (a flat cap's) only says end.
+    """
+    obj = _object(name)
+    mesh = obj.data
+    base = np.array([tuple(v.co) for v in mesh.vertices], dtype=float)
+    rings = topology.rings([tuple(e.vertices) for e in mesh.edges], base)
+    whole = not mesh_io.mirror_setup(obj)
+    co, tris = dense(obj, levels)
+    ev_tris = co[tris]
+    nbrs = [set() for _ in range(len(base))]
+    for e in mesh.edges:
+        a, b = e.vertices
+        nbrs[a].add(b)
+        nbrs[b].add(a)
+    out = []
+    for r, (loop, _) in enumerate(rings):
+        pts = base[loop]
+        mid = pts.mean(axis=0)
+        normal = np.linalg.svd(pts - mid)[2][2]
+        radius = np.linalg.norm(pts - mid, axis=1).max()
+        entry = {"ring": f"L{r + 1}" if whole else f"ring{r + 1}"}
+        # A ring with the part on both sides is a section; a cap's rings have one side only.
+        side = [float((base[j] - mid) @ normal) for i in loop for j in nbrs[i] - set(loop)]
+        if not (max(side, default=0) > 0.02 * radius and min(side, default=0) < -0.02 * radius):
+            entry["end"] = True
+            out.append(entry)
+            continue
+        segs = _cut_plane(ev_tris, mid, normal).reshape(-1, 3)
+        segs = segs[np.linalg.norm(segs - mid, axis=1) < 1.6 * radius]  # this ring's cut, not another part
+        entry["points"] = len(segs)
+        if len(segs):
+            c = segs - segs.mean(axis=0)
+            _, _, vt = np.linalg.svd(c)
+            u, v = c @ vt[0], c @ vt[1]
+            u, v = u - (u.max() + u.min()) / 2, v - (v.max() + v.min()) / 2
+            n, rms = superellipse_n(u, v)
+            entry.update(n=n, rms=rms, width_mm=round(float(np.ptp(u)) * 1000, 1),
+                         depth_mm=round(float(np.ptp(v)) * 1000, 1))
+        out.append(entry)
+    return {"object": name, "sections": out}
+
+
 def sections(name, axis="w", at=(250, 500, 750), render=True, levels=DENSE_LEVELS):
-    """Cuts across the model at frame values `at` (permille) of `axis`.
+    """Cuts across the model at frame values `at` (permille) of `axis`;
+    axis "rings": one cut in each ring's plane (ring_sections).
 
     Per cut: the result's superellipse exponent and size in the two other
     axes (permille), the waist (the first other axis where the second one is
@@ -256,8 +322,11 @@ def sections(name, axis="w", at=(250, 500, 750), render=True, levels=DENSE_LEVEL
     from . import render as render_mod
     sync_mod = _sync_mod()
 
+    if axis == "rings":
+        return ring_sections(name, levels)
     obj = _object(name)
     frame = _frame(obj)
+    mirrored = mesh_io.mirror_setup(obj)
     k = AXES.index(axis)
     others = [i for i in range(3) if i != k]
     co, tris = dense(obj, levels)
@@ -271,7 +340,10 @@ def sections(name, axis="w", at=(250, 500, 750), render=True, levels=DENSE_LEVEL
         entry = {"at": value, "points": len(segs)}
         if len(segs):
             pts = segs.reshape(-1, 3)
-            n, rms = superellipse_n(pts[:, others[0]], pts[:, others[1]])
+            # Around the mirror plane on a mirrored axis, around the cut's own middle on a whole one.
+            uv = [pts[:, i] - (0.0 if topology.AXES[i] in mirrored else (pts[:, i].max() + pts[:, i].min()) / 2)
+                  for i in others]
+            n, rms = superellipse_n(*uv)
             vals = np.array([frame.to_values(p) for p in pts])
             entry.update(n=n, rms=rms, size={AXES[i]: int(round(float(np.abs(vals[:, i]).max()))) for i in others})
             # The waist: the first other axis where the second crosses its mirror

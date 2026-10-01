@@ -68,7 +68,10 @@ Every task follows these steps, in order:
      (the head's height and width, the surface there), find the same
      landmarks in the concept, and carry the part from the concept's body to
      the real one. Where the two disagree the body wins: never trace the
-     concept over a body that does not match it;
+     concept over a body that does not match it. Move the concept's Image
+     Empty by the gap (D-035) so its body lies on the real one: the sheets
+     then compare the part in place. Start the part with
+     `start_part(..., on="<body>")` so the body is drawn around it;
    - the naming language and style of objects already renamed (D-001);
    - existing collections, parents and materials to reuse or follow;
    - project context (name prefixes, shared materials, target: game or

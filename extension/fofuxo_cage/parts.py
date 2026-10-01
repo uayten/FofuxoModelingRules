@@ -68,13 +68,18 @@ def _cap_with_grids(obj, n, ring=CAP_RING):
 WHOLE = ("cylinder",)  # D-061: modeled whole, never cut and mirrored by default
 
 
+ON_PROP = "fofuxo_on"  # the body a part sits on, drawn around it in every sheet
+
+
 def start_part(name, primitive, size, mirror=None, subdivision=1, parent=None, at=(0.0, 0.0, 0.0),
-               sides=None, **settings):
+               sides=None, on=None, **settings):
     """A new part `name` from `primitive` (cylinder, sphere, cube, plane),
     `size` (w, d, h) in mm, mirrored on the axes in `mirror` ("" for none;
     default: whole for a cylinder, "XY" otherwise),
-    at `at` (mm, in the parent's space when a parent is given). `settings`
-    go to the primitive's operator (vertices=12, segments=24, ...).
+    at `at` (mm, in the parent's space when a parent is given). `on`: the
+    body the part sits on (D-063): the part goes in its collection and every
+    sheet draws it around the part, with no parenting. `settings` go to the
+    primitive's operator (vertices=12, segments=24, ...).
     Returns the first sync's report."""
     from .sync import set_frame, sync
 
@@ -87,6 +92,9 @@ def start_part(name, primitive, size, mirror=None, subdivision=1, parent=None, a
     parent_obj = bpy.data.objects.get(parent) if parent else None
     if parent and parent_obj is None:
         raise PartError(f"no object named {parent!r} to parent to")
+    on_obj = bpy.data.objects.get(on) if on else None
+    if on and on_obj is None:
+        raise PartError(f"no object named {on!r} for the part to sit on")
     op_name, base = PRIMITIVES[primitive]
     kwargs = {**base, **settings}
     if mirror is None:
@@ -110,12 +118,16 @@ def start_part(name, primitive, size, mirror=None, subdivision=1, parent=None, a
     for v in obj.data.vertices:  # size the primitive (it spans -1..1)
         v.co = [c * h for c, h in zip(v.co, half)]
     obj.data.update()
-    if parent_obj is not None:
+    home = parent_obj or on_obj  # the part goes in the collection of what it belongs to
+    if home is not None:
         for coll in list(obj.users_collection):
             coll.objects.unlink(obj)
-        for coll in parent_obj.users_collection:
+        for coll in home.users_collection:
             coll.objects.link(obj)
+    if parent_obj is not None:
         obj.parent = parent_obj
+    if on_obj is not None:
+        obj[ON_PROP] = on_obj.name
     obj.location = [a / 1000.0 for a in at]
 
     if primitive == "cylinder":

@@ -328,7 +328,9 @@ piece goes.
    better again; D-063 brought the horns down onto the head, but the base
    is still thin: the runs copy the visible outline instead of reading what
    the 3D needs (D-064). Twice the library lost: it does not carry to the
-   horn as it stands. Open tool gaps from this pair in `judge/results.md`.
+   horn as it stands. The tool gaps this pair found were fixed the same
+   day (`judge/results.md`): `mesh rotate`, `resize around=selection`,
+   `sections(name, "rings")`, `start_part(on=...)`, a new Mirror's merge.
    `models/tasks/chifre/`: `start.blend` (the posed body and its rig, the
    concept behind it at the body's scale, no horn), `prompt.md` (the prompt
    and what each run may read), `judge/target.md` (11 targets from E1's

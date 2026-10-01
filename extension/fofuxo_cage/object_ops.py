@@ -32,6 +32,7 @@ import bpy
 
 from . import mesh_ops, modifier_info, selection
 
+MIRROR_MERGE = 0.0001  # m: a new Mirror's merge distance (D-054)
 VERBS = ("add", "remove", "reorder", "set", "apply", "crease", "bevel_weight", "dissolve", "cut", "mesh", "join")
 # Names Blender gives new modifiers (checked on 5.2), so a batch can refer to
 # a modifier it adds and new modifiers keep their default names (D-006).
@@ -257,6 +258,8 @@ def _adder(obj, kind, name, place):
             mod = obj.modifiers[-1]
             if name:
                 mod.name = name
+            if mod.type == "MIRROR":  # D-054: merge 0.1 mm, clipping on, as start_part makes it
+                mod.use_clip, mod.use_mirror_merge, mod.merge_threshold = True, True, MIRROR_MERGE
             index = _place(place, [m.name for m in obj.modifiers], "add", moving=mod.name)
             if index != len(obj.modifiers) - 1:
                 _run(bpy.ops.object.modifier_move_to_index, modifier=mod.name, index=index)

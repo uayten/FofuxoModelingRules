@@ -242,9 +242,13 @@ def _pole_indices(obj, mirror):
 
 
 def _related(obj, extra=()):
-    """Parent, children, siblings, the objects its modifiers point to (the body
-    a Mirror or Shrinkwrap uses) and extra: the parts drawn around obj as context."""
+    """Parent, children, siblings, the body it sits on (start_part on=), the
+    objects its modifiers point to (the body a Mirror or Shrinkwrap uses) and
+    extra: the parts drawn around obj as context."""
     out = list(extra)
+    on = bpy.data.objects.get(obj.get("fofuxo_on", ""))  # start_part(on=...)
+    if on is not None:
+        out.append(on)
     for m in obj.modifiers:
         for attr in ("mirror_object", "target", "object"):
             other = getattr(m, attr, None)

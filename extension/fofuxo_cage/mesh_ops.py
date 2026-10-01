@@ -175,6 +175,10 @@ def _value(param, raw, key, rna, frame):
         if raw.lower() not in ("above", "below", "none"):
             raise MeshOpError(f"{key} takes above, below or none, not {raw!r}")
         return raw.lower()
+    if unit == "pivot":
+        if raw.lower() not in ("origin", "selection"):
+            raise MeshOpError(f"{key} takes origin or selection, not {raw!r}")
+        return raw.lower()
     if unit == "letter":
         if raw.lower() not in ("w", "d", "h"):
             raise MeshOpError(f"{key} takes a frame axis: w, d or h, not {raw!r}")
@@ -289,11 +293,33 @@ def _extrude_move(kind):
     return build
 
 
+def _pivot(values, obj):
+    """Where a resize or rotate turns: the object's origin (where its mirror
+    planes meet) or the middle of the selected vertices (a ring on a horn)."""
+    if values.get("around", "origin") == "origin":
+        return tuple(obj.matrix_world.translation)
+    bm = bmesh.from_edit_mesh(obj.data)
+    picked = [v.co for v in bm.verts if v.select]
+    if not picked:
+        raise MeshOpError("around=selection needs a selection")
+    return tuple(obj.matrix_world @ (sum(picked, Vector()) / len(picked)))
+
+
 def _resize(op, values, sel, obj):
-    """Scale along the frame axes around the object's origin, where its mirror planes meet."""
+    """Scale along the frame axes around the object's origin or the selection's middle."""
     return {"value": tuple(values.get(a, 1.0) for a in "wdh"), "orient_type": "LOCAL",
-            "center_override": tuple(obj.matrix_world.translation), "mirror": False, "snap": False,
+            "center_override": _pivot(values, obj), "mirror": False, "snap": False,
             **_proportional(values, obj)}
+
+
+def _rotate(op, values, sel, obj):
+    """Turn around a frame axis through the selection's middle (default) or the object's origin."""
+    if "angle" not in values:
+        raise MeshOpError("rotate needs an angle, e.g. angle=15deg")
+    pivot = _pivot({"around": "selection", **values}, obj)
+    # Blender's rotate turns clockwise seen from the axis' + end; the op follows the right-hand rule.
+    return {"value": -values["angle"], "orient_axis": "XYZ"[values.get("axis", 0)], "orient_type": "LOCAL",
+            "center_override": pivot, "mirror": False, "snap": False, **_proportional(values, obj)}
 
 
 def _extrude_fatten(op, values, sel, obj):
@@ -605,8 +631,17 @@ OPS = {
                  "origin (the mirror planes' meeting point): a ring pulled out into a brim, a part made wider", {
         "w": P("value", "percent", "scale along w, e.g. 150%"), "d": P("value", "percent", "along d"),
         "h": P("value", "percent", "along h"),
+        "around": P("around", "pivot", "origin (default: the mirror planes' meeting point) or selection "
+                    "(its own middle: a ring made wider where it is)"),
         **PROPORTIONAL,
     }, build=_resize),
+    "rotate": Op("transform.rotate", "VERT", "turn the selection around a frame axis through its own middle: "
+                 "a ring tilted to follow a horn's curve (R)", {
+        "angle": P("value", "angle", "how far, e.g. 15deg; + turns counterclockwise seen from the axis' + end (axis=w: the top tips to the front, -d)"),
+        "axis": P("orient_axis", "letter", "w, d or h (default w)"),
+        "around": P("around", "pivot", "selection (default) or origin"),
+        **PROPORTIONAL,
+    }, build=_rotate),
     "extrude_scale": Op("transform.resize", None, "extrude the selection and scale the new part around the object's "
                         "origin: a loop closing toward the center (E, S, Shift+Z), a flare", {
         "w": P("value", "percent", "scale along w, e.g. 80%"), "d": P("value", "percent", "along d"),

@@ -234,7 +234,7 @@ fofuxo_cage.edit("Cartola", "mesh resize h<60 w=200% d=200%")        # the brim,
 ```
 
 `start_part(name, primitive, size, mirror=None, subdivision=1, parent=None,
-at=(0, 0, 0), sides=None, **settings)` adds a `cylinder`, `sphere`, `cube`
+at=(0, 0, 0), sides=None, on=None, **settings)` adds a `cylinder`, `sphere`, `cube`
 or `plane` with Blender's operator (`settings` go to it: `vertices=16`,
 `segments=24`...) and sizes it in mm (full w, d, h). A cylinder stays whole
 (D-061: edited with extrudes and loops cut around it, not cut and mirrored)
@@ -243,7 +243,11 @@ and each cap is the modeler's: the rim extruded and scaled in X and Y to 80%
 extremes (D-062; the vertex count must divide by 4). Other primitives are cut on the mirror planes with `bisect` so only the
 modeled side stays (`mirror="XY"` by default; X-, Y-, Z+ unless `sides` says
 otherwise: the front view sees -Y, D-055) and get Mirror (clipping, merge
-0.1 mm, D-054). Then Subdivision, the frame set to the size, and a sync. The part is then edited
+0.1 mm, D-054; a Mirror added later with `add MIRROR` gets the same). Then
+Subdivision, the frame set to the size, and a sync. `parent` parents the part
+and puts it in the parent's collection; `on="Dragão Corpo"` (D-063) puts it
+in the collection of the body it sits on, without parenting, and every sheet
+draws that body around it. The part is then edited
 with the text's ops. A new part has no ids to name yet: regions (`h<6`,
 `faces h>900`) select by where the vertices are.
 
@@ -325,7 +329,8 @@ print(fofuxo_cage.mesh_help())               # the operators and their parameter
 | `extrude_scale` | `mesh.extrude_region` + `transform.resize` | `w`, `d`, `h` in % around the object's origin; leave `h` out for X and Y only (E, S, Shift+Z): a cap's ring closing inward |
 | `delete` | `mesh.delete` | `type`: face (default: the faces and what only they used), vert, edge, edge_face, only_face (leaves loose edges: refused) |
 | `edge_face_add` | `mesh.edge_face_add` (F) | none |
-| `resize` | `transform.resize` around the object's origin | `w`, `d`, `h` in % (`200%`); proportional editing. A ring pulled out into a brim |
+| `resize` | `transform.resize` around the object's origin, or the selection's middle | `w`, `d`, `h` in % (`200%`); `around=selection` scales a ring where it is (a horn's ring made wider); proportional editing. A ring pulled out into a brim |
+| `rotate` | `transform.rotate` around the selection's middle | `angle` (`15deg`; + is counterclockwise seen from the axis' + end: with `axis=w` the ring's top tips to the front, -d), `axis` (`w`, `d`, `h`; default `w`), `around` (`selection` or `origin`); proportional editing. A ring tilted to follow a curve: `mesh rotate L5 angle=20deg axis=w` |
 | `extrude_region_shrink_fatten` | `mesh.extrude_region_shrink_fatten` | `value` (length, out along the normals), `even` |
 | `extrude_region_move`, `extrude_context_move` | the extrude macros | `w`, `d`, `h` (the move, as `translate`) |
 | `inset` | `mesh.inset` | `thickness`, `depth` (lengths), `use_even_offset`, `use_individual`, `use_boundary` |
@@ -422,10 +427,14 @@ fofuxo_cage.rebuild("Laço Nó", "Laço Nó", "knot", blend=".../human/Laço.ble
   middle plane (e.g. the depth at h 0 seen from the top).
 - `sections(name, axis, at)`: cuts at frame values (permille). Per cut: the
   superellipse exponent n of the result's section (2 = ellipse, higher =
-  boxier), its size, the waist (the depth where h is 0, and its ratio to the
+  boxier; around the mirror plane on a mirrored axis, around the cut's own
+  middle on a whole one), its size, the waist (the depth where h is 0, and its ratio to the
   largest depth: how deep a pinch goes) and the base vertices within 3% of
   the plane. The image `<object>.sections.png` shows the result's section in
   orange, the cage's in dark, and those vertices labeled.
+  `sections(name, "rings")` cuts square to the part instead, one cut in each
+  ring's plane (a leaning or curved part such as a horn): per ring its label,
+  n, and the cut's width and depth in mm.
 - `compare(name, ref, blend=None)`: sizes, the three profiles side by side
   and the deviation from the reference; `blend` borrows the object from a
   file for the call and removes it after.

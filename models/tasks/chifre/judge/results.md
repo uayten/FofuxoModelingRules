@@ -131,7 +131,13 @@ every run's horn is thinner than E1's (box 58-71 mm against 89 × 91).
   saved both from the returned text.
 - Fixed before T2-C/D: the first four above (one side measured, rings as
   L labels and drawn as rings, the body drawn, the `move` message).
-- Found by T2-C/D, still open:
+- Found by T2-C/D, fixed after the second verdict (2026-10-01): `mesh rotate`
+  and `resize around=selection` turn and scale a ring where it is;
+  `sections(name, "rings")` cuts in each ring's plane, and a whole axis's
+  cut is fitted around its own middle (the n 1.45 the runs saw on round
+  horns); `start_part(on=...)`; `add MIRROR` with merge 0.1 mm and clipping;
+  the concept moved onto the body by moving its Empty (SKILL, D-063). As
+  found:
   - no op places or turns a ring along a bent axis: both runs wrote the
     cage's base lines from Python;
   - `sections` cuts across a frame axis, so a leaning horn is cut at a slant

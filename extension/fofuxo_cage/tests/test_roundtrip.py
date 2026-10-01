@@ -6,6 +6,7 @@ Run from the repository root:
 
 import faulthandler
 import json
+import math
 import os
 import re
 import shutil
@@ -985,6 +986,46 @@ def main():
     check(all(len(hat_groups[f"L{n}"]) == 16 for n in (1, 2)) and all(len(h) == 1 for h in ring_h)
           and ring_h[0][0] <= ring_h[1][0],
           f"a whole cylinder's L labels are its rings, bottom first ({ring_h})")
+
+    # A part on the body (D-063), rings turned and scaled where they are (T2-C/D).
+    body = bpy.data.objects["Dragão Corpo"]
+    fc.start_part("Spike", "cylinder", size=(20, 20, 60), vertices=8, at=(120, -60, 480), on=body.name)
+    spike = bpy.data.objects["Spike"]
+    check(set(spike.users_collection) == set(body.users_collection) and spike.parent is None
+          and body in fc.render._related(spike), "start_part(on=...): the body's collection, drawn around, no parent")
+    fc.edit("Spike", "mesh bisect all plane=h500", render=False)
+    spike_cage = lambda: fc.cage_format.parse(SYNC.paths(spike)["text"].read_text("utf-8"))
+    sc = spike_cage()
+    mid = next(lab for lab, ids in sc.groups if len(ids) == 8 and {round(sc.verts[v].base[2]) for v in ids} == {500})
+    ring_ids = dict(sc.groups)[mid]
+
+    def ring_state():
+        idx = {vid: i for i, vid in enumerate(SYNC.mesh_io.ensure_ids(spike.data, None, 0, write=False)[0])}
+        pts = fc.render.np.array([tuple(spike.data.vertices[idx[v]].co) for v in ring_ids])
+        c = pts.mean(axis=0)
+        normal = fc.render.np.linalg.svd(pts - c)[2][2]
+        normal = normal if normal[2] > 0 else -normal
+        return c, normal, fc.render.np.linalg.norm(pts - c, axis=1).mean()
+
+    rs = fc.sections("Spike", "rings")["sections"]
+    side = [e for e in rs if not e.get("end")]
+    check([e["ring"] for e in side] == [mid] and abs(side[0]["width_mm"] - side[0]["depth_mm"]) < 2
+          and 1.7 <= side[0]["n"] <= 2.4 and sum(1 for e in rs if e.get("end")) == 4,
+          f"sections across the rings: the middle ring round, the caps' rings ends ({rs})")
+    c0, nz0, r0 = ring_state()
+    r = fc.edit("Spike", f"mesh rotate {mid} angle=20deg axis=w", render=False)
+    c1, nz1, r1 = ring_state()
+    check(r["action"] == "pushed" and fc.render.np.linalg.norm(c1 - c0) < 1e-5
+          and abs(nz1[2] - math.cos(math.radians(20))) < 0.01 and nz1[1] < 0,
+          f"rotate turns a ring 20 degrees around its own middle, its top to the front (normal {nz1.round(3)})")
+    r = fc.edit("Spike", f"mesh resize {mid} w=150% d=150% around=selection", render=False)
+    c2, _, r2 = ring_state()
+    check(r["action"] == "pushed" and fc.render.np.linalg.norm(c2 - c1) < 1e-5 and abs(r2 / r1 - 1.5) < 0.05,
+          f"resize around=selection widens a ring where it is (radius x{r2 / r1:.2f})")
+    r = fc.edit("Spike", "add MIRROR", render=False)
+    mm = next(m for m in spike.modifiers if m.type == "MIRROR")
+    check(abs(mm.merge_threshold - 0.0001) < 1e-9 and mm.use_clip, "add MIRROR: merge 0.1 mm and clipping (D-054)")
+    bpy.data.objects.remove(spike)
     rings = fc.render._rings(hat.data, fc.render.np.array([tuple(v.co) for v in hat.data.vertices]))
     check(len(rings) == 4 and all(len(loop) == 16 and k == 2 for loop, k in rings),
           f"the view finds its 4 cylinder loops, drawn as rings ({[len(loop) for loop, _ in rings]})")
