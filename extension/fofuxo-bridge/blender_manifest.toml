@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "llm_modeling_bridge"
-version = "0.2.0"
+version = "0.2.1"
 name = "LLM Modeling Bridge"
 tagline = "Lets a text LLM model in Blender with Blender's own tools"
 maintainer = "Antônio Froz"

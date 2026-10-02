@@ -88,11 +88,15 @@ def on_load(*_args):
 
 
 def register():
-    migrate_scene()
     if on_load not in bpy.app.handlers.load_post:
         bpy.app.handlers.load_post.append(on_load)
+    # Blender restricts scene access during add-on activation.
+    if not bpy.app.timers.is_registered(on_load):
+        bpy.app.timers.register(on_load, first_interval=0.1)
 
 
 def unregister():
+    if bpy.app.timers.is_registered(on_load):
+        bpy.app.timers.unregister(on_load)
     if on_load in bpy.app.handlers.load_post:
         bpy.app.handlers.load_post.remove(on_load)

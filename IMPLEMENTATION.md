@@ -1,6 +1,6 @@
 # Roadmap implementation — 2026-10-02
 
-LLM Modeling Bridge 0.2.0 implements the tooling that could be built without
+LLM Modeling Bridge 0.2.1 implements the tooling that could be built without
 the modeler's participation. The open models and human judgments remain pending.
 
 ## Contents
@@ -33,6 +33,11 @@ The [roadmap](ROADMAP.md) now contains only remaining work and judgments.
 
 ## Verification
 
+The 0.2.1 activation fix defers initial migration until Blender releases its
+restricted registration context. A dedicated registration suite checks the
+actual enable/disable lifecycle, migration and timer/handler cleanup. The
+installed extension was updated and enabled successfully, with preferences saved.
+
 - Existing round-trip suite: **244 checks passed**, process exit 0.
 - Focused roadmap suite: **43 checks passed**, process exit 0; includes cleanup
   after an injected render failure, quoted region names, group replacement,
@@ -63,12 +68,13 @@ No broad editor-testing loop was started to chase an unlocated failure.
   a reproducible short case before expanding its investigation.
 
 The interaction checklist is in [HUMAN_TESTS.md](extension/fofuxo-bridge/HUMAN_TESTS.md).
-The MCP connected to the unsaved Plane scene was only inspected; installation
-and human interaction checks remain for the modeler's next session.
+The initial implementation only inspected the connected unsaved Plane scene.
+Version 0.2.1 has since been activated successfully in the user's Blender;
+human interaction checks remain for the modeler's next session.
 
 ## Install and resume
 
-Install [llm_modeling_bridge-0.2.0.zip](extension/dist/llm_modeling_bridge-0.2.0.zip)
+Install [llm_modeling_bridge-0.2.1.zip](extension/dist/llm_modeling_bridge-0.2.1.zip)
 from Blender's Install from Disk menu, disabling the previous extension before
 enabling the new one. The archive is a generated, ignored build artifact;
 rebuild it with `python extension/package_extension.py` after source changes.

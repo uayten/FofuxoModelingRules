@@ -56,14 +56,16 @@ cage mesh (the base mesh under Subdivision):
 
 Build with `python extension/package_extension.py`. In Blender, use
 Preferences > Get Extensions > Install from Disk and select
-`extension/dist/llm_modeling_bridge-0.2.0.zip`. Disable the previous extension
+`extension/dist/llm_modeling_bridge-0.2.1.zip`. Disable the previous extension
 before enabling this version, so only one recorder and one MCP owner run.
 The source directory is `extension/fofuxo-bridge/`; the package id and import
 name are `llm_modeling_bridge`. Restart Blender after changing the installed code.
 
-On registration and file load, legacy attributes and properties are renamed,
+After activation and on file load, legacy attributes and properties are renamed,
 and `<file>.cage/` becomes `<file>.bridge/`. Id values and saved geometry are
 preserved; metadata changes enter the `.blend` on its next normal save.
+Initial migration is deferred to a timer because Blender restricts scene
+access inside add-on registration.
 If both names or both folders exist, migration refuses to overwrite them.
 The old `import fofuxo_cage` and launcher entry point remain compatible.
 
@@ -857,6 +859,7 @@ modeler's verdict. It refuses to resume a checkpoint belonging to another file.
 ```bash
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_roundtrip.py --python-exit-code 1
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_roadmap.py --python-exit-code 1
+blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_registration.py --python-exit-code 1
 ```
 
 The test copies `models/example/laco/human/Laço.blend` to a temporary folder and never
@@ -864,6 +867,8 @@ touches the original. Read the last line (`ALL PASSED (N checks)`): Blender
 exits 0 when the test file fails to parse, so the exit code alone can lie.
 The focused roadmap suite prints `ROADMAP ALL PASSED`. Interactive recorder,
 Sculpt and window handover checks are listed in [HUMAN_TESTS.md](HUMAN_TESTS.md).
+The registration suite uses Blender's actual `addon_utils.enable` and
+`disable` lifecycle, checks deferred migration and verifies timer/handler cleanup.
 
 ## Why
 

@@ -1,6 +1,6 @@
 # Human checks
 
-Check the interaction after installing LLM Modeling Bridge 0.2.0. Use a copy
+Check the interaction after installing LLM Modeling Bridge 0.2.1. Use a copy
 of a saved file. These checks do not approve the cowboy hat or the modeling method.
 
 ## Contents
