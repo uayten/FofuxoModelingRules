@@ -436,6 +436,8 @@ def fit(name, surface, mode="normal", vids=None, passes=3):
     """Fit the cage to a surface: target ops written to the text and synced,
     `passes` times (each pass re-aims from the new result). Returns the last
     sync report's issues and the deviation from the surface."""
+    from .instance import assert_ai_access
+    assert_ai_access()
     sync_mod = _sync_mod()
 
     obj = _object(name)
@@ -511,6 +513,8 @@ def rebuild(name, source, surface, blend=None, mode="normal", passes=3):
     number of axes flip; the source's UVs come along; materials stay. The next
     sync pulls the new mesh (fresh ids), then fit() runs.
     """
+    from .instance import assert_ai_access
+    assert_ai_access()
     sync_mod = _sync_mod()
 
     obj = _object(name)

@@ -9,13 +9,13 @@
 A locked object keeps its original selectability in a custom property, so a
 file saved while locked can still be unlocked after reopening. The human can
 always take over: Esc while the UI is blocked, or the Unlock button in the
-3D View sidebar (Fofuxo tab). The next sync then reports that the human took
+3D View sidebar (LLM tab). The next sync then reports that the human took
 over, and the AI should stop and ask.
 """
 
 import bpy
 
-PROP = "fofuxo_cage_lock"
+PROP = "llm_modeling_bridge_lock"
 _state = {"ui": False, "taken_over": False, "message": ""}
 
 
@@ -56,6 +56,8 @@ def lock(name, ui=True):
     """Take control of object `name`: leave Edit Mode (keeping the human's
     edits: the next sync reads them as Blender edits), make the object
     unselectable and, with ui (the default), swallow all input."""
+    from .instance import assert_ai_access
+    assert_ai_access()
     obj = bpy.data.objects.get(name)
     if obj is None:
         raise LockError(f"no object named {name!r}")
@@ -107,7 +109,7 @@ def _start_block():
     region = next((r for r in area.regions if r.type == "WINDOW"), area.regions[0])
     _state["ui"] = True
     with bpy.context.temp_override(window=win, area=area, region=region):
-        bpy.ops.fofuxo_cage.block_input("INVOKE_DEFAULT")
+        bpy.ops.llm_modeling_bridge.block_input("INVOKE_DEFAULT")
 
 
 def _human_takes_over():
@@ -119,10 +121,10 @@ def _human_takes_over():
     _set_header(None)
 
 
-class FOFUXO_OT_block_input(bpy.types.Operator):
+class LLM_BRIDGE_OT_block_input(bpy.types.Operator):
     """Swallow input while the AI edits; Esc hands control back to the human"""
 
-    bl_idname = "fofuxo_cage.block_input"
+    bl_idname = "llm_modeling_bridge.block_input"
     bl_label = "LLM editing: block input"
 
     def invoke(self, context, event):
@@ -143,10 +145,10 @@ class FOFUXO_OT_block_input(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class FOFUXO_OT_unlock(bpy.types.Operator):
+class LLM_BRIDGE_OT_unlock(bpy.types.Operator):
     """Take the objects back from the AI"""
 
-    bl_idname = "fofuxo_cage.unlock"
+    bl_idname = "llm_modeling_bridge.unlock"
     bl_label = "Unlock"
 
     def execute(self, context):
@@ -154,7 +156,7 @@ class FOFUXO_OT_unlock(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class FOFUXO_PT_lock(bpy.types.Panel):
+class LLM_BRIDGE_PT_lock(bpy.types.Panel):
     bl_label = "LLM"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -169,7 +171,7 @@ class FOFUXO_PT_lock(bpy.types.Panel):
         col.label(text="The LLM is editing:", icon="LOCKED")
         for obj in locked:
             col.label(text=obj.name)
-        col.operator(FOFUXO_OT_unlock.bl_idname, icon="UNLOCKED")
+        col.operator(LLM_BRIDGE_OT_unlock.bl_idname, icon="UNLOCKED")
 
 
-CLASSES = (FOFUXO_OT_block_input, FOFUXO_OT_unlock, FOFUXO_PT_lock)
+CLASSES = (LLM_BRIDGE_OT_block_input, LLM_BRIDGE_OT_unlock, LLM_BRIDGE_PT_lock)

@@ -16,6 +16,7 @@ op (sync.solve_targets); axes not named keep their base value.
 """
 
 import re
+import shlex
 
 AXES = "wdh"
 _AMOUNT = re.compile(r"([+-]?\d+(?:\.\d+)?)%")
@@ -26,8 +27,8 @@ class OpError(ValueError):
 
 
 def parse(line):
-    tokens = line.replace(",", " ").split()
-    if not tokens or tokens[0].lower() not in ("move", "scale"):
+    tokens = shlex.split(line.replace(",", " "))
+    if not tokens or tokens[0].lower() not in ("move", "scale", "position"):
         raise OpError(f"unknown op {line!r}: use move, scale or target")
     verb, rest = tokens[0].lower(), tokens[1:]
     from_zero = False
@@ -40,7 +41,7 @@ def parse(line):
         raise OpError(f"{line!r}: one amount per line; split it, e.g. 'move v21 w -1%' then 'move v21 d -1%'")
     if not re.fullmatch(r"[wdh]{1,3}", axes.lower()):
         raise OpError(f"{line!r}: axes must be letters from w, d, h, not {axes!r}")
-    m = _AMOUNT.fullmatch(amount)
+    m = re.fullmatch(r"([-+]?\d+(?:\.\d+)?)", amount) if verb == "position" else _AMOUNT.fullmatch(amount)
     if not m:
         raise OpError(f"{line!r}: amount must be a percentage like +4% or 105%, not {amount!r}")
     return verb, targets, axes.lower(), float(m[1]), from_zero
@@ -76,6 +77,7 @@ def parse_target(line, cage, keep_on_plane):
 
 def _targets(tokens, cage, line):
     groups = {label.lower(): ids for label, ids in cage.groups if label}
+    groups.update({("region:" + label).lower(): ids for label, ids in cage.regions.items()})
     out = []
     for t in tokens:
         low = t.lower()
@@ -115,7 +117,9 @@ def apply(cage, lines, keep_on_plane, precise):
             vals = {vid: cage.verts[vid].base[k] for vid in ids if not keep_on_plane(vid, k)}
             if not vals:
                 continue
-            if verb == "move":
+            if verb == "position":
+                new = {vid: amount for vid in vals}
+            elif verb == "move":
                 new = {vid: v + amount * 10 for vid, v in vals.items()}
             else:
                 c = 0.0 if from_zero else (min(vals.values()) + max(vals.values())) / 2

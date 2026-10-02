@@ -34,13 +34,14 @@ from pathlib import Path
 
 import bmesh
 import bpy
+import shlex
 from mathutils import Vector
 
 from . import mesh_io, selection, validate
 from .lock import PROP as LOCK_PROP, _leave_edit_mode, lock, unlock
 from .selection import SelectionError
 
-TAG_ATTR = "fofuxo_cage_tag"
+TAG_ATTR = "llm_modeling_bridge_tag"
 LENGTH_UNITS = {"mm": 0.001, "cm": 0.01, "m": 1.0}
 LOOPTOOLS = "looptools"
 MAX_DELTAS = 10
@@ -706,11 +707,18 @@ def _merged_rna(*ops):
     return Merged
 
 
-def help_text():
+def help_text(name=None, compact=True):
     """The whitelist as text: one block per operator with its parameters."""
     lines = []
-    for name, op in OPS.items():
-        lines.append(f"{name} ({op.idname}{', LoopTools' if op.looptools else ''}): {op.doc}")
+    if name is not None and name not in OPS:
+        raise MeshOpError(f"unknown operator {name!r}")
+    for operation, op in OPS.items():
+        if name is not None and operation != name:
+            continue
+        if compact:
+            lines.append(f"{operation}: {op.doc.split(';')[0]} | parameters: {', '.join(op.params) or 'none'}")
+            continue
+        lines.append(f"{operation} ({op.idname}{', LoopTools' if op.looptools else ''}): {op.doc}")
         for key, p in op.params.items():
             lines.append(f"    {key}: {p.meaning}")
     return "\n".join(lines)
@@ -738,6 +746,8 @@ _TOOL_SETTINGS = ("mesh_select_mode", "use_proportional_edit", "proportional_edi
 def editing(obj, take_lock=True):
     """Edit Mode on obj alone, under a 3D View override; everything the
     human had (lock, active object, selection, tool settings) comes back."""
+    from .instance import assert_ai_access
+    assert_ai_access()
     was_locked = LOCK_PROP in obj
     if take_lock and not was_locked:
         lock(obj.name, ui=False)
@@ -991,7 +1001,7 @@ def check_line(obj, verb, args, line, cage, frame, counter):
     name = args[0].lower()
     op = OPS.get(name)
     if op is None:
-        raise MeshOpError(f"unknown operator {args[0]!r}; the list: {', '.join(OPS)} (help: fofuxo_cage.mesh_help())")
+        raise MeshOpError(f"unknown operator {args[0]!r}; the list: {', '.join(OPS)} (help: llm_modeling_bridge.mesh_help())")
     tokens, raw = _split(args[1:])
     if not tokens:
         raise MeshOpError(f"{name} needs a selection")
@@ -1060,7 +1070,7 @@ def select(name, text, cage=None):
         from .sync import paths
         path = paths(obj)["text"]
         cage = cage_format.parse(path.read_text("utf-8")) if path.exists() else None
-    terms = _terms(text.split(), cage, obj.data)
+    terms = _terms(shlex.split(text), cage, obj.data)
     with editing(obj) as ctx:
         try:
             selection.resolve(obj, terms, ctx)

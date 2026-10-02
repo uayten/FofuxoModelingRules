@@ -2,29 +2,29 @@
 Attributes), so the modeler can change them by hand and the AI by call.
 Nothing is labeled by itself: the sheet shows what these ask for.
 
-    fofuxo_show_vertex  POINT INT  the vertex's id
-    fofuxo_loop         EDGE  INT  each connected run of shown edges (closed
+    llm_bridge_show_vertex  POINT INT  the vertex's id
+    llm_bridge_loop         EDGE  INT  each connected run of shown edges (closed
                                    across the mirror planes) is drawn as one
                                    colored loop with one label
-    fofuxo_show_face    FACE  INT  the face's id (f12) at its center
+    llm_bridge_show_face    FACE  INT  the face's id (f12) at its center
 
 Each works in levels: only the elements with the highest value present are
 shown, and 0 is never shown. Marking a few with a new, higher level narrows
 the view to them; marking everything with 1 brings the whole back.
 
-    fofuxo_cage.show("Chapéu", "all", level=1)       # every id
-    fofuxo_cage.show("Chapéu", "h>555")              # a new level: only these
-    fofuxo_cage.show("Chapéu", "v12", level="add")   # add v12 to what is shown
-    fofuxo_cage.mark_loop("Chapéu", "loop v117-v118")    # only this loop
-    fofuxo_cage.mark_loop("Chapéu", "loop v124-v125", level="add")
-    fofuxo_cage.show_faces("Chapéu", "faces h>800")
+    llm_modeling_bridge.show("Chapéu", "all", level=1)       # every id
+    llm_modeling_bridge.show("Chapéu", "h>555")              # a new level: only these
+    llm_modeling_bridge.show("Chapéu", "v12", level="add")   # add v12 to what is shown
+    llm_modeling_bridge.mark_loop("Chapéu", "loop v117-v118")    # only this loop
+    llm_modeling_bridge.mark_loop("Chapéu", "loop v124-v125", level="add")
+    llm_modeling_bridge.show_faces("Chapéu", "faces h>800")
 """
 
 import bpy
 
-SHOW_VERTEX = "fofuxo_show_vertex"
-LOOP = "fofuxo_loop"
-SHOW_FACE = "fofuxo_show_face"
+SHOW_VERTEX = "llm_bridge_show_vertex"
+LOOP = "llm_bridge_loop"
+SHOW_FACE = "llm_bridge_show_face"
 
 
 class LabelError(Exception):

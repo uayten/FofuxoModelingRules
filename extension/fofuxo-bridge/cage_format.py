@@ -1,10 +1,11 @@
-"""Parse and write the cage text format. Pure Python: no bpy here."""
+"""Parse and write the mesh text format. Pure Python: no bpy here."""
 
 import re
+import json
 from dataclasses import dataclass, field
 
 FORMAT_VERSION = 1
-SECTIONS = ("modifiers", "verts", "faces", "edges", "ops", "forms")
+SECTIONS = ("modifiers", "verts", "faces", "edges", "ops", "forms", "regions")
 
 HELP = (
     "# Values are permille of the frame: w = width (X), d = depth (Y), h = height (Z).",
@@ -45,6 +46,7 @@ class Cage:
     edges: list = field(default_factory=list)  # raw lines, read-only
     ops: list = field(default_factory=list)  # raw lines
     forms: list = field(default_factory=list)  # raw lines, kept verbatim
+    regions: dict = field(default_factory=dict)  # vertex group name -> stable ids
 
 
 def _strip_comment(line):
@@ -104,6 +106,14 @@ def parse(text):
             cage.modifiers.append(line)
         elif section == "ops":
             cage.ops.append(line)
+        elif section == "regions":
+            try:
+                name, ids = json.loads(raw.strip())
+                if not isinstance(name, str) or not isinstance(ids, list) or any(type(vid) is not int for vid in ids):
+                    raise ValueError("expected a name and integer ids")
+                cage.regions[name] = ids
+            except (ValueError, TypeError) as error:
+                raise CageFormatError(f"line {n}: invalid region: {error}") from None
     while cage.forms and not cage.forms[-1].strip():
         cage.forms.pop()
     while cage.forms and not cage.forms[0].strip():
@@ -129,7 +139,7 @@ def _whd(values):
 
 
 def write(cage):
-    out = [f"# fofuxo_cage {FORMAT_VERSION}", *HELP, ""]
+    out = [f"# llm_modeling_bridge {FORMAT_VERSION}", *HELP, ""]
     for key, value in cage.header.items():
         out.append(f"{key:<8} {value}")
     if cage.modifiers:
@@ -144,6 +154,8 @@ def write(cage):
     out += ["", "faces"]
     out += [f"  f{i:<3} " + " ".join(f"v{vid}" for vid in face) for i, face in enumerate(cage.faces)]
     out += ["", "edges"] + [f"  {line}" for line in cage.edges]
+    if cage.regions:
+        out += ["", "regions"] + ["  " + json.dumps([name, ids], ensure_ascii=False) for name, ids in cage.regions.items()]
     out += ["", "ops"] + [f"  {line}" for line in cage.ops]
     out += ["", "forms"] + list(cage.forms)
     return "\n".join(out) + "\n"

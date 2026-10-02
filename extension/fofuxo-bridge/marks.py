@@ -124,6 +124,8 @@ def read(obj, ids, depsgraph, frame, seen=()):
 
 def clear_annotations(layer=None):
     """Remove the strokes the AI acted on: every layer's, or one layer's."""
+    from .instance import assert_ai_access
+    assert_ai_access()
     data = bpy.context.scene.annotation
     if data is None:
         return 0

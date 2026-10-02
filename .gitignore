@@ -9,6 +9,21 @@
 __pycache__/
 *.pyc
 
+# Generated Blender extension package
+extension/dist/
+
+# LLM Modeling Bridge runtime state and review receipts
+**/*.bridge/.state/
+**/*.bridge/round.open.json
+**/*.bridge/review.blend
+**/*.bridge/review.json
+**/*.bridge/review.*.json
+**/*.bridge/review.ops.jsonl
+**/*.bridge/review.input.jsonl
+**/*.bridge/handover.before.blend
+**/*.bridge/handover.ops.jsonl
+**/*.bridge/handover.input.jsonl
+
 # Fofuxo Cage review session files (the human's Blender; absorbed into the AI's .blend)
 **/*.cage/review.blend
 **/*.cage/review.json

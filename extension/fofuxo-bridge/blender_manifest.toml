@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
-id = "fofuxo_cage"
-version = "0.1.0"
+id = "llm_modeling_bridge"
+version = "0.2.0"
 name = "LLM Modeling Bridge"
 tagline = "Lets a text LLM model in Blender with Blender's own tools"
 maintainer = "Antônio Froz"
@@ -12,4 +12,4 @@ blender_version_min = "4.2.0"
 license = ["SPDX:GPL-3.0-or-later"]
 
 [permissions]
-files = "Read and write the cage text files next to the .blend"
+files = "Read and write the mesh text files next to the .blend"

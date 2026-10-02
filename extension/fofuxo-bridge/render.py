@@ -9,8 +9,8 @@ and in background mode.
   3/4 views, views from above or below, the back.
 
 Cage panels label what the mesh attributes ask for (labels.py): the vertices
-marked fofuxo_show_vertex with their ids, the edges marked fofuxo_loop as
-loops, the faces marked fofuxo_show_face; labels are placed away from the
+marked llm_bridge_show_vertex with their ids, the edges marked llm_bridge_loop as
+loops, the faces marked llm_bridge_show_face; labels are placed away from the
 model with a leader line to each point. Each vertex, its leader and its
 label share one color, and vertices that share a face never share a color.
 Leaders avoid crossing each other and passing over other vertices. Parent,
@@ -248,7 +248,7 @@ def _related(obj, extra=()):
     objects its modifiers point to (the body a Mirror or Shrinkwrap uses) and
     extra: the parts drawn around obj as context."""
     out = list(extra)
-    on = bpy.data.objects.get(obj.get("fofuxo_on", ""))  # start_part(on=...)
+    on = bpy.data.objects.get(obj.get("llm_bridge_on", ""))  # start_part(on=...)
     if on is not None:
         out.append(on)
     for m in obj.modifiers:
@@ -296,7 +296,7 @@ def _weld_map(base, mirror_axes):
 
 
 def _loops(mesh, base, cage_co, cage_edges, weld):
-    """The runs of edges marked fofuxo_loop, each drawn as one line with one
+    """The runs of edges marked llm_bridge_loop, each drawn as one line with one
     label; a run cut by a mirror plane closes again across it. Nothing is
     found by itself: the sheet shows what the attributes ask for. Each:
     {"edges": [(a, b)] in cage indices, "verts": set of base indices,
@@ -357,6 +357,10 @@ class Scene:
         self.show = labels_mod.vertex_show(mesh)
         self.face_centers = [(f"f{p.index}", self.base[list(p.vertices)].mean(axis=0))
                              for p, on in zip(mesh.polygons, labels_mod.face_show(mesh)) if on]
+        from .regions import groups as region_groups
+        index = {vid: i for i, vid in enumerate(ids)}
+        self.region_centers = [(name, self.base[[index[vid] for vid in members if vid in index]].mean(axis=0))
+                               for name, members in list(region_groups(obj, ids).items())[:12] if members]
         # The fit follows the object itself; the related parts may run off the panel.
         pts = [self.cage_co, ev_co]
         self.lo = np.min([p.min(axis=0) for p in pts], axis=0)
@@ -420,13 +424,15 @@ class Scene:
                 co = self.cage_co[sorted({i for e in lp["edges"] for i in e})][:, others]
                 width = 2 * np.linalg.norm(co - co.mean(axis=0), axis=1).mean() * 1000
                 ring_labels[r] += f" ({width:.0f}mm)"
-        # fofuxo_show_vertex: only the marked vertices get their ids; the others a small dot.
+        # llm_bridge_show_vertex: only the marked vertices get their ids; the others a small dot.
         keep = [i for i in range(n) if self.show[i]]
         for i in range(n):
             if not self.show[i] and i not in in_ring:
                 panel.dot(px[i], WIRE, r=1)
         face_pts = [panel.to_px(c[None])[0][0] for _, c in self.face_centers]
         face_labels = [lab for lab, _ in self.face_centers]
+        region_pts = [panel.to_px(center[None])[0][0] for _, center in self.region_centers]
+        region_labels = [name for name, _ in self.region_centers]
         if focus is not None:
             wanted = {str(v).lstrip("v") for v in focus}
             keep = [i for i in range(n) if self.labels[i] in wanted]
@@ -449,10 +455,10 @@ class Scene:
                 panel.dot(px[i], self.colors[i], r=1)
         for p in face_pts:
             panel.dot(p, TEXT, r=1)
-        _place_labels(panel, np.array(list(px[keep]) + ring_pts + face_pts),
-                      [self.labels[i] for i in keep] + ring_labels + face_labels, mask,
-                      [self.colors[i] for i in keep] + ring_colors + [TEXT] * len(face_pts),
-                      [hidden[i] for i in keep] + ring_hidden + [False] * len(face_pts))
+        _place_labels(panel, np.array(list(px[keep]) + ring_pts + face_pts + region_pts),
+                      [self.labels[i] for i in keep] + ring_labels + face_labels + region_labels, mask,
+                      [self.colors[i] for i in keep] + ring_colors + [TEXT] * (len(face_pts) + len(region_pts)),
+                      [hidden[i] for i in keep] + ring_hidden + [False] * (len(face_pts) + len(region_pts)))
         panel.text(4, 4, f"{cam.name}  cage")
         return panel
 
@@ -732,7 +738,7 @@ def _outline(mask):
 
 # --- concept ------------------------------------------------------------------
 
-PERSPECTIVE = "fofuxo_perspective"  # an Image Empty property: a photo, not an orthographic view
+PERSPECTIVE = "llm_bridge_perspective"  # an Image Empty property: a photo, not an orthographic view
 
 
 def _concept_images():
@@ -925,11 +931,13 @@ def compose_row(panels, title, path):
 def _write_png(rgb, path):
     h, w = rgb.shape[:2]
     rgba = np.concatenate([np.clip(rgb, 0, 1), np.ones((h, w, 1))], axis=2)[::-1]
-    img = bpy.data.images.new("fofuxo_cage_sheet", w, h, alpha=False)
+    img = bpy.data.images.new("llm_modeling_bridge_sheet", w, h, alpha=False)
     try:
         img.pixels.foreach_set(rgba.astype(np.float32).ravel())
         img.filepath_raw = str(path)
         img.file_format = "PNG"
         img.save()
+        from .rounds import record_image
+        record_image(w, h)
     finally:
         bpy.data.images.remove(img)

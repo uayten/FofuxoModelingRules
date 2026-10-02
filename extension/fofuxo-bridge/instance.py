@@ -1,14 +1,14 @@
 """Two Blenders: the AI's own instance and the human's review.
 
-The AI works in a Blender of its own, started with `-- --fofuxo-ai`
+The AI works in a Blender of its own, started with `-- --llm-bridge-ai`
 (launcher.py does it): every editor is painted black with a notice, input
 is swallowed, and the MCP server runs there. A human's Blender stops its own
 MCP server while an AI instance is alive, so the MCP always reaches the AI's.
 
     review(names)   save the AI's file, write the objects to
-                    <file>.cage/review.blend and open it in a normal Blender;
+                    <file>.bridge/review.blend and open it in a normal Blender;
                     while that review is open, later calls announce a newer
-                    version and the human loads it (Fofuxo tab)
+                    version and the human loads it (LLM tab)
     absorb()        read what the human saved in the review back into the
                     AI's objects (mesh, modifiers, transform) and sync them:
                     the edits come back as blender_edits
@@ -27,9 +27,9 @@ import bpy
 
 from .lock import PROP as LOCK_PROP
 
-AI_FLAG = "--fofuxo-ai"
-MARKER = Path(tempfile.gettempdir()) / "fofuxo_cage_ai.json"
-REVIEW_PROP = "fofuxo_review"
+AI_FLAG = "--llm-bridge-ai"
+MARKER = Path(tempfile.gettempdir()) / "llm_modeling_bridge_ai.json"
+REVIEW_PROP = "llm_bridge_review"
 UPDATE_NOTICE = "review.update.json"
 OPENED = "review.opened.json"
 COLLECT = "review.collect.json"  # the AI asks the human's Blender to save the review (and close)
@@ -43,16 +43,76 @@ NOTICE = ("Blender de uso exclusivo do LLM",
           "Não feche essa janela enquanto estiver trabalhando em conjunto com a LLM",
           "na modelagem de um objeto.")
 _state = {"handles": [], "review_seen": None, "update_seen": None, "message": ""}
+_state["human_editing"] = False
 
 
 class InstanceError(RuntimeError):
     pass
 
 
+def assert_ai_access():
+    if _state.get("human_editing"):
+        raise InstanceError("the human is editing this window; return it to the LLM before running edits")
+
+
+def human_access():
+    """Release this AI window, keeping the MCP connected for status and return."""
+    if not is_ai() or bpy.app.background:
+        raise InstanceError("human_access requires the AI's interactive Blender")
+    if not bpy.data.filepath:
+        raise InstanceError("save the file before handing over the window")
+    if _state.get("human_editing"):
+        raise InstanceError("the human already holds this window")
+    from .migration import data_root
+    import shutil
+    bpy.ops.wm.save_mainfile()
+    root = data_root()
+    root.mkdir(parents=True, exist_ok=True)
+    before = root / "handover.before.blend"
+    shutil.copy2(bpy.data.filepath, before)
+    _state["human_before"] = str(before)
+    _state["last_human_example"] = None
+    _state["human_objects"] = [obj.name for obj in bpy.data.objects if obj.type == "MESH"]
+    for filename in ("handover.ops.jsonl", "handover.input.jsonl"):
+        (root / filename).write_text("", "utf-8")
+    from .lock import unlock
+    unlock()
+    _state["human_editing"] = True
+    screen_off()
+    _focus(False)
+    _start_recording()
+    from .input_recorder import start_recording
+    start_recording()
+    return {"access": "human", "file": bpy.data.filepath}
+
+
+def resume_ai(save=True):
+    """The human returns the window; save their work before enabling edits."""
+    if not _state.get("human_editing"):
+        raise InstanceError("this window has not been handed to the human")
+    from .lock import _leave_edit_mode
+    _leave_edit_mode()
+    if bpy.context.object and bpy.context.object.mode != "OBJECT":
+        bpy.ops.object.mode_set(mode="OBJECT")
+    _record_ops()
+    if save:
+        bpy.ops.wm.save_as_mainfile(filepath=bpy.data.filepath)
+        from .catalog import archive_review, human_directory
+        from .migration import data_root
+        names = list(dict.fromkeys([*_state.get("human_objects", []), *[obj.name for obj in bpy.data.objects if obj.type == "MESH"]]))
+        if names:
+            example = archive_review(_state["human_before"], bpy.data.filepath, names,
+                                     human_dir=human_directory(bpy.data.filepath), recording_root=data_root())
+            _state["last_human_example"] = example["example"]
+    _state["human_editing"] = False
+    _setup_ai()
+    return {"access": "ai", "saved": save, "file": bpy.data.filepath, "example": _state.get("last_human_example")}
+
+
 # --- which Blender is this -----------------------------------------------------
 
 def is_ai():
-    return AI_FLAG in sys.argv
+    return AI_FLAG in sys.argv or "--fofuxo-ai" in sys.argv
 
 
 def _alive(pid):
@@ -76,17 +136,20 @@ def _alive(pid):
 
 def ai_instance():
     """The live AI instance from the marker file, or None."""
-    try:
-        data = json.loads(MARKER.read_text("utf-8"))
-    except (OSError, ValueError):
-        return None
-    return data if _alive(data.get("pid")) else None
+    for path in (MARKER, MARKER.with_name("fofuxo_cage_ai.json")):
+        try:
+            data = json.loads(path.read_text("utf-8"))
+        except (OSError, ValueError):
+            continue
+        if _alive(data.get("pid")):
+            return data
+    return None
 
 
 def instance():
     """Who this Blender is: {"role": "ai" or "human", "pid", "file", ...}."""
     out = {"role": "ai" if is_ai() else "human", "pid": os.getpid(), "file": bpy.data.filepath,
-           "mcp_running": _mcp_running()}
+           "mcp_running": _mcp_running(), "access": "human" if _state.get("human_editing") else "ai" if is_ai() else "human"}
     ai = ai_instance()
     if not is_ai() and ai:
         out["ai_pid"] = ai["pid"]
@@ -120,7 +183,7 @@ def _ensure_mcp():
         try:
             bpy.ops.blmcp.server_start()
         except RuntimeError as e:
-            print(f"Fofuxo Cage: MCP server not started: {e}")
+            print(f"LLM Modeling Bridge: MCP server not started: {e}")
 
 
 # --- the AI's screen -----------------------------------------------------------
@@ -193,10 +256,10 @@ def say(text):
     _redraw()
 
 
-class FOFUXO_OT_ai_screen(bpy.types.Operator):
+class LLM_BRIDGE_OT_ai_screen(bpy.types.Operator):
     """Swallow every input event in the AI's own Blender"""
 
-    bl_idname = "fofuxo_cage.ai_screen"
+    bl_idname = "llm_modeling_bridge.ai_screen"
     bl_label = "LLM screen"
 
     def invoke(self, context, event):
@@ -230,6 +293,8 @@ def _focus(on):
 
 
 def _setup_ai():
+    if _state.get("human_editing"):
+        return None
     wm = bpy.context.window_manager
     if not wm.windows:
         return 0.5  # not up yet
@@ -238,9 +303,9 @@ def _setup_ai():
     screen_on()
     _focus(True)
     win, area, region = _window_area()
-    if not any(op.bl_idname == "FOFUXO_CAGE_OT_ai_screen" for op in win.modal_operators):
+    if not any(op.bl_idname == "LLM_MODELING_BRIDGE_OT_ai_screen" for op in win.modal_operators):
         with bpy.context.temp_override(window=win, area=area, region=region):
-            bpy.ops.fofuxo_cage.ai_screen("INVOKE_DEFAULT")
+            bpy.ops.llm_modeling_bridge.ai_screen("INVOKE_DEFAULT")
     _ensure_mcp()
     return None
 
@@ -255,7 +320,7 @@ def _on_load(*_args):
 @bpy.app.handlers.persistent
 def _on_save_pre(*_args):
     # The AI's file keeps the layout it came with, not the focus mode.
-    if is_ai() and bpy.context.window_manager.windows:
+    if is_ai() and not _state.get("human_editing") and bpy.context.window_manager.windows:
         _focus(False)
 
 
@@ -296,9 +361,18 @@ def _op_record(op):
 def _log(lines):
     if not lines or _review_info() is None or not bpy.data.filepath:
         return
-    with Path(bpy.data.filepath).with_name(OPS_LOG).open("a", encoding="utf-8") as f:
+    path = recording_path(OPS_LOG)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as f:
         for line in lines:
             f.write(json.dumps({"t": round(time.time(), 2), **line}, default=str) + "\n")
+
+
+def recording_path(filename):
+    path = Path(bpy.data.filepath)
+    if _state.get("human_editing"):
+        return path.with_suffix(".bridge") / filename.replace("review.", "handover.", 1)
+    return path.with_name(filename)
 
 
 MOVED_MIN = 0.05  # mm: a vertex that moved less is left out of a "moved" record
@@ -311,16 +385,35 @@ def _mesh_state():
 
     obj = bpy.context.object
     info = _review_info()
-    if obj is None or obj.type != "MESH" or obj.name not in info.get("objects", []):
+    if not info or obj is None or obj.type != "MESH" or obj.name not in info.get("objects", []):
         return None
     if obj.mode == "EDIT":
         import bmesh
         bm = bmesh.from_edit_mesh(obj.data)
-        layer = bm.verts.layers.int.get(ID_ATTR)
-        ids = [v[layer] if layer else v.index for v in bm.verts]
+        bm.verts.ensure_lookup_table()
+        layer = bm.verts.layers.int.get(ID_ATTR) or bm.verts.layers.int.new(ID_ATTR)
+        previous = _rec.get("snap")
+        previous_co = dict(zip(previous[2], previous[3])) if previous and previous[0] == obj.name else {}
+        by_id = {}
+        for vertex in bm.verts:
+            by_id.setdefault(vertex[layer], []).append(vertex)
+        next_id = max([_rec.get("next_id", 0), max(by_id, default=-1) + 1, max(previous_co, default=-1) + 1])
+        for vid, vertices in by_id.items():
+            keep = min(vertices, key=lambda vertex: sum((vertex.co[i] * 1000 - previous_co[vid][i]) ** 2 for i in range(3))) if vid in previous_co else vertices[0]
+            for vertex in vertices:
+                if vid < 0 or vertex is not keep:
+                    vertex[layer] = next_id
+                    next_id += 1
+        _rec["next_id"] = next_id
+        bmesh.update_edit_mesh(obj.data, loop_triangles=False, destructive=False)
+        ids = [v[layer] for v in bm.verts]
         co = [tuple(c * 1000 for c in v.co) for v in bm.verts]
         sel = [i for v, i in zip(bm.verts, ids) if v.select]
     else:
+        from .mesh_io import ensure_ids
+        previous = _rec.get("snap")
+        snapshot = {vid: tuple(value / 1000 for value in co) for vid, co in zip(previous[2], previous[3])} if previous and previous[0] == obj.name else None
+        ensure_ids(obj.data, snapshot, _rec.get("next_id", 0))
         attr = obj.data.attributes.get(ID_ATTR)
         ids = [d.value for d in attr.data] if attr else list(range(len(obj.data.vertices)))
         co = [tuple(c * 1000 for c in v.co) for v in obj.data.vertices]
@@ -375,6 +468,9 @@ def _record_ops():
         if state is not None:
             moved = _moved(_rec.get("snap"), state)
             if lines:
+                lines[-1]["object"] = state[0]
+                from .regions import groups as region_groups
+                lines[-1]["regions"] = region_groups(bpy.data.objects[state[0]], state[2])
                 lines[-1]["selected"] = state[4]
                 if moved is None and _rec.get("snap") is not None:
                     lines.append({"op": "TOPOLOGY", "object": state[0], "verts": len(state[2])})
@@ -389,14 +485,25 @@ def _record_ops():
                 elif _rec.get("sculpt_pending"):
                     total = _moved(_rec.get("snap"), state)
                     if total:
-                        lines.append(_sculpt_record(total))
+                        stroke = _sculpt_record(total)
+                        stroke["object"] = state[0]
+                        from .regions import groups as region_groups
+                        stroke["regions"] = region_groups(bpy.data.objects[state[0]], state[2])
+                        lines.append(stroke)
                     _rec["snap"], _rec["sculpt_pending"] = state, False
             elif _rec.get("snap") is None or _rec["snap"][0] != state[0]:
                 _rec["snap"] = state
+            elif _rec.get("sculpt_pending"):
+                total = _moved(_rec.get("snap"), state)
+                if total:
+                    stroke = _sculpt_record(total)
+                    stroke["object"] = state[0]
+                    lines.append(stroke)
+                _rec["snap"], _rec["sculpt_pending"] = state, False
             _rec["tick"] = state
         _log(lines)
     except Exception as e:  # recording never breaks the human's Blender
-        print(f"Fofuxo Cage: operator recorder: {e!r}")
+        print(f"LLM Modeling Bridge: operator recorder: {e!r}")
     return RECORD
 
 
@@ -412,7 +519,7 @@ def _start_recording():
 
 @bpy.app.handlers.persistent
 def _on_undo_human(*_args):
-    if not is_ai():
+    if not is_ai() or _state.get("human_editing"):
         _log([{"op": "UNDO"}])
         try:  # the mesh went back (or forward): moves are counted from here
             _rec["snap"] = _rec["tick"] = _mesh_state()
@@ -423,7 +530,7 @@ def _on_undo_human(*_args):
 
 @bpy.app.handlers.persistent
 def _on_redo_human(*_args):
-    if not is_ai():
+    if not is_ai() or _state.get("human_editing"):
         _log([{"op": "REDO"}])
         try:  # the mesh went back (or forward): moves are counted from here
             _rec["snap"] = _rec["tick"] = _mesh_state()
@@ -434,7 +541,7 @@ def _on_redo_human(*_args):
 
 @bpy.app.handlers.persistent
 def _on_save_post(*_args):
-    if is_ai() and bpy.context.window_manager.windows:
+    if is_ai() and not _state.get("human_editing") and bpy.context.window_manager.windows:
         _focus(True)
 # --- the human's Blender -------------------------------------------------------
 
@@ -443,12 +550,12 @@ def _poll_human():
         ai = ai_instance()
         if ai and _mcp_running():
             release_mcp()
-            print("Fofuxo Cage: an AI instance is running; this Blender's MCP server stopped")
+            print("LLM Modeling Bridge: an AI instance is running; this Blender's MCP server stopped")
         if _pending_update():
             _set_header("The LLM has a newer version of this review: LLM tab > Load LLM update")
         _answer_collect()
     except Exception as e:  # a poll never breaks the human's Blender
-        print(f"Fofuxo Cage: poll failed: {e!r}")
+        print(f"LLM Modeling Bridge: poll failed: {e!r}")
     return POLL
 
 
@@ -466,7 +573,7 @@ def _answer_collect():
     win = bpy.context.window_manager.windows[0]
     with bpy.context.temp_override(window=win):
         bpy.ops.wm.save_mainfile()
-    print("Fofuxo Cage: saved the review for the AI")
+    print("LLM Modeling Bridge: saved the review for the AI")
     if ask.get("close"):
         bpy.app.timers.register(_quit, first_interval=0.5)
 
@@ -486,6 +593,8 @@ def _set_header(text):
 
 
 def _review_info(scene=None):
+    if _state.get("human_editing"):
+        return {"source": bpy.data.filepath, "objects": [obj.name for obj in bpy.data.objects if obj.type == "MESH"]}
     scene = scene or bpy.context.scene
     raw = scene.get(REVIEW_PROP) if scene else None
     return json.loads(raw) if raw else None
@@ -523,13 +632,15 @@ def open_review(source, names, out, units=None):
     Path(out).with_name(OPENED).write_text(json.dumps({"mtime": Path(out).stat().st_mtime, "pid": os.getpid()}),
                                            "utf-8")
     _start_recording()
+    from .input_recorder import start_recording
+    start_recording()
     return [o.name for o in dst.objects]
 
 
-class FOFUXO_OT_load_update(bpy.types.Operator):
+class LLM_BRIDGE_OT_load_update(bpy.types.Operator):
     """Replace the reviewed objects with the AI's newer version (save your own edits first: the AI reads what you save)"""
 
-    bl_idname = "fofuxo_cage.load_update"
+    bl_idname = "llm_modeling_bridge.load_update"
     bl_label = "Load LLM update"
 
     def execute(self, context):
@@ -546,7 +657,7 @@ class FOFUXO_OT_load_update(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class FOFUXO_PT_review(bpy.types.Panel):
+class LLM_BRIDGE_PT_review(bpy.types.Panel):
     bl_label = "LLM review"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -559,11 +670,15 @@ class FOFUXO_PT_review(bpy.types.Panel):
     def draw(self, context):
         info = _review_info(context.scene)
         col = self.layout.column()
+        if _state.get("human_editing"):
+            col.label(text="You are editing the LLM window", icon="INFO")
+            col.operator(LLM_BRIDGE_OT_return_to_ai.bl_idname, icon="CHECKMARK")
+            return
         col.label(text="A review of the LLM's model", icon="INFO")
         col.label(text=Path(info["source"]).name)
         col.label(text="Done? Tell the LLM: it saves and reads it")
         if _pending_update():
-            col.operator(FOFUXO_OT_load_update.bl_idname, icon="IMPORT")
+            col.operator(LLM_BRIDGE_OT_load_update.bl_idname, icon="IMPORT")
 
 
 # --- review and absorb ---------------------------------------------------------
@@ -571,7 +686,8 @@ class FOFUXO_PT_review(bpy.types.Panel):
 def _review_state_path():
     if not bpy.data.filepath:
         raise InstanceError("Save the .blend first: the review lives next to it")
-    return Path(bpy.data.filepath).with_suffix(".cage") / "review.json"
+    from .migration import data_root
+    return data_root() / "review.json"
 
 
 def _load_review_state():
@@ -598,9 +714,10 @@ _UNITS = ("system", "scale_length", "length_unit", "mass_unit", "time_unit", "te
 def review(names=None, launch=True, save=True):
     """Show the human the objects `names` (default: every object in the
     scene). Saves the AI's file; a normal Blender then appends them into an
-    empty scene and saves <file>.cage/review.blend. While that Blender is
+    empty scene and saves <file>.bridge/review.blend. While that Blender is
     open, a later call only tells it that there is a newer version; the human
-    loads it from the Fofuxo tab. launch=False returns the command instead."""
+    loads it from the LLM tab. launch=False returns the command instead."""
+    assert_ai_access()
     names = list(names or _default_names())
     missing = [n for n in names if n not in bpy.data.objects]
     if missing:
@@ -617,10 +734,11 @@ def review(names=None, launch=True, save=True):
         return {"review": str(path), "update": True, "pid": state["pid"], "launched": False}
     root.mkdir(parents=True, exist_ok=True)
     units = {k: getattr(bpy.context.scene.unit_settings, k) for k in _UNITS}
-    code = (f"import fofuxo_cage; fofuxo_cage.instance_mod.open_review({bpy.data.filepath!r}, {names!r}, "
+    code = (f"import llm_modeling_bridge; llm_modeling_bridge.instance_mod.open_review({bpy.data.filepath!r}, {names!r}, "
             f"{str(path)!r}, {units!r})")
     command = [bpy.app.binary_path, "--python-expr", code]
-    for stale in (UPDATE_NOTICE, OPENED, OPS_LOG, COLLECT):
+    from .input_recorder import INPUT_LOG
+    for stale in (UPDATE_NOTICE, OPENED, OPS_LOG, COLLECT, INPUT_LOG):
         (root / stale).unlink(missing_ok=True)
     pid = None
     if launch:
@@ -629,7 +747,7 @@ def review(names=None, launch=True, save=True):
                                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         pid = proc.pid
         say(f"review opened for the human: {', '.join(names)}")
-    state.update(review=str(path), objects=names, pid=pid, written=time.time(), absorbed=None, ops_read=0)
+    state.update(review=str(path), objects=names, pid=pid, written=time.time(), absorbed=None, ops_read=0, inputs_read=0)
     _save_review_state(state)
     return {"review": str(path), "pid": pid, "launched": bool(pid), "command": command}
 
@@ -637,6 +755,7 @@ def review(names=None, launch=True, save=True):
 def replace_from(path, names):
     """Replace mesh, modifiers and transform of the objects `names` of this
     file with those of the same objects in `path`. Returns the names replaced."""
+    assert_ai_access()
     before = {kind: set(getattr(bpy.data, kind)) for kind in _KINDS}
     with bpy.data.libraries.load(str(path), link=False) as (src, dst):
         found = [n for n in names if n in src.objects]
@@ -654,6 +773,7 @@ def replace_from(path, names):
             if old_mesh.users == 0:
                 bpy.data.meshes.remove(old_mesh)
             old.data.name = mesh_name
+            _copy_groups(new, old)
         _copy_modifiers(new, old)
         old.matrix_basis = new.matrix_basis
         done.append(name)
@@ -670,7 +790,23 @@ def replace_from(path, names):
                 idb.user_remap(twin)
             if kind == "objects" or idb.users == 0:
                 coll.remove(idb)
+    from .migration import migrate_scene
+    migrate_scene()
     return done
+
+
+def _copy_groups(src, dst):
+    definitions = [(group.name, group.lock_weight) for group in src.vertex_groups]
+    weights = [(vertex.index, membership.group, membership.weight) for vertex in src.data.vertices for membership in vertex.groups]
+    active = src.vertex_groups.active_index
+    dst.vertex_groups.clear()
+    for name, locked in definitions:
+        group = dst.vertex_groups.new(name=name)
+        group.lock_weight = locked
+    for index, group, weight in weights:
+        dst.vertex_groups[group].add([index], weight, "REPLACE")
+    if definitions:
+        dst.vertex_groups.active_index = active
 
 
 _KINDS = ("objects", "meshes", "materials", "images", "textures", "node_groups", "collections")
@@ -708,9 +844,10 @@ def _copy_modifiers(src, dst):
                 pass
 
 
-def absorb(names=None, sync=True):
+def absorb(names=None, sync=True, verbose=False, why=None, human_dir=None):
     """Read what the human saved in the review back into the AI's objects
     and sync them. Returns per object the sync's action, edits and issues."""
+    assert_ai_access()
     state = _load_review_state()
     path = Path(state.get("review", ""))
     if not state or not path.exists():
@@ -723,18 +860,46 @@ def absorb(names=None, sync=True):
     if mtime <= max(state.get("absorbed") or 0, opened):
         return {"changed": False, "note": "the human has not saved the review since it was written or absorbed"}
     names = list(names or state["objects"])
+    bpy.ops.wm.save_mainfile()
+    from .catalog import archive_review
+    example = archive_review(bpy.data.filepath, path, names, why=why, human_dir=human_dir)
     done = replace_from(path, names)
     _take_annotations(path)
     state["absorbed"] = mtime
     _save_review_state(state)
-    out = {"changed": True, "objects": done}
+    out = {"changed": True, "objects": done, **example}
+    from .recording import summarize
+    operator_records = []
     try:  # what the human ran since the last absorb, from the review's recorder
         lines = path.with_name(OPS_LOG).read_text("utf-8").splitlines()
-        out["operators"] = [json.loads(x) for x in lines[state.get("ops_read", 0):] if x.strip()]
+        records = [json.loads(x) for x in lines[state.get("ops_read", 0):] if x.strip()]
+        operator_records = records
+        from .recording import summarize
+        out["operator_summary"] = summarize(records)
+        out["operator_log"] = str(path.with_name(OPS_LOG))
+        if verbose:
+            out["operators"] = records
         state["ops_read"] = len(lines)
         _save_review_state(state)
     except (OSError, ValueError):
         pass
+    from .recording import replay_candidates
+    out["replay_candidates"] = replay_candidates(operator_records)
+    from .input_recorder import INPUT_LOG
+    input_path = path.with_name(INPUT_LOG)
+    if input_path.exists():
+        from .recording import read_recording, replay_candidates
+        records, errors = read_recording(input_path)
+        fresh = records[state.get("inputs_read", 0):]
+        out["input_summary"] = summarize(fresh)
+        out["replay_candidates"] = replay_candidates([*operator_records, *fresh])
+        out["input_log"] = str(input_path)
+        if errors:
+            out["input_errors"] = errors
+        if verbose:
+            out["inputs"] = fresh
+        state["inputs_read"] = len(records)
+        _save_review_state(state)
     if sync:
         from .sync import sync as sync_fn
         for name in done:
@@ -742,13 +907,15 @@ def absorb(names=None, sync=True):
                 continue
             r = sync_fn(name, render=False)
             out[name] = {k: r[k] for k in ("action", "blender_edits", "blender_deltas", "blender_by_loop", "stack_changes", "marks",
-                                           "annotations", "error") if k in r}
+                                           "annotations", "changes_by_region", "error") if k in r}
             out[name]["issues"] = [f"{i['level']} {i['code']} {' '.join(i['verts'])}" for i in r["issues"]]
     say(f"absorbed the human's review: {', '.join(done)}")
-    return out
+    bpy.ops.wm.save_mainfile()
+    from .reports import finish
+    return finish("absorb", out, verbose)
 
 
-def collect(names=None, close=True, timeout=20.0):
+def collect(names=None, close=True, timeout=20.0, verbose=False):
     """After the human edits the review: ask their Blender to save it (and
     close, by default), wait for the save, then absorb() it. The human
     Blender answers on its next poll (every few seconds)."""
@@ -758,7 +925,7 @@ def collect(names=None, close=True, timeout=20.0):
         raise InstanceError("no review to collect: call review() first")
     pid = state.get("pid")
     if not _alive(pid):
-        out = absorb(names)
+        out = absorb(names, verbose=verbose)
         out["closed"] = True
         out["note"] = "the human's Blender was already closed; read what it last saved"
         return out
@@ -770,9 +937,9 @@ def collect(names=None, close=True, timeout=20.0):
     if path.stat().st_mtime == before:
         path.with_name(COLLECT).unlink(missing_ok=True)
         raise InstanceError(f"the human's Blender did not save the review in {timeout:.0f} s "
-                            "(an older Fofuxo Cage there? ask the human to save)")
+                            "(an older LLM Modeling Bridge there? ask the human to save)")
     time.sleep(0.5)  # let the save finish writing
-    out = absorb(names)
+    out = absorb(names, verbose=verbose)
     if close:
         while time.time() < end + 10 and _alive(pid):
             time.sleep(0.25)
@@ -786,15 +953,32 @@ def collect(names=None, close=True, timeout=20.0):
 
 # --- registration --------------------------------------------------------------
 
-CLASSES = (FOFUXO_OT_ai_screen, FOFUXO_OT_load_update, FOFUXO_PT_review)
+class LLM_BRIDGE_OT_return_to_ai(bpy.types.Operator):
+    bl_idname = "llm_modeling_bridge.return_to_ai"
+    bl_label = "Save and return to LLM"
+
+    def execute(self, context):
+        try:
+            resume_ai()
+        except (InstanceError, RuntimeError) as error:
+            self.report({"ERROR"}, str(error))
+            return {"CANCELLED"}
+        return {"FINISHED"}
+
+
+CLASSES = (LLM_BRIDGE_OT_ai_screen, LLM_BRIDGE_OT_load_update, LLM_BRIDGE_OT_return_to_ai, LLM_BRIDGE_PT_review)
 
 
 def register():
     for cls in CLASSES:
         bpy.utils.register_class(cls)
+    from . import input_recorder
+    input_recorder.register()
     if bpy.app.background:
         return
     if is_ai():
+        bpy.app.handlers.undo_post.append(_on_undo_human)
+        bpy.app.handlers.redo_post.append(_on_redo_human)
         bpy.app.handlers.load_post.append(_on_load)
         bpy.app.handlers.save_pre.append(_on_save_pre)
         bpy.app.handlers.save_post.append(_on_save_post)
@@ -806,6 +990,8 @@ def register():
 
 
 def unregister():
+    from . import input_recorder
+    input_recorder.unregister()
     for timer in (_setup_ai, _poll_human, _record_ops):
         if bpy.app.timers.is_registered(timer):
             bpy.app.timers.unregister(timer)

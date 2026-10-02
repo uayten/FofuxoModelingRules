@@ -1,4 +1,4 @@
-"""Three-way sync between the cage text, the mesh and the last synced state.
+"""Three-way sync between the mesh text, the mesh and the last synced state.
 
 text changed, mesh not  -> push (text to mesh)
 mesh changed, text not  -> pull (mesh to text)
@@ -37,8 +37,10 @@ class SyncError(RuntimeError):
 def paths(obj):
     blend = bpy.data.filepath
     if not blend:
-        raise SyncError("Save the .blend first: the cage text lives next to it.")
-    root = Path(blend).with_suffix(".cage")
+        raise SyncError("Save the .blend first: the mesh text lives next to it.")
+    from .migration import data_root, migrate_scene
+    migrate_scene()
+    root = data_root(blend)
     safe = re.sub(r'[<>:"/\\|?*]', "_", obj.name)
     return {
         "text": root / f"{safe}.txt",
@@ -166,7 +168,12 @@ def _depsgraph():
 
 
 def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
-    """Bring the cage text and the mesh of object `name` to the same state.
+    from .reports import finish
+    return finish("sync", _sync(name, resolve, dry_run, render, verbose), verbose)
+
+
+def _sync(name, resolve=None, dry_run=False, render=True, verbose=False):
+    """Bring the mesh text and the mesh of object `name` to the same state.
 
     resolve: None stops at a conflict; "mesh" keeps the Blender edit and saves
     the text edit to <object>.rejected.txt; "text" applies the text edit over
@@ -177,6 +184,8 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
     when the stack changed (fewer tokens for the reader).
     Returns a JSON-ready report.
     """
+    from .instance import assert_ai_access
+    assert_ai_access()
     if resolve not in (None, "mesh", "text"):
         raise SyncError(f"resolve must be None, 'mesh' or 'text', not {resolve!r}")
     obj = bpy.data.objects.get(name)
@@ -204,7 +213,7 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
         try:
             cur = cage_format.parse(text)
         except CageFormatError as e:
-            report.update(action="error", error=f"cage text: {e}")
+            report.update(action="error", error=f"mesh text: {e}")
             return report
 
     # The frame is frozen at the first sync and only changes through set_frame.
@@ -370,6 +379,9 @@ def sync(name, resolve=None, dry_run=False, render=True, verbose=False):
     if has_subsurf and not any(i["level"] == "ERROR" for i in report["issues"]):
         report["issues"] += validate.check_editability(obj, ids, _depsgraph(), mirror)
     report["issues"] += validate.check_orientation(obj, _depsgraph())
+    from .evenness import check as check_evenness
+    report["evenness"], evenness_issues = check_evenness(obj, _depsgraph())
+    report["issues"] += evenness_issues
     report["issues"] += targets_mod.budget_issues(obj)  # the task's poly budget (target.md)
     if "Y" in mirror and sides.get("Y") == "+":
         report["issues"].append(_warn("modeled_behind", "the base mesh is on +Y, behind its mirror copy in the "
@@ -407,6 +419,8 @@ def edit(name, *lines, **kwargs):
     """Write op lines into the text's ops section and sync: one call per edit,
     e.g. edit("Laço", "mesh translate seam d=+2% falloff=smooth radius=20%").
     Syncs once first if there is no text yet. kwargs go to sync."""
+    from .instance import assert_ai_access
+    assert_ai_access()
     obj = bpy.data.objects.get(name)
     if obj is None or obj.type != "MESH":
         raise SyncError(f"no mesh object named {name!r}")
@@ -419,11 +433,12 @@ def edit(name, *lines, **kwargs):
     if "\nops\n" not in text:
         raise SyncError(f"no ops section in {path}")
     path.write_text(text.replace("\nops\n", "\nops\n" + "".join(f"  {line}\n" for line in lines), 1), "utf-8")
-    report = sync(name, **kwargs)
+    report = _sync(name, **kwargs)
     if report["action"] in ("error", "conflict"):
         path.write_text(text, "utf-8")  # a refused edit leaves no lines behind for the next call
         report["note"] = "the text is as before this call"
-    return report
+    from .reports import finish
+    return finish("edit", report, kwargs.get("verbose", False))
 
 
 def solve_targets(obj, ids, frame, targets, tol=TARGET_TOL, steps=TARGET_STEPS):
@@ -505,6 +520,11 @@ def _write(obj, p, ids, frame, forms, report, concept=None, render=True):
     dg = _depsgraph()
     before = _load_state(p["state"])
     cage = mesh_io.build_cage(obj, ids, dg, frame, forms)
+    if cage.regions:
+        report["regions"] = {name: len(vids) for name, vids in cage.regions.items()}
+        if before:
+            from .regions import motion
+            report["changes_by_region"] = motion(cage.regions, before["co"], mesh_io.mesh_state(obj.data, ids)["co"])
     new_text = cage_format.write(cage)
     report["modifiers"] = cage.modifiers
     if before is not None:

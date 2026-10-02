@@ -39,6 +39,7 @@ cage mesh (the base mesh under Subdivision):
 
 - [Install](#install)
 - [Use](#use)
+- [Session tools](#session-tools)
 - [New parts](#new-parts)
 - [Mesh op](#mesh-op)
 - [Shape tools](#shape-tools)
@@ -47,24 +48,32 @@ cage mesh (the base mesh under Subdivision):
 - [View sheet](#view-sheet)
 - [Text format](#text-format)
 - [Round trip rules](#round-trip-rules)
-- [Limits of v0.1](#limits-of-v01)
+- [Limits of v0.2](#limits-of-v02)
 - [Tests](#tests)
 - [Why](#why)
 
 ## Install
 
-Preferences > Get Extensions > Repositories > **+** > Add Local Repository,
-pointing at the `extension/` folder of this repository (module name
-`fofuxo`). Then enable *LLM Modeling Bridge*. Code changes load on the next Blender
-start (or by disabling and enabling the extension).
+Build with `python extension/package_extension.py`. In Blender, use
+Preferences > Get Extensions > Install from Disk and select
+`extension/dist/llm_modeling_bridge-0.2.0.zip`. Disable the previous extension
+before enabling this version, so only one recorder and one MCP owner run.
+The source directory is `extension/fofuxo-bridge/`; the package id and import
+name are `llm_modeling_bridge`. Restart Blender after changing the installed code.
+
+On registration and file load, legacy attributes and properties are renamed,
+and `<file>.cage/` becomes `<file>.bridge/`. Id values and saved geometry are
+preserved; metadata changes enter the `.blend` on its next normal save.
+If both names or both folders exist, migration refuses to overwrite them.
+The old `import fofuxo_cage` and launcher entry point remain compatible.
 
 ## Use
 
 From the Blender MCP (`execute_blender_code`):
 
 ```python
-import fofuxo_cage
-result = fofuxo_cage.sync("Laço")
+import llm_modeling_bridge
+result = llm_modeling_bridge.sync("Laço")
 ```
 
 `sync(name, resolve=None, dry_run=False, render=True)` returns a report:
@@ -72,7 +81,7 @@ result = fofuxo_cage.sync("Laço")
 | key | meaning |
 |---|---|
 | `action` | `init`, `unchanged`, `pushed` (text → mesh), `pulled` (mesh → text), `conflict`, `error` |
-| `text` | path of the cage text |
+| `text` | path of the mesh text |
 | `moved`, `deltas` | vertices the push moved, and by how much in percent of the frame |
 | `ops` | the ops applied, with the vertex count of each |
 | `blender_edits`, `blender_deltas` | vertices the human changed in Blender since the last sync, and by how much |
@@ -94,9 +103,9 @@ the numbers in the text change. It syncs first and stops at a conflict.
 To find a part's box in the concept:
 
 ```python
-color = fofuxo_cage.sample("EUA-Frente.png", 560, 750)      # a pixel on the part
-found = fofuxo_cage.find_box("EUA-Frente.png", color, tol=0.25, roi=[480, 760, 650, 850])
-fofuxo_cage.set_frame("Laço", concept={"image": "EUA-Frente.png", "box": found["box"]})
+color = llm_modeling_bridge.sample("EUA-Frente.png", 560, 750)      # a pixel on the part
+found = llm_modeling_bridge.find_box("EUA-Frente.png", color, tol=0.25, roi=[480, 760, 650, 850])
+llm_modeling_bridge.set_frame("Laço", concept={"image": "EUA-Frente.png", "box": found["box"]})
 ```
 
 `flip(name, axis="d")` mirrors every base vertex across the plane of a
@@ -105,15 +114,15 @@ the text stay the same (they count from the plane) and the frame now measures
 toward the other side. Model on -Y (D-055): a sync warns `modeled_behind`
 when the base mesh sits on +Y, behind its mirror copy in the front view.
 
-The text lives next to the .blend: `<file>.cage/<object>.txt`. The last synced
-state is in `<file>.cage/.state/`. The object must be in Object Mode.
+The text lives next to the .blend: `<file>.bridge/<object>.txt`. The last synced
+state is in `<file>.bridge/.state/`. The object must be in Object Mode.
 
 ### Lock
 
 ```python
-fofuxo_cage.lock("Laço")            # take control: leave Edit Mode, lock the object, block input
-fofuxo_cage.lock("Laço", ui=False)  # only the object lock
-fofuxo_cage.unlock()                # release everything
+llm_modeling_bridge.lock("Laço")            # take control: leave Edit Mode, lock the object, block input
+llm_modeling_bridge.lock("Laço", ui=False)  # only the object lock
+llm_modeling_bridge.unlock()                # release everything
 ```
 
 In its own Blender (below) the AI needs no lock. In a Blender the human is
@@ -155,10 +164,10 @@ Phase 5):
 The AI works in a Blender of its own (D-058). The launcher starts it:
 
 ```bash
-python extension/fofuxo_cage/launcher.py models/tasks/laco/ai/B1-opus-cage/B1.blend
+python extension/fofuxo-bridge/launcher.py models/tasks/laco/ai/B1-opus-cage/B1.blend
 ```
 
-- Plain Python, no bpy: it starts Blender with `-- --fofuxo-ai`, waits for
+- Plain Python, no bpy: it starts Blender with `-- --llm-bridge-ai`, waits for
   the MCP port (9876) and prints `{"started": true, "pid": ..., "listeners":
   [...]}`. If an AI instance is already running it starts nothing; open the
   file there instead.
@@ -171,19 +180,19 @@ python extension/fofuxo_cage/launcher.py models/tasks/laco/ai/B1-opus-cage/B1.bl
   and then stops its own MCP server, so the MCP always reaches the AI's
   (Blender's server binds with `SO_REUSEADDR`: on Windows two Blenders can
   hold the port and nothing tells which one answers). An older Blender
-  needs `fofuxo_cage.release_mcp()`, or its MCP server stopped by hand.
+  needs `llm_modeling_bridge.release_mcp()`, or its MCP server stopped by hand.
 - `instance()` says which Blender answers: `{"role": "ai" | "human", ...}`.
 
 ```python
-fofuxo_cage.review(["Concept", "Laço", "Laço Nó"])   # default: every object in the scene
-fofuxo_cage.absorb()                                  # what the human saved comes back
-fofuxo_cage.collect()                                 # the human says they edited: their Blender saves, closes, absorb
+llm_modeling_bridge.review(["Concept", "Laço", "Laço Nó"])   # default: every object in the scene
+llm_modeling_bridge.absorb()                                  # what the human saved comes back
+llm_modeling_bridge.collect()                                 # the human says they edited: their Blender saves, closes, absorb
 ```
 
 - `review(names)` saves the AI's file and opens a normal Blender that loads
   the human's startup file without its objects, appends those objects from
   the AI's file (the AI's lock left out, the units kept) and saves
-  `<file>.cage/review.blend`. The human edits there and saves (Ctrl+S).
+  `<file>.bridge/review.blend`. The human edits there and saves (Ctrl+S).
 - While that Blender is open, `review()` again only writes
   `review.update.json`: the human's Blender shows it in the 3D View header,
   and **Load LLM update** in the LLM tab replaces those objects with the
@@ -218,7 +227,7 @@ fofuxo_cage.collect()                                 # the human says they edit
 ## Other views
 
 ```python
-fofuxo_cage.views("Laço", [(45, 30), (45, -30), "back", "90,20"])
+llm_modeling_bridge.views("Laço", [(45, 30), (45, -30), "back", "90,20"])
 ```
 
 Renders the current mesh (no sync) from any camera: rows of cage and
@@ -247,10 +256,10 @@ above. The default is 3/4 from above, 3/4 from below and 3/4 from the back.
 ## New parts
 
 ```python
-fofuxo_cage.start_part("Cartola", "cylinder", size=(80, 80, 90), vertices=16)
-fofuxo_cage.edit("Cartola", "mesh bisect all plane=h92%")            # a loop of quads at the top
-fofuxo_cage.edit("Cartola", "mesh bisect all plane=h5%", "mesh bisect all plane=h9%")
-fofuxo_cage.edit("Cartola", "mesh resize h<60 w=200% d=200%")        # the brim, around the axis
+llm_modeling_bridge.start_part("Cartola", "cylinder", size=(80, 80, 90), vertices=16)
+llm_modeling_bridge.edit("Cartola", "mesh bisect all plane=h92%")            # a loop of quads at the top
+llm_modeling_bridge.edit("Cartola", "mesh bisect all plane=h5%", "mesh bisect all plane=h9%")
+llm_modeling_bridge.edit("Cartola", "mesh resize h<60 w=200% d=200%")        # the brim, around the axis
 ```
 
 `start_part(name, primitive, size, mirror=None, subdivision=1, parent=None,
@@ -288,14 +297,14 @@ permille (`h92`) unless written in % (`h92%`), which the build got wrong.
 mesh <operator> <selection> [key=value ...]
 ```
 
-One line in the ops section (or `fofuxo_cage.edit(name, line)`, which writes
+One line in the ops section (or `llm_modeling_bridge.edit(name, line)`, which writes
 the line and syncs) runs one of Blender's mesh operators:
 
 ```python
-fofuxo_cage.edit("Laço", "mesh translate seam d=+3% falloff=smooth radius=25%")
-fofuxo_cage.edit("Laço", "mesh loopcut_slide ring v25-v22 number_cuts=2")
-fofuxo_cage.select("Laço", "loop v25-v22")   # preview: the ids a selection names
-print(fofuxo_cage.mesh_help())               # the operators and their parameters
+llm_modeling_bridge.edit("Laço", "mesh translate seam d=+3% falloff=smooth radius=25%")
+llm_modeling_bridge.edit("Laço", "mesh loopcut_slide ring v25-v22 number_cuts=2")
+llm_modeling_bridge.select("Laço", "loop v25-v22")   # preview: the ids a selection names
+print(llm_modeling_bridge.mesh_help())               # the operators and their parameters
 ```
 
 **Selection** (shared with `crease` and `dissolve`; terms add up):
@@ -303,6 +312,7 @@ print(fofuxo_cage.mesh_help())               # the operators and their parameter
 | term | selects |
 |---|---|
 | `v25` | a vertex |
+| `region Upper` | the vertices in a named vertex group; quote a name containing spaces |
 | `v25-v22` | an edge |
 | `L3` | the edges between the consecutive vertices of a loop label |
 | `plane-x`, `plane-y`, `plane-z` | every edge on that mirror plane |
@@ -415,7 +425,7 @@ what it was before the call, so a refused line never runs with the next one.
 vA-vB number_cuts=N`; `crease <selection> <value>` sets the crease weight of
 the selected edges.
 
-**LoopTools** is part of the toolset. `fofuxo_cage.ensure_looptools()`
+**LoopTools** is part of the toolset. `llm_modeling_bridge.ensure_looptools()`
 enables it when it is on disk in any extension repository, and otherwise
 installs it from extensions.blender.org (online access is turned on for the
 install and restored after). It runs a few seconds after the extension loads
@@ -428,13 +438,13 @@ on a dense copy of the result (Subdivision raised to 3 levels for the
 measure, then restored), close to the limit surface.
 
 ```python
-fofuxo_cage.capture("Laço", key="r3", path="wing_r3.npz")   # keep the current surface
-fofuxo_cage.fit("Laço", "r3")                  # target ops that put the result on it, synced
-fofuxo_cage.deviation("Laço", "r3")            # signed distance, mm: min, p5, median, p95, max
-fofuxo_cage.profile("Laço", "top")             # half depth band by band along the width
-fofuxo_cage.sections("Laço", "w", [150, 280, 560])   # cuts: exponent n, waist, image
-fofuxo_cage.compare("Laço", "Laço", blend="models/tasks/laco/human/Laço.blend")
-fofuxo_cage.rebuild("Laço Nó", "Laço Nó", "knot", blend=".../human/Laço.blend")
+llm_modeling_bridge.capture("Laço", key="r3", path="wing_r3.npz")   # keep the current surface
+llm_modeling_bridge.fit("Laço", "r3")                  # target ops that put the result on it, synced
+llm_modeling_bridge.deviation("Laço", "r3")            # signed distance, mm: min, p5, median, p95, max
+llm_modeling_bridge.profile("Laço", "top")             # half depth band by band along the width
+llm_modeling_bridge.sections("Laço", "w", [150, 280, 560])   # cuts: exponent n, waist, image
+llm_modeling_bridge.compare("Laço", "Laço", blend="models/tasks/laco/human/Laço.blend")
+llm_modeling_bridge.rebuild("Laço Nó", "Laço Nó", "knot", blend=".../human/Laço.blend")
 ```
 
 - `capture(name, key=None, path=None)`: the surface lives in memory for the
@@ -472,7 +482,7 @@ bow tie, so a session reads them instead of measuring again.
 ### Editability
 
 ```python
-fofuxo_cage.editability("Laço", ref="Laço", blend="models/example/laco/human/Laço.blend")
+llm_modeling_bridge.editability("Laço", ref="Laço", blend="models/example/laco/human/Laço.blend")
 ```
 
 How easy the cage is to edit, beside a reference cage (the modeler's is the
@@ -487,9 +497,9 @@ B1 edit (0.36). E1's numbers are in `measures.json`.
 ### Cost per round
 
 ```python
-fofuxo_cage.round_start("B1 round 7", plan="models/tasks/laco/ai/B1/plan.md")
+llm_modeling_bridge.round_start("B1 round 7", plan="models/tasks/laco/ai/B1/plan.md")
 ...
-fofuxo_cage.round_end(tokens=180000)   # tokens from the AI session's usage
+llm_modeling_bridge.round_end(tokens=180000)   # tokens from the AI session's usage
 ```
 
 `plan` (D-065, `skill/fofuxo-modeling-rules/PLAN.md`): the plan written
@@ -500,7 +510,7 @@ budget, and the `report_line` ends with the plan beside what was done
 (`Plan: syncs 9/12, renders 6/5 over, ...`).
 
 Counts minutes, syncs, ops applied, renders and measures (dense
-evaluations) between the two calls, appends them to `<file>.cage/rounds.json`
+evaluations) between the two calls, appends them to `<file>.bridge/rounds.json`
 and returns a `report_line` for the run's `report.md`: `Cost: 14.2 min, 9
 syncs, 23 ops, 5 renders, 12 measures, 180k tokens.` The tokens come from the
 AI's session; the extension cannot see them.
@@ -530,7 +540,7 @@ Laço       profile top 0.75     14.5mm   1.5mm      the lobe's half depth from 
   and `tip w|d|h` (its point farthest from the base); values may be
   negative. Tolerance: `5%`, `0.05` or `1mm` both ways, `+20%` only above,
   `-10%` only below.
-- `fofuxo_cage.check_targets(names=None, path=None)` measures every line:
+- `llm_modeling_bridge.check_targets(names=None, path=None)` measures every line:
   `{"in": 14, "out": 1, "results": ["in  Laço faces = 19 (target 19 +20%) ...",
   "OUT Laço profile top 0.75 = 16.7mm (target 14.5 ±1.5mm) ..."]}`. The AI
   stops when every line is in; the modeler judges what the numbers miss.
@@ -586,9 +596,9 @@ per vertex and no numbers.
 
 | attribute | domain, type | effect |
 |---|---|---|
-| `fofuxo_show_vertex` | Vertex, Integer | the vertex's id |
-| `fofuxo_loop` | Edge, Integer | each connected run of shown edges is drawn as one colored loop with one label: the value of its plane when it lies flat across an axis (`h80`), else `loop1`, `loop2`... A loop cut by a mirror plane closes again across it (a vertex on the plane and its copy are one) |
-| `fofuxo_show_face` | Face, Integer | the face's id (`f12`, as in the text's faces) at its center |
+| `llm_bridge_show_vertex` | Vertex, Integer | the vertex's id |
+| `llm_bridge_loop` | Edge, Integer | each connected run of shown edges is drawn as one colored loop with one label: the value of its plane when it lies flat across an axis (`h80`), else `loop1`, `loop2`... A loop cut by a mirror plane closes again across it (a vertex on the plane and its copy are one) |
+| `llm_bridge_show_face` | Face, Integer | the face's id (`f12`, as in the text's faces) at its center |
 
 Each works in **levels**: only the elements with the highest value present
 in that attribute are shown, and 0 never is. Mark everything with 1 to see
@@ -596,12 +606,12 @@ the whole; mark a few with 2 and the sheet narrows to them; mark others with
 3 later and they become the view; mark everything with 1 again to reset.
 
 ```python
-fofuxo_cage.show("Chapéu", "all", level=1)              # every id
-fofuxo_cage.show("Chapéu", "h>555")                     # a new level (highest + 1): only these
-fofuxo_cage.show("Chapéu", "v12", level="add")          # join the level shown
-fofuxo_cage.mark_loop("Chapéu", "loop v117-v118")       # a new level: only this loop
-fofuxo_cage.mark_loop("Chapéu", "v86 v87 v88 v135 v89", level="add")  # and the brim's edge: loop2
-fofuxo_cage.show_faces("Chapéu", "faces h>800")
+llm_modeling_bridge.show("Chapéu", "all", level=1)              # every id
+llm_modeling_bridge.show("Chapéu", "h>555")                     # a new level (highest + 1): only these
+llm_modeling_bridge.show("Chapéu", "v12", level="add")          # join the level shown
+llm_modeling_bridge.mark_loop("Chapéu", "loop v117-v118")       # a new level: only this loop
+llm_modeling_bridge.mark_loop("Chapéu", "v86 v87 v88 v135 v89", level="add")  # and the brim's edge: loop2
+llm_modeling_bridge.show_faces("Chapéu", "faces h>800")
 ```
 
 The calls take any selection (`select()`'s terms): `mark_loop` marks the
@@ -735,7 +745,7 @@ text edit over it.
 - A vertex on a mirror plane stays on it (its coordinate across the plane is
   kept at 0, with a warning).
 - A vertex pushed across a mirror plane is refused and nothing is written.
-- Vertex ids live in the `fofuxo_cage_id` point attribute. Vertices new since
+- Vertex ids live in the `llm_modeling_bridge_id` point attribute. Vertices new since
   the last sync (a loop cut, an extrude) get fresh ids; old ids never move to a
   new vertex.
 - A push writes only vertex positions and that attribute. Modifiers,
@@ -743,7 +753,95 @@ text edit over it.
   an op that names them (`set`, `crease`, `mesh`...). Each push adds an undo
   step.
 
-## Limits of v0.1
+## Session tools
+
+The [session card](../../skill/fofuxo-modeling-rules/SESSION.md) and
+[operator card](OPS.md) are short entry points. Read the full parameter
+description only for the operator you need: `mesh_help("translate", compact=False)`.
+Without arguments, `mesh_help()` returns one line per operator.
+
+| Call | Purpose |
+|---|---|
+| `name_region(name, region, selection, replace=True)` | Store selected stable ids in a vertex group and update the mesh text |
+| `region_ids(name, region=None)` | Read one region's ids, or all named regions |
+| `set_positions(name, positions, render=False, verbose=False)` | Set several absolute `(w, d, h)` frame values through the checked edit pipeline |
+| `workbench(name, out=None, view="3q", cage=False, focus=None, size=768, margin=1.25)` | Save one Workbench view; `focus` is a region name or an id list |
+| `human_access()` | Lift the AI screen and start recording in the same window |
+| `resume_ai(save=True)` | Save the human's work and return the window to the AI |
+| `recording_summary(path, candidates=False)` | Summarize a saved log; optionally suggest provisional Grab replay commands |
+| `catalog_edit(before, after, out, names, why=None, operators=None, inputs=None)` | Preserve an immutable before/after example with deltas and log receipts |
+| `catalog_measures(source, names, out)` | Store limit-surface sizes and profiles; run in background Blender |
+| `record_read(path, kind="file", characters=None, width=None, height=None)` | Explicit receipt for an external file excerpt or image |
+| `record_agent_text(text)` | Explicit receipt for the agent's own text |
+| `round_checkpoint()` / `round_resume(path=None)` | Move an open round across processes without charging the idle interval |
+| `stage_handoff(stage, state, next_step, read_first, decisions=(), avoid=(), tool_need=None, path=None)` | Write a small next-session brief and checkpoint the round |
+
+```python
+import llm_modeling_bridge as bridge
+bridge.name_region("Hat", "Crown", "h>500")
+bridge.edit("Hat", "mesh translate region Crown h=1mm", render=False)
+bridge.workbench("Hat", focus="Crown", view="high", size=768)
+```
+
+Vertex groups keep their memberships through Blender operators. The mesh
+text has a read-only `regions` section; cage panels label up to twelve named
+groups. `sync` reports `regions` and `changes_by_region` (mean local mm and
+maximum movement), and preserves them when absorbing a review.
+
+`sync`, `edit` and `absorb` return compact reports by default. Long vertex
+lists are limited to twenty entries, with counts in `omitted`; per-operator
+vertex deltas are omitted. Use `verbose=True` for the complete report.
+`absorb` returns `operator_summary` and `input_summary` with paths to their
+logs; full records are included only with `verbose=True`.
+
+The recorder writes `review.ops.jsonl` and `review.input.jsonl`. Input events
+pass through to Blender: keys and buttons have press/release and modifiers;
+surface hits have the object, local point in mm and nearest cage vertex id.
+Recorded frame-axis signs keep replay directions correct on a mirrored side.
+Drags store a bounded sample of surface points and the Sculpt brush radius
+when available. A gesture is an observation; a provisional replay must be
+compared with the recorded moved vertices before reuse. Polling can group
+several operators into one movement sample, so it cannot prove exact
+per-operator attribution. A missing surface hit or brush produces no guessed
+coordinate or replay command.
+Recorded Smooth strokes can suggest a single `vertices_smooth` pass at the
+recorded strength; this is also provisional and does not claim exact brush replay.
+
+`human_access()` keeps the MCP connected for status, while the extension's
+editing APIs refuse changes. In the LLM sidebar, **Save and return to LLM**
+saves the work and restores the AI screen. This cooperative guard applies
+to the extension APIs; arbitrary raw Python sent through the MCP is outside
+that guard. Recording in both window modes needs the [human tests](HUMAN_TESTS.md).
+Same-window sessions use separate `handover.*.jsonl` logs and preserve a
+before/after example on the normal saved return, including added or removed objects.
+
+Every successful `absorb()` first preserves the saved AI file, the human
+review, their stable-id deltas and recorder logs in a new `human/review-.../`
+example. For task files under `ai/<run>/`, this is the task's `human/`;
+otherwise it is beside the `.blend`. `why` and `human_dir` may be passed to
+`absorb`; without a reason the example stays pending interview and validation.
+`catalog_edit` and `catalog_measures` refuse to overwrite existing artifacts.
+
+Every sync checks neighbour face-area ratios and opposite-edge spacing on
+both the cage and the evaluated result. `cage_evenness` and `result_evenness`
+are warnings with the measured maxima; the initial thresholds are 4:1 area
+and 3:1 spacing. These flag regions for review, not automatic repair or
+artistic rejection; intentional spacing can exceed them.
+
+`round_end` saves `cost_by_kind`: API report count and serialized character
+volume before/after compaction, generated image pixels, explicit external
+read receipts and explicitly recorded agent text. These are workload
+receipts, not billed tokens. API calls made inside other helpers can contribute
+reports; actual MCP output and the agent's unrelated reads are not intercepted.
+Image token cost and account usage are unavailable to the extension; the
+`tokens` argument must come from real session usage. Missing usage stays null.
+
+At a tool gap, save the stage and call `stage_handoff(..., tool_need=...)`.
+Build the tool in its own session, then return from the brief and resume the
+checkpoint. The helper does not create chats, approve a plan or invent a
+modeler's verdict. It refuses to resume a checkpoint belonging to another file.
+
+## Limits of v0.2
 
 - Topology ops are the whitelist of the mesh op; anything else comes from
   the human in Blender or from `rebuild`, and the next sync pulls it. A mesh
@@ -757,12 +855,15 @@ text edit over it.
 ## Tests
 
 ```bash
-blender -b --factory-startup --python extension/fofuxo_cage/tests/test_roundtrip.py --python-exit-code 1
+blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_roundtrip.py --python-exit-code 1
+blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_roadmap.py --python-exit-code 1
 ```
 
 The test copies `models/example/laco/human/Laço.blend` to a temporary folder and never
 touches the original. Read the last line (`ALL PASSED (N checks)`): Blender
 exits 0 when the test file fails to parse, so the exit code alone can lie.
+The focused roadmap suite prints `ROADMAP ALL PASSED`. Interactive recorder,
+Sculpt and window handover checks are listed in [HUMAN_TESTS.md](HUMAN_TESTS.md).
 
 ## Why
 

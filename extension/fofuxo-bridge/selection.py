@@ -30,7 +30,7 @@ import bpy
 
 from .topology import PLANE_TOL
 
-ID_ATTR = "fofuxo_cage_id"
+ID_ATTR = "llm_modeling_bridge_id"
 MARKS = {"sharp": "sharp_edge", "seam": "uv_seam", "crease": "crease_edge"}
 _VID = re.compile(r"v(\d+)")
 _PAIR = re.compile(r"v(\d+)-v(\d+)")
@@ -44,6 +44,7 @@ class SelectionError(ValueError):
 def parse(tokens, cage):
     """Terms from selection tokens; loop labels are expanded with the cage."""
     groups = {label.lower(): ids for label, ids in cage.groups if label} if cage is not None else {}
+    regions = {label.lower(): ids for label, ids in cage.regions.items()} if cage is not None else {}
     terms = []
     toks = [t.lower() for t in tokens]
     i = 0
@@ -56,6 +57,12 @@ def parse(tokens, cage):
 
     while i < len(toks):
         t = toks[i]
+        if t == "region":
+            if i + 1 >= len(toks) or toks[i + 1] not in regions:
+                raise SelectionError("region takes an existing vertex group name; sync after naming it")
+            terms.extend(("vert", vid) for vid in regions[toks[i + 1]])
+            i += 2
+            continue
         if t in ("loop", "ring"):
             terms.append(("walk", t, *pair_at(i + 1, t)))
             i += 2

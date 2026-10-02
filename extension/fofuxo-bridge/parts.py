@@ -68,7 +68,7 @@ def _cap_with_grids(obj, n, ring=CAP_RING):
 WHOLE = ("cylinder",)  # D-061: modeled whole, never cut and mirrored by default
 
 
-ON_PROP = "fofuxo_on"  # the body a part sits on, drawn around it in every sheet
+ON_PROP = "llm_bridge_on"  # the body a part sits on, drawn around it in every sheet
 
 
 def start_part(name, primitive, size, mirror=None, subdivision=1, parent=None, at=(0.0, 0.0, 0.0),
@@ -82,6 +82,8 @@ def start_part(name, primitive, size, mirror=None, subdivision=1, parent=None, a
     primitive's operator (vertices=12, segments=24, ...).
     Returns the first sync's report."""
     from .sync import set_frame, sync
+    from .instance import assert_ai_access
+    assert_ai_access()
 
     if primitive not in PRIMITIVES:
         raise PartError(f"primitive must be one of {', '.join(PRIMITIVES)}, not {primitive!r}")

@@ -1,7 +1,7 @@
 """Round-trip tests on a temporary copy of models/example/laco/human/Laço.blend.
 
 Run from the repository root:
-    blender -b --factory-startup --python extension/fofuxo_cage/tests/test_roundtrip.py --python-exit-code 1
+    blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_roundtrip.py --python-exit-code 1
 """
 
 import faulthandler
@@ -25,12 +25,12 @@ REPO = HERE.parents[3]
 SOURCE = REPO / "models" / "example" / "laco" / "human" / "Laço.blend"
 sys.path.insert(0, str(HERE.parents[2]))
 
-import fofuxo_cage as fc  # noqa: E402
+import llm_modeling_bridge as fc  # noqa: E402
 
 faulthandler.enable()  # a crash inside Blender prints the Python line that caused it
 
 fc.register()  # operators and panel, as when Blender enables the extension
-SYNC = sys.modules["fofuxo_cage.sync"]
+SYNC = sys.modules["llm_modeling_bridge.sync"]
 
 failures = []
 
@@ -124,7 +124,7 @@ def loop_cut(obj, start_pair):
 
 
 def main():
-    tmp = Path(tempfile.mkdtemp(prefix="fofuxo_cage_"))
+    tmp = Path(tempfile.mkdtemp(prefix="llm_modeling_bridge_"))
     blend = tmp / "Laço.blend"
     shutil.copy(SOURCE, blend)
     bpy.ops.wm.open_mainfile(filepath=str(blend))
@@ -379,10 +379,10 @@ def main():
     r = fc.sync("Laço")
     check(r["action"] in ("unchanged", "pulled"), f"sync works while locked ({r['action']})")
     st = fc.unlock()
-    check(not st["locked"] and obj.hide_select == was and "fofuxo_cage_lock" not in obj,
+    check(not st["locked"] and obj.hide_select == was and "llm_modeling_bridge_lock" not in obj,
           "unlocked, selectability restored")
     fc.lock("Laço")
-    bpy.ops.fofuxo_cage.unlock()  # the human's button
+    bpy.ops.llm_modeling_bridge.unlock()  # the human's button
     r = fc.sync("Laço")
     check(any(i["code"] == "human_took_over" for i in r["issues"]), "the next sync reports the take-over")
     r = fc.sync("Laço")
@@ -503,7 +503,7 @@ def main():
     face = fc.select("Laço", "faces " + " ".join(f"v{v}" for v in cage.faces[0]))
     check(len(face.get("faces", [])) == 1, f"a face by its vertices ({face.get('faces')})")
     check(tuple(ts.mesh_select_mode) == mode0 and bpy.context.view_layer.objects.active == active0
-          and obj.hide_select == hide0 and obj.mode == "OBJECT" and "fofuxo_cage_lock" not in obj,
+          and obj.hide_select == hide0 and obj.mode == "OBJECT" and "llm_modeling_bridge_lock" not in obj,
           "select left no trace: mode, active object, lock, select mode")
 
     n0, f0 = len(obj.data.vertices), len(obj.data.polygons)
@@ -554,7 +554,7 @@ def main():
     fr = frame_of(obj)
     shape0 = co_list(obj)
     d0 = {i: fr.to_values(obj.data.vertices[i].co)[1] for i in (pick, nbr)}
-    r = fc.edit("Laço", f"mesh translate v{ids_list[pick]} d=+2% falloff=smooth radius=40%")
+    r = fc.edit("Laço", f"mesh translate v{ids_list[pick]} d=+2% falloff=smooth radius=40%", verbose=True)
     d1 = {i: fr.to_values(obj.data.vertices[i].co)[1] for i in (pick, nbr)}
     note = (r.get("ops") or [""])[0]
     check(r["action"] == "pushed" and abs(d1[pick] - d0[pick] - 20) < 0.01,
@@ -625,7 +625,7 @@ def main():
           and all(m.show_viewport for m in horn.modifiers),
           f"one side of the horn in world mm, Mirror back on ({tg['results']})")
     horn_md.unlink()
-    # The same horn in the cage text: its own side measured, so sub and target work (T2 runs).
+    # The same horn in the mesh text: its own side measured, so sub and target work (T2 runs).
     fc.sync("Chifre", render=False)
     horn_text = lambda: SYNC.paths(horn)["text"].read_text("utf-8")
     ht = horn_text()
@@ -803,7 +803,7 @@ def main():
     check(r["action"] == "pushed" and any(line.startswith("crease 0.5") and f"v{a}" in line for line in edges),
           f"crease through a walker ({r.get('ops')})")
     fc.edit("Laço", f"crease loop v{a}-v{b} 0")
-    check(tuple(ts.mesh_select_mode) == mode0 and obj.hide_select == hide0 and "fofuxo_cage_lock" not in obj,
+    check(tuple(ts.mesh_select_mode) == mode0 and obj.hide_select == hide0 and "llm_modeling_bridge_lock" not in obj,
           "the mesh op left no trace: select mode, lock")
 
     print("11f. shape tools: capture, profile, sections, fit, compare, editability")
@@ -884,7 +884,7 @@ def main():
     rv = fc.review(["Laço", "Laço Nó"], launch=False)
     review_path = Path(rv["review"])
     check(rv["command"][1] == "--python-expr" and "open_review" in rv["command"][2]
-          and review_path.parent == Path(ai_file).with_suffix(".cage"), f"review command ready ({review_path.name})")
+          and review_path.parent == Path(ai_file).with_suffix(".bridge"), f"review command ready ({review_path.name})")
     fc.unlock()
     # The human's Blender runs the command: here, in this same session.
     fc.instance_mod.open_review(ai_file, ["Laço", "Laço Nó"], review_path, {"length_unit": "MILLIMETERS"})
@@ -929,7 +929,7 @@ def main():
           and not [m for m in bpy.data.meshes if m.users == 0], "no leftover objects, meshes or materials")
     check(fc.absorb()["changed"] is False, "a second absorb finds nothing new")
     obj = bpy.data.objects["Laço"]
-    state_path = Path(ai_file).with_suffix(".cage") / "review.json"
+    state_path = Path(ai_file).with_suffix(".bridge") / "review.json"
     state = json.loads(state_path.read_text("utf-8"))
     state["pid"] = os.getpid()  # pretend the human's Blender is still open
     state_path.write_text(json.dumps(state), "utf-8")
@@ -938,13 +938,13 @@ def main():
     check(rv.get("update") is True, f"with the review open, a newer version is announced ({rv})")
     ai_co = tuple(obj.data.vertices[index_of(obj)[moved_vid]].co)
     bpy.ops.wm.open_mainfile(filepath=str(review_path))
-    check(bpy.ops.fofuxo_cage.load_update() == {"FINISHED"}, "the human loads it")
+    check(bpy.ops.llm_modeling_bridge.load_update() == {"FINISHED"}, "the human loads it")
     human = bpy.data.objects["Laço"]
     co = tuple(human.data.vertices[index_of(human)[moved_vid]].co)
     check(all(abs(a - b) < 1e-7 for a, b in zip(co, ai_co))
           and not [o for o in bpy.data.objects if o.name.startswith("Laço.")], "the review now shows the AI's version")
     try:
-        spent = bpy.ops.fofuxo_cage.load_update() == {"CANCELLED"}
+        spent = bpy.ops.llm_modeling_bridge.load_update() == {"CANCELLED"}
     except RuntimeError:  # a cancelled operator with a warning raises in background
         spent = True
     check(spent, "and the notice is spent")
@@ -1058,8 +1058,8 @@ def main():
     scene = fc.render.Scene(half, list(range(len(half.data.vertices))), depsgraph)
     check(len(scene.loops) == 1 and len(scene.loops[0]["edges"]) == 16 and scene.loops[0]["axis"] == 2
           and scene.show[0] and not any(scene.show[1:]),
-          f"fofuxo_loop on a half's rim: one loop, closed across the mirror ({[len(lp['edges']) for lp in scene.loops]} edges), "
-          "fofuxo_show_vertex labels only its vertex")
+          f"llm_bridge_loop on a half's rim: one loop, closed across the mirror ({[len(lp['edges']) for lp in scene.loops]} edges), "
+          "llm_bridge_show_vertex labels only its vertex")
     check(fc.labels.shown([1, 1, 2, 0, 2]) == [False, False, True, False, True] and not any(fc.labels.shown([0, 0])),
           "levels: only the highest level present is shown, 0 never")
     bpy.data.objects.remove(half)
@@ -1099,7 +1099,7 @@ def main():
     r = fc.edit("Hat", "mesh extract faces h>700")
     made = [o for o in bpy.data.objects if o.name.startswith("Hat.")]
     check(r["action"] == "pushed" and len(made) == 1 and len(hat.data.polygons) == faces_a
-          and len(made[0].data.polygons) > 0 and "fofuxo_cage_lock" not in made[0]
+          and len(made[0].data.polygons) > 0 and "llm_modeling_bridge_lock" not in made[0]
           and fc.mesh_ops.TAG_ATTR not in made[0].data.attributes,
           f"extract copies the crown into a new object, the hat kept ({(r.get('ops') or [''])[0][-60:]})")
     k = len(made[0].data.polygons)
@@ -1160,7 +1160,7 @@ def main():
     fc.edit("Laço", "mesh vertices_smooth L1 factor=0.1")
     fc.views("Laço", ["front"], render_name="cost")
     cost = fc.round_end(tokens=1234)
-    rows = json.loads((Path(bpy.data.filepath).with_suffix(".cage") / "rounds.json").read_text("utf-8"))
+    rows = json.loads((Path(bpy.data.filepath).with_suffix(".bridge") / "rounds.json").read_text("utf-8"))
     check(cost["syncs"] >= 1 and cost["ops"] >= 1 and cost["renders"] >= 2 and cost["measures"] >= 2
           and rows[-1]["round"] == "test round" and "1k tokens" in cost["report_line"],
           f"the round's cost counted and kept ({cost['report_line']})")

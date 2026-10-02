@@ -13,7 +13,7 @@ from . import modifier_info, topology
 from .cage_format import Cage, Vertex, fmt, normalize_face
 from .frame import Frame
 
-ID_ATTR = "fofuxo_cage_id"
+ID_ATTR = "llm_modeling_bridge_id"
 # Modifiers that keep base vertex i at evaluated index i (checked: Mirror > Subdivision).
 INDEX_SAFE = {"MIRROR", "SUBSURF"}
 EDGE_FLOAT_ATTRS = (("crease_edge", "crease"), ("bevel_weight_edge", "bevel"))
@@ -222,7 +222,7 @@ def _fresh_depsgraph():
 
 
 def build_cage(obj, ids, depsgraph, frame, forms=()):
-    """The cage text model of the object's current mesh, measured in frame."""
+    """The mesh text model of the object's current mesh, measured in frame."""
     mesh = obj.data
     mirror = mirror_setup(obj)
     per_vertex, all_co, eval_faces, blocking = evaluated(obj, depsgraph)
@@ -264,6 +264,8 @@ def build_cage(obj, ids, depsgraph, frame, forms=()):
     cage.edges = edge_data_lines(mesh, ids)
     cage.modifiers = modifier_info.describe(obj, _fresh_depsgraph, lambda co: _size(co, ()))
     cage.forms = list(forms)
+    from .regions import groups as region_groups
+    cage.regions = region_groups(obj, ids)
     return cage
 
 
