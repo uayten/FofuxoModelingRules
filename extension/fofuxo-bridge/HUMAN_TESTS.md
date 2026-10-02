@@ -16,6 +16,13 @@ Open a review through `review()`. Make a small Edit Mode move, an edge slide
 and a loop cut. Undo and redo once. In Sculpt, make separate Grab and Smooth
 strokes. Save, then ask the agent to collect the review.
 
+Perform the operations at your normal pace, without artificial pauses. Include
+two consecutive moves in opposite directions: both operations and their separate
+deltas must be saved, even when their final displacement cancels. The recorder
+uses dependency-graph and input events; Sculpt strokes end at their input/modal
+boundary, rather than after an idle interval. Check the log before saving or
+collecting to confirm that completed operations are already on disk.
+
 Expected: operators, undo/redo and movements are in the compact summary;
 the logs remain available; key modifiers and mouse press/release are in the
 input log. Surface hits carry a stable id and point; a Grab drag on the model
@@ -23,8 +30,21 @@ may yield a provisional replay candidate. Compare its displacement and radius
 with the actual stroke before accepting it. Missing hits are reported without
 inventing coordinates. The correction is preserved in `human/review-.../`.
 
-Polling can combine quick operations. Check whether that precision is enough
-to explain the technique; exact replay is not claimed by this version.
+Missing or combined operations are defects. Exact brush replay is not claimed
+by this version; that limitation does not permit dropping completed operations.
+
+### Current validation
+
+On 2026-10-02, the event recorder passed 15 focused checks, including immediate
+mode/selection capture, separate opposite moves without waits, topology ids,
+stroke-boundary callbacks, undo/redo callbacks and cleanup. Eight activation
+checks also passed. The stroke and undo/redo boundary tests exercise callbacks;
+real modal Edit Mode and Grab/Smooth input remain pending human validation.
+The native shutdown diagnostic from the earlier full suite remains unexplained.
+Opening the isolated test file also printed context errors from
+`amp_transformator` (`selected_objects`) and `vertex_skin_weights_tool`
+(`active_object`). These are environment observations, not an established
+explanation of the native shutdown diagnostic.
 
 ## Same window
 

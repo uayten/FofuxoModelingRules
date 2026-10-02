@@ -69,8 +69,10 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    - legacy save/reopen after metadata and sidecar migration.
    **Done when** the real review is judged usable and observed defects are
    fixed. Background checks cannot establish modal input or Sculpt fidelity.
-   Polling may aggregate quick operations; use the real session to decide
-   whether finer attribution is needed.
+   Operations must be saved on completion without required pauses or combined
+   deltas. The event recorder passed 15 focused checks and 8 activation checks
+   on 2026-10-02; native mode/selection/movement/topology capture passed, while
+   real modal input, Sculpt strokes and interactive undo/redo remain pending.
    Also confirm the native shutdown diagnostic described in
    [IMPLEMENTATION.md](IMPLEMENTATION.md#verification) if it recurs. Its cause
    was not established by the passing assertions or the isolated catalog check.

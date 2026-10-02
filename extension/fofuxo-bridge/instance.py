@@ -34,7 +34,6 @@ UPDATE_NOTICE = "review.update.json"
 OPENED = "review.opened.json"
 COLLECT = "review.collect.json"  # the AI asks the human's Blender to save the review (and close)
 OPS_LOG = "review.ops.jsonl"  # every operator the human runs in the review, one JSON line each
-RECORD = 0.5  # s, how often the human's Blender copies its new operators to OPS_LOG
 POLL = 3.0  # s, how often a human's Blender looks for the AI instance and updates
 NOTICE = ("Blender de uso exclusivo do LLM",
           "Esta janela é de uso exclusivo do LLM.",
@@ -94,7 +93,7 @@ def resume_ai(save=True):
     _leave_edit_mode()
     if bpy.context.object and bpy.context.object.mode != "OBJECT":
         bpy.ops.object.mode_set(mode="OBJECT")
-    _record_ops()
+    _record_ops(finish_sculpt=True)
     if save:
         bpy.ops.wm.save_as_mainfile(filepath=bpy.data.filepath)
         from .catalog import archive_review, human_directory
@@ -365,7 +364,7 @@ def _log(lines):
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as f:
         for line in lines:
-            f.write(json.dumps({"t": round(time.time(), 2), **line}, default=str) + "\n")
+            f.write(json.dumps({"t": round(time.time(), 3), "capture": "event", **line}, default=str) + "\n")
 
 
 def recording_path(filename):
@@ -398,14 +397,17 @@ def _mesh_state():
         for vertex in bm.verts:
             by_id.setdefault(vertex[layer], []).append(vertex)
         next_id = max([_rec.get("next_id", 0), max(by_id, default=-1) + 1, max(previous_co, default=-1) + 1])
+        changed_ids = False
         for vid, vertices in by_id.items():
             keep = min(vertices, key=lambda vertex: sum((vertex.co[i] * 1000 - previous_co[vid][i]) ** 2 for i in range(3))) if vid in previous_co else vertices[0]
             for vertex in vertices:
                 if vid < 0 or vertex is not keep:
                     vertex[layer] = next_id
                     next_id += 1
+                    changed_ids = True
         _rec["next_id"] = next_id
-        bmesh.update_edit_mesh(obj.data, loop_triangles=False, destructive=False)
+        if changed_ids:
+            bmesh.update_edit_mesh(obj.data, loop_triangles=False, destructive=False)
         ids = [v[layer] for v in bm.verts]
         co = [tuple(c * 1000 for c in v.co) for v in bm.verts]
         sel = [i for v, i in zip(bm.verts, ids) if v.select]
@@ -422,12 +424,15 @@ def _mesh_state():
 
 
 def _moved(before, after):
-    """{id: [dw, dd, dh] mm} for the vertices that moved, or None when the
-    topology changed (another count or order of ids)."""
-    if before is None or before[0] != after[0] or before[2] != after[2]:
+    """Local millimeter deltas for stable ids present in both snapshots."""
+    if before is None or before[0] != after[0]:
         return None
+    previous = dict(zip(before[2], before[3]))
     out = {}
-    for vid, a, b in zip(after[2], before[3], after[3]):
+    for vid, b in zip(after[2], after[3]):
+        if vid not in previous:
+            continue
+        a = previous[vid]
         d = [round(y - x, 2) for x, y in zip(a, b)]
         if max(abs(x) for x in d) >= MOVED_MIN:
             out[str(vid)] = d
@@ -447,96 +452,155 @@ def _sculpt_record(moved):
     return out
 
 
-def _record_ops():
-    """Blender keeps only its last operators; this copies each new one to
-    OPS_LOG as it comes, so the AI reads the whole session, undos included.
-    Each operator also carries the ids selected and how far each vertex moved
-    since the last record; Sculpt strokes (which Blender does not list) come
-    as SCULPT lines: the brush and the vertices it moved."""
+def _decorate_record(line, state, previous):
+    from .regions import groups as region_groups
+    line.update(object=state[0], selected=state[4],
+                regions=region_groups(bpy.data.objects[state[0]], state[2]))
+    moved = _moved(previous, state)
+    if moved:
+        line["moved"] = moved
+    lines = [line]
+    if previous and previous[0] == state[0] and previous[2] != state[2]:
+        lines.append({"op": "TOPOLOGY", "object": state[0], "verts": len(state[2]),
+                      "added_ids": sorted(set(state[2]) - set(previous[2])),
+                      "removed_ids": sorted(set(previous[2]) - set(state[2]))})
+    return lines
+
+
+def _finish_sculpt(state):
+    lines = []
+    if _rec.get("sculpt_active"):
+        moved = _moved(_rec.get("snap"), state)
+        if moved:
+            stroke = dict(_rec.get("sculpt_metadata") or _sculpt_record({}))
+            lines = _decorate_record(stroke, state, _rec.get("snap"))
+        _rec["snap"] = state
+        _rec["sculpt_active"] = False
+    return lines
+
+
+def _record_ops(finish_sculpt=False):
+    """Write completed operators on dependency-graph/input events, without polling."""
+    if _rec.get("busy") or _rec.get("history_transition"):
+        return
+    _rec["busy"] = True
     try:
         if _review_info() is None:
-            return RECORD
+            return
         ops = list(bpy.context.window_manager.operators)
         sigs = [_signature(op) for op in ops]
         start = 0
         if _rec["last"] is not None:
-            start = next((i + 1 for i in range(len(sigs) - 1, -1, -1) if sigs[i] == _rec["last"]), 0)
+            match = next((i for i in range(len(sigs) - 1, -1, -1) if sigs[i] == _rec["last"]), None)
+            if match is not None:
+                start = match + 1
+            else:
+                start = next((i for i in range(len(sigs) - 1, -1, -1)
+                              if sigs[i][:2] == _rec["last"][:2]), 0)
         lines = [_op_record(op) for op in ops[start:]]
         if sigs:
             _rec["last"] = sigs[-1]
+        if not lines and not finish_sculpt:
+            return
         state = _mesh_state()
         if state is not None:
-            moved = _moved(_rec.get("snap"), state)
+            strokes = _finish_sculpt(state) if finish_sculpt or state[1] != "SCULPT" else []
             if lines:
-                lines[-1]["object"] = state[0]
-                from .regions import groups as region_groups
-                lines[-1]["regions"] = region_groups(bpy.data.objects[state[0]], state[2])
-                lines[-1]["selected"] = state[4]
-                if moved is None and _rec.get("snap") is not None:
-                    lines.append({"op": "TOPOLOGY", "object": state[0], "verts": len(state[2])})
-                elif moved:
-                    lines[-1]["moved"] = moved
-                _rec["snap"], _rec["sculpt_pending"] = state, False
-            elif state[1] == "SCULPT":
-                # a stroke: changes keep coming; it is written once a poll sees none
-                now = _moved(_rec.get("tick"), state)
-                if now:
-                    _rec["sculpt_pending"] = True
-                elif _rec.get("sculpt_pending"):
-                    total = _moved(_rec.get("snap"), state)
-                    if total:
-                        stroke = _sculpt_record(total)
-                        stroke["object"] = state[0]
-                        from .regions import groups as region_groups
-                        stroke["regions"] = region_groups(bpy.data.objects[state[0]], state[2])
-                        lines.append(stroke)
-                    _rec["snap"], _rec["sculpt_pending"] = state, False
-            elif _rec.get("snap") is None or _rec["snap"][0] != state[0]:
+                if len(lines) > 1:
+                    lines[-1]["coalesced_operators"] = len(lines)
+                lines[-1:] = _decorate_record(lines[-1], state, _rec.get("snap"))
                 _rec["snap"] = state
-            elif _rec.get("sculpt_pending"):
-                total = _moved(_rec.get("snap"), state)
-                if total:
-                    stroke = _sculpt_record(total)
-                    stroke["object"] = state[0]
-                    lines.append(stroke)
-                _rec["snap"], _rec["sculpt_pending"] = state, False
-            _rec["tick"] = state
+            lines = strokes + lines
         _log(lines)
     except Exception as e:  # recording never breaks the human's Blender
         print(f"LLM Modeling Bridge: operator recorder: {e!r}")
-    return RECORD
+    finally:
+        _rec["busy"] = False
+
+
+@bpy.app.handlers.persistent
+def _on_record_update(*_args):
+    sculpt_finished = _rec.get("sculpt_active") and not any(
+        op.bl_idname.startswith(("SCULPT_OT_", "PAINT_OT_"))
+        for window in bpy.context.window_manager.windows for op in window.modal_operators)
+    _record_ops(finish_sculpt=bool(sculpt_finished))
+
+
+def _record_after_event():
+    _record_ops(finish_sculpt=_rec.pop("finish_sculpt", False))
+    return None
+
+
+def record_input_event(context, event):
+    """Observe input before pass-through; finish its effects on the same event-loop turn."""
+    _record_ops(finish_sculpt=event.type == "LEFTMOUSE" and event.value == "PRESS")
+    if context.mode == "SCULPT" and event.type == "LEFTMOUSE" and event.value == "PRESS":
+        _rec["finish_sculpt"] = False
+        _rec["snap"] = _mesh_state()
+        _rec["sculpt_metadata"] = _sculpt_record({})
+        _rec["sculpt_active"] = True
+    elif (event.type == "LEFTMOUSE" and event.value == "RELEASE") or (event.type == "ESC" and event.value == "PRESS"):
+        _rec["finish_sculpt"] = True
+    if not bpy.app.timers.is_registered(_record_after_event):
+        bpy.app.timers.register(_record_after_event, first_interval=0.0)
 
 
 def _start_recording():
     """From now on: what is in the history already (opening the review) is not the human's."""
     ops = list(bpy.context.window_manager.operators)
+    _rec.clear()
     _rec["last"] = _signature(ops[-1]) if ops else None
-    _rec["snap"] = _rec["tick"] = None
-    _rec["sculpt_pending"] = False
-    if not bpy.app.timers.is_registered(_record_ops):
-        bpy.app.timers.register(_record_ops, first_interval=RECORD, persistent=True)
+    _rec["busy"] = True
+    try:
+        _rec["snap"] = _mesh_state()
+    finally:
+        _rec["busy"] = False
+    if _on_record_update not in bpy.app.handlers.depsgraph_update_post:
+        bpy.app.handlers.depsgraph_update_post.append(_on_record_update)
+
+
+@bpy.app.handlers.persistent
+def _on_history_pre(*_args):
+    _record_ops(finish_sculpt=True)
+    _rec["history_transition"] = True
+
+
+def _record_history(operation):
+    try:
+        if _review_info() is not None:
+            state = _mesh_state()
+            line = {"op": operation}
+            _log(_decorate_record(line, state, _rec.get("snap")) if state else [line])
+            _rec["snap"] = state
+            _rec["sculpt_active"] = False
+            ops = list(bpy.context.window_manager.operators)
+            _rec["last"] = _signature(ops[-1]) if ops else None
+    except Exception as error:
+        _log([{"op": operation, "snapshot_error": repr(error)}])
+        print(f"LLM Modeling Bridge: history recorder: {error!r}")
+    finally:
+        _rec["history_transition"] = False
+
+
+@bpy.app.handlers.persistent
+def _on_record_flush(*_args):
+    _record_ops(finish_sculpt=True)
 
 
 @bpy.app.handlers.persistent
 def _on_undo_human(*_args):
     if not is_ai() or _state.get("human_editing"):
-        _log([{"op": "UNDO"}])
-        try:  # the mesh went back (or forward): moves are counted from here
-            _rec["snap"] = _rec["tick"] = _mesh_state()
-            _rec["sculpt_pending"] = False
-        except Exception:
-            pass
+        _record_history("UNDO")
+    else:
+        _rec["history_transition"] = False
 
 
 @bpy.app.handlers.persistent
 def _on_redo_human(*_args):
     if not is_ai() or _state.get("human_editing"):
-        _log([{"op": "REDO"}])
-        try:  # the mesh went back (or forward): moves are counted from here
-            _rec["snap"] = _rec["tick"] = _mesh_state()
-            _rec["sculpt_pending"] = False
-        except Exception:
-            pass
+        _record_history("REDO")
+    else:
+        _rec["history_transition"] = False
 
 
 @bpy.app.handlers.persistent
@@ -967,6 +1031,16 @@ class LLM_BRIDGE_OT_return_to_ai(bpy.types.Operator):
 
 
 CLASSES = (LLM_BRIDGE_OT_ai_screen, LLM_BRIDGE_OT_load_update, LLM_BRIDGE_OT_return_to_ai, LLM_BRIDGE_PT_review)
+RECORD_HANDLERS = (
+    (bpy.app.handlers.depsgraph_update_post, _on_record_update),
+    (bpy.app.handlers.undo_pre, _on_history_pre),
+    (bpy.app.handlers.redo_pre, _on_history_pre),
+    (bpy.app.handlers.undo_post, _on_undo_human),
+    (bpy.app.handlers.redo_post, _on_redo_human),
+    (bpy.app.handlers.save_pre, _on_record_flush),
+)
+if hasattr(bpy.app.handlers, "exit_pre"):
+    RECORD_HANDLERS += ((bpy.app.handlers.exit_pre, _on_record_flush),)
 
 
 def register():
@@ -974,33 +1048,32 @@ def register():
         bpy.utils.register_class(cls)
     from . import input_recorder
     input_recorder.register()
+    for handlers, callback in RECORD_HANDLERS:
+        if callback not in handlers:
+            handlers.append(callback)
     if bpy.app.background:
         return
     if is_ai():
-        bpy.app.handlers.undo_post.append(_on_undo_human)
-        bpy.app.handlers.redo_post.append(_on_redo_human)
         bpy.app.handlers.load_post.append(_on_load)
         bpy.app.handlers.save_pre.append(_on_save_pre)
         bpy.app.handlers.save_post.append(_on_save_post)
         bpy.app.timers.register(_setup_ai, first_interval=0.5, persistent=True)
     else:
         bpy.app.timers.register(_poll_human, first_interval=POLL, persistent=True)
-        bpy.app.handlers.undo_post.append(_on_undo_human)
-        bpy.app.handlers.redo_post.append(_on_redo_human)
 
 
 def unregister():
     from . import input_recorder
     input_recorder.unregister()
-    for timer in (_setup_ai, _poll_human, _record_ops):
+    for timer in (_setup_ai, _poll_human, _record_after_event):
         if bpy.app.timers.is_registered(timer):
             bpy.app.timers.unregister(timer)
     for handlers, fn in ((bpy.app.handlers.load_post, _on_load), (bpy.app.handlers.save_pre, _on_save_pre),
-                         (bpy.app.handlers.save_post, _on_save_post),
-                         (bpy.app.handlers.undo_post, _on_undo_human),
-                         (bpy.app.handlers.redo_post, _on_redo_human)):
+                         (bpy.app.handlers.save_post, _on_save_post), *RECORD_HANDLERS):
         if fn in handlers:
             handlers.remove(fn)
+    _rec.clear()
+    _rec["last"] = None
     screen_off()
     for cls in reversed(CLASSES):
         bpy.utils.unregister_class(cls)

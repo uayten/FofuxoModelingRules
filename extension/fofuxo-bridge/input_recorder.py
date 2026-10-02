@@ -116,6 +116,8 @@ class LLM_BRIDGE_OT_record_input(bpy.types.Operator):
                 return {"PASS_THROUGH"}
             if event.value not in ("PRESS", "RELEASE"):
                 return {"PASS_THROUGH"}
+            from .instance import record_input_event
+            record_input_event(context, event)
             sample = surface_sample(context, event)
             record = {"event": "INPUT", "key": event.type, "value": event.value,
                       "modifiers": {key: bool(getattr(event, key)) for key in ("ctrl", "shift", "alt", "oskey")}}

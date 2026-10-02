@@ -212,15 +212,16 @@ llm_modeling_bridge.collect()                                 # the human says t
   3 s), saves the review and, with `close`, quits; then `absorb()` runs and
   the result says `closed`. A Blender started with an older LLM Modeling Bridge does
   not answer: `collect` stops after `timeout` and says so.
-- The review Blender records the human's work: every 0.5 s it copies the
-  operators new in Blender's own history (which keeps only the last few) to
+- The review Blender records the human's work: dependency-graph and input
+  events copy completed operators from Blender's own history to
   `review.ops.jsonl`, one line each with its settings, and an `UNDO` or
   `REDO` line on each undo and redo. Each operator line also carries
   `selected` (the vertex ids selected in Edit Mode) and `moved` (`{id: [dw,
   dd, dh]}` in mm, every vertex that moved since the last line). Sculpt
   strokes, which Blender does not list, come as `SCULPT` lines: the brush,
-  `radius_px`, `strength` and `moved`, one line per stroke (the changes until
-  a 0.5 s pause). A change of topology writes a `TOPOLOGY` line. `absorb()`
+  `radius_px`, `strength` and `moved`, one line per completed input/modal
+  stroke, without an idle interval. A change of topology writes a `TOPOLOGY`
+  line with added and removed ids. Undo/redo retain their own deltas. `absorb()`
   (and so `collect()`) returns the lines since the last absorb as
   `operators`: the steps, not only the result. A Grab stroke reads as
   `translate ... falloff=smooth` over the region it moved; Smooth as
@@ -802,9 +803,10 @@ surface hits have the object, local point in mm and nearest cage vertex id.
 Recorded frame-axis signs keep replay directions correct on a mirrored side.
 Drags store a bounded sample of surface points and the Sculpt brush radius
 when available. A gesture is an observation; a provisional replay must be
-compared with the recorded moved vertices before reuse. Polling can group
-several operators into one movement sample, so it cannot prove exact
-per-operator attribution. A missing surface hit or brush produces no guessed
+compared with the recorded moved vertices before reuse. Completed operations
+are written on Blender events, without periodic polling or required pauses.
+Legacy logs can contain movements grouped by the old polling recorder; a new
+recorder cannot recover their individual deltas. A missing surface hit or brush produces no guessed
 coordinate or replay command.
 Recorded Smooth strokes can suggest a single `vertices_smooth` pass at the
 recorded strength; this is also provisional and does not claim exact brush replay.
@@ -860,6 +862,7 @@ modeler's verdict. It refuses to resume a checkpoint belonging to another file.
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_roundtrip.py --python-exit-code 1
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_roadmap.py --python-exit-code 1
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_registration.py --python-exit-code 1
+blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_recording_events.py --python-exit-code 1
 ```
 
 The test copies `models/example/laco/human/Laço.blend` to a temporary folder and never
@@ -869,6 +872,9 @@ The focused roadmap suite prints `ROADMAP ALL PASSED`. Interactive recorder,
 Sculpt and window handover checks are listed in [HUMAN_TESTS.md](HUMAN_TESTS.md).
 The registration suite uses Blender's actual `addon_utils.enable` and
 `disable` lifecycle, checks deferred migration and verifies timer/handler cleanup.
+The event recorder suite prints `RECORDING EVENTS ALL PASSED`; rapid native
+operations must reach disk separately before each call returns. Its synthetic
+stroke/undo/redo boundaries do not replace the interactive checks.
 
 ## Why
 
