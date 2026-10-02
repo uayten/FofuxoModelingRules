@@ -247,7 +247,32 @@ subdivision panels, written to `<object>.views.png` or
 `<object>.<render_name>.png`. Use these labeled panels for topology review;
 Workbench surface views or a wire overlay do not replace the cage panels.
 `focus=[13, 14]` labels only those vertices
-(the rest are small gray dots), `ghost=True` fills only the base part and
+(the rest are small gray dots). Add `crop=True` for a close view of those
+vertices, using the same camera framing for cage and Subdivision. Use
+`context_labels=False` to hide loop/region labels and omit marked faces that
+are not fully inside the focus. This changes only the image; the geometry and
+saved annotations stay intact. A crop requires valid focus ids with a visible
+extent. For example:
+
+`isolate=True` also removes unrelated base faces, edges and vertices from the
+cage panel and enables the close framing. The result panel keeps the actual
+Subdivision surface, with only the selected base edges overlaid. The focus must
+include all vertices of at least one complete face. This isolates the drawing,
+without deleting geometry from Blender.
+
+```python
+llm_modeling_bridge.views("Hat", ["top", (-50, 40)], focus=[130, 131, 148, 150, 166, 169],
+                          crop=True, context_labels=False, render_name="crease-close")
+```
+
+For a small-region inspection, show a complete-model view with a rectangle
+locating the close beside the enlargement. Keep the camera angle identical
+in both images and face the original editable half of a mirrored mesh. In the
+hat check, focus coordinates were negative X/Y, so the modeler requested the
+front-left camera (yaw -50/pitch 40) and approved this contextual presentation.
+An isolated patch alone was rejected because its location was unclear.
+
+`ghost=True` fills only the base part and
 draws the mirror copies as faint wire, `normals=True` adds a tick along the
 result's normal at each vertex. Cylinder loops (closed loops that lie in a
 plane and go once around) are drawn as colored rings with one label each: a
@@ -912,6 +937,7 @@ blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_registr
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_recording_events.py --python-exit-code 1
 python extension/fofuxo-bridge/tests/test_recording_summary.py
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_modal_return.py --python-exit-code 1
+blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_views_crop.py --python-exit-code 1
 blender --factory-startup --python extension/fofuxo-bridge/tests/test_native_return.py --python-exit-code 1
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_identity_history.py --python-exit-code 1
 ```

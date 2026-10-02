@@ -1,0 +1,11 @@
+{
+  "ai_pid": 32932,
+  "review_pid": 28092,
+  "review_file": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\hat-legacy-review\\hat-legacy.bridge\\review.blend",
+  "object": "Chapéu",
+  "opening_verified": true,
+  "review_geometry_and_ids_match_ai": true,
+  "collect_when_human_finishes": {
+    "close": true
+  }
+}

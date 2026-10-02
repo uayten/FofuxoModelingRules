@@ -188,7 +188,65 @@ Receipt: `hat-legacy-review/migration-result.json`. No raw C1 recorder logs were
 inspected. The subsequent sync reports unchanged geometry and seven cage
 neighbour pairs above the 4:1 area warning threshold; maximum ratio 5.954.
 Opposite-edge ratio 2.439 is below 3:1. Evaluated maxima are 2.631 and 1.592,
-with no warnings or degenerate faces. Human uniformity judgment is pending.
+with no warnings or degenerate faces. Migration was committed as f313e65.
+
+The hat's existing cage/result sheet is prepared at
+`hat-legacy-review/hat-legacy.bridge/Chapéu.uniformity-main-pair.png`.
+It shows yaw 50/pitch 40, front and top, with faces f2/f14 and their six stable
+vertex ids labeled. That is the largest area-ratio pair, 5.954:1. The face labels
+were temporarily enabled only while rendering, then restored exactly; geometry
+and ids were unchanged. Receipt: `hat-legacy-review/uniformity-review.json`.
+The modeler judged this pair as apparently unwanted: "parece um problema de
+uniformidade". That confirms the area warning's usefulness for this one case.
+The intentional-spacing comparison remains pending. The next sheet is
+`hat-legacy-review/hat-legacy.bridge/Chapéu.uniformity-crease-pair.png`, with
+f36/f41 and six ids labeled at the crown crease. Its neighbour-area ratio is
+2.430:1, below the current 4:1 warning threshold. Receipt:
+`hat-legacy-review/uniformity-crease-pair.json`. Ask whether that local spacing
+serves the intended crease or is also an unwanted irregularity. The modeler
+could not identify the faces in that whole-model sheet and requested a close
+or removal of irrelevant information.
+
+An uncommitted readability correction now extends the existing `views()` with
+`crop=True`, `context_labels=False`, and `isolate=True`. Isolation enables close
+framing, removes unrelated base geometry from the cage drawing, and keeps the
+actual Subdivision surface alongside it. The Blender geometry is untouched.
+Twenty focused checks passed, including preservation and default-call regression.
+Installed render.py/sync.py were updated and their pure Python modules reloaded;
+the public bridge.views/bridge.sync bindings were refreshed without registering
+classes again or restarting Blender.
+
+The modeler rejected the isolated patch as worse and explicitly requested the
+complete model, a square locating the enlargement, and the enlarged area.
+Next show `hat-legacy-review/uniformity-context-close.png`: complete cage on the
+left, measured blue square, matching close with surrounding geometry on the
+right. It uses yaw 50/pitch 40 for both views. The square comes from the actual
+full/crop Panel projections, not a guessed image location. f36 is outlined blue
+and f41 orange. Receipt: `hat-legacy-review/uniformity-context-close.json`;
+diagram builder: `hat-legacy-review/render_context_close.py`.
+The earlier isolate rejection is preserved in `uniformity-crease-isolated.json`.
+The contextual sheet at positive yaw was still looking from the opposite side
+of the editable mesh. The modeler requested the front-left/mirror-side view.
+The latest sheet is now `hat-legacy-review/uniformity-context-close-left-front.png`,
+using yaw -50/pitch 40 for overview and close. Metadata/projection rectangle:
+`uniformity-context-close-left-front.json`. The measured face centers have
+negative X and Y, consistent with this front-left camera. Use this latest image
+for the next human assessment, rather than the earlier positive-yaw sheets.
+The modeler approved the contextual identification: "consegui identificar bem
+o que você quer me mostrar. essa parte ficou ótima". The readability correction
+is visually validated, with twenty focused checks. Approval is preserved in
+`uniformity-context-close-left-front.json`; do not interpret it as threshold
+approval for every region or automatically repair geometry.
+
+The modeler asked to open the hat natively. `review(['Chapéu'])` opened a separate
+human Blender, PID 28092, saved at `hat-legacy-review/hat-legacy.bridge/review.blend`.
+The opened marker and process window were verified; geometry and all 88 ids
+match the AI's copy. The primary MCP still answers AI PID 32932, access AI.
+Receipt: `hat-legacy-review/native-inspection-open.json`. When the human finishes,
+use `collect(close=True)` to save, synchronize, preserve an example and close
+only the review. Do not call `resume_ai()` for this separate-window return.
+Clarify the local uniformity judgment during the native inspection before
+claiming the full evenness check passed.
 
 1. Human judgment of evenness thresholds on the copied hat, distinguishing
    intentional spacing from unwanted unevenness through the existing views.

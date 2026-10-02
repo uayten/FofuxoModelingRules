@@ -630,7 +630,8 @@ def flip(name, axis="d", render=True):
     return report
 
 
-def views(name, views=None, render_name=None, focus=None, ghost=False, normals=False, context=None):
+def views(name, views=None, render_name=None, focus=None, ghost=False, normals=False, context=None,
+          crop=False, context_labels=True, isolate=False):
     """Render any cameras of the current mesh without syncing.
 
     views: preset names ("front", "back", "left", "right", "top", "bottom"),
@@ -639,6 +640,9 @@ def views(name, views=None, render_name=None, focus=None, ghost=False, normals=F
     from above, from below and from the back. Writes <object>.views.png (or
     <object>.<render_name>.png) next to the text and returns its path.
     focus: ids to label, the rest drawn as small gray dots (e.g. [13, 14]);
+    crop: frame only the focus vertices, keeping cage and result aligned;
+    context_labels: keep loop/region labels and marked faces outside the focus;
+    isolate: crop to complete base faces inside focus, omitting unrelated cage geometry;
     ghost: only the base part filled, the mirror copies as faint wire;
     normals: a tick along the result's normal at each vertex;
     context: names of other objects to draw in gray (the body the part sits
@@ -649,9 +653,18 @@ def views(name, views=None, render_name=None, focus=None, ghost=False, normals=F
         raise SyncError(f"no mesh object named {name!r}")
     if obj.mode == "EDIT":
         raise SyncError(f"{name} is in Edit Mode: leave it (Tab) first.")
+    if any(type(value) is not bool for value in (crop, context_labels, isolate)):
+        raise SyncError("crop, context_labels and isolate must be booleans")
+    if isolate:
+        crop, context_labels = True, False
+    focus = list(focus) if focus is not None else None
+    if crop and not focus:
+        raise SyncError("crop requires focus vertex ids")
     p = paths(obj)
     state = _load_state(p["state"])
     ids, _ = mesh_io.ensure_ids(obj.data, state and state["co"], state["next_id"] if state else 0, write=False)
+    if crop and {str(value).removeprefix("v") for value in focus} - {str(vid) for vid in ids}:
+        raise SyncError("crop focus contains unknown stable vertex ids")
     views = list(views or render_mod.DEFAULT_VIEWS)
     path = p["render"].with_name(f"{p['render'].stem}.{render_name or 'views'}.png")
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -660,4 +673,5 @@ def views(name, views=None, render_name=None, focus=None, ghost=False, normals=F
     return {"render": str(render_mod.render_views(obj, ids, _depsgraph(), views, path, title,
                                                   focus=focus, ghost=ghost, normals=normals,
                                                   ring_frame=state and state["frame"],
-                                                  context=[bpy.data.objects[n] for n in context or ()]))}
+                                                  context=[bpy.data.objects[n] for n in context or ()],
+                                                  crop=crop, context_labels=context_labels, isolate=isolate))}

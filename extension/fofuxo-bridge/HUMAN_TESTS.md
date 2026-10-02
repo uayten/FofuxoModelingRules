@@ -283,6 +283,38 @@ Repeat after switching between Edit Mode and Sculpt. Keep the AI process open.
 
 ## Regions and renders
 
+The first hat uniformity judgment identified the largest neighbouring-area
+pair, f2/f14 at 5.954:1, as apparently unwanted: the modeler said
+"parece um problema de uniformidade". The 4:1 warning points to a relevant
+region in this example. This is a partial judgment; a tighter crease-region
+pair, f36/f41 at 2.430:1, still needs its intentional-versus-unwanted verdict.
+The original hat and inspection-copy geometry were not changed.
+
+The modeler could not identify f36/f41 in the whole-model sheet and requested a
+close or removal of irrelevant information. The existing `views()` API now has
+`crop=True`, `context_labels=False` and `isolate=True`. Twenty focused checks
+passed for camera framing, aligned cage/result panels, relevant face labels,
+isolated base edges/vertices, unchanged geometry/annotations, invalid input and
+backward-compatible default calls. The isolated hat sheet was visually rejected
+as worse; removing context did not make the region understandable. The modeler
+requested a complete model, a square showing the enlarged area, and the close.
+That comparison is now prepared in `hat-legacy-review/uniformity-context-close.png`,
+using the same native camera for the complete cage and close, with a rectangle
+derived from their actual projections. Human legibility approval and local
+uniformity judgment remained pending at that stage.
+The modeler then corrected the viewing direction: the editable mesh is at the
+front-left, while positive yaw was showing the opposite mirrored side. The latest
+context/close sheet uses yaw -50/pitch 40, with matching full-view/crop projections;
+the chosen face centers have negative X/Y. Human review now uses
+`hat-legacy-review/uniformity-context-close-left-front.png`.
+The modeler then approved identification and the contextual presentation:
+"consegui identificar bem o que você quer me mostrar. essa parte ficou ótima".
+The close-view readability correction is visually validated, alongside its
+twenty focused checks. The modeler requested a native Blender inspection;
+review PID 28092 opened with the same geometry and ids as the AI copy.
+The local uniformity verdict remains pending that inspection; presentation
+approval alone does not approve thresholds for every region.
+
 The real legacy-copy check passed on 2026-10-02 using `C1.blend` and all twelve
 files of its `.cage` sidecar copied into `hat-legacy-review/`. Opening with the
 installed extension migrated the sidecar directory and four legacy id/label

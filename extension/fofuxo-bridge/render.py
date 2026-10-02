@@ -350,6 +350,7 @@ class Scene:
         self.ev_tris = _triangles(ev_co, ev_faces)
         self.context_tris = _context_triangles(obj, depsgraph, context)
         self.labels = [str(vid) for vid in ids]
+        self.draw_indices = range(n)
         self.colors = _vertex_colors(len(self.base), faces, ids)
         self.poles = _pole_indices(obj, mirror)
         weld = _weld_map(self.base, mirror)
@@ -366,9 +367,14 @@ class Scene:
         self.lo = np.min([p.min(axis=0) for p in pts], axis=0)
         self.hi = np.max([p.max(axis=0) for p in pts], axis=0)
 
-    def fit(self, cams, frame=None):
+    def fit(self, cams, frame=None, focus_points=None):
         """Scale and center shared by the given cameras."""
         lo, hi = self.lo.copy(), self.hi.copy()
+        if focus_points is not None:
+            points = np.asarray(focus_points, dtype=float)
+            if points.ndim != 2 or points.shape[1] != 3 or len(points) < 2 or not np.isfinite(points).all():
+                raise ValueError("crop requires at least two finite focus points")
+            lo, hi = points.min(axis=0), points.max(axis=0)
         if frame is not None:
             for k, fa in enumerate(frame.axes):
                 lo[k] = min(lo[k], -fa.extent if fa.side else fa.start)
@@ -376,6 +382,8 @@ class Scene:
         center = (lo + hi) / 2
         corners = np.array(list(itertools.product(*zip(lo, hi)))) - center
         span = max(max(np.ptp(corners @ c.right), np.ptp(corners @ c.up)) for c in cams)
+        if focus_points is not None and span <= 1e-6:
+            raise ValueError("crop focus has no visible extent for these cameras")
         return (PANEL - 2 * PAD) * FILL / max(span, 1e-6), center
 
     def cage_panel(self, cam, scale, center, frame=None, focus=None, ghost=False, normals=False, ring_frame=None):
@@ -426,7 +434,7 @@ class Scene:
                 ring_labels[r] += f" ({width:.0f}mm)"
         # llm_bridge_show_vertex: only the marked vertices get their ids; the others a small dot.
         keep = [i for i in range(n) if self.show[i]]
-        for i in range(n):
+        for i in self.draw_indices:
             if not self.show[i] and i not in in_ring:
                 panel.dot(px[i], WIRE, r=1)
         face_pts = [panel.to_px(c[None])[0][0] for _, c in self.face_centers]
@@ -436,7 +444,7 @@ class Scene:
         if focus is not None:
             wanted = {str(v).lstrip("v") for v in focus}
             keep = [i for i in range(n) if self.labels[i] in wanted]
-            for i in range(n):
+            for i in self.draw_indices:
                 if i not in keep:
                     panel.dot(px[i], WIRE_COPY, r=1)
         if normals and self.normals is not None:
@@ -875,13 +883,37 @@ def render_sheet(obj, ids, depsgraph, frame, path, title="", concept=None):
 
 
 def render_views(obj, ids, depsgraph, views, path, title="", focus=None, ghost=False, normals=False,
-                 ring_frame=None, context=()):
+                 ring_frame=None, context=(), crop=False, context_labels=True, isolate=False):
     """Any cameras x cage / subdivision. views: preset names ("front", "top",
     "left"...), "yaw,pitch" strings or (yaw, pitch) pairs in degrees. focus,
     ghost, normals: see Scene.cage_panel."""
     scene = Scene(obj, ids, depsgraph, context)
     cams = [Camera(v) for v in views]
-    scale, center = scene.fit(cams)
+    wanted = {str(value).removeprefix("v") for value in focus} if focus is not None else None
+    indices = {index for index, label in enumerate(scene.labels) if wanted and label in wanted}
+    if isolate:
+        crop, context_labels = True, False
+    if crop and (not wanted or wanted - set(scene.labels)):
+        raise ValueError("crop requires existing stable vertex ids in focus")
+    if isolate:
+        selected_faces = [list(polygon.vertices) for polygon in obj.data.polygons
+                          if set(polygon.vertices) <= indices]
+        if not selected_faces:
+            raise ValueError("isolate focus must contain at least one complete base face")
+        scene.base_tris = _triangles(scene.base, selected_faces)
+        scene.cage_tris = scene.base_tris
+        scene.cage_co = scene.base
+        scene.cage_edges = sorted({tuple(sorted((a, b))) for face in selected_faces
+                                   for a, b in zip(face, face[1:] + face[:1])})
+        scene.copy_of = [0] * len(scene.cage_edges)
+        scene.draw_indices = sorted(indices)
+    if not context_labels:
+        scene.loops = []
+        scene.region_centers = []
+        if wanted is not None:
+            scene.face_centers = [(label, center) for label, center in scene.face_centers
+                                  if set(obj.data.polygons[int(label[1:])].vertices) <= indices]
+    scale, center = scene.fit(cams, focus_points=scene.base[sorted(indices)] if crop else None)
     rows = [[scene.cage_panel(c, scale, center, focus=focus, ghost=ghost, normals=normals,
                               ring_frame=ring_frame).img,
              scene.sub_panel(c, scale, center)[0].img] for c in cams]

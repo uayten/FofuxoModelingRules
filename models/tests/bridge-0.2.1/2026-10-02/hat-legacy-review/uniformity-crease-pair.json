@@ -1,0 +1,23 @@
+{
+  "render": {
+    "render": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\hat-legacy-review\\hat-legacy.bridge\\Chapéu.uniformity-crease-pair.png"
+  },
+  "faces": [
+    36,
+    41
+  ],
+  "focus_vertices": [
+    130,
+    131,
+    148,
+    150,
+    166,
+    169
+  ],
+  "neighbor_area_ratio": 2.43,
+  "opposite_edge_ratio": 1.178,
+  "area_warns": false,
+  "spacing_warns": false,
+  "geometry_ids_and_labels_unchanged": true,
+  "human_judgment": "pending; ask whether the crease spacing is intentional or unwanted"
+}

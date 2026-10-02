@@ -1,0 +1,24 @@
+{
+  "render": {
+    "render": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\hat-legacy-review\\hat-legacy.bridge\\Chapéu.uniformity-crease-close.png"
+  },
+  "faces": [
+    36,
+    41
+  ],
+  "focus": [
+    130,
+    131,
+    148,
+    150,
+    166,
+    169
+  ],
+  "crop": true,
+  "context_labels": false,
+  "geometry_ids_modifiers_annotations_preserved": true,
+  "focused_checks": 15,
+  "installed_sources_match": true,
+  "human_legibility_judgment": "pending",
+  "human_uniformity_judgment": "pending"
+}
