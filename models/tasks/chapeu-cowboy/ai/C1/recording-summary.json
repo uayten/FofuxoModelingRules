@@ -1,0 +1,30 @@
+{
+  "count": 343,
+  "operators": {
+    "VIEW3D_OT_select": 140,
+    "OBJECT_OT_editmode_toggle": 30,
+    "VIEW3D_OT_select_box": 16,
+    "TRANSFORM_OT_translate": 81,
+    "MESH_OT_loopcut_slide": 2,
+    "MESH_OT_select_mode": 10,
+    "MESH_OT_extrude_region_move": 1,
+    "SCULPT_OT_sculptmode_toggle": 3,
+    "WM_OT_radial_control": 7,
+    "MESH_OT_f2": 4,
+    "MESH_OT_select_all": 1,
+    "MESH_OT_mark_sharp": 1,
+    "MESH_OT_loop_select": 10,
+    "MESH_OT_looptools_circle": 5,
+    "UNDO": 3,
+    "MESH_OT_shortest_path_pick": 13,
+    "MESH_OT_looptools_space": 4,
+    "TRANSFORM_OT_edge_slide": 7,
+    "TRANSFORM_OT_resize": 2,
+    "TRANSFORM_OT_vert_slide": 3
+  },
+  "undos": 3,
+  "redos": 0,
+  "moves_by_region": {},
+  "unattributed_vertex_samples": 0,
+  "attribution": "poll samples may contain several operators; net_mm is the sum of vertex samples"
+}

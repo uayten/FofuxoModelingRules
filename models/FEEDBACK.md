@@ -72,6 +72,17 @@ not want as a rule; the AI misread; out of scope (rig, D-017).
 
 ## Session brief (NEXT.md)
 
+LLM Modeling Bridge can preserve a review with `catalog_edit`; successful
+`absorb` and same-window return archive the saved correction automatically.
+The artifacts stay pending when no modeler-supplied reason or validated
+replay exists. `recording_summary` reads the compact receipt instead of the
+raw log. Stored `measures.json` values are reused before measuring again.
+
+Use `stage_handoff` to persist a brief and an open round, including a tool
+request when needed. Resume with `round_resume` in the saved file; develop
+the tool in its own session. The proposed technique-reuse checklist in
+`TECHNIQUES.md` still needs a measured replay and the second concept's verdict.
+
 At the end of each session on a run, the AI writes `ai/<run>/NEXT.md`, and
 the next session reads it first, instead of the whole history (fewer tokens;
 `ROADMAP.md`, Part 2, item 7). The modeler may edit it. Sections:

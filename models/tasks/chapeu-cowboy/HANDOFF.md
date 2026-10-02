@@ -1,5 +1,15 @@
 # Straw cowboy hat: where it stands (handoff, 2026-10-01)
 
+> Tooling update (2026-10-02): the extension source is now
+> `extension/fofuxo-bridge/`, importing `llm_modeling_bridge` (the old import
+> and launcher remain compatible). Read `ROADMAP.md` for the current numbering
+> and `extension/fofuxo-bridge/HUMAN_TESTS.md` for the pending interaction checks.
+> The hat's saved files below were preserved. Historical `.cage/` paths remain
+> valid until the file is opened with the new extension and migrated.
+> Use `ai/C1/recording-summary.json` instead of rereading all 343 operators.
+> C1's former in-memory round has no persisted checkpoint; do not reconstruct
+> or invent its past usage from the new counters.
+
 Read this first in a new conversation about the hat. It says what was done,
 what was decided, what the tools now do and what comes next.
 

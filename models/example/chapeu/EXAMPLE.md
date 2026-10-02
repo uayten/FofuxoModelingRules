@@ -5,6 +5,7 @@
   (stars, child)
 - **Concept:** `../laco/concept.png`, the hat on the dragon's head
 - **Status:** measured; several E1 rules came from it. No dedicated interview.
+- **Measures:** `measures.json`: stored sizes, limit-surface profiles and cage evenness for the three objects.
 
 ## Contents
 
