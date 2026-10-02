@@ -1,0 +1,25 @@
+{
+  "loop_path": [
+    281,
+    283,
+    288,
+    287,
+    286,
+    282,
+    284,
+    285
+  ],
+  "marked_edges": {
+    "marked": 7,
+    "level": 1,
+    "shown": 7
+  },
+  "mirror_axes": [
+    "X",
+    "Y"
+  ],
+  "display": "single colored loop; individual loop vertex labels suppressed",
+  "render": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.bridge\\TestMesh.loop-cage-review.png",
+  "human_validation": "approved as-is by the modeler",
+  "presentation": "labeled cage/subdivision panels with one colored loop label"
+}

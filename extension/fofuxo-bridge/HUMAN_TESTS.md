@@ -174,12 +174,19 @@ last recorded state exactly. Selection, edge-slide and dissolve operations
 were retained separately, with no combined boundaries or parse errors.
 Collection saved, synchronized and closed the review; exit code was 0.
 
+For cage readability, the modeler identified the new cut as one loop. The
+path 281–283–288–287–286–282–284–285 was marked through `mark_loop`: seven
+base edges, completed by the X/Y Mirror copies. The replacement cage sheet
+shows one red `loop1` label instead of eight individual cut-vertex labels.
+The modeler approved the labeled cage/subdivision presentation and this loop
+display as-is. The cage-display validation is complete.
+
 ## Remaining validation
 
 - Edit Mode topology undo/redo is now validated, including exact restored ids
   and agreement between the recorder and collected mesh; no repeat is needed.
-- Approve the labeled cage/result sheet on a clean recognizable mesh and
-  the focused Workbench crop. Judge evenness thresholds with intentional
+- The labeled cage/result sheet and manual loop display are approved. Judge
+  the focused Workbench crop and evenness thresholds with intentional
   tight spacing and unwanted unevenness. The earlier distorted cage was
   not approved merely because its image was generated.
 - Exercise same-window access in Edit Mode and Sculpt: normal layout,

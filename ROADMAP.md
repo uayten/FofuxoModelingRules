@@ -86,8 +86,9 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    repeat: cut ids 281–288 survived undo/redo exactly, and the collected mesh
    agreed with the last recorded id set. No snapshot errors remained.
    **Remaining**, in order:
-   - approval of labeled cage/result views and the focused Workbench crop,
-     plus intentional-versus-unwanted spacing judgments for evenness warnings;
+   - the labeled cage/result views and loop display are approved; focused
+     Workbench crop and intentional-versus-unwanted spacing judgments for
+     evenness warnings still need their separate verdict;
    - same-window Edit/Sculpt handover, refusal of extension edits, saved return,
      synchronization and examples, including added/removed objects;
    - real legacy-copy migration with sidecar, normal save/reopen and unchanged
