@@ -377,13 +377,25 @@ def recording_path(filename):
 MOVED_MIN = 0.05  # mm: a vertex that moved less is left out of a "moved" record
 
 
-def _mesh_state(repair_ids=True):
+def _active_review_object(scene=None):
+    obj = getattr(bpy.context, "object", None)
+    if obj is not None:
+        return obj
+    layer = getattr(bpy.context, "view_layer", None)
+    if layer is not None and layer.objects.active is not None:
+        return layer.objects.active
+    scene = scene or getattr(bpy.context, "scene", None)
+    previous = _rec.get("snap")
+    return scene.objects.get(previous[0]) if scene is not None and previous else None
+
+
+def _mesh_state(repair_ids=True, scene=None):
     """(object name, mode, ids, positions in mm, selected ids) of the active
     reviewed mesh, read the way its mode keeps it (bmesh in Edit Mode)."""
     from .mesh_io import ID_ATTR
 
-    obj = bpy.context.object
-    info = _review_info()
+    obj = _active_review_object(scene)
+    info = _review_info(scene)
     if not info or obj is None or obj.type != "MESH" or obj.name not in info.get("objects", []):
         return None
     if obj.mode == "EDIT":
@@ -396,6 +408,7 @@ def _mesh_state(repair_ids=True):
         previous = _rec.get("snap")
         previous_co = dict(zip(previous[2], previous[3])) if previous and previous[0] == obj.name else {}
         previous_next_id = _rec.get("next_id", 0)
+        pending_ids = _rec.setdefault("pending_ids", set())
         by_id = {}
         for vertex in bm.verts:
             by_id.setdefault(vertex[layer] if layer else vertex.index, []).append(vertex)
@@ -404,11 +417,13 @@ def _mesh_state(repair_ids=True):
         for vid, vertices in by_id.items() if repair_ids else ():
             stale = (previous is not None and previous[0] == obj.name and
                      vid not in previous_co and 0 <= vid < previous_next_id and
+                     vid not in pending_ids and
                      not _rec.get("history_transition"))
             keep = min(vertices, key=lambda vertex: sum((vertex.co[i] * 1000 - previous_co[vid][i]) ** 2 for i in range(3))) if vid in previous_co else vertices[0]
             for vertex in vertices:
                 if stale or vid < 0 or vertex is not keep:
                     vertex[layer] = next_id
+                    pending_ids.add(next_id)
                     next_id += 1
                     changed_ids = True
         if repair_ids:
@@ -471,6 +486,16 @@ def _decorate_record(line, state, previous):
     return lines
 
 
+def _remember_identity(state):
+    if state is None:
+        return
+    from .identity_history import remember
+    obj = bpy.data.objects.get(state[0])
+    if obj is not None:
+        remember(obj, state[2], _rec.setdefault("identity_history", {}))
+        _rec.setdefault("pending_ids", set()).difference_update(state[2])
+
+
 def _finish_sculpt(state):
     lines = []
     if _rec.get("sculpt_active"):
@@ -479,6 +504,7 @@ def _finish_sculpt(state):
             stroke = dict(_rec.get("sculpt_metadata") or _sculpt_record({}))
             lines = _decorate_record(stroke, state, _rec.get("snap"))
         _rec["snap"] = state
+        _remember_identity(state)
         _rec["sculpt_active"] = False
     return lines
 
@@ -514,6 +540,8 @@ def _record_ops(finish_sculpt=False, repair_ids=True):
                     lines[-1]["coalesced_operators"] = len(lines)
                 lines[-1:] = _decorate_record(lines[-1], state, _rec.get("snap"))
                 _rec["snap"] = state
+                if repair_ids:
+                    _remember_identity(state)
             lines = strokes + lines
         _log(lines)
     except Exception as e:  # recording never breaks the human's Blender
@@ -564,6 +592,7 @@ def _start_recording():
     _rec["busy"] = True
     try:
         _rec["snap"] = _mesh_state()
+        _remember_identity(_rec["snap"])
     finally:
         _rec["busy"] = False
     if _on_record_update not in bpy.app.handlers.depsgraph_update_post:
@@ -576,19 +605,28 @@ def _on_history_pre(*_args):
     _rec["history_transition"] = True
 
 
-def _record_history(operation):
+def _record_history(operation, scene=None):
     try:
-        if _review_info() is not None:
-            state = _mesh_state()
+        if _review_info(scene) is not None:
+            obj = _active_review_object(scene)
+            restored = None
+            if obj is not None and obj.type == "MESH":
+                from .identity_history import restore
+                restored = restore(obj, _rec.get("identity_history", {}))
+            state = _mesh_state(scene=scene)
             line = {"op": operation}
+            if restored is not None:
+                line["identity_restored"] = restored
             _log(_decorate_record(line, state, _rec.get("snap")) if state else [line])
             _rec["snap"] = state
+            _remember_identity(state)
             _rec["sculpt_active"] = False
             ops = list(bpy.context.window_manager.operators)
             _rec["last"] = _signature(ops[-1]) if ops else None
     except Exception as error:
+        import traceback
         _log([{"op": operation, "snapshot_error": repr(error)}])
-        print(f"LLM Modeling Bridge: history recorder: {error!r}")
+        print(f"LLM Modeling Bridge: history recorder: {error!r}\n{traceback.format_exc()}")
     finally:
         _rec["history_transition"] = False
 
@@ -601,7 +639,7 @@ def _on_record_flush(*_args):
 @bpy.app.handlers.persistent
 def _on_undo_human(*_args):
     if not is_ai() or _state.get("human_editing"):
-        _record_history("UNDO")
+        _record_history("UNDO", _args[0] if _args else None)
     else:
         _rec["history_transition"] = False
 
@@ -609,7 +647,7 @@ def _on_undo_human(*_args):
 @bpy.app.handlers.persistent
 def _on_redo_human(*_args):
     if not is_ai() or _state.get("human_editing"):
-        _record_history("REDO")
+        _record_history("REDO", _args[0] if _args else None)
     else:
         _rec["history_transition"] = False
 

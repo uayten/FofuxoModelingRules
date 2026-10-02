@@ -6,6 +6,7 @@ of a saved file. These checks do not approve the cowboy hat or the modeling meth
 ## Contents
 
 - [Review recorder](#review-recorder)
+- [Remaining validation](#remaining-validation)
 - [Same window](#same-window)
 - [Regions and renders](#regions-and-renders)
 - [Open modeling work](#open-modeling-work)
@@ -14,7 +15,14 @@ of a saved file. These checks do not approve the cowboy hat or the modeling meth
 
 Open a review through `review()`. Make a small Edit Mode move, an edge slide
 and a loop cut. Undo and redo once. In Sculpt, make separate Grab and Smooth
-strokes. Save, then ask the agent to collect the review.
+strokes, including temporary Smooth with Shift over Grab. Tell the agent when
+finished; manual saving is optional.
+
+The preferred workflow is `collect(close=True)`: save the human review,
+synchronize its changes, preserve the example and close that Blender. For
+the next edit, call `review()` again to launch a fresh human Blender with the
+latest prepared model. Same-window handover remains a separate explicit test.
+Keep the AI's own Blender running and controlling the MCP during this cycle.
 
 Perform the operations at your normal pace, without artificial pauses. Include
 two consecutive moves in opposite directions: both operations and their separate
@@ -39,7 +47,7 @@ On 2026-10-02, the event recorder passed 15 focused checks, including immediate
 mode/selection capture, separate opposite moves without waits, topology ids,
 stroke-boundary callbacks, undo/redo callbacks and cleanup. Eight activation
 checks also passed. The stroke and undo/redo boundary tests exercise callbacks;
-real modal Edit Mode and Grab/Smooth input remain pending human validation.
+at that point real modal input still required the separate checks recorded below.
 The native shutdown diagnostic from the earlier full suite remains unexplained.
 Opening the isolated test file also printed context errors from
 `amp_transformator` (`selected_objects`) and `vertex_skin_weights_tool`
@@ -79,7 +87,9 @@ parse errors were reported. Native topology ids after the patch still need
 the region/loop-cut interaction; its focused regression passed.
 
 Collection with `close=False` saved and synchronized the review while leaving
-its window open. All 53 received ids were unique; the Subdivision and Mirror
+its window open. That experiment passed, but the modeler prefers collecting
+and closing, then opening a fresh review for each new edit. All 53 received
+ids were unique; the Subdivision and Mirror
 settings were unchanged. Summed recorded stroke deltas matched the received
 mesh within 0.033 mm per component, accounting for the recorder's movement
 filter and rounding. Before/after files, deltas and both logs were preserved
@@ -92,6 +102,98 @@ This does not approve exact replay or promote a modeling technique.
 The prior review was saved and archived, then closed with process exit code 0.
 Its launcher does not capture native diagnostic output, so that exit code does
 not establish the absence or cause of the earlier shutdown diagnostic.
+
+The real region check passed after restarting the review. The five selected
+`TestRegion` ids each moved by approximately (18.28, -1.61, 4.68) local mm.
+One loop cut added 27 unique ids (109–135), growing the cage from 53 to 80
+vertices without removing or reusing an existing id. Collection saved and
+closed the human Blender; process exit code was 0. All five original region
+members retained weight 1; six interpolated members were added (one at weight
+1, five at 0.5). The group name, membership and mesh-text label survived absorb.
+
+Both cropped Workbench and cage-overlay views were generated at 768 pixels,
+focusing the 11 region members. Temporary objects and camera data were removed;
+only `TestMesh` remained. The images have a transparent background. The modeler
+rejected this Workbench overlay for cage inspection: topology must be shown as
+the labeled base cage beside the Subdivision result, as in `views()` sheets.
+A replacement sheet was generated at yaw -50 / pitch 40, top and front, with
+the region's 11 ids and its name labeled. Subdivision was temporarily enabled
+for the comparison; the original modifier visibility was restored afterward.
+Human judgment of the replacement sheet remains pending.
+
+On this deliberately deformed test mesh, maximum neighbouring-face area ratio
+is 8.742 and opposite-edge spacing ratio is 23.784, above the initial 4:1 and
+3:1 warning thresholds. The mirrored result doubles the flagged-pair counts
+without changing those maxima. There are no degenerate faces. The modeler
+still needs to judge whether these warnings help distinguish intentional
+spacing from unwanted unevenness; they do not require automatic repair.
+
+The replacement mesh review saved and closed by the modeler was absorbed
+successfully. It preserved 276 operators, including 46 transforms, all carrying
+selected ids and vertex movements. The received object has 36 vertices and
+26 faces, with Mirror and Subdivision active. Recognizing its capital-M shape
+is not approval of the extension's remaining validation.
+
+This review exposed a summary defect: an existing empty TestRegion caused
+unattributed movement samples to be reported as zero. The log retained all
+121 samples. Attribution now uses the union of actual region memberships;
+five pure regressions passed for absent, empty, partial, complete and overlapping
+regions, and the real log now reports 121. No human editing needs repeating
+for that summary correction.
+
+The real Edit Mode topology undo/redo check failed. A cut created eight ids
+255–262; a selection undo reloaded ids 247–254 on the same 44-vertex geometry,
+the next undo returned to 36 vertices, and redo brought back 247–254 instead
+of the originally recorded ids. Unique ids alone did not pass this check.
+The failed review and logs were preserved before applying a fix.
+
+The follow-up retains bounded identity snapshots of recorded geometry and
+connectivity, restores known ids after native undo/redo, and does not invent
+an identity snapshot for unrecorded geometry. It also prevents a repeated read
+from retiring ids just allocated before the next recorder snapshot. Seven
+focused identity checks passed, including reordered and coincident vertices;
+26 event checks, 8 activation checks and 5 summary checks still passed. A real
+editor repeat of the cut/undo/redo sequence remains required.
+
+The repeat included selections, mode switches and edge dissolution. It exposed
+missing object snapshots on some history callbacks and an unmatched restored
+geometry state; final collected ids differed from the last history receipt.
+The repeat was not approved. A native background reproduction then revealed
+invalid BMVert references caused by losing the BMesh owner between reading
+geometry and restoring ids. Restoration now keeps that owner alive and uses
+the active view layer when the handler context has no object. Fourteen focused
+checks passed, including actual native undo/redo, selection undo and edge
+dissolve undo/redo. Real interactive confirmation is still pending.
+
+The final real repeat passed. After dissolving two existing loops, the new cut
+created ids 281–288 and grew the cage from 28 to 36 vertices. Undo removed
+exactly those ids; redo restored the same set. All three undo and both redo
+receipts identified TestMesh, reported successful identity restoration and
+contained no snapshot errors. The collected mesh's unique ids matched the
+last recorded state exactly. Selection, edge-slide and dissolve operations
+were retained separately, with no combined boundaries or parse errors.
+Collection saved, synchronized and closed the review; exit code was 0.
+
+## Remaining validation
+
+- Edit Mode topology undo/redo is now validated, including exact restored ids
+  and agreement between the recorder and collected mesh; no repeat is needed.
+- Approve the labeled cage/result sheet on a clean recognizable mesh and
+  the focused Workbench crop. Judge evenness thresholds with intentional
+  tight spacing and unwanted unevenness. The earlier distorted cage was
+  not approved merely because its image was generated.
+- Exercise same-window access in Edit Mode and Sculpt: normal layout,
+  refused extension edit, Save and return to LLM, synchronized geometry and
+  immutable correction example. Check added/removed objects during this
+  handover, since replacing geometry inside TestMesh does not test new objects.
+- Migrate a real legacy file copy with its sidecar; save and reopen, comparing
+  geometry, modifier order/settings, stable ids, region labels and sidecar data.
+- Observe normal shutdown with native diagnostic output captured. Prior
+  process exit code 0 without console capture did not settle the original
+  access-violation diagnostic; do not infer its cause from the activation fix.
+- Once these checks pass, update the roadmap, package the extension and
+  verify that the installed sources and generated ZIP include the validated
+  fixes. Run focused checks; a full-suite rerun needs a concrete reason.
 
 ## Same window
 

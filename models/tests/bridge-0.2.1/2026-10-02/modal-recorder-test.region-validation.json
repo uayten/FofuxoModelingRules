@@ -1,0 +1,63 @@
+{
+  "region_ids": [
+    "v15",
+    "v36",
+    "v38",
+    "v62",
+    "v108",
+    "v122",
+    "v123",
+    "v124",
+    "v125",
+    "v133",
+    "v117"
+  ],
+  "vertices": 80,
+  "unique_ids": true,
+  "original_ids_retained": true,
+  "new_id_range": [
+    109,
+    135
+  ],
+  "collect_closed_review": true,
+  "review_exit_code": 0,
+  "temporary_objects_cleaned": true,
+  "evenness": {
+    "cage": {
+      "faces": 73,
+      "area_ratio_max": 8.742,
+      "area_pairs_over": 9,
+      "spacing_ratio_max": 23.784,
+      "spacing_pairs_over": 13,
+      "degenerate_faces": 0
+    },
+    "result": {
+      "faces": 146,
+      "area_ratio_max": 8.742,
+      "area_pairs_over": 18,
+      "spacing_ratio_max": 23.784,
+      "spacing_pairs_over": 26,
+      "degenerate_faces": 0
+    }
+  },
+  "renders": {
+    "workbench": {
+      "render": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.bridge\\TestRegion.workbench.png\\model.workbench.3q.png",
+      "view": "3q",
+      "pixels": 589824,
+      "focus_vertices": 11
+    },
+    "cage": {
+      "render": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.bridge\\TestRegion.cage.png\\model.cage.3q.png",
+      "view": "3q",
+      "pixels": 589824,
+      "focus_vertices": 11
+    }
+  },
+  "human_render_and_evenness_judgment": "pending",
+  "cage_review_sheet": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.bridge\\TestMesh.region-cage-review.png",
+  "workbench_overlay_judgment": "rejected by modeler for cage inspection",
+  "cage_sheet_judgment": "pending",
+  "subdivision_preview_level": 1,
+  "preview_modifier_visibility_restored": true
+}

@@ -1,0 +1,14 @@
+{
+  "review_example": "human/review-20261002-133512-1790948112378877000",
+  "operators": 276,
+  "transforms": 46,
+  "transforms_with_selection_ids_and_movements": 46,
+  "parse_errors": [],
+  "corrected_unattributed_vertex_samples": 121,
+  "empty_region_summary_regressions": 5,
+  "object": "TestMesh",
+  "vertices": 36,
+  "faces": 26,
+  "recognized_shape": "capital M",
+  "recognition_is_not_release_approval": true
+}

@@ -24,9 +24,15 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    for another. Say which one before starting. A required human judgment
    stays pending when the modeler is unavailable.
 3. Modeling proceeds in the conversation, stage by stage, stopping after
-   each form render for the modeler's correction. Use collect() for a
-   separate review window, or the same-window handover. A correction of
-   method becomes a proposed decision with the modeler's words; do not
+   each form render for the modeler's correction. Keep the AI Blender open
+   and use `review()` to open a separate human Blender with the latest saved
+   model. When the modeler finishes, `collect(close=True)` saves, synchronizes
+   and closes only the human review. Launch a fresh review for the next edit.
+   Same-window handover is an explicit opt-in or its dedicated validation
+   step. Show labeled cage/subdivision panels with `views()` for topology
+   review; Workbench views show the result and do not replace the cage panels.
+   A correction of method becomes a proposed decision with the modeler's
+   words; do not
    promote an AI deduction or replay candidate without their confirmation.
 4. Tools live in extension/fofuxo-bridge/; import llm_modeling_bridge.
    The [README](extension/fofuxo-bridge/README.md#session-tools) describes the
@@ -69,21 +75,26 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    - legacy save/reopen after metadata and sidecar migration.
    **Done when** the real review is judged usable and observed defects are
    fixed. Background checks cannot establish modal input or Sculpt fidelity.
-   Operations must be saved on completion without required pauses or combined
-   deltas. The event recorder passed 15 focused checks and 8 activation checks
-   on 2026-10-02; native mode/selection/movement/topology capture passed, while
-   real modal input, Sculpt strokes and interactive undo/redo remain pending.
-   The first real event-recorder review found missing mouse releases, a drag
-   spanning Sculpt/Edit Mode and reused retired ids after delete/loop cut.
-   The modeler confirmed temporary Smooth through Shift; logs wrongly labeled
-   it Grab. Real Sculpt undo/redo passed for 11 matching inverse pairs. The
-   follow-up patch passed 26 focused checks and 8 activation checks. Real Grab,
-   temporary Shift/Smooth, paired mouse releases, collection, unchanged
-   modifiers and before/after preservation passed. Recorded movements matched
-   the received mesh within 0.033 mm per component. Reject the unmatched Grab
-   replay candidate; suggestions remain provisional. Topology ids through
-   real region/loop-cut interaction still require validation, along with
-   region/render judgments, same-window handover and legacy save/reopen.
+   Verified: 26 focused recorder checks, 8 activation checks, real Grab and
+   temporary Shift/Smooth, paired input releases, 11 Sculpt undo/redo inverse
+   pairs, save/collect/close, modifier transfer and immutable examples. Region
+   transfer kept all original ids and added 27 fresh ids. The replacement-M
+   review retained 276 operators and movement snapshots for all 46 transforms.
+   Its empty-region attribution summary defect was fixed with 5 pure checks;
+   the real log now reports its 121 unattributed movement samples correctly.
+   The identity-history correction passed 14 focused checks and the final real
+   repeat: cut ids 281–288 survived undo/redo exactly, and the collected mesh
+   agreed with the last recorded id set. No snapshot errors remained.
+   **Remaining**, in order:
+   - approval of labeled cage/result views and the focused Workbench crop,
+     plus intentional-versus-unwanted spacing judgments for evenness warnings;
+   - same-window Edit/Sculpt handover, refusal of extension edits, saved return,
+     synchronization and examples, including added/removed objects;
+   - real legacy-copy migration with sidecar, normal save/reopen and unchanged
+     geometry, modifiers, ids and labels;
+   - normal shutdown with native diagnostics captured, then final focused
+     checks and verification of the installed/generated extension package.
+   Reject the unmatched Grab replay candidate; suggestions remain provisional.
    Also confirm the native shutdown diagnostic described in
    [IMPLEMENTATION.md](IMPLEMENTATION.md#verification) if it recurs. Its cause
    was not established by the passing assertions or the isolated catalog check.

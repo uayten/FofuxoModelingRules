@@ -163,7 +163,14 @@ Phase 5):
 
 ### Two Blenders: the AI's and the human's review
 
-The AI works in a Blender of its own (D-058). The launcher starts it:
+The AI works in a Blender of its own (D-058).
+
+The normal human-edit cycle keeps that AI Blender open: `review()` launches
+a separate human Blender; when the modeler finishes, `collect(close=True)`
+saves, synchronizes and closes the human review. Launch a fresh review with
+the latest prepared model for the next edit. Same-window handover is explicit.
+
+The launcher starts the AI instance:
 
 ```bash
 python extension/fofuxo-bridge/launcher.py models/tasks/laco/ai/B1-opus-cage/B1.blend
@@ -234,8 +241,10 @@ llm_modeling_bridge.views("Laço", [(45, 30), (45, -30), "back", "90,20"])
 ```
 
 Renders the current mesh (no sync) from any camera: rows of cage and
-subdivision panels, written to `<object>.views.png` (or
-`<object>.<render_name>.png`). `focus=[13, 14]` labels only those vertices
+subdivision panels, written to `<object>.views.png` or
+`<object>.<render_name>.png`. Use these labeled panels for topology review;
+Workbench surface views or a wire overlay do not replace the cage panels.
+`focus=[13, 14]` labels only those vertices
 (the rest are small gray dots), `ghost=True` fills only the base part and
 draws the mirror copies as faint wire, `normals=True` adds a tick along the
 result's normal at each vertex. Cylinder loops (closed loops that lie in a
@@ -872,6 +881,8 @@ blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_roundtr
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_roadmap.py --python-exit-code 1
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_registration.py --python-exit-code 1
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_recording_events.py --python-exit-code 1
+python extension/fofuxo-bridge/tests/test_recording_summary.py
+blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_identity_history.py --python-exit-code 1
 ```
 
 The test copies `models/example/laco/human/Laço.blend` to a temporary folder and never
@@ -884,6 +895,11 @@ The registration suite uses Blender's actual `addon_utils.enable` and
 The event recorder suite prints `RECORDING EVENTS ALL PASSED`; rapid native
 operations must reach disk separately before each call returns. Its synthetic
 stroke/undo/redo boundaries do not replace the interactive checks.
+The pure summary regressions check movement attribution with empty, partial
+and overlapping named regions; no Blender process is needed for them.
+The identity-history checks exercise older custom-id data restored by undo,
+vertex reordering and repeated reads. Native editor undo/redo still requires
+the real interaction listed in HUMAN_TESTS.md.
 
 ## Why
 

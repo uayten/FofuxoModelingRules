@@ -14,8 +14,8 @@ def summarize(records):
     for record in records:
         moved = record.get("moved") or {}
         regions = record.get("regions") or {}
-        if moved and not regions:
-            unattributed += len(moved)
+        covered = {str(vid) for ids in regions.values() for vid in ids}
+        unattributed += len(set(moved) - covered)
         for name, ids in regions.items():
             deltas = [moved[str(vid)] for vid in ids if str(vid) in moved]
             if not deltas:
