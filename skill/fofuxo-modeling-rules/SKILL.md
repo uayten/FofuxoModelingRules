@@ -1,12 +1,16 @@
 ---
 name: fofuxo-modeling-rules
-description: Non-destructive modeling rules for Blender driven through the official Blender Lab MCP server (Blender 5.2+). Use whenever creating or editing 3D models in Blender via MCP tools (execute_blender_code, get_objects_summary, get_object_detail_summary, get_screenshot_of_area_as_image) — building parts, adding modifiers, boolean cutters, topology, origins, naming, collections. Enforces a live modifier stack instead of baked meshes, the fofuxo_lib helper library instead of raw vertex editing, and a mandatory scene audit before delivery. Never exports.
+description: Non-destructive modeling rules for Blender driven through the official Blender Lab MCP server (Blender 5.2+). Use whenever creating or editing 3D models in Blender via MCP tools — building parts, adding modifiers, topology, naming and collections. Uses LLM Modeling Bridge's checked Blender tools, live modifiers, staged human review and an audit before delivery. Never exports. Start with SESSION.md and read only the sections needed for the current stage.
 ---
 
 # Fofuxo Modeling Rules
 
 > Status: **draft v0.1**. Rules are being refined from reference models made by a
 > human modeler. Items marked **[TBD]** are open and must not be treated as final.
+
+Start with [SESSION.md](SESSION.md), then read the sections the current stage
+needs. Tool reference: [the operator card](../../extension/fofuxo-bridge/OPS.md)
+and [session tools](../../extension/fofuxo-bridge/README.md#session-tools).
 
 ## The two ideas
 
@@ -56,9 +60,11 @@ you applied.
 
 Every task follows these steps, in order:
 
-1. **Bootstrap** — load `fofuxo_lib` and check its version (see
-   [Library](#library-fofuxo_lib)). If it fails, stop and report; do not fall
-   back to raw `bpy`/`bmesh` modeling.
+1. **Bootstrap** — import `llm_modeling_bridge`, check `instance()` and the
+   saved file. The current mesh workflow uses its implemented tools (see
+   [Library](#library-fofuxo_lib)); `fofuxo_lib` below is a separate proposal,
+   not an implemented dependency. If the MCP or a required tool fails, stop
+   and report; do not fall back to raw `bpy`/`bmesh` modeling.
 2. **Read the scene** — before creating anything:
    - concept/reference images (Image Empties): they decide the visual choices
      (D-010);
@@ -78,7 +84,9 @@ Every task follows these steps, in order:
      animation). Ask the user. If the project spans several `.blend` files,
      suggest a project context file in Markdown so the answers are written
      once (D-002).
-3. **Scene setup** — `setup_asset("<Asset>")`: units, collections.
+3. **Scene setup** — reuse the file's established units and collections.
+   `setup_asset` below is proposed, not callable. If a missing setup helper
+   is required, record the tool need instead of calling an unimplemented API.
 4. **Read the concept** — before planning, write down the shape you see, in
    three layers (D-036, D-037):
    - **silhouette**: the outer contour and its proportions;
@@ -365,6 +373,12 @@ intentional; leave it.
   (`Dragão Base`). Which case applies comes from the project context (D-008).
 
 ## Library (`fofuxo_lib`)
+
+The implemented mesh API is `llm_modeling_bridge`: `start_part`, `edit`,
+`sync`, `name_region`, `region_ids`, `set_positions`, `workbench`, `review`,
+`collect`, `human_access`, `round_start`, `round_end` and `stage_handoff`.
+Read its [short operator card](../../extension/fofuxo-bridge/OPS.md) and only
+the needed README rows. Existing scripts importing `fofuxo_cage` stay compatible.
 
 > **Proposed API — not implemented yet.** Signatures will change.
 

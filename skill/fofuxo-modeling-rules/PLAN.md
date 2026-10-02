@@ -6,7 +6,7 @@ modifiers in which order, which commands, what each command should give, how
 it is checked and what it may cost. A round that follows a plan runs its
 commands instead of finding them by trial, which is where the tokens go.
 
-`fofuxo_cage.round_start(label, plan="<path>/plan.md")` refuses a plan that
+`llm_modeling_bridge.round_start(label, plan="<path>/plan.md")` refuses a plan that
 misses a section or the budget; every sync then warns (`round_budget`) once a
 count passes the budget, and `round_end` puts the plan beside what was done.
 
@@ -75,8 +75,8 @@ plan, then go on.
 
 ## Where the commands come from
 
-- The ops: the README's op tables (`extension/fofuxo_cage/README.md`, "Mesh
-  op"), or `fofuxo_cage.mesh_help()` for the whitelist with its parameters.
+- The ops: the short card (`extension/fofuxo-bridge/OPS.md`), the README's
+  needed table rows, or `llm_modeling_bridge.mesh_help("translate", compact=False)`.
   Read only the rows the plan uses.
 - Shaping a ring on a bent part: `mesh translate <L>`, `mesh rotate <L>
   angle= axis=`, `mesh resize <L> ... around=selection`.

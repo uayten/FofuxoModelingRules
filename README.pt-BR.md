@@ -1,13 +1,18 @@
 # Fofuxo Modeling Rules
 
 > [!TIP]
-> English version → [README.md](README.md) (under construction)
+> English version → [README.md](README.md)
 
 As ferramentas e as etapas para que uma LLM de texto, como o Claude, consiga
 modelar no Blender: uma skill com as regras e o passo a passo de um modelador
 humano (ler o concept, planejar, construir por etapas, conferir), e uma
 extensão do Blender que dá à LLM as ferramentas do próprio Blender por texto
 e a deixa trabalhar em dupla com o modelador, que revisa, corrige e ensina.
+
+- Editar malhas e modifiers com operações verificadas do Blender.
+- Nomear regiões, medir a forma e conferir o espaçamento da malha.
+- Renderizar a região alterada e registrar correções, operadores e gestos.
+- Guardar exemplos humanos e retomar uma etapa por um resumo curto.
 
 ## Sumário
 
@@ -78,11 +83,11 @@ fluxo:
 
 ### A extensão LLM Modeling Bridge
 
-Uma extensão do Blender (`extension/fofuxo_cage/`, com o
-[README próprio](extension/fofuxo_cage/README.md), em inglês) que faz a ponte
+Uma extensão do Blender (`extension/fofuxo-bridge/`, com o
+[README próprio](extension/fofuxo-bridge/README.md), em inglês) que faz a ponte
 entre a IA e o Blender:
 
-- **O cage como texto**: `<arquivo>.cage/<objeto>.txt`, com ids estáveis por
+- **O cage como texto**: `<arquivo>.bridge/<objeto>.txt`, com ids estáveis por
   vértice, loops, faces, modifiers e tamanhos; editar o texto e sincronizar
   move a malha, e o que o humano muda no Blender volta para o texto.
 - **Operadores do Blender por linha** (`mesh`, `add`, `set`, `crease`...),
@@ -108,7 +113,7 @@ entre a IA e o Blender:
 
 ```
 skill/fofuxo-modeling-rules/   a skill (SKILL.md) e o modelo de plano (PLAN.md)
-extension/fofuxo_cage/         extensão do Blender: cage como texto, operadores, revisão
+extension/fofuxo-bridge/         extensão do Blender: cage como texto, operadores, revisão
 models/
   FEEDBACK.md                  como entrevistas e feedback viram regras
   TECHNIQUES.md                técnicas com nome, pela forma que resolvem

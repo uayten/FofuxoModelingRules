@@ -19,7 +19,7 @@ Tests:
 - **T1**: `models/tasks/laco/ai/`, bow tie modeled by Sonnet with and without the
   skill, judged blind.
 - **B1**: `models/tasks/laco/ai/B1-opus-cage/`, Opus reshapes run A2 with
-  Fofuxo Cage; judged by the modeler against his bow (`models/tasks/laco/human/`,
+  LLM Modeling Bridge; judged by the modeler against his bow (`models/tasks/laco/human/`,
   the E1 bow). E1 may be used for decisions; what is ambiguous is asked.
 
 ---
@@ -364,7 +364,7 @@ stores vertices by stable id, groups them by edge loops for reading, shows
 where each vertex lands after Subdivision (under Mirror > Subdivision, base
 vertex i is evaluated vertex i: verified exactly), and changes topology only
 through ops. The modeler approved it as a first option that may not be the
-best: only use will tell. Tool: `extension/fofuxo_cage/`.
+best: only use will tell. Tool: `extension/fofuxo-bridge/`.
 
 ### D-050: Cage values in permille of a fixed frame (Provisional, T1)
 
@@ -388,8 +388,8 @@ So roundness and shape follow the concept's stylization, not the real object.
 ### D-052: The AI manages the modifier stack; applying is for specific cases (Stated, B1)
 
 The AI may add, remove, edit and reorder modifiers, and apply one in specific
-cases. Widens D-048, whose tool touched mesh data only. Fofuxo Cage does it
-through ops in the cage text (`add`, `remove`, `reorder`, `set`, `apply`,
+cases. Widens D-048, whose tool touched mesh data only. LLM Modeling Bridge does it
+through ops in the mesh text (`add`, `remove`, `reorder`, `set`, `apply`,
 `crease`). When to apply has no rule: "cada caso é um caso". The AI decides
 from its own modeling judgment as it grows, and reports every apply.
 
@@ -415,7 +415,7 @@ the plane stay there while editing.
 With Mirror on Y, the half that holds the base vertices is -Y, the side the
 front view looks at. B1 had its base on +Y, so in every render the vertices
 that matter sat behind their mirror copy, "ficando uma malha na frente dos
-vertices importantes". E1 models on -Y. Fofuxo Cage warns `modeled_behind`
+vertices importantes". E1 models on -Y. LLM Modeling Bridge warns `modeled_behind`
 and moves a part across with `flip(name, "d")`.
 
 ### D-056: The concept is a starting reference; the 3D must work from every angle (Stated, B1)
@@ -444,7 +444,7 @@ The modeler: open the AI's Blender as a black screen that says it is for the
 AI's exclusive use, even when the human already has a Blender open; when the
 human should see or change the model, open a normal Blender with the model
 appended. The AI is then in charge of its own file alone, and of saving and
-reading the human's changes. In Fofuxo Cage: `launcher.py` (the AI's
+reading the human's changes. In LLM Modeling Bridge: `launcher.py` (the AI's
 instance, MCP port 9876), `review()` and `absorb()` (the human's copy and its
 way back), and a human's Blender stops its own MCP server while the AI's
 instance runs. Replaces locking the human's Blender (`lock`) for the AI's
@@ -467,7 +467,7 @@ isso. a melhor forma de editar cilindros é fazendo extrudes e cortar loops em
 volta do cilindro." An exception to D-009 for cylinders. What went wrong
 there: an inset on the quarter cap put extra vertices off the circle (v30
 and v32, 5 degrees from their neighbours), a lumpy top under Subdivision. In
-Fofuxo Cage, `start_part` keeps a cylinder whole; loops go around it with
+LLM Modeling Bridge, `start_part` keeps a cylinder whole; loops go around it with
 `bisect` or `loopcut_slide`.
 
 A cylinder's cap, the modeler's way: delete the whole top but its outer
@@ -484,7 +484,7 @@ Y. Imagine que você fosse aplicar um mirror, como a malha deveria ficar para
 ser possível você cortar e utilizar 1/4 do modelo 3D para ser recriado com
 mirror." A good practice even where it changes nothing in the result: the
 grid's lines run through the loop's extreme vertices, so the mesh can be cut
-in quarters and mirrored. Fofuxo Cage's `fill_grid` turns the grid until it
+in quarters and mirrored. LLM Modeling Bridge's `fill_grid` turns the grid until it
 is mirror symmetric on X and Y (unless an offset is given).
 
 ### D-063: A part that sits on a body in the file is built on that body, not over the concept (Stated, T2)
@@ -718,7 +718,7 @@ understood and turns the steps into ops it can run (Grab: `translate` with
 The modeler points at the model with marks: sharp or seam on a loop means
 "this loop" (remove it, move it, look at it); crease means "pinch here".
 Seen in B1 round 5 (a sharp loop to remove) and round 6 (seams to pull);
-confirmed by the modeler. Fofuxo Cage reports the marks new or cleared on
+confirmed by the modeler. LLM Modeling Bridge reports the marks new or cleared on
 every sync, and the AI clears its marks once acted on and says so.
 
 ### D-040: Silhouette overlap as an audit check (Stated, T1)
