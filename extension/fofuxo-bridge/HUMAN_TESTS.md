@@ -186,15 +186,16 @@ display as-is. The cage-display validation is complete.
 - Edit Mode topology undo/redo is now validated, including exact restored ids
   and agreement between the recorder and collected mesh; no repeat is needed.
 - The labeled cage/result sheet and manual loop display are approved. Judge
-  the focused Workbench crop and evenness thresholds with intentional
-  tight spacing and unwanted unevenness. The earlier distorted cage was
-  not approved merely because its image was generated.
+  evenness thresholds on a copy of the cowboy hat through these existing views,
+  distinguishing intentional tight spacing from unwanted unevenness. The modeler
+  questioned the separate Workbench crop's value; it remains an optional tool,
+  without a separate required visual gate or a claimed artistic approval.
 - Same-window Edit Mode and Sculpt passed the refusal, saved prompt return,
   synchronization and immutable-example checks. Return during a still-active
   native transform also passed the real Edit Mode repeat. Separate object addition
   and removal passed the same-window saved handover and immutable-example check.
-- Migrate a real legacy file copy with its sidecar; save and reopen, comparing
-  geometry, modifier order/settings, stable ids, region labels and sidecar data.
+- Real legacy-copy migration, sidecar preservation and normal save/reopen passed
+  with the copied cowboy hat; no repeat is needed.
 - Observe normal shutdown with native diagnostic output captured. Prior
   process exit code 0 without console capture did not settle the original
   access-violation diagnostic; do not infer its cause from the activation fix.
@@ -281,6 +282,18 @@ example checks. No sidebar-button click is part of the normal test flow.
 Repeat after switching between Edit Mode and Sculpt. Keep the AI process open.
 
 ## Regions and renders
+
+The real legacy-copy check passed on 2026-10-02 using `C1.blend` and all twelve
+files of its `.cage` sidecar copied into `hat-legacy-review/`. Opening with the
+installed extension migrated the sidecar directory and four legacy id/label
+attributes. All 88 unique ids, 71 faces, vertex coordinates, edges, matrix,
+modifier order/settings, label values and crease values survived migration,
+normal save and reopening. The source has no vertex groups; that empty group
+set was preserved, rather than being claimed as a populated-region test.
+All thirteen original file fingerprints were unchanged; copied sidecar files
+were preserved byte-for-byte except the expected semantically equivalent
+rewrite of `review.json`. Raw historical recorder logs were not inspected.
+Evidence: `models/tests/bridge-0.2.1/2026-10-02/hat-legacy-review/migration-result.json`.
 
 Name a vertex group through `name_region`; use it for a move and a loop cut.
 Check that its membership and label still match the intended region, including

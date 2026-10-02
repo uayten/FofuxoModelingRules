@@ -1,0 +1,37 @@
+{
+  "source": "models/tasks/chapeu-cowboy/ai/C1/C1.blend",
+  "copy": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\hat-legacy-review\\hat-legacy.blend",
+  "instance": {
+    "role": "ai",
+    "pid": 32932,
+    "file": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\hat-legacy-review\\hat-legacy.blend",
+    "mcp_running": true,
+    "access": "ai"
+  },
+  "legacy_metadata_renamed": {
+    "fofuxo_cage_id": "llm_modeling_bridge_id",
+    "fofuxo_show_vertex": "llm_bridge_show_vertex",
+    "fofuxo_loop": "llm_bridge_loop",
+    "fofuxo_show_face": "llm_bridge_show_face"
+  },
+  "vertex_count": 88,
+  "face_count": 71,
+  "unique_ids_preserved": true,
+  "geometry_edges_faces_unchanged": true,
+  "modifier_order_and_settings_unchanged": true,
+  "label_attribute_values_unchanged": true,
+  "crease_attribute_unchanged": true,
+  "regions_unchanged": true,
+  "source_region_count": 0,
+  "matrix_unchanged": true,
+  "normal_save_and_reopen_passed": true,
+  "sidecar_directory_migrated": true,
+  "sidecar_content_comparison": "passed",
+  "source_integrity_comparison": "passed",
+  "source_files_checked": 13,
+  "sidecar_files_checked": 12,
+  "rewritten_json_semantically_preserved": [
+    "review.json"
+  ],
+  "verdict": "real legacy copy with sidecar, normal save and reopen passed"
+}

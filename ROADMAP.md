@@ -75,8 +75,8 @@ approved plan, learn from human corrections and demonstrate a lower session cost
      against actual recorded vertex movements;
    - same-window editing, refusal of extension edits while the human holds
      it, saving and returning the window;
-   - region membership through topology operators and absorb, cage labels,
-     evenness thresholds, cropped Workbench views and cage overlay;
+   - region membership through topology operators and absorb, cage labels
+     and evenness thresholds reviewed in the existing labeled cage/result views;
    - legacy save/reopen after metadata and sidecar migration.
    **Done when** the real review is judged usable and observed defects are
    fixed. Background checks cannot establish modal input or Sculpt fidelity.
@@ -102,15 +102,16 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    Same-window object addition/removal also passed: the saved example retained
    the removed and added object statuses, the new cube's geometry and eight ids
    were saved, and TestMesh geometry, ids, labels, modifiers and regions were unchanged.
+   Real legacy-copy migration passed with the cowboy hat and its twelve sidecar
+   files, including normal save/reopen. All 88 ids, geometry, modifier settings,
+   label values and creases survived; original source fingerprints were unchanged.
    After background MCP timeouts, the modeler authorized the existing catalog
    APIs through the interactive MCP for this comparison. The AI restart
    reconnected that MCP; the background timeout remains unexplained.
    **Remaining**, in order:
-   - the labeled cage/result views and loop display are approved; focused
-     Workbench crop and intentional-versus-unwanted spacing judgments for
-     evenness warnings still need their separate verdict;
-   - real legacy-copy migration with sidecar, normal save/reopen and unchanged
-     geometry, modifiers, ids and labels;
+   - the labeled cage/result views and loop display are approved; judge evenness
+     warnings on a cowboy-hat copy through these existing views. The separate
+     Workbench crop remains optional, without its own required visual gate;
    - normal shutdown with native diagnostics captured, then final focused
      checks and verification of the installed/generated extension package.
    Reject the unmatched Grab replay candidate; suggestions remain provisional.

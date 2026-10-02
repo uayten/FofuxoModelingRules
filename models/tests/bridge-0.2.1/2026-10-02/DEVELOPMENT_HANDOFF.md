@@ -145,9 +145,20 @@ cube matched its live geometry and transform; eight unique ids were initialized
 on sync and saved afterward. Receipt: `modal-recorder-test.same-window-objects-return.json`.
 Example: `human/review-20261002-223059-1790980259602036700/`.
 
-Current ownership is AI. Next prepare the focused Workbench image and evenness
-judgment, without repairing intentional spacing. On human returns with an active
-transform, first execute:
+Object addition/removal was committed as c53816d. Current ownership is AI.
+The focused Workbench result image is prepared at
+`workbench-loop-review/model.workbench.high.png`, high view, 768 pixels, margin
+1.25, focused on the eight approved loop ids. Receipt:
+`modal-recorder-test.workbench-loop-review.json`. Scene objects, mesh coordinates
+and ids were unchanged, and all temporary render data were cleaned up. Human
+crop judgment is pending. The human did not understand the isolated crop.
+A contextual comparison is now prepared at
+`workbench-loop-context/workbench-crop-explanation.png`: complete result on the
+left, projected camera rectangle in cyan, matching enlarged region on the right.
+`crop-location.json` stores the rectangle computed from the actual camera framing.
+Ask only whether that enlargement is useful/readable next. Then
+validate evenness warnings with intentional tight and unwanted uneven spacing,
+without automatic repairs. On human returns with an active transform, first execute:
 
 ```python
 result = bridge.resume_ai(save=True)
@@ -161,12 +172,28 @@ topology and archived receipts before validation or committing. Input during
 return is marked `during_return` and cannot create replay drags. Do not count the
 withdrawn simulation checks or manual confirm/Undo as active native takeover.
 
-1. Human judgment of focused Workbench crop and evenness thresholds for
-   intentional tight spacing versus unwanted unevenness. Do not automatically
-   repair intentional geometry because of warnings.
-2. Real legacy-copy migration, including its sidecar, normal save/reopen,
-   unchanged geometry, modifier order/settings, stable ids, labels and data.
-3. Normal shutdown with native output captured, then final focused checks and
+The modeler chose the cowboy hat for uniformity judgment through the existing
+labeled cage/result views, and questioned the separate Workbench crop's value.
+That crop remains optional, without a separate validation gate. Do not repeat
+instructions to avoid Blender while its AI screen already blocks input.
+
+The primary AI Blender now has `hat-legacy-review/hat-legacy.blend` open, PID
+32932, access AI. `inspection-session.json` records the original test file to
+restore afterward. The source `models/tasks/chapeu-cowboy/ai/C1/C1.blend` and its
+sidecar are untouched. A real copy was migrated, normally saved and reopened:
+88 unique ids, 71 faces, geometry, modifiers, labels, creases and empty group
+set were preserved. All thirteen original fingerprints still match; twelve
+copied sidecar files are intact apart from the expected semantic JSON rewrite.
+Receipt: `hat-legacy-review/migration-result.json`. No raw C1 recorder logs were
+inspected. The subsequent sync reports unchanged geometry and seven cage
+neighbour pairs above the 4:1 area warning threshold; maximum ratio 5.954.
+Opposite-edge ratio 2.439 is below 3:1. Evaluated maxima are 2.631 and 1.592,
+with no warnings or degenerate faces. Human uniformity judgment is pending.
+
+1. Human judgment of evenness thresholds on the copied hat, distinguishing
+   intentional spacing from unwanted unevenness through the existing views.
+   Preserve Mirror Y and the dent; no hat modeling edits are requested.
+2. Normal shutdown with native output captured, then final focused checks and
    verification that installed sources and generated ZIP contain validated fixes.
 
 ## Connection and native diagnostic limitations

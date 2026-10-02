@@ -1,0 +1,67 @@
+[
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.blend",
+    "length": 119866,
+    "sha256": "378312FE692CE44C665E03704A62A97362D9324FDE0CA8A53042A7B9B4E32E57"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\Chapéu.png",
+    "length": 254170,
+    "sha256": "AD8F65D45EC52E9154FC2B87A9067B3D7D395BB180CB4D1AAC814F29D46FABBE"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\Chapéu.txt",
+    "length": 8329,
+    "sha256": "6E7EB927C4721AD1AC497BB37FAE6DDDF96D1AD0A86CA073B04ED7798822BD12"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\Chapéu.v1.png",
+    "length": 74060,
+    "sha256": "3DE98711AD2A11CDCD4434253CB08B75FD99A7904BC642EAEA3A4C776ED2E8E8"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\Chapéu.views.png",
+    "length": 138664,
+    "sha256": "41249AA4390DEA6279B7BBB616E77979A6AFCF531C3D73B55995C60311AD4091"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\ops_central.json",
+    "length": 199676,
+    "sha256": "F408C8C4BACB5EB23072ED703CE24D6D3FA076EF220A6054D483DCA60B617C55"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\ops_egg.json",
+    "length": 14654,
+    "sha256": "38F34D42040BA382C1C83BB2196806C7434579FFB868D421D3E16E8CF317CFE8"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\review.blend",
+    "length": 3223810,
+    "sha256": "8296F26F863405A32088E7296788C5416396D41B4EB7971B5E1E2A07C5FAD2CB"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\review.blend1",
+    "length": 3223810,
+    "sha256": "AE8D0A6A0A603116C53090F5FFBE3C74A39DD7FB5093313DCD0278DBD05FDAF4"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\review.json",
+    "length": 284,
+    "sha256": "52F20AAC4190EEFFAA3D89BB81647DA8140FCDAC9732828E34492596050014CA"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\review.opened.json",
+    "length": 43,
+    "sha256": "8B8DC3231530CCF826C50E6B541BC0ECC711CAC74E607810FEAC73324FD83FB4"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\review.ops.jsonl",
+    "length": 154182,
+    "sha256": "74123C7550ED63091B863A5A79DF70808EDC7DF504338733175C26414EE4B782"
+  },
+  {
+    "path": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.cage\\.state\\Chapéu.json",
+    "length": 16106,
+    "sha256": "6275DAC9299E11F6698F9E189F0FDA0AD7FC4359212DCF86D90B09B6B4E10791"
+  }
+]
