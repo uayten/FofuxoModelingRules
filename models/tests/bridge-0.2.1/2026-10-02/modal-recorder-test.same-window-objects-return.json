@@ -1,0 +1,41 @@
+{
+  "instance": {
+    "role": "ai",
+    "pid": 32932,
+    "file": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.blend",
+    "mcp_running": true,
+    "access": "ai"
+  },
+  "example": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\human\\review-20261002-223059-1790980259602036700",
+  "verdict": "same-window object addition/removal passed",
+  "removed_object": "BridgeRemoveFixture",
+  "added_object": "BridgeAddedFixture",
+  "before_objects": [
+    "BridgeRemoveFixture",
+    "TestMesh"
+  ],
+  "after_objects": [
+    "BridgeAddedFixture",
+    "TestMesh"
+  ],
+  "removed_object_absent": true,
+  "added_object_archived_and_matches_live_geometry": true,
+  "added_object_unique_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "test_mesh_geometry_ids_topology_labels_matrix_unchanged": true,
+  "test_mesh_modifiers_regions_unchanged": true,
+  "temporary_objects_cleaned": true,
+  "operators": {
+    "OUTLINER_OT_delete": 1,
+    "MESH_OT_primitive_cube_add": 1
+  },
+  "saved_after_sync": true
+}

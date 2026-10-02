@@ -137,8 +137,17 @@ the live object, and borrowed comparison data were removed.
 Receipt: `modal-recorder-test.native-cancel-return.json`.
 Example: `human/review-20261002-222251-1790979771806778600/`.
 
-Current ownership is AI. Next prepare only the same-window added/removed-object
-check. On future human returns with an active transform, first execute:
+Native return was committed as 63f0e62. Same-window object addition/removal then
+passed: the human removed `BridgeRemoveFixture`, added `BridgeAddedFixture`,
+and saved prompt return archived both statuses. TestMesh geometry, ids, topology,
+labels, matrix, modifier settings and regions were unchanged. The archived added
+cube matched its live geometry and transform; eight unique ids were initialized
+on sync and saved afterward. Receipt: `modal-recorder-test.same-window-objects-return.json`.
+Example: `human/review-20261002-223059-1790980259602036700/`.
+
+Current ownership is AI. Next prepare the focused Workbench image and evenness
+judgment, without repairing intentional spacing. On human returns with an active
+transform, first execute:
 
 ```python
 result = bridge.resume_ai(save=True)
@@ -152,14 +161,12 @@ topology and archived receipts before validation or committing. Input during
 return is marked `during_return` and cannot create replay drags. Do not count the
 withdrawn simulation checks or manual confirm/Undo as active native takeover.
 
-1. Same-window added/removed objects: geometry replacement inside TestMesh did
-   not establish separate-object handover behavior.
-2. Human judgment of focused Workbench crop and evenness thresholds for
+1. Human judgment of focused Workbench crop and evenness thresholds for
    intentional tight spacing versus unwanted unevenness. Do not automatically
    repair intentional geometry because of warnings.
-3. Real legacy-copy migration, including its sidecar, normal save/reopen,
+2. Real legacy-copy migration, including its sidecar, normal save/reopen,
    unchanged geometry, modifier order/settings, stable ids, labels and data.
-4. Normal shutdown with native output captured, then final focused checks and
+3. Normal shutdown with native output captured, then final focused checks and
    verification that installed sources and generated ZIP contain validated fixes.
 
 ## Connection and native diagnostic limitations

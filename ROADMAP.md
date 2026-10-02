@@ -99,6 +99,9 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    topology, modifiers, regions and seven loop marks survived, and the archived
    after-file matched the live object. The Windows cancellation uses targeted
    window messages with normal human input enabled; event simulation was rejected.
+   Same-window object addition/removal also passed: the saved example retained
+   the removed and added object statuses, the new cube's geometry and eight ids
+   were saved, and TestMesh geometry, ids, labels, modifiers and regions were unchanged.
    After background MCP timeouts, the modeler authorized the existing catalog
    APIs through the interactive MCP for this comparison. The AI restart
    reconnected that MCP; the background timeout remains unexplained.
@@ -106,8 +109,6 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    - the labeled cage/result views and loop display are approved; focused
      Workbench crop and intentional-versus-unwanted spacing judgments for
      evenness warnings still need their separate verdict;
-   - same-window added/removed objects. Prompt return during a still-active
-     native transform is now validated; no repeat is needed;
    - real legacy-copy migration with sidecar, normal save/reopen and unchanged
      geometry, modifiers, ids and labels;
    - normal shutdown with native diagnostics captured, then final focused

@@ -191,9 +191,8 @@ display as-is. The cage-display validation is complete.
   not approved merely because its image was generated.
 - Same-window Edit Mode and Sculpt passed the refusal, saved prompt return,
   synchronization and immutable-example checks. Return during a still-active
-  native transform also passed the real Edit Mode repeat. Check added/removed objects
-  during handover, since replacing geometry inside TestMesh does not test new
-  objects.
+  native transform also passed the real Edit Mode repeat. Separate object addition
+  and removal passed the same-window saved handover and immutable-example check.
 - Migrate a real legacy file copy with its sidecar; save and reopen, comparing
   geometry, modifier order/settings, stable ids, region labels and sidecar data.
 - Observe normal shutdown with native diagnostic output captured. Prior
@@ -235,7 +234,7 @@ interactive MCP, without replacing the scene. Evidence is in
 `models/tests/bridge-0.2.1/2026-10-02/modal-recorder-test.same-window-sculpt-return.json`.
 The AI restart preserved ids, coordinates, faces and modifiers; its previous
 process exited with code 0 without native output capture. That does not settle
-the earlier access-violation diagnostic. Added/removed-object handover remains pending.
+the earlier access-violation diagnostic.
 
 The first saved return during a still-active native transform failed: Object
 Mode could not be entered while transforming. An attempted event-simulation
@@ -259,6 +258,17 @@ move within 0.000010 mm per component; all 36 ids, 26 faces, modifier settings,
 regions and seven marked loop edges survived. The archived after-file matches
 the live object, and borrowed comparison data were removed. Evidence:
 `models/tests/bridge-0.2.1/2026-10-02/modal-recorder-test.native-cancel-return.json`.
+
+The same-window object check also passed on 2026-10-02. The human deleted
+`BridgeRemoveFixture` through the Outliner, added a cube and named it
+`BridgeAddedFixture`. Saved prompt return preserved the addition and removal
+in the before/after example and reported both object statuses. The recorder
+retained Outliner deletion and cube addition. TestMesh geometry, all 36 ids,
+topology, labels, matrix, modifier settings and region memberships were unchanged.
+The archived added cube matched the live geometry and transform. Sync assigned
+eight unique stable ids to the added object; a subsequent save persisted them.
+Borrowed comparison objects were cleaned up. Evidence:
+`models/tests/bridge-0.2.1/2026-10-02/modal-recorder-test.same-window-objects-return.json`.
 
 Ask the agent for `human_access()`. Confirm that the black screen disappears,
 the usual Blender layout returns and editing works. While you hold the window,
