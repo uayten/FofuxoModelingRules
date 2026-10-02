@@ -830,8 +830,11 @@ unverified selected-brush settings are preserved separately, without using
 them for a Smooth replay candidate.
 
 `human_access()` keeps the MCP connected for status, while the extension's
-editing APIs refuse changes. In the LLM sidebar, **Save and return to LLM**
-saves the work and restores the AI screen. This cooperative guard applies
+editing APIs refuse changes. In this project's conversation-driven workflow,
+the next human prompt returns control: the agent first calls
+`resume_ai(save=True)` through the MCP, then synchronizes before editing.
+No sidebar-button click is required; that button remains an optional UI control.
+The extension does not receive chat prompts itself. This cooperative guard applies
 to the extension APIs; arbitrary raw Python sent through the MCP is outside
 that guard. Recording in both window modes needs the [human tests](HUMAN_TESTS.md).
 Same-window sessions use separate `handover.*.jsonl` logs and preserve a

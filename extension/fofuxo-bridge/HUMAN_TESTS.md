@@ -189,10 +189,12 @@ display as-is. The cage-display validation is complete.
   the focused Workbench crop and evenness thresholds with intentional
   tight spacing and unwanted unevenness. The earlier distorted cage was
   not approved merely because its image was generated.
-- Exercise same-window access in Edit Mode and Sculpt: normal layout,
-  refused extension edit, Save and return to LLM, synchronized geometry and
-  immutable correction example. Check added/removed objects during this
-  handover, since replacing geometry inside TestMesh does not test new objects.
+- Same-window Edit Mode and Sculpt passed the refusal, saved prompt return,
+  synchronization and immutable-example checks. Check added/removed objects
+  during handover, since replacing geometry inside TestMesh does not test new
+  objects. Also test prompt return while a native transform remains active;
+  the prior refusal test left the transform active, but the saved return
+  happened after it ended.
 - Migrate a real legacy file copy with its sidecar; save and reopen, comparing
   geometry, modifier order/settings, stable ids, region labels and sidecar data.
 - Observe normal shutdown with native diagnostic output captured. Prior
@@ -204,12 +206,48 @@ display as-is. The cage-display validation is complete.
 
 ## Same window
 
+The first handover reached human access with the normal layout restored and
+MCP still running. While the modeler had an unfinished modal translate active
+in Edit Mode, `edit("TestMesh", "mesh translate all w=1mm")` refused with
+InstanceError. Mesh coordinates, selection, saved-file hash and active object
+were unchanged by the attempt; the native translate remained active. The next
+human prompt returned control through `resume_ai(save=True)`, without a button
+click. At that point the translate had already ended, so no cancellation was
+necessary. The AI screen returned, the file was saved, nine moved vertices
+were synchronized and the correction example was preserved. All original ids
+survived, including six vertices removed/restored by the human's undo.
+
+The Sculpt handover also passed. The extension refused its edit without changing
+the mesh, and the next prompt saved and restored AI access. The example contains
+two Grab strokes and four temporary Shift/Smooth strokes, with radii 248–294 px
+and observed strengths 0.4 and 0.7 respectively. Seven left-button and five
+middle-button presses/releases paired; all eight sampled drags ended on release.
+Thirteen vertices moved. Comparing the saved before/after objects preserved all
+36 ids, topology, every inspected modifier setting, region memberships and loop
+annotations. Summed stroke movements matched the received mesh within 0.006432 mm
+per component. The archived after-object matched the live mesh, and temporary
+data were removed. Replay suggestions remain provisional.
+
+The background MCP tool timed out after 120 seconds, including after restarting
+the AI Blender. Direct background startup probes completed, so the cause remains
+unknown. With the modeler's authorization, comparison used the existing
+`catalog.borrowed_objects` and `catalog.snapshot_delta` APIs through the
+interactive MCP, without replacing the scene. Evidence is in
+`models/tests/bridge-0.2.1/2026-10-02/modal-recorder-test.same-window-sculpt-return.json`.
+The AI restart preserved ids, coordinates, faces and modifiers; its previous
+process exited with code 0 without native output capture. That does not settle
+the earlier access-violation diagnostic. Added/removed-object handover and return
+during an active transform remain pending.
+
 Ask the agent for `human_access()`. Confirm that the black screen disappears,
 the usual Blender layout returns and editing works. While you hold the window,
-ask for a small extension edit: it must refuse without touching the file.
-Use **LLM > Save and return to LLM**. Confirm that it saves, restores the screen
-and lets the agent synchronize your changes. Repeat once after switching
-between Edit Mode and Sculpt. Do not close a file with unsaved work.
+an extension edit must refuse without touching the file. The already observed
+Edit Mode refusal remains valid; future refusal probes must run before the
+next human prompt, because that prompt returns ownership immediately.
+Tell the agent when finished. Its first state-changing MCP action must be
+`resume_ai(save=True)`, restoring AI control and saving, followed by sync and
+example checks. No sidebar-button click is part of the normal test flow.
+Repeat after switching between Edit Mode and Sculpt. Keep the AI process open.
 
 ## Regions and renders
 

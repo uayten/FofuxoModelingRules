@@ -29,7 +29,12 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    model. When the modeler finishes, `collect(close=True)` saves, synchronizes
    and closes only the human review. Launch a fresh review for the next edit.
    Same-window handover is an explicit opt-in or its dedicated validation
-   step. Show labeled cage/subdivision panels with `views()` for topology
+   step. After handing the AI window to the human, the next human prompt is
+   the return signal: the first state-changing MCP action must be
+   `resume_ai(save=True)`, restoring exclusive AI access and saving the work
+   before synchronization or editing. Do not require a sidebar-button click.
+   This is agent orchestration; the Blender extension does not receive chat
+   prompts directly. Show labeled cage/subdivision panels with `views()` for topology
    review; Workbench views show the result and do not replace the cage panels.
    A correction of method becomes a proposed decision with the modeler's
    words; do not
@@ -85,12 +90,21 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    The identity-history correction passed 14 focused checks and the final real
    repeat: cut ids 281–288 survived undo/redo exactly, and the collected mesh
    agreed with the last recorded id set. No snapshot errors remained.
+   Same-window Edit Mode and Sculpt passed extension-edit refusal, saved
+   prompt return, synchronization and immutable examples. The Sculpt comparison
+   retained 36 ids, topology, modifier settings, regions and loop annotations;
+   six strokes matched the received mesh within 0.006432 mm per component.
+   After background MCP timeouts, the modeler authorized the existing catalog
+   APIs through the interactive MCP for this comparison. The AI restart
+   reconnected that MCP; the background timeout remains unexplained.
    **Remaining**, in order:
    - the labeled cage/result views and loop display are approved; focused
      Workbench crop and intentional-versus-unwanted spacing judgments for
      evenness warnings still need their separate verdict;
-   - same-window Edit/Sculpt handover, refusal of extension edits, saved return,
-     synchronization and examples, including added/removed objects;
+   - same-window added/removed objects and prompt return during a still-active
+     native transform. The earlier refusal occurred during a live modal move,
+     but that move had ended before the saved return. Return must occur on
+     the next human prompt;
    - real legacy-copy migration with sidecar, normal save/reopen and unchanged
      geometry, modifiers, ids and labels;
    - normal shutdown with native diagnostics captured, then final focused

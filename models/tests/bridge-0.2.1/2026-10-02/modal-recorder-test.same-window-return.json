@@ -1,0 +1,131 @@
+{
+  "instance": {
+    "role": "ai",
+    "pid": 34956,
+    "file": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.blend",
+    "mcp_running": true,
+    "access": "ai"
+  },
+  "sync": {
+    "action": "pulled",
+    "issues": [
+      {
+        "level": "WARN",
+        "code": "cage_dips",
+        "msg": "the cage dips inward under a convex surface: on purpose (a part hugging another, D-057)? If not, it is hard to edit: move the vertex out and let its neighbours carry the shape",
+        "verts": [
+          "v227",
+          "v228",
+          "v287"
+        ]
+      },
+      {
+        "level": "WARN",
+        "code": "cage_evenness",
+        "verts": [],
+        "msg": "cage: neighbour area ratio 10.4, opposite-edge spacing ratio 2.744; inspect this region"
+      },
+      {
+        "level": "WARN",
+        "code": "modeled_behind",
+        "msg": "the base mesh is on +Y, behind its mirror copy in the front view: model on -Y (flip(name, 'd'), D-055)",
+        "verts": []
+      }
+    ],
+    "count": "v 36  f 26   evaluated v 418 f 416"
+  },
+  "handover_summary": {
+    "count": 10,
+    "operators": {
+      "VIEW3D_OT_select": 1,
+      "OBJECT_OT_editmode_toggle": 1,
+      "VIEW3D_OT_select_box": 1,
+      "TRANSFORM_OT_translate": 3,
+      "UNDO": 2,
+      "TOPOLOGY": 2
+    },
+    "undos": 2,
+    "redos": 0,
+    "moves_by_region": {},
+    "unattributed_vertex_samples": 33,
+    "capture": "event",
+    "combined_boundaries": 0,
+    "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+  },
+  "parse_errors": [],
+  "changed_vertices": [
+    {
+      "id": 136,
+      "delta_mm": [
+        287.109,
+        189.147,
+        152.179
+      ]
+    },
+    {
+      "id": 182,
+      "delta_mm": [
+        287.109,
+        189.147,
+        152.179
+      ]
+    },
+    {
+      "id": 215,
+      "delta_mm": [
+        287.109,
+        189.147,
+        152.179
+      ]
+    },
+    {
+      "id": 224,
+      "delta_mm": [
+        287.109,
+        0.0,
+        152.179
+      ]
+    },
+    {
+      "id": 229,
+      "delta_mm": [
+        287.109,
+        0.0,
+        152.179
+      ]
+    },
+    {
+      "id": 286,
+      "delta_mm": [
+        287.109,
+        189.147,
+        152.179
+      ]
+    },
+    {
+      "id": 285,
+      "delta_mm": [
+        287.109,
+        0.0,
+        152.179
+      ]
+    },
+    {
+      "id": 284,
+      "delta_mm": [
+        287.109,
+        189.147,
+        152.179
+      ]
+    },
+    {
+      "id": 282,
+      "delta_mm": [
+        287.109,
+        189.147,
+        152.179
+      ]
+    }
+  ],
+  "example": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\human\\review-20261002-201446-1790972086429971700"
+}

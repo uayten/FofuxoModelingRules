@@ -1,0 +1,22 @@
+{
+  "instance": {
+    "role": "ai",
+    "pid": 34956,
+    "file": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.blend",
+    "mcp_running": true,
+    "access": "human"
+  },
+  "mode": "EDIT_MESH",
+  "modal_operators": [
+    "LLM_MODELING_BRIDGE_OT_record_input",
+    "TRANSFORM_OT_translate"
+  ],
+  "edit_attempt": {
+    "refused": true,
+    "error_type": "InstanceError",
+    "message": "the human is editing this window; return it to the LLM before running edits"
+  },
+  "mesh_unchanged_during_attempt": true,
+  "saved_file_unchanged": true,
+  "same_active_object": true
+}
