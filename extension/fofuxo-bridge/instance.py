@@ -86,14 +86,75 @@ def human_access():
 
 
 def resume_ai(save=True):
-    """The human returns the window; save their work before enabling edits."""
+    """Return ownership after saving; cancel an unfinished transform first.
+
+    A modal return yields a mutable pending report. Let Blender's event loop run
+    until pending is false, and check error before synchronizing or editing.
+    """
     if not _state.get("human_editing"):
         raise InstanceError("this window has not been handed to the human")
+    if _state.get("return_pending"):
+        return _state["return_pending"]["report"]
+    transforms = _active_transforms()
+    if not transforms:
+        return _finish_return(save)
+    from .native_events import prepare_transform_cancel
+    window, operators = transforms[0]
+    dispatch, native_receipt = prepare_transform_cancel(window)
+    report = {"access": "human", "saved": False, "pending": True, "file": bpy.data.filepath}
+    request = {"save": save, "report": report, "deadline": time.monotonic() + 5.0,
+               "transforms": operators, "native_receipt": native_receipt}
+    _state["return_pending"] = request
+    try:
+        area = next(area for area in window.screen.areas if area.type == "VIEW_3D")
+        region = next(region for region in area.regions if region.type == "WINDOW")
+        with bpy.context.temp_override(window=window, area=area, region=region):
+            bpy.ops.llm_modeling_bridge.return_guard("INVOKE_DEFAULT")
+        dispatch()
+        _log([{"event": "HANDOVER_RETURN", "status": "requested", "transforms": operators,
+               **native_receipt}])
+        bpy.app.timers.register(_poll_return, first_interval=0.05)
+    except Exception:
+        _state.pop("return_pending", None)
+        raise
+    return report
+
+
+def _active_transforms():
+    return [(window, operators) for window in bpy.context.window_manager.windows
+            if (operators := [operator.bl_idname for operator in window.modal_operators
+                              if operator.bl_idname.startswith("TRANSFORM_OT_")])]
+
+
+def _poll_return():
+    request = _state.get("return_pending")
+    if not request:
+        return None
+    try:
+        if _active_transforms():
+            if time.monotonic() < request["deadline"]:
+                return 0.05
+            raise InstanceError("native transform did not cancel; ownership remains with the human")
+        result = _finish_return(request["save"], request["transforms"], request["native_receipt"])
+        request["report"].clear()
+        request["report"].update(result, pending=False)
+    except Exception as error:
+        request["report"].update(pending=False, error=str(error),
+                                  access="human" if _state.get("human_editing") else "ai")
+        print(f"LLM Modeling Bridge: window return failed: {error}")
+    _state.pop("return_pending", None)
+    return None
+
+
+def _finish_return(save, cancelled_transforms=(), native_receipt=None):
     from .lock import _leave_edit_mode
     _leave_edit_mode()
     if bpy.context.object and bpy.context.object.mode != "OBJECT":
         bpy.ops.object.mode_set(mode="OBJECT")
     _record_ops(finish_sculpt=True)
+    if cancelled_transforms:
+        _log([{"event": "HANDOVER_RETURN", "status": "cancelled", "transforms": cancelled_transforms,
+               **(native_receipt or {})}])
     if save:
         bpy.ops.wm.save_as_mainfile(filepath=bpy.data.filepath)
         from .catalog import archive_review, human_directory
@@ -105,7 +166,8 @@ def resume_ai(save=True):
             _state["last_human_example"] = example["example"]
     _state["human_editing"] = False
     _setup_ai()
-    return {"access": "ai", "saved": save, "file": bpy.data.filepath, "example": _state.get("last_human_example")}
+    return {"access": "ai", "saved": save, "file": bpy.data.filepath,
+            "example": _state.get("last_human_example"), "cancelled_transforms": list(cancelled_transforms)}
 
 
 # --- which Blender is this -----------------------------------------------------
@@ -1079,7 +1141,27 @@ class LLM_BRIDGE_OT_return_to_ai(bpy.types.Operator):
         return {"FINISHED"}
 
 
-CLASSES = (LLM_BRIDGE_OT_ai_screen, LLM_BRIDGE_OT_load_update, LLM_BRIDGE_OT_return_to_ai, LLM_BRIDGE_PT_review)
+class LLM_BRIDGE_OT_return_guard(bpy.types.Operator):
+    """Block further edits while the native transform cancellation is pending."""
+
+    bl_idname = "llm_modeling_bridge.return_guard"
+    bl_label = "Return window to LLM"
+    bl_options = {"INTERNAL", "MODAL_PRIORITY"}
+
+    def invoke(self, context, event):
+        context.window_manager.modal_handler_add(self)
+        return {"RUNNING_MODAL"}
+
+    def modal(self, context, event):
+        if not _state.get("return_pending"):
+            return {"FINISHED"}
+        if event.type in {"RIGHTMOUSE", "ESC"} or event.type.startswith("TIMER"):
+            return {"PASS_THROUGH"}
+        return {"RUNNING_MODAL"}
+
+
+CLASSES = (LLM_BRIDGE_OT_ai_screen, LLM_BRIDGE_OT_load_update, LLM_BRIDGE_OT_return_guard,
+           LLM_BRIDGE_OT_return_to_ai, LLM_BRIDGE_PT_review)
 RECORD_HANDLERS = (
     (bpy.app.handlers.depsgraph_update_post, _on_record_update),
     (bpy.app.handlers.undo_pre, _on_history_pre),
@@ -1114,9 +1196,12 @@ def register():
 def unregister():
     from . import input_recorder
     input_recorder.unregister()
-    for timer in (_setup_ai, _poll_human, _record_after_event):
+    for timer in (_setup_ai, _poll_human, _record_after_event, _poll_return):
         if bpy.app.timers.is_registered(timer):
             bpy.app.timers.unregister(timer)
+    pending = _state.pop("return_pending", None)
+    if pending:
+        pending["report"].update(pending=False, error="extension disabled during window return")
     for handlers, fn in ((bpy.app.handlers.load_post, _on_load), (bpy.app.handlers.save_pre, _on_save_pre),
                          (bpy.app.handlers.save_post, _on_save_post), *RECORD_HANDLERS):
         if fn in handlers:

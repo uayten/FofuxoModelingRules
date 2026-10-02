@@ -190,11 +190,10 @@ display as-is. The cage-display validation is complete.
   tight spacing and unwanted unevenness. The earlier distorted cage was
   not approved merely because its image was generated.
 - Same-window Edit Mode and Sculpt passed the refusal, saved prompt return,
-  synchronization and immutable-example checks. Check added/removed objects
+  synchronization and immutable-example checks. Return during a still-active
+  native transform also passed the real Edit Mode repeat. Check added/removed objects
   during handover, since replacing geometry inside TestMesh does not test new
-  objects. Also test prompt return while a native transform remains active;
-  the prior refusal test left the transform active, but the saved return
-  happened after it ended.
+  objects.
 - Migrate a real legacy file copy with its sidecar; save and reopen, comparing
   geometry, modifier order/settings, stable ids, region labels and sidecar data.
 - Observe normal shutdown with native diagnostic output captured. Prior
@@ -236,8 +235,30 @@ interactive MCP, without replacing the scene. Evidence is in
 `models/tests/bridge-0.2.1/2026-10-02/modal-recorder-test.same-window-sculpt-return.json`.
 The AI restart preserved ids, coordinates, faces and modifiers; its previous
 process exited with code 0 without native output capture. That does not settle
-the earlier access-violation diagnostic. Added/removed-object handover and return
-during an active transform remain pending.
+the earlier access-violation diagnostic. Added/removed-object handover remains pending.
+
+The first saved return during a still-active native transform failed: Object
+Mode could not be entered while transforming. An attempted event-simulation
+fix was rejected because Blender then ignored real mouse/keyboard input; that
+attempt was removed. Its mocked checks did not validate human interaction.
+
+The Windows correction uses paired right-button messages addressed only to
+the current process's unique Blender window, checks the native Cancel binding,
+and blocks further editing while awaiting cancellation. It never moves the
+cursor, changes focus or enables event simulation. Fourteen isolated native
+Object Mode checks, eight failure checks, eight activation checks and 26 recorder
+checks passed before the real human repeat.
+
+The real Edit Mode repeat passed on 2026-10-02. One confirmed move of nine vertices
+was followed by an unfinished translate; the next chat prompt cancelled only
+that live translate, saved and restored AI ownership. The log contains one
+completed translate, separate cancellation request/completion receipts and paired
+right-button input marked `during_return`, without an invented replay drag.
+The final native transform handler is gone. The saved result matches the first
+move within 0.000010 mm per component; all 36 ids, 26 faces, modifier settings,
+regions and seven marked loop edges survived. The archived after-file matches
+the live object, and borrowed comparison data were removed. Evidence:
+`models/tests/bridge-0.2.1/2026-10-02/modal-recorder-test.native-cancel-return.json`.
 
 Ask the agent for `human_access()`. Confirm that the black screen disappears,
 the usual Blender layout returns and editing works. While you hold the window,

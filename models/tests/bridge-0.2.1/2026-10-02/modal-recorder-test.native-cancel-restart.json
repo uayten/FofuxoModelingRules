@@ -1,0 +1,29 @@
+{
+  "instance": {
+    "role": "ai",
+    "pid": 32932,
+    "file": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.blend",
+    "mcp_running": true,
+    "access": "ai"
+  },
+  "event_simulate": false,
+  "geometry_equal": true,
+  "ids_equal": true,
+  "installed_sources_match": {
+    "instance": true,
+    "input_recorder": true,
+    "native_events": true
+  },
+  "native_recipient": {
+    "transport": "win32_window_messages",
+    "pid": 32932,
+    "window_handle": 2558546,
+    "button": "RIGHTMOUSE",
+    "policy": "cancel_unconfirmed_transform"
+  },
+  "native_object_mode_checks": 14,
+  "failure_checks": 8,
+  "activation_checks": 8,
+  "recorder_checks": 26,
+  "human_edit_mode_validation": "pending"
+}

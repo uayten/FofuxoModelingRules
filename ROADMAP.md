@@ -94,6 +94,11 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    prompt return, synchronization and immutable examples. The Sculpt comparison
    retained 36 ids, topology, modifier settings, regions and loop annotations;
    six strokes matched the received mesh within 0.006432 mm per component.
+   Real prompt return during an active Edit Mode translate also passed: the
+   unfinished move was cancelled, the confirmed move was saved, all 36 ids,
+   topology, modifiers, regions and seven loop marks survived, and the archived
+   after-file matched the live object. The Windows cancellation uses targeted
+   window messages with normal human input enabled; event simulation was rejected.
    After background MCP timeouts, the modeler authorized the existing catalog
    APIs through the interactive MCP for this comparison. The AI restart
    reconnected that MCP; the background timeout remains unexplained.
@@ -101,10 +106,8 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    - the labeled cage/result views and loop display are approved; focused
      Workbench crop and intentional-versus-unwanted spacing judgments for
      evenness warnings still need their separate verdict;
-   - same-window added/removed objects and prompt return during a still-active
-     native transform. The earlier refusal occurred during a live modal move,
-     but that move had ended before the saved return. Return must occur on
-     the next human prompt;
+   - same-window added/removed objects. Prompt return during a still-active
+     native transform is now validated; no repeat is needed;
    - real legacy-copy migration with sidecar, normal save/reopen and unchanged
      geometry, modifiers, ids and labels;
    - normal shutdown with native diagnostics captured, then final focused

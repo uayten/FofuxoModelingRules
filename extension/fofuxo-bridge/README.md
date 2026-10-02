@@ -180,6 +180,8 @@ python extension/fofuxo-bridge/launcher.py models/tasks/laco/ai/B1-opus-cage/B1.
   the MCP port (9876) and prints `{"started": true, "pid": ..., "listeners":
   [...]}`. If an AI instance is already running it starts nothing; open the
   file there instead.
+- `--native-log PATH` captures Blender's stdout/stderr in a new file, including
+  shutdown diagnostics. Existing logs are never overwritten.
 - The AI's instance shows one black area with the notice "LLM Modeling Bridge:
   Blender exclusivo da AI" (Blender's focus mode: no top bar, no status
   bar), swallows every input event (the window's close button still works)
@@ -840,6 +842,30 @@ that guard. Recording in both window modes needs the [human tests](HUMAN_TESTS.m
 Same-window sessions use separate `handover.*.jsonl` logs and preserve a
 before/after example on the normal saved return, including added or removed objects.
 
+On Windows, returning during a native transform cancels the unconfirmed move
+through messages addressed only to this Blender window, without moving the
+cursor, changing focus or enabling event simulation. Completed edits are kept.
+This path requires one Blender window and a Transform Modal Map with right-button
+press bound to Cancel. Other configurations refuse before sending input.
+
+`resume_ai()` returns a mutable report with `pending=True` while cancellation is
+in progress. Let Blender process its events, wait for `pending=False`, and check
+`error` before synchronization or editing. Through the interactive MCP:
+
+```python
+result = bridge.resume_ai(save=True)
+if result.get("pending"):
+    def check_is_finished():
+        return None if result.get("pending") else result
+```
+
+Further editing input is blocked during return. Cancellation request/completion
+receipts are in the operator log; input during return is marked `during_return`
+and cannot create replay drags. A cancellation timeout leaves human ownership
+in place and reports failure, without saving. The real Edit Mode check passed:
+the active translate was cancelled and the earlier confirmed move was saved,
+with stable ids, topology, modifiers, regions and loop marks preserved.
+
 Every successful `absorb()` first preserves the saved AI file, the human
 review, their stable-id deltas and recorder logs in a new `human/review-.../`
 example. For task files under `ai/<run>/`, this is the task's `human/`;
@@ -885,6 +911,8 @@ blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_roadmap
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_registration.py --python-exit-code 1
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_recording_events.py --python-exit-code 1
 python extension/fofuxo-bridge/tests/test_recording_summary.py
+blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_modal_return.py --python-exit-code 1
+blender --factory-startup --python extension/fofuxo-bridge/tests/test_native_return.py --python-exit-code 1
 blender -b --factory-startup --python extension/fofuxo-bridge/tests/test_identity_history.py --python-exit-code 1
 ```
 

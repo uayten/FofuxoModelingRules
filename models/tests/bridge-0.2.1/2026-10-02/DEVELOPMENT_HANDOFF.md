@@ -16,7 +16,7 @@ Read implementation functions only when needed for a specific observed defect.
 
 ## Current instance and file
 
-- Interactive MCP controls the AI Blender, last verified PID 28060, Blender
+- Interactive MCP controls the AI Blender, last verified PID 32932, Blender
   5.2.2 LTS, access `ai`. Recheck through `bridge.instance()` before acting.
 - Saved file: `models/tests/bridge-0.2.1/2026-10-02/modal-recorder-test.blend`.
 - Object: `TestMesh`, a human-built capital-M test fixture, 36 base vertices and
@@ -76,19 +76,90 @@ Restart receipts: `modal-recorder-test.restart-baseline.json` and
 
 ## Remaining work
 
-1. Same-window return while a native transform is still active. The prior
-   refusal happened during a live translate, but that translate had ended
-   before the saved return. Do not claim modal takeover is validated. Prepare
-   only this short human check next; verify that ownership return ends further
-   mouse-driven changes and preserves a clearly recorded result.
-2. Same-window added/removed objects: geometry replacement inside TestMesh did
+Active-transform return failed on the first real attempt: `resume_ai(save=True)`
+could not leave Edit Mode while the native move was active. The human cancelled
+with Escape; normal return then saved and archived the session, and geometry and
+ids matched `modal-recorder-test.active-transform-baseline.json` exactly.
+
+The event-simulation correction was rejected and removed. Twelve focused mocked
+state checks and eight activation checks passed, but the real human could not
+click: `--enable-event-simulate` makes Blender ignore native mouse/keyboard
+events. It is unsuitable for human editing; do not launch with that flag again.
+The earlier restart receipt records that failed experiment, not approval.
+
+`instance.py` and its installed copy are restored to the committed implementation.
+Active-transform return remains unresolved. The launcher retains only its new
+`--native-log` option for capturing stdout/stderr. The rejected test process shut
+down normally with output in `modal-recorder-test.active-transform-native.log`;
+its tail contains `Blender quit`. This does not establish the cause or resolution
+of the historical native access violation.
+
+The test Blender was restarted without event simulation, and geometry and ids
+still matched `modal-recorder-test.active-transform-retry-baseline.json`.
+Receipt: `modal-recorder-test.input-recovery.json`. Current native capture:
+`modal-recorder-test.input-recovery-native.log`.
+
+Human clicking was confirmed after this restart. The human also confirmed a
+first Edit Mode move and left a second one active; return failed again with
+`Unable to change object mode while transforming`. Instead of Escape, the human
+then confirmed the second move and used Undo. Saved return succeeded afterward.
+The log's Undo exactly negates the second move; the final mesh matches the first
+move within 0.01 mm per component, preserving 36 ids and topology.
+Receipt: `modal-recorder-test.active-transform-manual-undo-return.json`.
+Example: `human/review-20261002-220300-1790978580258686800/`.
+
+The human explicitly authorized further investigation and corrections without
+the cheap-path stopping restriction, continuing until the tooling-validation
+roadmap is complete. Do not resume the unrelated hat work.
+
+A new uncommitted implementation uses paired right-button Win32 messages
+addressed only to this process's unique Blender window. It checks the native
+Cancel binding, never moves the cursor or changes focus, and leaves native human
+input enabled. Fourteen isolated native Object Mode checks passed, including a
+real unfinished preview, cancellation, preservation of the confirmed move,
+saved immutable example and separate cancellation receipts. Eight failure-path
+checks, eight activation checks and 26 recorder checks passed. Do not substitute
+the isolated Object Mode fixture for the pending human Edit Mode confirmation.
+
+After installation and restart, PID 32932 has event simulation disabled,
+unchanged geometry/ids and matching installed sources. Receipt:
+`modal-recorder-test.native-cancel-restart.json`; baseline:
+`modal-recorder-test.native-cancel-baseline.json`; current native capture:
+`modal-recorder-test.native-cancel-native.log`. The preceding process's captured
+shutdown contains `Blender quit`, without matching crash/access-violation markers;
+that does not settle the cause or resolution of the historical diagnostic.
+
+The real human Edit Mode repeat passed: the next prompt cancelled the active
+translate, saved and returned AI access. The confirmed move of nine vertices was
+preserved within 0.000010 mm per component. All 36 ids, 26 faces, modifier settings,
+regions and seven marked loop edges survived. The archived after-object matched
+the live object, and borrowed comparison data were removed.
+Receipt: `modal-recorder-test.native-cancel-return.json`.
+Example: `human/review-20261002-222251-1790979771806778600/`.
+
+Current ownership is AI. Next prepare only the same-window added/removed-object
+check. On future human returns with an active transform, first execute:
+
+```python
+result = bridge.resume_ai(save=True)
+if result.get("pending"):
+    def check_is_finished():
+        return None if result.get("pending") else result
+```
+
+Check `error`, saved result, cancelled native handler, confirmed edit, stable ids,
+topology and archived receipts before validation or committing. Input during
+return is marked `during_return` and cannot create replay drags. Do not count the
+withdrawn simulation checks or manual confirm/Undo as active native takeover.
+
+1. Same-window added/removed objects: geometry replacement inside TestMesh did
    not establish separate-object handover behavior.
-3. Human judgment of focused Workbench crop and evenness thresholds for
+2. Human judgment of focused Workbench crop and evenness thresholds for
    intentional tight spacing versus unwanted unevenness. Do not automatically
    repair intentional geometry because of warnings.
-4. Real legacy-copy migration, including its sidecar, normal save/reopen,
+3. Real legacy-copy migration, including its sidecar, normal save/reopen,
    unchanged geometry, modifier order/settings, stable ids, labels and data.
-5. Normal shutdown with native output captured, then final focused checks and
+4. Normal shutdown with native output captured, then final focused checks and
    verification that installed sources and generated ZIP contain validated fixes.
 
 ## Connection and native diagnostic limitations

@@ -1,0 +1,96 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.bridge\\handover.before.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.blend",
+  "objects": [
+    "TestMesh"
+  ],
+  "why": null,
+  "status": "recorded; awaiting interview and replay validation",
+  "deltas": {
+    "TestMesh": {
+      "moved_mm": {
+        "v136": [
+          -383.52776,
+          1398.10056,
+          11.50859
+        ],
+        "v282": [
+          -383.52776,
+          1398.1005,
+          11.50857
+        ],
+        "v285": [
+          -383.52776,
+          0.0,
+          11.50858
+        ],
+        "v286": [
+          -383.52776,
+          1398.10062,
+          11.50859
+        ],
+        "v284": [
+          -383.52776,
+          1398.1005,
+          11.50858
+        ],
+        "v182": [
+          -383.52775,
+          1398.10049,
+          11.50859
+        ],
+        "v215": [
+          -383.52775,
+          1398.1005,
+          11.50858
+        ],
+        "v224": [
+          -383.52775,
+          0.0,
+          11.50859
+        ],
+        "v229": [
+          -383.52775,
+          0.0,
+          11.50859
+        ]
+      },
+      "added": [],
+      "removed": []
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 7,
+      "operators": {
+        "VIEW3D_OT_select_box": 1,
+        "VIEW3D_OT_select": 2,
+        "OBJECT_OT_editmode_toggle": 1,
+        "TRANSFORM_OT_translate": 2,
+        "UNDO": 1
+      },
+      "undos": 1,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 27,
+      "capture": "event",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 48,
+      "operators": {
+        "INPUT": 44,
+        "DRAG": 4
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": []
+    }
+  }
+}

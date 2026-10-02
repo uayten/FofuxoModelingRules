@@ -1,6 +1,6 @@
 """Start the AI's own Blender: black screen, MCP server on port 9876.
 
-    python extension/fofuxo-bridge/launcher.py <file.blend> [--blender PATH] [--timeout 120]
+    python extension/fofuxo-bridge/launcher.py <file.blend> [--blender PATH] [--timeout 120] [--native-log PATH]
 
 Plain Python (no bpy): it runs outside Blender. If an AI instance is alive
 it says so and starts nothing. It waits until the new Blender writes its
@@ -87,6 +87,7 @@ def main(argv=None):
     ap.add_argument("blend")
     ap.add_argument("--blender")
     ap.add_argument("--timeout", type=float, default=120)
+    ap.add_argument("--native-log", help="capture native stdout/stderr in a new file")
     args = ap.parse_args(argv)
     running = ai_instance()
     if running:
@@ -95,9 +96,15 @@ def main(argv=None):
         return 0
     before = listeners()
     flags = 0x00000008 | 0x00000200 if os.name == "nt" else 0  # DETACHED_PROCESS | NEW_PROCESS_GROUP
-    proc = subprocess.Popen([blender_path(args.blender), str(Path(args.blend).resolve()), "--", "--llm-bridge-ai"],
-                            creationflags=flags, close_fds=True, stdin=subprocess.DEVNULL,
-                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    native_log = Path(args.native_log).resolve() if args.native_log else None
+    output = native_log.open("xb") if native_log else subprocess.DEVNULL
+    try:
+        proc = subprocess.Popen([blender_path(args.blender), str(Path(args.blend).resolve()), "--", "--llm-bridge-ai"],
+                                creationflags=flags, close_fds=True, stdin=subprocess.DEVNULL,
+                                stdout=output, stderr=output)
+    finally:
+        if native_log:
+            output.close()
     end = time.time() + args.timeout
     ai = None
     while time.time() < end:
@@ -120,7 +127,7 @@ def main(argv=None):
             break
         time.sleep(1)
     print(json.dumps({"started": True, "pid": proc.pid, "listeners_before": before, "listeners": listeners(),
-                      "others_on_port": others}))
+                      "others_on_port": others, "native_log": str(native_log) if native_log else None}))
     return 0
 
 

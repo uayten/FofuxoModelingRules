@@ -1,0 +1,49 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.bridge\\handover.before.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.blend",
+  "objects": [
+    "TestMesh"
+  ],
+  "why": null,
+  "status": "recorded; awaiting interview and replay validation",
+  "deltas": {
+    "TestMesh": {
+      "moved_mm": {},
+      "added": [],
+      "removed": []
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 4,
+      "operators": {
+        "VIEW3D_OT_select": 1,
+        "OBJECT_OT_editmode_toggle": 1,
+        "TRANSFORM_OT_translate": 1,
+        "UNDO": 1
+      },
+      "undos": 1,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 18,
+      "capture": "event",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 35,
+      "operators": {
+        "INPUT": 32,
+        "DRAG": 3
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": []
+    }
+  }
+}

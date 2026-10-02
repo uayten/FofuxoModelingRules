@@ -156,6 +156,12 @@ class LLM_BRIDGE_OT_record_input(bpy.types.Operator):
             record = {"event": "INPUT", "key": event.type, "value": event.value,
                       "is_repeat": bool(getattr(event, "is_repeat", False)),
                       "modifiers": {key: bool(getattr(event, key)) for key in ("ctrl", "shift", "alt", "oskey")}}
+            from .instance import _state as instance_state
+            if instance_state.get("return_pending"):
+                record["during_return"] = True
+                record["surface_status"] = "not_sampled"
+                write_record(record)
+                return {"PASS_THROUGH"}
             sample = None
             try:
                 from .instance import record_input_event

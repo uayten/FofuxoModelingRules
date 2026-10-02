@@ -1,0 +1,28 @@
+{"t": 1790979697.442, "event": "INPUT", "key": "TAB", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979697.535, "event": "INPUT", "key": "TAB", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979698.235, "event": "INPUT", "key": "G", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979698.356, "event": "INPUT", "key": "G", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979700.555, "event": "INPUT", "key": "Z", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979700.716, "event": "INPUT", "key": "Z", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979702.048, "event": "INPUT", "key": "NUMPAD_1", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979702.157, "event": "INPUT", "key": "NUMPAD_1", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979703.178, "event": "INPUT", "key": "M", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979703.281, "event": "INPUT", "key": "M", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979703.333, "event": "INPUT", "key": "M", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979703.334, "event": "INPUT", "key": "M", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979703.412, "event": "INPUT", "key": "M", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979704.387, "event": "INPUT", "key": "NUMPAD_ENTER", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979704.466, "event": "INPUT", "key": "NUMPAD_ENTER", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979710.271, "event": "INPUT", "key": "G", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979710.442, "event": "INPUT", "key": "G", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979711.173, "event": "INPUT", "key": "OSKEY", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": true}, "surface_status": "miss"}
+{"t": 1790979711.31, "event": "INPUT", "key": "OSKEY", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979711.311, "event": "INPUT", "key": "WINDOW_DEACTIVATE", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979714.662, "event": "INPUT", "key": "OSKEY", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": true}, "surface_status": "miss"}
+{"t": 1790979714.795, "event": "INPUT", "key": "OSKEY", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979714.797, "event": "INPUT", "key": "WINDOW_DEACTIVATE", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979717.209, "event": "INPUT", "key": "OSKEY", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": true}, "surface_status": "miss"}
+{"t": 1790979717.342, "event": "INPUT", "key": "OSKEY", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979717.343, "event": "INPUT", "key": "WINDOW_DEACTIVATE", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "surface_status": "miss"}
+{"t": 1790979771.708, "event": "INPUT", "key": "RIGHTMOUSE", "value": "PRESS", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "during_return": true, "surface_status": "not_sampled"}
+{"t": 1790979771.71, "event": "INPUT", "key": "RIGHTMOUSE", "value": "RELEASE", "is_repeat": false, "modifiers": {"ctrl": false, "shift": false, "alt": false, "oskey": false}, "during_return": true, "surface_status": "not_sampled"}
