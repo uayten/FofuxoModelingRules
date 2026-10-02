@@ -26,9 +26,7 @@ def summarize(records):
             row["max_mm"] = round(max(row["max_mm"], max(sum(value * value for value in delta) ** 0.5 for delta in deltas)), 3)
     return {"count": len(records), "operators": dict(operators), "undos": operators["UNDO"],
             "redos": operators["REDO"], "moves_by_region": moves, "unattributed_vertex_samples": unattributed,
-            "capture": "event" if records and all(record.get("capture") == "event" for record in records) else "legacy_or_mixed",
-            "combined_boundaries": sum(record.get("coalesced_operators", 1) > 1 for record in records),
-            "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"}
+            "attribution": "poll samples may contain several operators; net_mm is the sum of vertex samples"}
 
 
 def replay_candidates(records):
@@ -44,8 +42,6 @@ def replay_candidates(records):
                                    "reason": "one mesh smoothing pass is only an approximation of the recorded Sculpt Smooth stroke; compare before reuse"})
             continue
         if record.get("event") != "DRAG" or len(record.get("points", [])) < 2:
-            continue
-        if record.get("complete") is False:
             continue
         start, end = record["points"][0], record["points"][-1]
         brush = start.get("brush", "").lower()

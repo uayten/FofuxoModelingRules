@@ -1,0 +1,389 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\interactive-test.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\interactive-test.bridge\\review.blend",
+  "objects": [
+    "TestMesh"
+  ],
+  "why": null,
+  "status": "recorded; awaiting interview and replay validation",
+  "deltas": {
+    "TestMesh": {
+      "moved_mm": {
+        "v0": [
+          -18.99836,
+          41.56282,
+          17.53027
+        ],
+        "v1": [
+          -44.21871,
+          45.81216,
+          21.77489
+        ],
+        "v2": [
+          2.55118,
+          -20.77137,
+          38.65061
+        ],
+        "v3": [
+          -26.09742,
+          9.89596,
+          2.16618
+        ],
+        "v4": [
+          18.99836,
+          41.56282,
+          17.53027
+        ],
+        "v5": [
+          44.21871,
+          45.81216,
+          21.77489
+        ],
+        "v6": [
+          -2.55118,
+          -20.77137,
+          38.65061
+        ],
+        "v7": [
+          26.09742,
+          9.89596,
+          2.16618
+        ],
+        "v8": [
+          -25.35653,
+          44.45799,
+          7.83542
+        ],
+        "v9": [
+          -16.99361,
+          0.73349,
+          37.69314
+        ],
+        "v10": [
+          16.99361,
+          0.73349,
+          37.69314
+        ],
+        "v11": [
+          25.35653,
+          44.45799,
+          7.83542
+        ],
+        "v12": [
+          -35.5824,
+          53.86954,
+          12.9968
+        ],
+        "v13": [
+          -29.59647,
+          15.97901,
+          29.27766
+        ],
+        "v14": [
+          29.59647,
+          15.97901,
+          29.27766
+        ],
+        "v15": [
+          35.5824,
+          53.86954,
+          12.9968
+        ],
+        "v16": [
+          -19.38562,
+          -22.93542,
+          5.65972
+        ],
+        "v17": [
+          -34.90762,
+          -16.29127,
+          -26.61349
+        ],
+        "v18": [
+          -42.3171,
+          2.89483,
+          -29.8892
+        ],
+        "v19": [
+          -40.44367,
+          -0.13457,
+          -24.9298
+        ],
+        "v20": [
+          -18.39463,
+          -15.31987,
+          -8.9955
+        ],
+        "v21": [
+          -44.96495,
+          -2.28608,
+          -35.52673
+        ],
+        "v22": [
+          -30.06767,
+          -12.14253,
+          -12.13548
+        ],
+        "v23": [
+          -47.89846,
+          -0.05872,
+          -36.981
+        ],
+        "v24": [
+          36.10762,
+          -16.29127,
+          -26.61349
+        ],
+        "v25": [
+          43.5171,
+          2.89483,
+          -29.8892
+        ],
+        "v26": [
+          19.59463,
+          -15.31987,
+          -8.9955
+        ],
+        "v27": [
+          31.26767,
+          -12.14253,
+          -12.13548
+        ],
+        "v28": [
+          20.58562,
+          -22.93542,
+          5.65972
+        ],
+        "v29": [
+          41.64367,
+          -0.13457,
+          -24.9298
+        ],
+        "v30": [
+          46.16495,
+          -2.28608,
+          -35.52673
+        ],
+        "v31": [
+          49.09846,
+          -0.05872,
+          -36.981
+        ],
+        "v32": [
+          -17.78245,
+          25.47252,
+          18.96201
+        ],
+        "v33": [
+          -36.84034,
+          49.38539,
+          13.82329
+        ],
+        "v34": [
+          17.78245,
+          25.47252,
+          18.96201
+        ],
+        "v35": [
+          36.84034,
+          49.38539,
+          13.82329
+        ],
+        "v36": [
+          36.02404,
+          52.02838,
+          31.99044
+        ],
+        "v37": [
+          -36.02404,
+          52.02838,
+          31.99044
+        ],
+        "v38": [
+          45.00719,
+          63.49514,
+          33.11997
+        ],
+        "v39": [
+          -45.00719,
+          63.49514,
+          33.11997
+        ],
+        "v40": [
+          -35.79824,
+          1.7642,
+          -13.30938
+        ],
+        "v41": [
+          -27.14887,
+          13.29956,
+          -25.10232
+        ],
+        "v42": [
+          28.34887,
+          13.29956,
+          -25.10232
+        ],
+        "v43": [
+          36.99824,
+          1.7642,
+          -13.30938
+        ],
+        "v44": [
+          -31.01683,
+          35.99934,
+          7.83526
+        ],
+        "v45": [
+          10.64103,
+          5.34408,
+          22.45099
+        ],
+        "v46": [
+          -30.8263,
+          33.05162,
+          38.3034
+        ],
+        "v47": [
+          -41.26102,
+          47.98606,
+          35.92107
+        ],
+        "v48": [
+          -10.64103,
+          5.34408,
+          22.45099
+        ],
+        "v49": [
+          31.01683,
+          35.99934,
+          7.83526
+        ],
+        "v50": [
+          30.8263,
+          33.05162,
+          38.3034
+        ],
+        "v51": [
+          41.26102,
+          47.98606,
+          35.92107
+        ],
+        "v52": [
+          -36.78604,
+          4.18754,
+          -16.21453
+        ],
+        "v53": [
+          -22.28393,
+          -1.20111,
+          -9.38698
+        ],
+        "v54": [
+          23.48393,
+          -1.20111,
+          -9.38698
+        ],
+        "v55": [
+          37.98604,
+          4.18754,
+          -16.21453
+        ]
+      },
+      "added": [
+        "v56",
+        "v57",
+        "v58",
+        "v59",
+        "v60",
+        "v61",
+        "v62",
+        "v63",
+        "v64",
+        "v65",
+        "v66",
+        "v67",
+        "v68",
+        "v69",
+        "v70",
+        "v71",
+        "v72",
+        "v73",
+        "v74",
+        "v75",
+        "v76",
+        "v77",
+        "v78",
+        "v79",
+        "v80",
+        "v81",
+        "v82",
+        "v83",
+        "v84",
+        "v85",
+        "v86",
+        "v87",
+        "v88",
+        "v89",
+        "v90",
+        "v91"
+      ],
+      "removed": []
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 90,
+      "operators": {
+        "VIEW3D_OT_select": 12,
+        "OBJECT_OT_editmode_toggle": 3,
+        "VIEW3D_OT_select_box": 11,
+        "TRANSFORM_OT_translate": 5,
+        "MESH_OT_select_all": 3,
+        "UNDO": 16,
+        "MESH_OT_loopcut_slide": 3,
+        "TOPOLOGY": 3,
+        "MESH_OT_symmetry_snap": 2,
+        "SCULPT_OT_sculptmode_toggle": 2,
+        "WM_OT_radial_control": 4,
+        "SCULPT": 21,
+        "MESH_OT_loop_select": 2,
+        "TRANSFORM_OT_edge_slide": 1,
+        "REDO": 2
+      },
+      "undos": 16,
+      "redos": 2,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 745,
+      "attribution": "poll samples may contain several operators; net_mm is the sum of vertex samples"
+    },
+    "inputs": {
+      "count": 410,
+      "operators": {
+        "INPUT": 401,
+        "DRAG": 9
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "attribution": "poll samples may contain several operators; net_mm is the sum of vertex samples",
+      "replay_candidates": [
+        {
+          "record": 228,
+          "object": "TestMesh",
+          "op": "mesh translate v14 w=+0.422mm d=-41.513mm h=-15.943mm falloff=smooth radius=132.721mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 278,
+          "object": "TestMesh",
+          "op": "mesh translate v15 w=-11.254mm d=-11.977mm h=-8.367mm falloff=smooth radius=103.669mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        }
+      ]
+    }
+  }
+}

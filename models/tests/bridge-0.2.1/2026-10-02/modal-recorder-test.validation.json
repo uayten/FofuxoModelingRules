@@ -1,0 +1,27 @@
+{
+  "recorder_patch": "validated by real Grab, Shift-Smooth and paired mouse releases",
+  "grab_strokes": 1,
+  "temporary_smooth_strokes": 2,
+  "left_button_pairs": 6,
+  "middle_button_pairs": 2,
+  "complete_drags": 4,
+  "focused_checks": 26,
+  "activation_checks": 8,
+  "sculpt_undo_redo_inverse_pairs": 11,
+  "collection_saved_and_synchronized": true,
+  "review_left_open": true,
+  "modifiers_preserved": true,
+  "unique_vertex_ids": 53,
+  "max_movement_component_difference_mm": 0.032987,
+  "grab_replay_candidate": "rejected: unrelated surface drag; actual deforming stroke has only one surface point",
+  "smooth_replay_candidates": "provisional",
+  "pending": [
+    "real region and loop-cut ids",
+    "region membership and labels",
+    "cropped Workbench and cage overlay",
+    "evenness judgment",
+    "same-window handover",
+    "legacy save and reopen",
+    "native shutdown diagnostic cause"
+  ]
+}

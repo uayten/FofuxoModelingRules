@@ -45,8 +45,6 @@ def replay_candidates(records):
             continue
         if record.get("event") != "DRAG" or len(record.get("points", [])) < 2:
             continue
-        if record.get("complete") is False:
-            continue
         start, end = record["points"][0], record["points"][-1]
         brush = start.get("brush", "").lower()
         if start.get("object") != end.get("object") or "grab" not in brush or not start.get("radius_mm"):

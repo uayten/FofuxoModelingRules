@@ -73,6 +73,17 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    deltas. The event recorder passed 15 focused checks and 8 activation checks
    on 2026-10-02; native mode/selection/movement/topology capture passed, while
    real modal input, Sculpt strokes and interactive undo/redo remain pending.
+   The first real event-recorder review found missing mouse releases, a drag
+   spanning Sculpt/Edit Mode and reused retired ids after delete/loop cut.
+   The modeler confirmed temporary Smooth through Shift; logs wrongly labeled
+   it Grab. Real Sculpt undo/redo passed for 11 matching inverse pairs. The
+   follow-up patch passed 26 focused checks and 8 activation checks. Real Grab,
+   temporary Shift/Smooth, paired mouse releases, collection, unchanged
+   modifiers and before/after preservation passed. Recorded movements matched
+   the received mesh within 0.033 mm per component. Reject the unmatched Grab
+   replay candidate; suggestions remain provisional. Topology ids through
+   real region/loop-cut interaction still require validation, along with
+   region/render judgments, same-window handover and legacy save/reopen.
    Also confirm the native shutdown diagnostic described in
    [IMPLEMENTATION.md](IMPLEMENTATION.md#verification) if it recurs. Its cause
    was not established by the passing assertions or the isolated catalog check.

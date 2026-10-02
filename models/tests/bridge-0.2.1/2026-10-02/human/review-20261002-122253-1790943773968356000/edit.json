@@ -1,0 +1,153 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\modal-recorder-test.bridge\\review.blend",
+  "objects": [
+    "TestMesh"
+  ],
+  "why": null,
+  "status": "recorded; awaiting interview and replay validation",
+  "deltas": {
+    "TestMesh": {
+      "moved_mm": {
+        "v4": [
+          2.34495,
+          4.89868,
+          7.27245
+        ],
+        "v5": [
+          2.01447,
+          4.96637,
+          0.91202
+        ],
+        "v10": [
+          0.00051,
+          -0.00025,
+          0.0016
+        ],
+        "v14": [
+          0.00264,
+          -0.00093,
+          -0.00135
+        ],
+        "v15": [
+          3.63729,
+          8.62488,
+          7.78011
+        ],
+        "v34": [
+          0.89943,
+          2.29406,
+          6.7019
+        ],
+        "v35": [
+          1.08722,
+          2.77525,
+          -0.74497
+        ],
+        "v36": [
+          1.47146,
+          3.74871,
+          11.31812
+        ],
+        "v38": [
+          1.87563,
+          5.03068,
+          6.81851
+        ],
+        "v45": [
+          0.03415,
+          -0.00158,
+          0.1933
+        ],
+        "v49": [
+          0.0787,
+          0.09735,
+          -0.53331
+        ],
+        "v50": [
+          0.78044,
+          0.28236,
+          4.35949
+        ],
+        "v51": [
+          1.07582,
+          1.61717,
+          2.33788
+        ],
+        "v56": [
+          0.00077,
+          0.01304,
+          0.03299
+        ],
+        "v59": [
+          0.18355,
+          0.64299,
+          -0.88699
+        ],
+        "v62": [
+          0.56766,
+          4.48159,
+          8.01652
+        ],
+        "v63": [
+          1.54645,
+          4.31929,
+          1.08595
+        ],
+        "v65": [
+          0.00051,
+          0.0022,
+          -0.00836
+        ],
+        "v108": [
+          1.75448,
+          6.40595,
+          5.78843
+        ]
+      },
+      "added": [],
+      "removed": []
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 7,
+      "operators": {
+        "VIEW3D_OT_select": 1,
+        "SCULPT_OT_sculptmode_toggle": 1,
+        "WM_OT_radial_control": 2,
+        "SCULPT": 3
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 32,
+      "capture": "event",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 53,
+      "operators": {
+        "INPUT": 49,
+        "DRAG": 4
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": [
+        {
+          "record": 22,
+          "object": "TestMesh",
+          "op": "mesh translate v25 w=+1.465mm d=-0.270mm h=-0.322mm falloff=smooth radius=110.622mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        }
+      ]
+    }
+  }
+}

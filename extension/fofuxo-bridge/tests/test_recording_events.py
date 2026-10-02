@@ -8,13 +8,34 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import bpy
+import bmesh
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 import llm_modeling_bridge as bridge
 import importlib
 
 instance = importlib.import_module(bridge.__name__ + ".instance")
+input_recorder = importlib.import_module(bridge.__name__ + ".input_recorder")
+recording = importlib.import_module(bridge.__name__ + ".recording")
 checks = 0
+
+
+class LLM_TEST_OT_add_vertex(bpy.types.Operator):
+    bl_idname = "llm_test.add_vertex"
+    bl_label = "Add recording test vertex"
+    bl_options = {"REGISTER", "UNDO", "INTERNAL"}
+    retired_id: bpy.props.IntProperty()
+
+    def execute(self, context):
+        mesh = context.object.data
+        cage = bmesh.from_edit_mesh(mesh)
+        vertex = cage.verts.new((0.2, 0.2, 0.2))
+        vertex[cage.verts.layers.int.get(bridge.mesh_io.ID_ATTR)] = self.retired_id
+        instance._mesh_state(repair_ids=False)
+        check(vertex[cage.verts.layers.int.get(bridge.mesh_io.ID_ATTR)] == self.retired_id,
+              "priority input snapshots cannot modify native modal mesh data")
+        bmesh.update_edit_mesh(mesh)
+        return {"FINISHED"}
 
 
 def check(condition, message):
@@ -28,6 +49,7 @@ def main():
     root = Path(tempfile.mkdtemp(prefix="llm_bridge_recording_"))
     bpy.ops.wm.save_as_mainfile(filepath=str(root / "test.blend"))
     bridge.register()
+    bpy.utils.register_class(LLM_TEST_OT_add_vertex)
     bridge.sync("Cube", render=False)
     log = root / "review.ops.jsonl"
 
@@ -35,6 +57,8 @@ def main():
         return [json.loads(line) for line in log.read_text("utf-8").splitlines()] if log.exists() else []
 
     with patch.object(instance, "_review_info", return_value={"objects": ["Cube"]}):
+        check("MODAL_PRIORITY" in input_recorder.LLM_BRIDGE_OT_record_input.bl_options,
+              "input observer has priority over consuming native modal operators")
         instance._start_recording()
         check(not bpy.app.timers.is_registered(instance._record_ops), "operator capture has no repeating timer")
         bpy.ops.object.mode_set("EXEC_DEFAULT", True, mode="EDIT")
@@ -58,6 +82,23 @@ def main():
         topology = read()[-1]
         check(topology["op"] == "TOPOLOGY" and len(topology["added_ids"]) == 18,
               "topology and new stable ids are saved immediately")
+        cage = bmesh.from_edit_mesh(bpy.context.object.data)
+        layer = cage.verts.layers.int.get(bridge.mesh_io.ID_ATTR)
+        retired_id = max(vertex[layer] for vertex in cage.verts)
+        for vertex in cage.verts:
+            vertex.select_set(vertex[layer] == retired_id)
+        bmesh.update_edit_mesh(bpy.context.object.data)
+        bpy.ops.mesh.delete("EXEC_DEFAULT", True, type="VERT")
+        bpy.ops.llm_test.add_vertex("EXEC_DEFAULT", True, retired_id=retired_id)
+        fresh_id = read()[-1]["added_ids"][0]
+        check(fresh_id > retired_id, "new Edit Mode vertices cannot reuse a deleted stable id")
+        instance._on_history_pre()
+        cage = bmesh.from_edit_mesh(bpy.context.object.data)
+        restored = cage.verts.new((0.3, 0.3, 0.3))
+        restored[cage.verts.layers.int.get(bridge.mesh_io.ID_ATTR)] = retired_id
+        bmesh.update_edit_mesh(bpy.context.object.data)
+        instance._on_undo_human()
+        check(retired_id in read()[-1]["added_ids"], "undo restoration preserves the historical id")
         bpy.ops.object.mode_set("EXEC_DEFAULT", True, mode="OBJECT")
 
         # Boundary checks use real mesh changes without automating Sculpt input.
@@ -72,6 +113,10 @@ def main():
             first_stroke = read()[-1]
             instance._record_after_event()
             check(instance._rec["sculpt_active"], "a queued previous release does not end the next stroke")
+            count = len(read())
+            instance._on_record_update(None, None)
+            check(instance._rec["sculpt_active"] and len(read()) == count,
+                  "graph refreshes cannot split an unfinished stroke")
             bpy.context.object.data.vertices[0].co.x -= 0.001
             instance.record_input_event(context, release)
             instance._record_after_event()
@@ -95,7 +140,34 @@ def main():
         summary = bridge.recording_summary(log)
         check(summary["capture"] == "event" and summary["combined_boundaries"] == 0,
               "summaries identify event capture without combined boundaries")
+
+        grab = {"brush": "Grab", "brush_type": "GRAB", "radius_px": 32, "strength": 0.4,
+                "radius_source": "brush", "strength_source": "brush"}
+        smooth = input_recorder.apply_sculpt_modifiers(grab, shift=True)
+        check(smooth["brush"] == "Smooth" and smooth["selected_brush"] == "Grab"
+              and smooth["temporary_smooth"], "Shift records effective Smooth and preserves selected Grab")
+        check(smooth["strength"] is None and smooth["radius_px"] is None
+              and smooth["selected_strength"] == 0.4,
+              "temporary Smooth does not inherit unverified Grab settings")
+        check(not recording.replay_candidates([{"op": "SCULPT", "moved": {"0": [1, 0, 0]}, **smooth}]),
+              "unknown temporary Smooth strength produces no invented replay command")
+        shared = input_recorder.apply_sculpt_modifiers({**grab, "radius_source": "unified", "strength_source": "unified"}, shift=True)
+        check(shared["radius_px"] == 32 and shared["strength"] == 0.4,
+              "known shared settings remain available for temporary Smooth")
+        hit = {"object": "Cube", "vertex": "v0", "point_mm": [0, 0, 0]}
+        observer = SimpleNamespace(generation=input_recorder._generation, window_id=1234, drag=None, last_sample=0)
+        middle_press = SimpleNamespace(type="MIDDLEMOUSE", value="PRESS", ctrl=False, shift=False, alt=False, oskey=False, is_repeat=False)
+        middle_release = SimpleNamespace(**{**vars(middle_press), "value": "RELEASE"})
+        with patch.object(input_recorder, "surface_sample", side_effect=[hit, RuntimeError("test ray miss")]):
+            input_recorder.LLM_BRIDGE_OT_record_input.modal(observer, bpy.context, middle_press)
+            input_recorder.LLM_BRIDGE_OT_record_input.modal(observer, bpy.context, middle_release)
+        inputs = [json.loads(line) for line in (root / "review.input.jsonl").read_text("utf-8").splitlines()]
+        check(inputs[-2]["key"] == "MIDDLEMOUSE" and inputs[-2]["value"] == "RELEASE"
+              and inputs[-2]["surface_status"] == "error", "surface sampling failure cannot drop a release")
+        check(inputs[-1]["complete"] and observer.drag is None,
+              "a released drag closes even without an ending surface hit")
     bridge.unregister()
+    bpy.utils.unregister_class(LLM_TEST_OT_add_vertex)
     check(all(callback not in handlers for handlers, callback in instance.RECORD_HANDLERS),
           "deactivation removes every recorder handler")
     check(not bpy.app.timers.is_registered(instance._record_after_event), "deactivation removes pending event callbacks")

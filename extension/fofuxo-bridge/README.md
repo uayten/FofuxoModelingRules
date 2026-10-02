@@ -800,6 +800,10 @@ logs; full records are included only with `verbose=True`.
 The recorder writes `review.ops.jsonl` and `review.input.jsonl`. Input events
 pass through to Blender: keys and buttons have press/release and modifiers;
 surface hits have the object, local point in mm and nearest cage vertex id.
+The observer passes input through with modal priority, ahead of ordinary native
+modal tools. Key repeats are explicit; failed ray
+samples retain the raw input with `surface_status="error"`. Completed drags
+have `complete=True`; an incomplete drag cannot suggest a replay command.
 Recorded frame-axis signs keep replay directions correct on a mirrored side.
 Drags store a bounded sample of surface points and the Sculpt brush radius
 when available. A gesture is an observation; a provisional replay must be
@@ -810,6 +814,11 @@ recorder cannot recover their individual deltas. A missing surface hit or brush 
 coordinate or replay command.
 Recorded Smooth strokes can suggest a single `vertices_smooth` pass at the
 recorded strength; this is also provisional and does not claim exact brush replay.
+Shift over another Sculpt brush records effective `brush="Smooth"`, retains
+`selected_brush` and marks `temporary_smooth=True`. Its radius/strength are
+only available from unified settings or an observed native Smooth brush;
+unverified selected-brush settings are preserved separately, without using
+them for a Smooth replay candidate.
 
 `human_access()` keeps the MCP connected for status, while the extension's
 editing APIs refuse changes. In the LLM sidebar, **Save and return to LLM**

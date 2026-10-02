@@ -1,0 +1,276 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\event-recorder-test.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\event-recorder-test.bridge\\review.blend",
+  "objects": [
+    "TestMesh"
+  ],
+  "why": null,
+  "status": "recorded; awaiting interview and replay validation",
+  "deltas": {
+    "TestMesh": {
+      "moved_mm": {
+        "v4": [
+          81.62569,
+          16.05887,
+          65.92142
+        ],
+        "v5": [
+          24.24576,
+          28.94837,
+          11.4507
+        ],
+        "v6": [
+          2.29613,
+          -59.61687,
+          60.73543
+        ],
+        "v7": [
+          -6.89405,
+          -59.57729,
+          -14.89143
+        ],
+        "v10": [
+          2.24147,
+          -59.06314,
+          35.93844
+        ],
+        "v11": [
+          152.90284,
+          -8.85933,
+          73.62293
+        ],
+        "v14": [
+          -2.09319,
+          -59.12022,
+          12.82817
+        ],
+        "v15": [
+          54.01864,
+          20.65229,
+          39.1381
+        ],
+        "v24": [
+          1.48399,
+          -56.61991,
+          -35.42503
+        ],
+        "v25": [
+          28.49949,
+          34.03783,
+          51.52991
+        ],
+        "v26": [
+          2.53719,
+          -55.85172,
+          22.28501
+        ],
+        "v27": [
+          1.30181,
+          -55.7874,
+          -6.09277
+        ],
+        "v28": [
+          5.24256,
+          -57.02754,
+          51.21142
+        ],
+        "v29": [
+          16.44557,
+          36.96835,
+          -24.10013
+        ],
+        "v30": [
+          34.90748,
+          31.85619,
+          29.29484
+        ],
+        "v31": [
+          33.07266,
+          32.69129,
+          9.02401
+        ],
+        "v34": [
+          47.28898,
+          -4.22043,
+          56.97836
+        ],
+        "v35": [
+          14.90186,
+          0.47501,
+          7.24009
+        ],
+        "v36": [
+          67.75442,
+          -9.13191,
+          48.19428
+        ],
+        "v38": [
+          39.23707,
+          -2.96582,
+          31.50731
+        ],
+        "v42": [
+          19.13556,
+          4.07131,
+          47.41235
+        ],
+        "v43": [
+          8.56781,
+          6.63717,
+          -26.17584
+        ],
+        "v45": [
+          18.37651,
+          -28.80917,
+          59.36754
+        ],
+        "v49": [
+          2.23295,
+          -27.93398,
+          -4.89887
+        ],
+        "v50": [
+          26.52388,
+          -28.54624,
+          41.16386
+        ],
+        "v51": [
+          16.59674,
+          -28.19432,
+          22.64806
+        ],
+        "v54": [
+          10.81236,
+          -25.45579,
+          48.35739
+        ],
+        "v55": [
+          3.92391,
+          -24.19355,
+          -30.58063
+        ]
+      },
+      "added": [
+        "v56",
+        "v57",
+        "v58",
+        "v59",
+        "v60",
+        "v61",
+        "v62",
+        "v63",
+        "v64",
+        "v65",
+        "v66",
+        "v67",
+        "v80",
+        "v81",
+        "v82",
+        "v83",
+        "v84",
+        "v85",
+        "v86",
+        "v87",
+        "v88",
+        "v89",
+        "v90",
+        "v91",
+        "v108"
+      ],
+      "removed": [
+        "v0",
+        "v1",
+        "v2",
+        "v3",
+        "v8",
+        "v9",
+        "v12",
+        "v13",
+        "v16",
+        "v17",
+        "v18",
+        "v19",
+        "v20",
+        "v21",
+        "v22",
+        "v23",
+        "v32",
+        "v33",
+        "v37",
+        "v39",
+        "v40",
+        "v41",
+        "v44",
+        "v46",
+        "v47",
+        "v48",
+        "v52",
+        "v53"
+      ]
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 153,
+      "operators": {
+        "VIEW3D_OT_select": 13,
+        "OBJECT_OT_editmode_toggle": 2,
+        "VIEW3D_OT_select_box": 3,
+        "TRANSFORM_OT_translate": 4,
+        "UNDO": 18,
+        "MESH_OT_select_all": 1,
+        "MESH_OT_symmetry_snap": 1,
+        "MESH_OT_loopcut_slide": 5,
+        "TOPOLOGY": 9,
+        "MESH_OT_delete": 1,
+        "OBJECT_OT_modifier_add": 1,
+        "SCULPT_OT_sculptmode_toggle": 2,
+        "WM_OT_radial_control": 5,
+        "SCULPT": 70,
+        "TRANSFORM_OT_edge_slide": 2,
+        "MESH_OT_loop_select": 2,
+        "MESH_OT_rip_move": 1,
+        "MESH_OT_select_mode": 1,
+        "MESH_OT_f2": 1,
+        "REDO": 11
+      },
+      "undos": 18,
+      "redos": 11,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 2483,
+      "capture": "event",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 465,
+      "operators": {
+        "INPUT": 451,
+        "DRAG": 14
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": [
+        {
+          "record": 232,
+          "object": "TestMesh",
+          "op": "mesh translate v11 w=-98.808mm d=+21.155mm h=+8.560mm falloff=smooth radius=290.394mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 341,
+          "object": "TestMesh",
+          "op": "mesh translate v108 w=-87.449mm d=+15.905mm h=-19.389mm falloff=smooth radius=284.412mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        }
+      ]
+    }
+  }
+}

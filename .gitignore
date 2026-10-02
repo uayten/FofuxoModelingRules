@@ -29,3 +29,7 @@ extension/dist/
 **/*.cage/review.json
 **/*.cage/review.*.json
 **/*.cage/review.ops.jsonl
+
+# Graft context graph (local, regenerable with `graft build`)
+graft/
+.graft/

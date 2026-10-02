@@ -377,7 +377,7 @@ def recording_path(filename):
 MOVED_MIN = 0.05  # mm: a vertex that moved less is left out of a "moved" record
 
 
-def _mesh_state(repair_ids=True):
+def _mesh_state():
     """(object name, mode, ids, positions in mm, selected ids) of the active
     reviewed mesh, read the way its mode keeps it (bmesh in Edit Mode)."""
     from .mesh_io import ID_ATTR
@@ -390,48 +390,36 @@ def _mesh_state(repair_ids=True):
         import bmesh
         bm = bmesh.from_edit_mesh(obj.data)
         bm.verts.ensure_lookup_table()
-        layer = bm.verts.layers.int.get(ID_ATTR)
-        if layer is None and repair_ids:
-            layer = bm.verts.layers.int.new(ID_ATTR)
+        layer = bm.verts.layers.int.get(ID_ATTR) or bm.verts.layers.int.new(ID_ATTR)
         previous = _rec.get("snap")
         previous_co = dict(zip(previous[2], previous[3])) if previous and previous[0] == obj.name else {}
-        previous_next_id = _rec.get("next_id", 0)
         by_id = {}
         for vertex in bm.verts:
-            by_id.setdefault(vertex[layer] if layer else vertex.index, []).append(vertex)
+            by_id.setdefault(vertex[layer], []).append(vertex)
         next_id = max([_rec.get("next_id", 0), max(by_id, default=-1) + 1, max(previous_co, default=-1) + 1])
         changed_ids = False
-        for vid, vertices in by_id.items() if repair_ids else ():
-            stale = (previous is not None and previous[0] == obj.name and
-                     vid not in previous_co and 0 <= vid < previous_next_id and
-                     not _rec.get("history_transition"))
+        for vid, vertices in by_id.items():
             keep = min(vertices, key=lambda vertex: sum((vertex.co[i] * 1000 - previous_co[vid][i]) ** 2 for i in range(3))) if vid in previous_co else vertices[0]
             for vertex in vertices:
-                if stale or vid < 0 or vertex is not keep:
+                if vid < 0 or vertex is not keep:
                     vertex[layer] = next_id
                     next_id += 1
                     changed_ids = True
-        if repair_ids:
-            _rec["next_id"] = next_id
+        _rec["next_id"] = next_id
         if changed_ids:
             bmesh.update_edit_mesh(obj.data, loop_triangles=False, destructive=False)
-        ids = [v[layer] if layer else v.index for v in bm.verts]
+        ids = [v[layer] for v in bm.verts]
         co = [tuple(c * 1000 for c in v.co) for v in bm.verts]
         sel = [i for v, i in zip(bm.verts, ids) if v.select]
     else:
         from .mesh_io import ensure_ids
         previous = _rec.get("snap")
         snapshot = {vid: tuple(value / 1000 for value in co) for vid, co in zip(previous[2], previous[3])} if previous and previous[0] == obj.name else None
-        if _rec.get("history_transition"):
-            snapshot = None
-        if repair_ids:
-            ensure_ids(obj.data, snapshot, _rec.get("next_id", 0))
+        ensure_ids(obj.data, snapshot, _rec.get("next_id", 0))
         attr = obj.data.attributes.get(ID_ATTR)
         ids = [d.value for d in attr.data] if attr else list(range(len(obj.data.vertices)))
         co = [tuple(c * 1000 for c in v.co) for v in obj.data.vertices]
         sel = []
-    if repair_ids:
-        _rec["next_id"] = max(_rec.get("next_id", 0), max(ids, default=-1) + 1)
     return obj.name, obj.mode, ids, co, sel
 
 
@@ -452,8 +440,16 @@ def _moved(before, after):
 
 
 def _sculpt_record(moved):
-    from .input_recorder import sculpt_metadata
-    return {"op": "SCULPT", "moved": moved, **sculpt_metadata(bpy.context)}
+    ts = bpy.context.tool_settings
+    brush = ts.sculpt.brush if ts and ts.sculpt else None
+    out = {"op": "SCULPT", "moved": moved}
+    if brush is not None:
+        # Blender 5 keeps the unified size and strength per paint mode; 4.x on tool_settings
+        ups = getattr(ts.sculpt, "unified_paint_settings", None) or getattr(ts, "unified_paint_settings", None)
+        out["brush"] = brush.name
+        out["radius_px"] = ups.size if ups and ups.use_unified_size else brush.size
+        out["strength"] = round(ups.strength if ups and ups.use_unified_strength else brush.strength, 3)
+    return out
 
 
 def _decorate_record(line, state, previous):
@@ -483,7 +479,7 @@ def _finish_sculpt(state):
     return lines
 
 
-def _record_ops(finish_sculpt=False, repair_ids=True):
+def _record_ops(finish_sculpt=False):
     """Write completed operators on dependency-graph/input events, without polling."""
     if _rec.get("busy") or _rec.get("history_transition"):
         return
@@ -506,7 +502,7 @@ def _record_ops(finish_sculpt=False, repair_ids=True):
             _rec["last"] = sigs[-1]
         if not lines and not finish_sculpt:
             return
-        state = _mesh_state(repair_ids=repair_ids)
+        state = _mesh_state()
         if state is not None:
             strokes = _finish_sculpt(state) if finish_sculpt or state[1] != "SCULPT" else []
             if lines:
@@ -524,14 +520,10 @@ def _record_ops(finish_sculpt=False, repair_ids=True):
 
 @bpy.app.handlers.persistent
 def _on_record_update(*_args):
-    metadata = _rec.get("sculpt_metadata", {})
-    if _rec.get("sculpt_active") and metadata.get("temporary_smooth"):
-        from .input_recorder import sculpt_metadata
-        observed = sculpt_metadata(bpy.context)
-        if observed.get("brush_type") == "SMOOTH":
-            for field in ("radius_px", "strength", "radius_source", "strength_source"):
-                metadata[field] = observed.get(field)
-    _record_ops()
+    sculpt_finished = _rec.get("sculpt_active") and not any(
+        op.bl_idname.startswith(("SCULPT_OT_", "PAINT_OT_"))
+        for window in bpy.context.window_manager.windows for op in window.modal_operators)
+    _record_ops(finish_sculpt=bool(sculpt_finished))
 
 
 def _record_after_event():
@@ -541,14 +533,11 @@ def _record_after_event():
 
 def record_input_event(context, event):
     """Observe input before pass-through; finish its effects on the same event-loop turn."""
-    _record_ops(finish_sculpt=event.type == "LEFTMOUSE" and event.value == "PRESS", repair_ids=False)
+    _record_ops(finish_sculpt=event.type == "LEFTMOUSE" and event.value == "PRESS")
     if context.mode == "SCULPT" and event.type == "LEFTMOUSE" and event.value == "PRESS":
         _rec["finish_sculpt"] = False
-        _rec["snap"] = _mesh_state(repair_ids=False)
-        from .input_recorder import apply_sculpt_modifiers
-        _rec["sculpt_metadata"] = apply_sculpt_modifiers(_sculpt_record({}), getattr(event, "shift", False))
-        _rec["sculpt_metadata"]["modifiers"] = {
-            key: bool(getattr(event, key, False)) for key in ("ctrl", "shift", "alt", "oskey")}
+        _rec["snap"] = _mesh_state()
+        _rec["sculpt_metadata"] = _sculpt_record({})
         _rec["sculpt_active"] = True
     elif (event.type == "LEFTMOUSE" and event.value == "RELEASE") or (event.type == "ESC" and event.value == "PRESS"):
         _rec["finish_sculpt"] = True

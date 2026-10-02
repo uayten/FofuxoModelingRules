@@ -1,0 +1,130 @@
+# llm_modeling_bridge 1
+# Values are permille of the frame: w = width (X), d = depth (Y), h = height (Z).
+# A mirrored axis counts from the mirror plane (0) to the frame edge (1000).
+# Edit "base w d h", then run sync. sub = where the vertex lands after the
+# modifier stack (read-only). frame, modifiers, faces and edges are written by
+# the plugin; change a modifier with a set op (set Mirror merge_threshold 0.1mm).
+
+object   TestMesh
+frame    w X+ 212.9   d Y -58.9..-3.4   h Z -3.2..62.9   (mm)
+stack    Subdivision(1/2)[off] > Mirror(X)
+size     base 425.8 x 55.5 x 66.1   sub 425.8 x 55.5 x 66.1   (mm, w x d x h)
+count    v 53  f 46   evaluated v 94 f 92
+
+modifiers
+  Subdivision (SUBSURF)  (off in the viewport)
+      levels 1  render_levels 2  quality 3  use_limit_surface on  boundary_smooth ALL
+      use_creases on
+  Mirror (MIRROR)  -> v 94  f 92  size 425.8 x 55.5 x 66.1 mm
+      use_axis X  use_bisect_axis -  use_clip off  use_mirror_merge on  merge_threshold 1mm
+      mirror_object -
+
+verts
+# loop  id   base w     d     h | sub w     d     h | flags
+L1      v63     367   741   803 |   367   741   803 | pole3
+        v59     294   746   822 |   294   746   822 |
+        v65     246   802   742 |   246   802   742 |
+        v67     208   865   593 |   208   865   593 |
+        v57     185   907   460 |   185   907   460 |
+        v61     188   925   349 |   188   925   349 |
+        v60     200   925   235 |   200   925   235 |
+        v58     219   899   135 |   219   899   135 |
+        v66     270   833    66 |   270   833    66 |
+        v64     355   708     0 |   355   708     0 |
+        v56     461   587    46 |   461   587    46 |
+        v62     549   552   535 |   549   552   535 |
+        v108    454   697   703 |   454   697   703 | pole3
+L2      v31     246   749   427 |   246   749   427 | pole5
+        v30     254   734   235 |   254   734   235 |
+        v25     224   774    72 |   224   774    72 |
+        v42     180   828    10 |   180   828    10 |
+        v54     141   891    24 |   141   891    24 |
+        v28     115   935    67 |   115   935    67 |
+        v26     102   956   129 |   102   956   129 |
+        v27      96   957   198 |    96   957   198 |
+        v24      97   942   269 |    97   942   269 |
+        v55     109   914   342 |   109   914   342 |
+        v43     130   875   409 |   130   875   409 |
+        v29     167   826   440 |   167   826   440 |
+L3      v80       0   993    47 |     0   993    47 | X
+        v91       0   981    53 |     0   981    53 | X
+        v89       0   969    52 |     0   969    52 | X
+        v84       0   958    47 |     0   958    47 | X
+        v87       0   952    37 |     0   952    37 | X
+        v86       0   952    26 |     0   952    26 | X
+        v82       0   959    16 |     0   959    16 | X
+        v88       0   970    11 |     0   970    11 | X
+        v90       0   983    11 |     0   983    11 | X
+        v81       0   994    17 |     0   994    17 | X
+        v83       0  1000    27 |     0  1000    27 | X
+        v85       0   999    38 |     0   999    38 | X
+L4      v7      249   889   580 |   249   889   580 | pole3
+        v14     272   897   485 |   272   897   485 |
+        v10     292   898   335 |   292   898   335 |
+        v6      293   888   211 |   293   888   211 | pole3
+L5      v35     357   813   903 |   357   813   903 |
+        v38     475   792   870 |   475   792   870 |
+        v36     607   658   691 |   607   658   691 |
+        v34     508   720   256 |   508   720   256 |
+L6      v49     293   848   723 |   293   848   723 |
+        v51     365   871   668 |   365   871   668 |
+        v50     410   840   480 |   410   840   480 |
+        v45     368   830   193 |   368   830   193 |
+L7      v15     553   688  1000 |   553   688  1000 | pole5
+        v11    1000     0   905 |  1000     0   905 |
+        v4      676   538   399 |   676   538   399 | pole3
+rest    v5      405   771   992 |   405   771   992 | pole3
+
+faces
+  f0   v61 v57 v7 v14
+  f1   v38 v35 v5 v15
+  f2   v64 v34 v4 v56
+  f3   v34 v36 v11 v4
+  f4   v58 v60 v10 v6
+  f5   v36 v38 v15 v11
+  f6   v60 v61 v14 v10
+  f7   v81 v83 v26 v28
+  f8   v83 v85 v27 v26
+  f9   v88 v42 v25 v82
+  f10  v85 v80 v24 v27
+  f11  v90 v54 v42 v88
+  f12  v50 v51 v38 v36
+  f13  v51 v49 v35 v38
+  f14  v66 v45 v34 v64
+  f15  v45 v50 v36 v34
+  f16  v81 v28 v54 v90
+  f17  v10 v14 v51 v50
+  f18  v14 v7 v49 v51
+  f19  v58 v6 v45 v66
+  f20  v6 v10 v50 v45
+  f21  v28 v58 v66 v54
+  f22  v54 v66 v64 v42
+  f23  v26 v27 v61 v60
+  f24  v28 v26 v60 v58
+  f25  v42 v64 v56 v25
+  f26  v27 v24 v57 v61
+  f27  v24 v80 v91 v55
+  f28  v55 v91 v89 v43
+  f29  v43 v89 v84 v29
+  f30  v25 v30 v86 v82
+  f31  v31 v29 v84 v87
+  f32  v30 v31 v87 v86
+  f33  v11 v15 v108 v62
+  f34  v15 v5 v59 v63
+  f35  v4 v11 v62 v56
+  f36  v35 v65 v59 v5
+  f37  v49 v67 v65 v35
+  f38  v7 v57 v67 v49
+  f39  v108 v15 v63 v31
+  f40  v57 v24 v55 v67
+  f41  v67 v55 v43 v65
+  f42  v65 v43 v29 v59
+  f43  v56 v62 v30 v25
+  f44  v63 v59 v29 v31
+  f45  v62 v108 v31 v30
+
+edges
+
+ops
+
+forms

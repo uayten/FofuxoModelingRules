@@ -23,38 +23,6 @@ def write_record(record):
         stream.write(json.dumps({"t": round(time.time(), 3), **record}, ensure_ascii=False) + "\n")
 
 
-def sculpt_metadata(context):
-    settings = context.tool_settings
-    brush = getattr(settings.sculpt, "brush", None)
-    if brush is None:
-        return {}
-    unified = getattr(settings.sculpt, "unified_paint_settings", None) or getattr(settings, "unified_paint_settings", None)
-    shared_radius = bool(unified and unified.use_unified_size)
-    shared_strength = bool(unified and unified.use_unified_strength)
-    return {"brush": brush.name, "selected_brush": brush.name,
-            "brush_type": getattr(brush, "sculpt_brush_type", getattr(brush, "sculpt_tool", None)),
-            "radius_px": unified.size if shared_radius else brush.size,
-            "strength": round(unified.strength if shared_strength else brush.strength, 3),
-            "radius_source": "unified" if shared_radius else "brush",
-            "strength_source": "unified" if shared_strength else "brush"}
-
-
-def apply_sculpt_modifiers(metadata, shift=False):
-    result = dict(metadata)
-    if not shift:
-        return result
-    result["selected_brush"] = metadata.get("selected_brush", metadata.get("brush"))
-    result["selected_brush_type"] = metadata.get("brush_type")
-    result.update(brush="Smooth", brush_type="SMOOTH", temporary_smooth=True)
-    if metadata.get("brush_type") != "SMOOTH":
-        for field, source in (("radius_px", "radius_source"), ("strength", "strength_source")):
-            if metadata.get(source) != "unified":
-                result["selected_" + field] = metadata.get(field)
-                result[field] = None
-                result[source] = "unavailable_temporary_smooth"
-    return result
-
-
 def surface_sample(context, event):
     from bpy_extras import view3d_utils
     from .instance import _review_info
@@ -101,27 +69,22 @@ def surface_sample(context, event):
               "point_mm": [round(value * 1000, 3) for value in local], "nearest_mm": round(distance * 1000, 3)}
     from .regions import axis_signs
     sample["axis_signs"] = axis_signs(obj)
-    if obj.mode == "SCULPT":
-        from .instance import _rec
-        metadata = apply_sculpt_modifiers(sculpt_metadata(context), getattr(event, "shift", False))
-        if _rec.get("sculpt_active") and _rec.get("sculpt_metadata", {}).get("temporary_smooth"):
-            metadata = _rec["sculpt_metadata"]
-        for field in ("brush", "selected_brush", "brush_type", "temporary_smooth", "radius_source"):
-            if field in metadata:
-                sample[field] = metadata[field]
-        radius_px = metadata.get("radius_px")
-        if radius_px is None:
-            return sample
+    ts = context.tool_settings
+    brush = getattr(ts.sculpt, "brush", None) if obj.mode == "SCULPT" else None
+    if brush:
+        unified = getattr(ts.sculpt, "unified_paint_settings", None) or getattr(ts, "unified_paint_settings", None)
+        radius_px = unified.size if unified and unified.use_unified_size else brush.size
         edge = view3d_utils.region_2d_to_location_3d(region, rv3d, (pixel[0] + radius_px, pixel[1]), point)
         local_edge = obj.matrix_world.inverted() @ edge
         sample["radius_mm"] = round((local_edge - local).length * 1000, 3)
+        sample["brush"] = brush.name
     return sample
 
 
 class LLM_BRIDGE_OT_record_input(bpy.types.Operator):
     bl_idname = "llm_modeling_bridge.record_input"
     bl_label = "Record review input"
-    bl_options = {"INTERNAL", "MODAL_PRIORITY"}
+    bl_options = {"INTERNAL"}
 
     def invoke(self, context, event):
         self.window_id = context.window.as_pointer()
@@ -153,31 +116,20 @@ class LLM_BRIDGE_OT_record_input(bpy.types.Operator):
                 return {"PASS_THROUGH"}
             if event.value not in ("PRESS", "RELEASE"):
                 return {"PASS_THROUGH"}
+            sample = surface_sample(context, event)
             record = {"event": "INPUT", "key": event.type, "value": event.value,
-                      "is_repeat": bool(getattr(event, "is_repeat", False)),
                       "modifiers": {key: bool(getattr(event, key)) for key in ("ctrl", "shift", "alt", "oskey")}}
-            sample = None
-            try:
-                from .instance import record_input_event
-                record_input_event(context, event)
-                sample = surface_sample(context, event)
-                record["surface_status"] = "hit" if sample else "miss"
-            except (RuntimeError, ValueError, ReferenceError) as error:
-                record["surface_status"] = "error"
-                record["surface_error"] = str(error)
             if sample:
                 record["surface"] = sample
             write_record(record)
             if event.type in ("LEFTMOUSE", "RIGHTMOUSE", "MIDDLEMOUSE"):
                 if event.value == "PRESS" and sample:
-                    if self.drag:
-                        write_record({**self.drag, "complete": False, "end_reason": "new_press_without_release"})
-                    self.drag = {"event": "DRAG", "button": event.type, "modifiers": record["modifiers"],
-                                 "started_at": round(time.time(), 3), "points": [sample]}
+                    self.drag = {"event": "DRAG", "button": event.type, "modifiers": record["modifiers"], "points": [sample]}
                 elif event.value == "RELEASE" and self.drag and event.type == self.drag["button"]:
                     if sample:
                         self.drag["points"].append(sample)
-                    write_record({**self.drag, "complete": True, "end_reason": "button_release"})
+                    if len(self.drag["points"]) > 1:
+                        write_record(self.drag)
                     self.drag = None
         except (RuntimeError, ValueError, ReferenceError) as error:
             print(f"LLM Modeling Bridge: input recorder: {error}")
