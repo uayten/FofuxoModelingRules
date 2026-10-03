@@ -245,14 +245,23 @@ match the AI's copy. The primary MCP still answers AI PID 32932, access AI.
 Receipt: `hat-legacy-review/native-inspection-open.json`. When the human finishes,
 use `collect(close=True)` to save, synchronize, preserve an example and close
 only the review. Do not call `resume_ai()` for this separate-window return.
-Clarify the local uniformity judgment during the native inspection before
-claiming the full evenness check passed.
+Native inspection is now complete and the review is closed. The modeler said
+the region was already correct before a minor centering adjustment. Collection
+preserved all 88 ids, 71 faces, topology, modifiers, matrix, labels and groups.
+Only v130/v148/v151/v160 moved. The two edge slides and two undo/redo pairs
+matched saved movements within 0.008710 mm per component. Receipt:
+`hat-legacy-review/native-inspection-return.json`; example:
+`hat-legacy-review/human/review-20261002-235613-1790985373410343600/`.
+Initial uniformity judgment passed on the compared cases: flagged f2/f14 was
+apparently unwanted; unflagged f36/f41 was accepted before adjustment. Do not
+generalize this to every threshold or repair geometry automatically.
 
-1. Human judgment of evenness thresholds on the copied hat, distinguishing
-   intentional spacing from unwanted unevenness through the existing views.
-   Preserve Mirror Y and the dent; no hat modeling edits are requested.
-2. Normal shutdown with native output captured, then final focused checks and
+1. Normal shutdown with native output captured, then final focused checks and
    verification that installed sources and generated ZIP contain validated fixes.
+   Restore the original test file from `inspection-session.json` before closing
+   the primary AI Blender. A single rerun of test_roundtrip.py is justified by
+   its original 244-check run printing a native access violation at shutdown;
+   capture native output and do not infer its cause from a clean exit code.
 
 ## Connection and native diagnostic limitations
 

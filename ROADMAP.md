@@ -105,13 +105,15 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    Real legacy-copy migration passed with the cowboy hat and its twelve sidecar
    files, including normal save/reopen. All 88 ids, geometry, modifier settings,
    label values and creases survived; original source fingerprints were unchanged.
+   Contextual close inspection passed with the complete model, located rectangle
+   and matching enlargement from the editable front-left side. Twenty focused
+   rendering checks passed. The modeler judged flagged f2/f14 unwanted and
+   accepted unflagged f36/f41 before a minor centering move. Collection preserved
+   88 ids, topology and modifiers; recorded movements matched within 0.008710 mm.
    After background MCP timeouts, the modeler authorized the existing catalog
    APIs through the interactive MCP for this comparison. The AI restart
    reconnected that MCP; the background timeout remains unexplained.
    **Remaining**, in order:
-   - the labeled cage/result views and loop display are approved; judge evenness
-     warnings on a cowboy-hat copy through these existing views. The separate
-     Workbench crop remains optional, without its own required visual gate;
    - normal shutdown with native diagnostics captured, then final focused
      checks and verification of the installed/generated extension package.
    Reject the unmatched Grab replay candidate; suggestions remain provisional.

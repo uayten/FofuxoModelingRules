@@ -185,9 +185,10 @@ display as-is. The cage-display validation is complete.
 
 - Edit Mode topology undo/redo is now validated, including exact restored ids
   and agreement between the recorder and collected mesh; no repeat is needed.
-- The labeled cage/result sheet and manual loop display are approved. Judge
-  evenness thresholds on a copy of the cowboy hat through these existing views,
-  distinguishing intentional tight spacing from unwanted unevenness. The modeler
+- The labeled cage/result sheet, manual loop display and contextual close are
+  approved. Initial evenness warnings passed the compared hat cases: f2/f14 was
+  judged apparently unwanted, while unflagged f36/f41 was accepted before its
+  minor centering adjustment. This is scoped to those examples. The modeler
   questioned the separate Workbench crop's value; it remains an optional tool,
   without a separate required visual gate or a claimed artistic approval.
 - Same-window Edit Mode and Sculpt passed the refusal, saved prompt return,
@@ -312,8 +313,15 @@ The modeler then approved identification and the contextual presentation:
 The close-view readability correction is visually validated, alongside its
 twenty focused checks. The modeler requested a native Blender inspection;
 review PID 28092 opened with the same geometry and ids as the AI copy.
-The local uniformity verdict remains pending that inspection; presentation
-approval alone does not approve thresholds for every region.
+Native inspection then passed. The modeler stated the region was already
+correct and only moved it slightly for centering. Collection saved, synchronized,
+preserved the example and closed the review. Four vertices moved; all 88 ids,
+71 faces, modifier settings, matrix, labels and groups were preserved. Two edge
+slides, two undos and two redos were retained separately; their summed movements
+matched the received mesh within 0.008710 mm per component. The archived after
+object matched the live copy. This validates the initial warning's distinction
+on the compared cases, without claiming universal thresholds or approving
+automatic geometry repairs. Evidence: `hat-legacy-review/native-inspection-return.json`.
 
 The real legacy-copy check passed on 2026-10-02 using `C1.blend` and all twelve
 files of its `.cage` sidecar copied into `hat-legacy-review/`. Opening with the
