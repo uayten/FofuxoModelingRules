@@ -1,0 +1,386 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.bridge\\review.blend",
+  "objects": [
+    "Concept",
+    "Chapéu"
+  ],
+  "why": {
+    "modeler_words": "acho que antes já estava bom, mas olhando mais pra referência, notei que a abertura lateral é um pouco maior e por isso fiz algumas mudanças, mas já estava bom antes também.",
+    "summary": "The side dent was already acceptable; compared with the reference, the side opening is a little larger, so the modeler widened it.",
+    "date": "2026-10-09"
+  },
+  "status": "reason supplied; replay validation pending",
+  "deltas": {
+    "Concept": {
+      "status": "unavailable",
+      "reason": "stable ids missing or duplicated; do not infer correspondence from indices"
+    },
+    "Chapéu": {
+      "moved_mm": {
+        "v112": [
+          -0.02657,
+          -0.01706,
+          -0.05558
+        ],
+        "v113": [
+          0.63071,
+          0.0,
+          -0.21178
+        ],
+        "v118": [
+          0.36107,
+          0.0,
+          -0.81239
+        ],
+        "v119": [
+          -1.45657,
+          -1.3823,
+          -3.31226
+        ],
+        "v120": [
+          -0.96,
+          0.0,
+          -7.34862
+        ],
+        "v125": [
+          0.18066,
+          0.0,
+          -0.40648
+        ],
+        "v126": [
+          -1.2521,
+          -1.39302,
+          -3.5482
+        ],
+        "v127": [
+          -1.95557,
+          0.0,
+          -6.58605
+        ],
+        "v137": [
+          0.25603,
+          -0.02205,
+          -0.12629
+        ],
+        "v138": [
+          -1.38916,
+          1.63971,
+          -6.66676
+        ],
+        "v139": [
+          -2.68021,
+          -1.27635,
+          -6.91838
+        ],
+        "v145": [
+          0.32364,
+          -0.0833,
+          -1.02469
+        ],
+        "v146": [
+          0.61093,
+          -0.05322,
+          -1.56193
+        ],
+        "v147": [
+          -2.7226,
+          -0.10813,
+          0.20573
+        ],
+        "v151": [
+          0.08701,
+          0.0,
+          -0.19575
+        ],
+        "v152": [
+          -1.46303,
+          -1.60687,
+          -3.87064
+        ],
+        "v153": [
+          -1.84723,
+          0.0,
+          -8.18184
+        ],
+        "v154": [
+          -0.20836,
+          -0.07499,
+          -0.39372
+        ],
+        "v155": [
+          -1.16043,
+          0.0,
+          -2.52548
+        ],
+        "v156": [
+          0.33984,
+          0.0,
+          -0.76463
+        ],
+        "v157": [
+          -0.55952,
+          -0.73223,
+          -2.01113
+        ],
+        "v158": [
+          -1.48836,
+          -0.84739,
+          -3.01022
+        ],
+        "v159": [
+          -2.5413,
+          0.09115,
+          -7.95844
+        ],
+        "v160": [
+          0.41105,
+          0.0,
+          -0.92485
+        ],
+        "v161": [
+          0.36763,
+          -0.00609,
+          -0.84858
+        ],
+        "v162": [
+          -0.17233,
+          0.0,
+          -0.32442
+        ],
+        "v163": [
+          0.15417,
+          -0.27769,
+          -1.37919
+        ],
+        "v164": [
+          0.02977,
+          -0.11326,
+          -0.49829
+        ],
+        "v165": [
+          0.34926,
+          -0.17416,
+          -1.42659
+        ],
+        "v167": [
+          0.25719,
+          -0.08725,
+          -0.89836
+        ],
+        "v168": [
+          0.08248,
+          0.0,
+          -0.18556
+        ],
+        "v174": [
+          0.04273,
+          0.0,
+          -0.09615
+        ],
+        "v179": [
+          0.5152,
+          0.0,
+          -1.1592
+        ],
+        "v180": [
+          0.13873,
+          0.0,
+          -0.31215
+        ],
+        "v183": [
+          0.10773,
+          0.0,
+          -0.2424
+        ]
+      },
+      "added": [],
+      "removed": []
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 30,
+      "operators": {
+        "VIEW3D_OT_select": 3,
+        "TRANSFORM_OT_resize": 1,
+        "UNDO": 1,
+        "OBJECT_OT_editmode_toggle": 4,
+        "SCULPT_OT_sculptmode_toggle": 4,
+        "WM_OT_radial_control": 6,
+        "SCULPT": 10,
+        "TRANSFORM_OT_translate": 1
+      },
+      "undos": 1,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 108,
+      "capture": "event",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 251,
+      "operators": {
+        "INPUT": 217,
+        "DRAG": 34
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": [
+        {
+          "record": 73,
+          "object": "Chapéu",
+          "op": "mesh translate v175 w=-0.000mm d=-0.000mm h=+0.000mm falloff=smooth radius=84.750mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 76,
+          "object": "Chapéu",
+          "op": "mesh translate v178 w=-2.868mm d=+2.240mm h=-14.830mm falloff=smooth radius=82.662mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 79,
+          "object": "Chapéu",
+          "op": "mesh translate v120 w=-5.900mm d=-11.528mm h=+10.051mm falloff=smooth radius=398.899mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 94,
+          "object": "Chapéu",
+          "op": "mesh translate v127 w=+14.174mm d=+3.078mm h=-6.783mm falloff=smooth radius=77.585mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 97,
+          "object": "Chapéu",
+          "op": "mesh translate v159 w=+3.915mm d=+2.016mm h=-2.597mm falloff=smooth radius=77.594mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 104,
+          "object": "Chapéu",
+          "op": "mesh translate v138 w=-3.296mm d=+11.164mm h=+1.363mm falloff=smooth radius=77.633mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 107,
+          "object": "Chapéu",
+          "op": "mesh translate v138 w=+0.411mm d=+0.160mm h=-7.351mm falloff=smooth radius=77.640mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 110,
+          "object": "Chapéu",
+          "op": "mesh translate v120 w=+1.383mm d=-1.180mm h=-18.331mm falloff=smooth radius=77.283mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 113,
+          "object": "Chapéu",
+          "op": "mesh translate v153 w=-2.381mm d=-9.366mm h=-0.356mm falloff=smooth radius=77.282mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 116,
+          "object": "Chapéu",
+          "op": "mesh translate v152 w=+5.128mm d=+1.788mm h=-2.770mm falloff=smooth radius=77.750mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 121,
+          "object": "Chapéu",
+          "op": "mesh translate v127 w=+0.475mm d=+0.769mm h=-0.251mm falloff=smooth radius=58.036mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 124,
+          "object": "Chapéu",
+          "op": "mesh translate v159 w=-9.973mm d=+0.596mm h=+0.431mm falloff=smooth radius=58.241mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 127,
+          "object": "Chapéu",
+          "op": "mesh translate v153 w=-1.952mm d=+1.304mm h=+1.694mm falloff=smooth radius=57.921mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 130,
+          "object": "Chapéu",
+          "op": "mesh translate v138 w=+0.923mm d=-11.309mm h=-1.017mm falloff=smooth radius=58.700mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 133,
+          "object": "Chapéu",
+          "op": "mesh translate v145 w=-42.780mm d=+18.888mm h=+20.997mm falloff=smooth radius=58.991mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 138,
+          "object": "Chapéu",
+          "op": "mesh translate v110 w=-9.203mm d=+0.772mm h=-15.437mm falloff=smooth radius=59.320mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 149,
+          "object": "Chapéu",
+          "op": "mesh translate v146 w=-1.765mm d=+4.522mm h=-3.970mm falloff=smooth radius=88.237mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 152,
+          "object": "Chapéu",
+          "op": "mesh translate v180 w=-2.898mm d=-22.964mm h=+9.552mm falloff=smooth radius=88.237mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 155,
+          "object": "Chapéu",
+          "op": "mesh translate v178 w=+1.538mm d=-92.825mm h=-1.375mm falloff=smooth radius=87.335mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 181,
+          "object": "Chapéu",
+          "op": "mesh translate v175 w=-0.728mm d=-6.216mm h=+0.767mm falloff=smooth radius=90.027mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        },
+        {
+          "record": 220,
+          "object": "Chapéu",
+          "op": "mesh translate v177 w=+2.435mm d=+49.734mm h=-12.532mm falloff=smooth radius=48.744mm",
+          "status": "provisional",
+          "reason": "surface ray points approximate the gesture; compare the recorded moved vertices before reuse"
+        }
+      ]
+    }
+  }
+}

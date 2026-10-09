@@ -6,6 +6,8 @@
 > and `extension/fofuxo-bridge/HUMAN_TESTS.md` for the pending interaction checks.
 > The hat's saved files below were preserved. Historical `.cage/` paths remain
 > valid until the file is opened with the new extension and migrated.
+> C1 was migrated on 2026-10-09: every `ai/C1/C1.cage/...` path below now
+> lives in `ai/C1/C1.bridge/` with the same file name.
 > Use `ai/C1/recording-summary.json` instead of rereading all 343 operators.
 > C1's former in-memory round has no persisted checkpoint; do not reconstruct
 > or invent its past usage from the new counters.
@@ -202,6 +204,16 @@ Blenders"; tests pass, 244 checks):
   v125-v156-v147-v150-v131), egg dent, middle dent on the X plane.
 - Known: v153 sat near the Y plane, not on it (`near_plane`), before the
   last session; check it again.
+
+Update 2026-10-09: the modeler approved the side dent after widening its
+opening toward the reference (example `human/review-20261009-052851-...`).
+Mirror.001 (Y) was applied: 88 -> 160 vertices, evaluated result unchanged.
+Solidify 2 mm (offset -1, even, rim) was added last. The modeler marked the
+brim's outer edge and the crown-brim fold sharp to fix the border's shading
+(`human/review-20261009-053739-...`); keep those marks (D-060 amended).
+Stack now: Mirror (X) > Subdivision > Solidify. The band row was previewed
+as `ring v12-v62` (12 faces) but not extracted. The round `C1 side dent
+review` is checkpointed in `ai/C1/C1.bridge/round.open.json`.
 
 ## Next steps
 

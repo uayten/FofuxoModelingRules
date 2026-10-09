@@ -721,6 +721,17 @@ Seen in B1 round 5 (a sharp loop to remove) and round 6 (seams to pull);
 confirmed by the modeler. LLM Modeling Bridge reports the marks new or cleared on
 every sync, and the AI clears its marks once acted on and says so.
 
+Amended (C1, 2026-10-09): Mark Sharp is both a message and part of the
+shading. After Solidify on the cowboy hat the border's normals were wrong;
+the modeler fixed them by marking the brim's outer edge and the crown-brim
+fold sharp, and said the final stages need Mark Sharp to be correct: "o mark
+sharp possa funcionar para mostrar assim como também é parte fundamental do
+shading". So a new sharp loop is read from context: what the modeler says
+with it, or a border or fold that should shade hard. When the reading is
+unclear, ask. The AI never clears a sharp mark without the modeler's
+confirmation; it clears only a sharp the modeler confirmed as a message,
+once acted on. Seam and crease keep the original reading.
+
 ### D-040: Silhouette overlap as an audit check (Stated, T1)
 
 The auditor compares the evaluated mesh's front silhouette with the concept.

@@ -4,8 +4,10 @@ Marks are the edges the modeler marks in Blender (sharp, seam, crease). Every
 sync reports the ones new since the last sync, and the ones cleared, so none
 goes unseen. The readings (D-060, confirmed by the modeler): sharp or seam on
 a loop = "this loop" (remove it, move it, look at it); crease = "pinch here".
-Once acted on, the AI clears its marks (mesh mark_seam <edges> clear=on,
-mark_sharp ... clear=on, crease <edges> 0) and says so.
+Sharp can also be shading the model needs (a border or fold after Solidify);
+it is read from context and kept unless the modeler confirms it as a message.
+Once acted on, the AI clears its message marks (mesh mark_seam <edges>
+clear=on, mark_sharp ... clear=on, crease <edges> 0) and says so.
 
 Annotations are the strokes drawn with Blender's Annotate tool in the 3D
 View. Each 3D stroke reads as points; the sync names the base vertices whose
@@ -22,7 +24,8 @@ from mathutils import Vector
 
 from . import mesh_io, topology
 
-READING = "sharp or seam on a loop = 'this loop'; crease = 'pinch here' (D-060)"
+READING = ("sharp or seam on a loop = 'this loop'; sharp may also be shading to keep, "
+           "ask when unclear; crease = 'pinch here' (D-060)")
 NEAR = 0.06  # of the frame's largest axis: how far from a stroke a vertex is still under it
 _LINE = re.compile(r"(crease|bevel)\s+([\d.]+)\s+(.*)|(seam|sharp)\s+(.*)")
 

@@ -146,10 +146,12 @@ Phase 5):
 - **Marks** (Mark Sharp, Mark Seam, crease): `marks` lists the ones new or
   cleared since the last sync, with their reading (D-060): sharp or seam on
   a loop = "this loop" (remove it, move it, look at it); crease = "pinch
-  here". The selection grammar reads them (`mesh
-  translate seam ...`). Once acted on, the AI clears them (`mesh mark_seam
-  seam clear=on`, `mesh mark_sharp sharp clear=on`, `crease crease 0`) and
-  the next sync says so.
+  here". Sharp can also be shading the model needs (a border or fold after
+  Solidify): read it from context and ask when unclear. The selection grammar
+  reads them (`mesh translate seam ...`). Once acted on, the AI clears a
+  message mark (`mesh mark_seam seam clear=on`, `crease crease 0`, and
+  `mesh mark_sharp sharp clear=on` only for a sharp the modeler confirmed as
+  a message) and the next sync says so.
 - **Annotations** (the Annotate tool in the 3D View, the scene's
   annotation): `annotations` lists the strokes new since the last sync with
   the base vertices whose result lies within 6% of the frame from the

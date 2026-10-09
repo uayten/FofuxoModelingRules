@@ -71,11 +71,12 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    [compact receipt](models/tasks/chapeu-cowboy/ai/C1/recording-summary.json)
    and an [observed-method index](models/example/cowboy-hat/RECORDING.md).
    Left:
-   - the modeler's approval of the side dent, then applying temporary Mirror Y;
-   - thickness (Solidify after Subdivision), the band extracted from the
-     crown's band row, buckle, tail (Mirror X and Subdivision), materials;
+   - the band extracted from the crown's band row (`ring v12-v62`, 12 faces,
+     previewed, not yet extracted), buckle, tail (Mirror X and Subdivision),
+     materials;
    - cage and result checks (D-078), including the new evenness receipts;
-   - round_end, ai/C1/report.md with supplied cost data, and the modeler's
+   - resume the checkpointed round `C1 side dent review` (`round_resume`),
+     round_end, ai/C1/report.md with supplied cost data, and the modeler's
      verdict on the hat and method.
    **Done when** the modeler judges the hat good and the method approved.
    The old in-memory C1 round cannot be reconstructed by the new counters;

@@ -1,0 +1,61 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\chapeu-cowboy\\ai\\C1\\C1.bridge\\review.blend",
+  "objects": [
+    "Concept",
+    "Chapéu"
+  ],
+  "why": {
+    "modeler_words": "agora sim, tinha um problema nas normais na borda do chapéu, coloquei um mark sharp e agora estão certas",
+    "summary": "After Solidify, the shading normals at the hat's border were wrong; the modeler marked the brim's outer edge loop and the crown-brim fold loop sharp (24 edges), which fixed them. Smooth by Angle was tried and removed.",
+    "date": "2026-10-09"
+  },
+  "status": "reason supplied; replay validation pending",
+  "deltas": {
+    "Concept": {
+      "status": "unavailable",
+      "reason": "stable ids missing or duplicated; do not infer correspondence from indices"
+    },
+    "Chapéu": {
+      "moved_mm": {},
+      "added": [],
+      "removed": []
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 24,
+      "operators": {
+        "VIEW3D_OT_select": 9,
+        "OBJECT_OT_shade_auto_smooth": 1,
+        "OBJECT_OT_editmode_toggle": 2,
+        "OBJECT_OT_modifier_remove": 1,
+        "MESH_OT_select_mode": 1,
+        "MESH_OT_loop_select": 8,
+        "MESH_OT_mark_sharp": 2
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "event",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 163,
+      "operators": {
+        "INPUT": 140,
+        "DRAG": 23
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": []
+    }
+  }
+}
