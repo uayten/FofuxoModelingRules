@@ -1,0 +1,35 @@
+{
+  "reason_for_roundtrip_rerun": "the previous 244-check run printed a native access violation at shutdown",
+  "tests": [
+    {
+      "test": "test_roundtrip.py",
+      "exit_code": 0,
+      "assertion_counts": [
+        244
+      ],
+      "expected_checks": 244,
+      "native_diagnostic_markers": [
+        "access violation",
+        "access violation",
+        "access violation",
+        "access violation",
+        "access violation"
+      ],
+      "native_output": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\final-roundtrip-native.log",
+      "passed": false
+    },
+    {
+      "test": "test_roadmap.py",
+      "exit_code": 0,
+      "assertion_counts": [
+        43
+      ],
+      "expected_checks": 43,
+      "native_diagnostic_markers": [],
+      "native_output": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tests\\bridge-0.2.1\\2026-10-02\\final-roadmap-native.log",
+      "passed": true
+    }
+  ],
+  "passed": false,
+  "historical_access_violation_cause": "unknown; no cause is inferred from exit codes"
+}

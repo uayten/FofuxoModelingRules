@@ -263,6 +263,16 @@ generalize this to every threshold or repair geometry automatically.
    its original 244-check run printing a native access violation at shutdown;
    capture native output and do not infer its cause from a clean exit code.
 
+   Done 2026-10-09. The AI Blender quit with exit 0 and captured output
+   (`final-ai-shutdown.json`). The roadmap suite passed cleanly; the round-trip
+   rerun passed 244 checks and printed access violations only after its verdict.
+   cdb showed them as first-chance thread-exit exceptions in tbbmalloc, also
+   seen in a bare Blender + NumPy probe (`native-shutdown-probes.json`,
+   `native-roundtrip-cleanup-debugger-normal-heap.log`). Classified as
+   Blender/NumPy noise; details and the single unexplained `--debug-memory`
+   crash are in IMPLEMENTATION.md#verification. ZIP and installed code match
+   the source. The validation item was removed from ROADMAP.md.
+
 ## Connection and native diagnostic limitations
 
 Interactive MCP works after saving and restarting only the AI Blender. Restart

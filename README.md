@@ -42,9 +42,9 @@ of modeling rules: an untested replay candidate is not an approved technique.
 
 ## Current status
 
-The tooling update is ready for the [human checks](extension/fofuxo-bridge/HUMAN_TESTS.md).
+The tooling update passed its [human checks](extension/fofuxo-bridge/HUMAN_TESTS.md).
 The [implementation report](IMPLEMENTATION.md) records delivered features,
-test coverage and the unconfirmed native shutdown diagnostic from one test run.
+test coverage and the classified native shutdown diagnostic.
 The cowboy hat still awaits its stage reviews and final judgment. A second
 concept and the skirt-ruffle reference file are also pending.
 Character counts and image pixels are receipts, not billed token estimates.

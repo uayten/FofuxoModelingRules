@@ -48,8 +48,9 @@ mode/selection capture, separate opposite moves without waits, topology ids,
 stroke-boundary callbacks, undo/redo callbacks and cleanup. Eight activation
 checks also passed. The stroke and undo/redo boundary tests exercise callbacks;
 at that point real modal input still required the separate checks recorded below.
-The native shutdown diagnostic from the earlier full suite remains unexplained.
-Opening the isolated test file also printed context errors from
+The native shutdown diagnostic from the earlier full suite was later classified
+as Blender/NumPy thread-exit noise; see the
+[implementation report](../../IMPLEMENTATION.md#verification). Opening the isolated test file also printed context errors from
 `amp_transformator` (`selected_objects`) and `vertex_skin_weights_tool`
 (`active_object`). These are environment observations, not an established
 explanation of the native shutdown diagnostic.
@@ -197,12 +198,13 @@ display as-is. The cage-display validation is complete.
   and removal passed the same-window saved handover and immutable-example check.
 - Real legacy-copy migration, sidecar preservation and normal save/reopen passed
   with the copied cowboy hat; no repeat is needed.
-- Observe normal shutdown with native diagnostic output captured. Prior
-  process exit code 0 without console capture did not settle the original
-  access-violation diagnostic; do not infer its cause from the activation fix.
-- Once these checks pass, update the roadmap, package the extension and
-  verify that the installed sources and generated ZIP include the validated
-  fixes. Run focused checks; a full-suite rerun needs a concrete reason.
+- Normal shutdown of the AI Blender exited 0 with native output captured. The
+  final roadmap suite passed cleanly (43 checks); the round-trip suite passed
+  its 244 checks and printed only the first-chance thread-exit diagnostics
+  classified in the [implementation report](../../IMPLEMENTATION.md#verification).
+- The generated ZIP matches the source; the installed copy matches all code.
+
+The human-review validation of 0.2.1 is complete.
 
 ## Same window
 

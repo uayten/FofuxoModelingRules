@@ -47,16 +47,34 @@ installed extension was updated and enabled successfully, with preferences saved
 - The isolated E1 correction-catalog check passed and exited cleanly.
 - No tracked .blend file was changed. Tests operated on temporary files.
 
-The final full-suite run also printed native Windows access-violation
-diagnostics during shutdown, with no Python frame, despite its passing
-assertions and exit 0. The focused suite and isolated complex-catalog check
-did not reproduce that diagnostic. Its cause is unconfirmed: these results
-establish assertion coverage, not a fully clean native shutdown of that run.
-No broad editor-testing loop was started to chase an unlocated failure.
+The full-suite run printed native Windows access-violation diagnostics with no
+Python frame, despite passing assertions and exit 0. A captured rerun (2026-10-02,
+`models/tests/bridge-0.2.1/2026-10-02/final-regression-result.json`) placed all
+of them after the final `ALL PASSED (244 checks)` line. Under cdb they were
+first-chance exceptions only (42 first-chance, 0 second-chance, exit 0), raised
+in `tbbmalloc!_TBB_malloc_safer_free` from a `dbghelp` TLS destructor while a
+thread exited at Blender quit; no extension frame was on the stack. Python's
+`faulthandler` reports such handled exceptions on Windows. A bare Blender
+process that only imported NumPy printed the same message; importing the
+bridge without NumPy did not. A debugger-attached NumPy probe recorded none,
+so the occurrence is intermittent. Classification: Blender/NumPy thread-exit
+noise during quit, not an extension defect. Its root cause inside Blender was
+not investigated further.
+
+One run with `--debug-memory` hit a real access violation in `blender.exe`
+while opening the suite's temporary Laço.blend copy, before the first extension
+operation. Two guarded-allocator probes loading the same source file, with and
+without the extension registered, exited cleanly. It remains an unexplained
+single occurrence and was not pursued.
+
+The generated 0.2.1 ZIP matches the source folder file for file (41 files,
+same SHA-256). The installed copy matches every code file and the manifest;
+only its README.md and HUMAN_TESTS.md predate the latest documentation edits.
+The AI Blender used for the human checks quit normally with exit 0 and its
+native output captured.
 
 ## Pending
 
-- Real Edit Mode/Sculpt/input recording and same-window interaction tests.
 - The hat's side-dent approval, remaining parts/materials and final verdict.
 - The modeler's second concept and validation of technique transfer.
 - The unavailable skirt-ruffle reference and its example measures.
@@ -64,13 +82,11 @@ No broad editor-testing loop was started to chase an unlocated failure.
 - Real comparable session usage; report characters and pixels do not establish
   billed token savings. Historical C1 usage and exact image billing remain
   unavailable without a supported source.
-- Confirm whether the native shutdown diagnostic recurs in normal use or in
-  a reproducible short case before expanding its investigation.
 
-The interaction checklist is in [HUMAN_TESTS.md](extension/fofuxo-bridge/HUMAN_TESTS.md).
-The initial implementation only inspected the connected unsaved Plane scene.
-Version 0.2.1 has since been activated successfully in the user's Blender;
-human interaction checks remain for the modeler's next session.
+The interaction checklist and its results are in
+[HUMAN_TESTS.md](extension/fofuxo-bridge/HUMAN_TESTS.md). Version 0.2.1 passed
+the real Edit Mode, Sculpt, input-recording, same-window and legacy-migration
+reviews in the modeler's Blender.
 
 ## Install and resume
 

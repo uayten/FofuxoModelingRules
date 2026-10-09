@@ -65,63 +65,7 @@ approved plan, learn from human corrections and demonstrate a lower session cost
 
 ## To do
 
-1. **Validate the tooling in a real human review.** Follow
-   [HUMAN_TESTS.md](extension/fofuxo-bridge/HUMAN_TESTS.md). Read only the
-   README's Session tools and the relevant test section. Check:
-   - the recorder in Edit Mode and Sculpt (Grab and Smooth), with selected
-     and moved ids, undo/redo and named regions;
-   - pass-through key/button press and release, modifiers, surface hits,
-     sampled drags and brush radius; compare provisional Grab commands
-     against actual recorded vertex movements;
-   - same-window editing, refusal of extension edits while the human holds
-     it, saving and returning the window;
-   - region membership through topology operators and absorb, cage labels
-     and evenness thresholds reviewed in the existing labeled cage/result views;
-   - legacy save/reopen after metadata and sidecar migration.
-   **Done when** the real review is judged usable and observed defects are
-   fixed. Background checks cannot establish modal input or Sculpt fidelity.
-   Verified: 26 focused recorder checks, 8 activation checks, real Grab and
-   temporary Shift/Smooth, paired input releases, 11 Sculpt undo/redo inverse
-   pairs, save/collect/close, modifier transfer and immutable examples. Region
-   transfer kept all original ids and added 27 fresh ids. The replacement-M
-   review retained 276 operators and movement snapshots for all 46 transforms.
-   Its empty-region attribution summary defect was fixed with 5 pure checks;
-   the real log now reports its 121 unattributed movement samples correctly.
-   The identity-history correction passed 14 focused checks and the final real
-   repeat: cut ids 281–288 survived undo/redo exactly, and the collected mesh
-   agreed with the last recorded id set. No snapshot errors remained.
-   Same-window Edit Mode and Sculpt passed extension-edit refusal, saved
-   prompt return, synchronization and immutable examples. The Sculpt comparison
-   retained 36 ids, topology, modifier settings, regions and loop annotations;
-   six strokes matched the received mesh within 0.006432 mm per component.
-   Real prompt return during an active Edit Mode translate also passed: the
-   unfinished move was cancelled, the confirmed move was saved, all 36 ids,
-   topology, modifiers, regions and seven loop marks survived, and the archived
-   after-file matched the live object. The Windows cancellation uses targeted
-   window messages with normal human input enabled; event simulation was rejected.
-   Same-window object addition/removal also passed: the saved example retained
-   the removed and added object statuses, the new cube's geometry and eight ids
-   were saved, and TestMesh geometry, ids, labels, modifiers and regions were unchanged.
-   Real legacy-copy migration passed with the cowboy hat and its twelve sidecar
-   files, including normal save/reopen. All 88 ids, geometry, modifier settings,
-   label values and creases survived; original source fingerprints were unchanged.
-   Contextual close inspection passed with the complete model, located rectangle
-   and matching enlargement from the editable front-left side. Twenty focused
-   rendering checks passed. The modeler judged flagged f2/f14 unwanted and
-   accepted unflagged f36/f41 before a minor centering move. Collection preserved
-   88 ids, topology and modifiers; recorded movements matched within 0.008710 mm.
-   After background MCP timeouts, the modeler authorized the existing catalog
-   APIs through the interactive MCP for this comparison. The AI restart
-   reconnected that MCP; the background timeout remains unexplained.
-   **Remaining**, in order:
-   - normal shutdown with native diagnostics captured, then final focused
-     checks and verification of the installed/generated extension package.
-   Reject the unmatched Grab replay candidate; suggestions remain provisional.
-   Also confirm the native shutdown diagnostic described in
-   [IMPLEMENTATION.md](IMPLEMENTATION.md#verification) if it recurs. Its cause
-   was not established by the passing assertions or the isolated catalog check.
-
-2. **Finish the cowboy hat (C1) and judge the method** (D-065 to D-079).
+1. **Finish the cowboy hat (C1) and judge the method** (D-065 to D-079).
    Read models/tasks/chapeu-cowboy/HANDOFF.md, the plan's Changes and only
    the decisions needed by the next stage. The historical recorder has a
    [compact receipt](models/tasks/chapeu-cowboy/ai/C1/recording-summary.json)
@@ -137,7 +81,7 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    The old in-memory C1 round cannot be reconstructed by the new counters;
    historical usage stays unknown unless actual session usage is available.
 
-3. **A second concept, chosen by the modeler.** Build with the reviewed
+2. **A second concept, chosen by the modeler.** Build with the reviewed
    staged method. Read the session card, its reference and relevant technique
    blocks. Test whether D-066 to D-079 and recorded techniques transfer with
    less explanation. Before reuse, compare body/attachment, depth,
@@ -146,7 +90,7 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    **Done when** the modeler judges the result and measured replay;
    unresolved method questions go to DECISIONS.md.
 
-4. **Complete the human example catalog.** E1's top hat now has
+3. **Complete the human example catalog.** E1's top hat now has
    models/example/chapeu/measures.json; the bow already has its measures.
    The skirt ruffles still have no source file in the catalog. Obtain it,
    then store their measures and example entry. New absorbed reviews preserve
@@ -157,7 +101,7 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    Read models/example/CATALOG.md, models/FEEDBACK.md and the affected
    example's EXAMPLE.md and edit.json.
 
-5. **Demonstrate cost reduction with real session usage.** Read the README's
+4. **Demonstrate cost reduction with real session usage.** Read the README's
    Cost per round and Session tools. On the next reviewed stage, collect
    report characters, image pixels, external read receipts, agent text and
    actual supplied session tokens. Compare an equivalent stage against the
@@ -178,8 +122,7 @@ approved plan, learn from human corrections and demonstrate a lower session cost
 
 | Step | What | Why first |
 |---|---|---|
-| 1 | Item 1: install the update and run human checks | the next stages rely on recording and handover |
-| 2 | Item 5: begin receipts on the next reviewed stage | preserve measurements before claiming a saving |
-| 3 | Item 2: finish the hat and judge the method | the open run still needs its verdict |
-| 4 | Item 3: choose and build the second concept | tests transfer and technique reuse |
-| 5 | Item 4: interview corrections and supply the ruffle file | depends on human provenance and missing data |
+| 1 | Item 4: begin receipts on the next reviewed stage | preserve measurements before claiming a saving |
+| 2 | Item 1: finish the hat and judge the method | the open run still needs its verdict |
+| 3 | Item 2: choose and build the second concept | tests transfer and technique reuse |
+| 4 | Item 3: interview corrections and supply the ruffle file | depends on human provenance and missing data |

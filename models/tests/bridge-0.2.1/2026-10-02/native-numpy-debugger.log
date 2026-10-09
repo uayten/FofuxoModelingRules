@@ -1,0 +1,208 @@
+
+************* Preparing the environment for Debugger Extensions Gallery repositories **************
+   ExtensionRepository : Implicit
+   UseExperimentalFeatureForNugetShare : true
+   AllowNugetExeUpdate : true
+   NonInteractiveNuget : true
+   AllowNugetMSCredentialProviderInstall : true
+   AllowParallelInitializationOfLocalRepositories : true
+   EnableRedirectToChakraJsProvider : false
+
+   -- Configuring repositories
+      ----> Repository : LocalInstalled, Enabled: true
+      ----> Repository : UserExtensions, Enabled: true
+
+>>>>>>>>>>>>> Preparing the environment for Debugger Extensions Gallery repositories completed, duration 0.000 seconds
+
+************* Waiting for Debugger Extensions Gallery to Initialize **************
+
+>>>>>>>>>>>>> Waiting for Debugger Extensions Gallery to Initialize completed, duration 0.093 seconds
+   ----> Repository : UserExtensions, Enabled: true, Packages count: 0
+   ----> Repository : LocalInstalled, Enabled: true, Packages count: 30
+
+Microsoft (R) Windows Debugger Version 10.0.28000.2526 AMD64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+CommandLine: "C:/Program Files (x86)/Steam/steamapps/common/Blender/blender.exe" -b --factory-startup --python-expr "import faulthandler; faulthandler.enable(); import numpy; print('PROBE_READY: NumPy imported',flush=True)" --python-exit-code 1
+
+************* Path validation summary **************
+Response                         Time (ms)     Location
+Deferred                                       srv*
+Symbol search path is: srv*
+Executable search path is: 
+
++------------------------------------------------------------------------+
+| This target supports Hardware-enforced Stack Protection. A HW based    |
+| "Shadow Stack" may be available to assist in debugging and analysis.   |
+| See aka.ms/userhsp for more info.                                      |
+|                                                                        |
+| dps @ssp                                                               |
+|                                                                        |
++------------------------------------------------------------------------+
+
+ModLoad: 00007ff7`6f980000 00007ff7`7711b000   blender.exe
+ModLoad: 00007ffb`024a0000 00007ffb`02707000   ntdll.dll
+ModLoad: 00007ffb`015d0000 00007ffb`0169b000   C:\WINDOWS\System32\KERNEL32.DLL
+ModLoad: 00007ffa`ffaa0000 00007ffa`ffea2000   C:\WINDOWS\System32\KERNELBASE.dll
+ModLoad: 00007ffb`00a70000 00007ffb`01208000   C:\WINDOWS\System32\SHELL32.dll
+ModLoad: 00007ffa`ff9f0000 00007ffa`ffa93000   C:\WINDOWS\System32\msvcp_win.dll
+ModLoad: 00007ffa`daa90000 00007ffa`daa98000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender_cpu_check.dll
+ModLoad: 00007ffa`937b0000 00007ffa`937ef000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\tbbmalloc.dll
+ModLoad: 00007ffb`00030000 00007ffb`0017c000   C:\WINDOWS\System32\ucrtbase.dll
+ModLoad: 00007ffb`003b0000 00007ffb`0057f000   C:\WINDOWS\System32\USER32.dll
+ModLoad: 00007ffa`fff40000 00007ffa`fff67000   C:\WINDOWS\System32\win32u.dll
+ModLoad: 00007ffb`00a40000 00007ffb`00a6b000   C:\WINDOWS\System32\GDI32.dll
+ModLoad: 00007ffa`ff800000 00007ffa`ff929000   C:\WINDOWS\System32\gdi32full.dll
+ModLoad: 00007ffa`543d0000 00007ffa`54459000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.crt\MSVCP140.dll
+ModLoad: 00007ffa`8f910000 00007ffa`8f92e000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.crt\VCRUNTIME140.dll
+ModLoad: 00007ffa`da2c0000 00007ffa`da2cc000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.crt\VCRUNTIME140_1.dll
+ModLoad: 00007ffb`021d0000 00007ffb`0236a000   C:\WINDOWS\System32\ole32.dll
+ModLoad: 00007ffb`01da0000 00007ffb`02125000   C:\WINDOWS\System32\combase.dll
+ModLoad: 00007ffa`52050000 00007ffa`52170000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\gmp-10.dll
+ModLoad: 00007ffa`d7380000 00007ffa`d738e000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\tbbmalloc_proxy.dll
+ModLoad: 00007ffb`008e0000 00007ffb`009f8000   C:\WINDOWS\System32\RPCRT4.dll
+ModLoad: 00007ffa`51f40000 00007ffa`52049000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\OpenImageIO_Util.dll
+ModLoad: 00007ffb`01d30000 00007ffb`01d96000   C:\WINDOWS\System32\SHLWAPI.dll
+ModLoad: 00007ffa`53de0000 00007ffa`53e3a000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\tbb12.dll
+ModLoad: 00007ffb`00590000 00007ffb`0064c000   C:\WINDOWS\System32\ADVAPI32.dll
+ModLoad: 00007ffa`51bc0000 00007ffa`51f3a000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\openvdb.dll
+ModLoad: 00007ffb`00790000 00007ffb`00839000   C:\WINDOWS\System32\msvcrt.dll
+ModLoad: 00007ffb`016a0000 00007ffb`01749000   C:\WINDOWS\System32\sechost.dll
+ModLoad: 00007ffa`fce00000 00007ffa`fd04c000   C:\WINDOWS\SYSTEM32\dbghelp.dll
+ModLoad: 00007ffa`53d80000 00007ffa`53dd7000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\Imath.dll
+ModLoad: 00007ffb`013f0000 00007ffb`014c9000   C:\WINDOWS\System32\OLEAUT32.dll
+ModLoad: 00007ffb`014d0000 00007ffb`015cb000   C:\WINDOWS\System32\shcore.dll
+ModLoad: 00007ffa`f7c70000 00007ffa`f7c7b000   C:\WINDOWS\SYSTEM32\VERSION.dll
+ModLoad: 00007ffb`00a00000 00007ffb`00a31000   C:\WINDOWS\System32\IMM32.dll
+ModLoad: 00007ffa`de580000 00007ffa`de810000   C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9278_none_3e0d1ba8e3303201\COMCTL32.dll
+ModLoad: 00007ffa`53460000 00007ffa`5350d000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\epoxy-0.dll
+ModLoad: 00007ffa`fc500000 00007ffa`fc63b000   C:\WINDOWS\SYSTEM32\dxgi.dll
+ModLoad: 00007ffa`50bb0000 00007ffa`50d9a000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\avutil-60.dll
+ModLoad: 00007ffa`50930000 00007ffa`50ba3000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\avformat-62.dll
+ModLoad: 00007ffa`ff670000 00007ffa`ff7ee000   C:\WINDOWS\System32\CRYPT32.dll
+ModLoad: 00007ffa`8f8f0000 00007ffa`8f907000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\avdevice-62.dll
+ModLoad: 00007ffa`4dee0000 00007ffa`50929000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\avcodec-62.dll
+ModLoad: 00007ffb`006f0000 00007ffb`00770000   C:\WINDOWS\System32\WS2_32.dll
+ModLoad: 00007ffa`8edc0000 00007ffa`8edef000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\MaterialXFormat.dll
+ModLoad: 00007ffa`4d190000 00007ffa`4d28c000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\MaterialXCore.dll
+ModLoad: 00007ffa`4d780000 00007ffa`4dedc000   C:\Program Files (x86)\Steam\steamapps\common\Blender\python313.dll
+ModLoad: 00007ffa`4d290000 00007ffa`4d775000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\OpenColorIO_2_5.dll
+ModLoad: 00007ffa`4d0d0000 00007ffa`4d185000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\vulkan-1.dll
+ModLoad: 00007ffa`4cc20000 00007ffa`4d0ce000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\shaderc_shared.dll
+ModLoad: 00007ffa`4cae0000 00007ffa`4cc1c000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\swscale-9.dll
+ModLoad: 00007ffa`535b0000 00007ffa`535fb000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\Iex.dll
+ModLoad: 00007ffa`4ca00000 00007ffa`4cad4000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\OpenEXR.dll
+ModLoad: 00007ffa`4c860000 00007ffa`4c9f1000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\OpenAL32.dll
+ModLoad: 00007ffa`32580000 00007ffa`3979e000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\usd_ms.dll
+ModLoad: 00007ffa`7ced0000 00007ffa`7cefc000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\OpenImageDenoise.dll
+ModLoad: 00007ffa`fc660000 00007ffa`fc68f000   C:\WINDOWS\SYSTEM32\dwmapi.dll
+ModLoad: 00007ffa`d9630000 00007ffa`d9651000   C:\WINDOWS\SYSTEM32\MPR.dll
+ModLoad: 00007ffa`4c030000 00007ffa`4c857000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\OpenImageIO.dll
+ModLoad: 00007ffa`7c5b0000 00007ffa`7c5d8000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\oslquery.dll
+ModLoad: 00007ffa`4a780000 00007ffa`4c027000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\oslcomp.dll
+ModLoad: 00007ff9`e6850000 00007ff9`e9783000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\oslexec.dll
+ModLoad: 00007ffa`48360000 00007ffa`4852a000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\sndfile.dll
+ModLoad: 00007ffa`451e0000 00007ffa`456a1000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\ceres.dll
+ModLoad: 00007ff9`e4e50000 00007ff9`e6849000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\embree4.dll
+ModLoad: 00007ffa`ff260000 00007ffa`ff2b2000   C:\WINDOWS\SYSTEM32\CFGMGR32.dll
+ModLoad: 00007ffa`4a660000 00007ffa`4a780000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\hiprt0200564.dll
+ModLoad: 00007ff9`e2860000 00007ff9`e4e4e000   C:\Program Files (x86)\Steam\steamapps\common\Blender\cycles_kernel_oneapi_aot.dll
+ModLoad: 00007ffa`48010000 00007ffa`4835d000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\sycl8.dll
+ModLoad: 00007ffa`51b70000 00007ffa`51bb4000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.crt\MSVCP140_2.dll
+ModLoad: 00007ffa`ff310000 00007ffa`ff36e000   C:\WINDOWS\SYSTEM32\powrprof.dll
+ModLoad: 00007ffa`ff560000 00007ffa`ff58a000   C:\WINDOWS\SYSTEM32\bcrypt.dll
+ModLoad: 00007ffa`fc2a0000 00007ffa`fc2ad000   C:\WINDOWS\SYSTEM32\Secur32.dll
+ModLoad: 00007ffa`feea0000 00007ffa`feed0000   C:\WINDOWS\SYSTEM32\ncrypt.dll
+ModLoad: 00007ffa`44dc0000 00007ffa`451d9000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\avfilter-11.dll
+ModLoad: 00007ffa`743b0000 00007ffa`743d2000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\swresample-6.dll
+ModLoad: 00007ffa`8f870000 00007ffa`8f88b000   C:\WINDOWS\SYSTEM32\AVICAP32.dll
+ModLoad: 00007ff9`e1e90000 00007ff9`e2855000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\aom.dll
+ModLoad: 00007ffa`cd080000 00007ffa`cd090000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\IlmThread.dll
+ModLoad: 00007ffa`47f30000 00007ffa`4800d000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\OpenEXRCore.dll
+ModLoad: 00007ffa`ed940000 00007ffa`ed976000   C:\WINDOWS\SYSTEM32\WINMM.dll
+ModLoad: 00007ffa`4a4c0000 00007ffa`4a5cc000   C:\WINDOWS\SYSTEM32\OPENGL32.dll
+ModLoad: 00007ffa`4a420000 00007ffa`4a4bc000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\MaterialXRender.dll
+ModLoad: 00007ffa`4a5f0000 00007ffa`4a65a000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\MaterialXGenGlsl.dll
+ModLoad: 00007ffa`44d60000 00007ffa`44db2000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\MaterialXGenMsl.dll
+ModLoad: 00007ffa`3db70000 00007ffa`3dc52000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\MaterialXGenShader.dll
+ModLoad: 00007ffa`44cf0000 00007ffa`44d54000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\openjph.0.25.dll
+ModLoad: 00007ffa`8f370000 00007ffa`8f384000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.crt\MSVCP140_ATOMIC_WAIT.dll
+ModLoad: 00007ff9`df1c0000 00007ff9`e1e89000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\OpenImageDenoise_core.dll
+ModLoad: 00007ffa`cce30000 00007ffa`cce3f000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\oslnoise.dll
+ModLoad: 00007ffa`ccc90000 00007ffa`ccc9c000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\ur_win_proxy_loader.dll
+ModLoad: 00007ffa`4a200000 00007ffa`4a22c000   C:\WINDOWS\SYSTEM32\MSVFW32.dll
+ModLoad: 00007ffa`4a3c0000 00007ffa`4a3ed000   C:\WINDOWS\SYSTEM32\GLU32.dll
+ModLoad: 00007ffa`fe5c0000 00007ffa`fe609000   C:\WINDOWS\SYSTEM32\SSPICLI.DLL
+ModLoad: 00007ffa`fc4b0000 00007ffa`fc4f4000   C:\WINDOWS\SYSTEM32\dxcore.dll
+(8d94.a88c): Break instruction exception - code 80000003 (first chance)
+ntdll!LdrpDoDebuggerBreak+0x35:
+00007ffb`025c2239 cc              int     3
+0:000> cdb: Reading initial command 'sxe -c ".echo FIRST_CHANCE_AV; .exr -1; .ecxr; kb 12; gn" -c2 ".echo SECOND_CHANCE_AV; .exr -1; .ecxr; kb 12; gn" av; g'
+ModLoad: 00007ffa`ff2f0000 00007ffa`ff305000   C:\WINDOWS\SYSTEM32\UMPDC.dll
+ModLoad: 00007ffa`fee50000 00007ffa`fee8f000   C:\WINDOWS\SYSTEM32\NTASN1.dll
+ModLoad: 00007ffa`3da60000 00007ffa`3db62000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\ur_loader.dll
+ModLoad: 00007ffa`3d620000 00007ffa`3d6f7000   C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.shared\ur_adapter_level_zero_v2.dll
+ModLoad: 00007ffa`fe300000 00007ffa`fe31b000   C:\WINDOWS\SYSTEM32\kernel.appcore.dll
+ModLoad: 00007ffa`fd0b0000 00007ffa`fd95e000   C:\WINDOWS\SYSTEM32\windows.storage.dll
+ModLoad: 00007ffa`ff590000 00007ffa`ff5b9000   C:\WINDOWS\SYSTEM32\profapi.dll
+ModLoad: 00007ffa`feb00000 00007ffa`feb0c000   C:\WINDOWS\SYSTEM32\CRYPTBASE.DLL
+ModLoad: 00007ffa`fff70000 00007ffb`0001c000   C:\WINDOWS\System32\bcryptPrimitives.dll
+ModLoad: 00007ffb`02370000 00007ffb`0241e000   C:\WINDOWS\System32\clbcatq.dll
+ModLoad: 00007ffa`f6730000 00007ffa`f67d5000   C:\WINDOWS\System32\MMDevApi.dll
+ModLoad: 00007ffa`ff220000 00007ffa`ff24f000   C:\WINDOWS\System32\DEVOBJ.dll
+ModLoad: 00007ffa`f6730000 00007ffa`f67d5000   C:\WINDOWS\System32\MMDevApi.dll
+ModLoad: 00007ffa`ff220000 00007ffa`ff24f000   C:\WINDOWS\System32\DEVOBJ.dll
+ModLoad: 00007ffa`fc3d0000 00007ffa`fc478000   C:\WINDOWS\system32\uxtheme.dll
+ModLoad: 00000179`4adc0000 00000179`4add0000   C:\Program Files (x86)\Steam\steamapps\common\Blender\python3.DLL
+ModLoad: 00000179`4adc0000 00000179`4add0000   C:\Program Files (x86)\Steam\steamapps\common\Blender\python3.DLL
+ModLoad: 00007ffa`8e700000 00007ffa`8e718000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\_bz2.pyd
+ModLoad: 00007ffa`48cc0000 00007ffa`48ce9000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\_lzma.pyd
+ModLoad: 00007ffa`3e4a0000 00007ffa`3e54e000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\unicodedata.pyd
+ModLoad: 00007ffa`7c380000 00007ffa`7c391000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\_hashlib.pyd
+ModLoad: 00007ff9`deb80000 00007ff9`df1bc000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\libcrypto-3.dll
+ModLoad: 00007ffa`5e890000 00007ffa`5e8a7000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\_socket.pyd
+ModLoad: 00007ffa`fdcb0000 00007ffa`fdce3000   C:\WINDOWS\SYSTEM32\IPHLPAPI.DLL
+ModLoad: 00007ffa`c97d0000 00007ffa`c97d9000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\select.pyd
+ModLoad: 00007ffa`c9230000 00007ffa`c9239000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\_multiprocessing.pyd
+ModLoad: 00007ffa`c4170000 00007ffa`c417b000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\_wmi.pyd
+ModLoad: 00007ffa`fa2a0000 00007ffa`fa395000   C:\WINDOWS\SYSTEM32\PROPSYS.dll
+ModLoad: 00007ffa`47f00000 00007ffa`47f2e000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\_ssl.pyd
+ModLoad: 00007ffa`0ccf0000 00007ffa`0ce77000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\libssl-3.dll
+ModLoad: 00007ffa`fe8a0000 00007ffa`fe90c000   C:\WINDOWS\system32\mswsock.dll
+ModLoad: 00007ffa`3e0a0000 00007ffa`3e130000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\Lib\site-packages\zstandard\backend_c.cp313-win_amd64.pyd
+ModLoad: 00007ffa`c3ae0000 00007ffa`c3ae9000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\_queue.pyd
+ModLoad: 00007ffa`fecc0000 00007ffa`fecdb000   C:\WINDOWS\SYSTEM32\CRYPTSP.dll
+ModLoad: 00007ffa`fe260000 00007ffa`fe299000   C:\WINDOWS\system32\rsaenh.dll
+ModLoad: 00007ffa`c2890000 00007ffa`c2898000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\_uuid.pyd
+ModLoad: 00007ffa`e3380000 00007ffa`e3392000   C:\WINDOWS\system32\wbem\wbemprox.dll
+ModLoad: 00007ffa`e3300000 00007ffa`e337a000   C:\WINDOWS\SYSTEM32\wbemcomn.dll
+ModLoad: 00007ffa`e2db0000 00007ffa`e2dc5000   C:\WINDOWS\system32\wbem\wbemsvc.dll
+ModLoad: 00007ffa`e2640000 00007ffa`e2735000   C:\WINDOWS\system32\wbem\fastprox.dll
+ModLoad: 00007ffa`e0b40000 00007ffa`e0b5d000   C:\WINDOWS\SYSTEM32\amsi.dll
+ModLoad: 00007ffa`fe950000 00007ffa`fe984000   C:\WINDOWS\SYSTEM32\USERENV.dll
+ModLoad: 00007ffa`dff00000 00007ffa`e012d000   C:\Program Files (x86)\Kaspersky Lab\Kaspersky 21.26\x64\com_antivirus.dll
+ModLoad: 00007ffa`ff2e0000 00007ffa`ff2ea000   C:\WINDOWS\SYSTEM32\DPAPI.DLL
+ModLoad: 00007ffa`e04d0000 00007ffa`e0524000   C:\Program Files (x86)\Kaspersky Lab\Kaspersky 21.26\x64\product_info.dll
+ModLoad: 00007ffa`e3380000 00007ffa`e3392000   C:\WINDOWS\system32\wbem\wbemprox.dll
+ModLoad: 00007ffa`e3300000 00007ffa`e337a000   C:\WINDOWS\SYSTEM32\wbemcomn.dll
+ModLoad: 00007ffa`e2db0000 00007ffa`e2dc5000   C:\WINDOWS\system32\wbem\wbemsvc.dll
+ModLoad: 00007ffa`e2640000 00007ffa`e2735000   C:\WINDOWS\system32\wbem\fastprox.dll
+ModLoad: 00007ffa`08980000 00007ffa`08de4000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\Lib\site-packages\numpy\_core\_multiarray_umath.cp313-win_amd64.pyd
+ModLoad: 00007ffa`47420000 00007ffa`47444000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\_ctypes.pyd
+ModLoad: 00007ffa`ac570000 00007ffa`ac580000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\DLLs\libffi-8.dll
+ModLoad: 00007ff9`de960000 00007ff9`deb77000   C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\python\Lib\site-packages\numpy\linalg\_umath_linalg.cp313-win_amd64.pyd
+PROBE_READY: NumPy imported
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\atlmfc.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\concurrency.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\cpp_rest.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\ObjectiveC.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\stl.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Data.Json.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Media.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\windows.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\winrt.natvis'

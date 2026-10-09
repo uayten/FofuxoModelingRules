@@ -1195,7 +1195,13 @@ try:
 except Exception:
     traceback.print_exc()
     failures.append("exception")
+finally:
+    try:
+        fc.unregister()
+    except Exception:
+        traceback.print_exc()
+        failures.append("extension cleanup")
 # The last line is the verdict: Blender exits 0 when this file fails to parse,
 # so read it rather than trusting the exit code alone.
-print(f"\n{'FAILED: ' + str(len(failures)) if failures else 'ALL PASSED'} ({len(checks)} checks)")
+print(f"\n{'FAILED: ' + str(len(failures)) if failures else 'ALL PASSED'} ({len(checks)} checks)", flush=True)
 sys.exit(1 if failures else 0)
