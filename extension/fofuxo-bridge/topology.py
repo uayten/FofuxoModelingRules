@@ -296,6 +296,8 @@ def report(name, limit_ids=None):
 
     # A border vertex whose faces turn more than a full circle: the border
     # folds over itself, as at a fork left open (D-081). fill_notch closes it.
+    # A degree or two over is a flap's root, the lobe above lying over the one
+    # it grows from (D-088): look before closing it.
     for vert in bm.verts:
         if vert.is_boundary and vert.link_faces:
             fan = math.degrees(sum(loop.calc_angle() for loop in vert.link_loops))
@@ -316,13 +318,19 @@ def report(name, limit_ids=None):
                 out["fold_ends"].append({"id": int(ids[vert.index]),
                                          "from": int(ids[creased[0].other_vert(vert).index])})
 
-    # A fold is crease and sharp together (D-085): a creased edge without
-    # sharp is a mark left half done. sharpen_folds completes them.
+    # A fold is crease and sharp together (D-085): a creased inner edge without
+    # sharp is a mark left half done. sharpen_folds completes them. A border's
+    # crease holds the outline (D-089) and needs no sharp.
     out["unsharp_folds"] = []
     if layer is not None:
         for edge in bm.edges:
-            if edge[layer] >= 0.99 and edge.smooth:  # BMesh keeps sharp as smooth == False
+            if edge[layer] >= 0.99 and edge.smooth and not edge.is_boundary:  # BMesh keeps sharp as smooth == False
                 out["unsharp_folds"].append(sorted(int(ids[v.index]) for v in edge.verts))
+
+    # Every border carries crease, or Subdivision shrinks the outline (D-089).
+    # crease_border completes them.
+    out["uncreased_border"] = [sorted(int(ids[v.index]) for v in edge.verts) for edge in bm.edges
+                               if edge.is_boundary and (layer is None or edge[layer] < 0.99)]
 
     # Sharp on an inner edge without crease shades hard: a choice, or a border
     # mark (only a visual aid there) that a junction turned inward. Ask (D-085).

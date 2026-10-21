@@ -158,3 +158,29 @@ With those, the junction becomes a sequence the AI can actually run and check:
   `flatten_tip` (D-085, D-086).
 - Every leaf now ends with: `fold_ends` empty, `unsharp_folds` empty, every
   leaf tip at depth 0, `folds` empty, then the render and the review.
+
+### Status 2026-10-21 (the modeler's `Plane.027` correction)
+- Review `human/review-20261021-072146-...`: knife ×1, loop cut ×1, merge ×4,
+  rip ×3, edge slide ×6, 52 moves. A row across the junction just above v58
+  (328-332) gives each fold its own vertex; two short creased triangles stay
+  at v58. A loop cut evens the lobe's long rows (333-335). D-087.
+- New: `knife_row(name, edges, factor)`. On the AI's version it reproduces
+  the modeler's eight faces around v58.
+- Fork recipe, amended: after the folds are marked, `knife_row` across the
+  edges around the vertex where they meet, border to border, at about 0.45.
+
+### Status 2026-10-21 (the modeler's `Plane.029`/`.030` correction)
+- Review `human/review-20261021-075553-...`: the AI had stitched both inner
+  lobes along their length and run every fold into v14. The modeler ripped
+  them apart into flaps held at the root (v330, v400) and ran the folds down
+  the stem, merging in stages at v58, v431, v59 (D-088). 80 border edges
+  creased (D-089). `Smooth by Angle` came back by Shade Auto Smooth; removed.
+- New: `crease_border(name)`; `topology_report` lists `uncreased_border`;
+  `unsharp_folds` and `sharpen_folds` skip borders; `make_face` and
+  `bridge_loops` copy the neighbours' smooth shading and material.
+- Lobe recipe (D-088): connect only the root; leave the lower lobe's upper
+  edge free under the upper lobe's border; a 361° fold at the root is the
+  overlap. Merge the folds a pair at a time down the stem.
+- Every leaf now ends with: `fold_ends` empty, `unsharp_folds` empty,
+  `uncreased_border` empty, every leaf tip at depth 0, `folds` empty except a
+  flap's root, then the render and the review.

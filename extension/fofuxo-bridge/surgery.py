@@ -15,8 +15,8 @@ import bpy
 from . import mesh_io
 from .instance import assert_ai_access
 
-__all__ = ("delete_faces", "bridge_loops", "cut_between", "fill_notch", "flatten_tip", "intersect", "loop_cut", "make_face", "mark_fold", "sharpen_folds", "weld",
-           "weld_region")
+__all__ = ("delete_faces", "bridge_loops", "crease_border", "cut_between", "fill_notch", "flatten_tip", "intersect", "knife_row", "loop_cut", "make_face", "mark_fold",
+           "sharpen_folds", "weld", "weld_region")
 
 
 def state_ids(obj, write):
@@ -154,6 +154,11 @@ def bridge_loops(name, loop_a, loop_b, sync=True):
         raise ValueError("one loop is closed and the other open")
     result = bmesh.ops.bridge_loops(bm, edges=edges_a + edges_b, use_pairs=False, use_cyclic=False)
     made = len(result.get("faces", []))
+    old = next((f for e in edges_a + edges_b for f in e.link_faces if f not in result.get("faces", [])), None)
+    if old is not None:
+        for face in result.get("faces", []):
+            face.smooth = old.smooth  # bridged faces are born flat
+            face.material_index = old.material_index
     out = _finish(obj, bm, sync)
     out["bridged_faces"] = made
     return out
@@ -277,6 +282,8 @@ def make_face(name, ids, sync=True):
             return loop.link_loop_next.vert is b
         if runs(face) == runs(neighbour):
             face.normal_flip()
+        face.smooth = neighbour.smooth  # a new face is flat; flat beside smooth reads as a sharp border
+        face.material_index = neighbour.material_index
     out = _finish(obj, bm, sync)
     out["made"] = ids
     return out
@@ -359,6 +366,51 @@ def loop_cut(name, id_a, id_b, factor=0.5, sync=True):
     return out
 
 
+def knife_row(name, edges, factor=0.5, sync=True):
+    """A knife row across consecutive edges, quads or not: each edge [a, b] is
+    cut at `factor` from a's side and each new vertex is joined to the next
+    one through the face they share. The row the modeler cuts just before the
+    vertex where a junction's folds meet, so each fold gets its own vertex on
+    it and only the last, short faces are triangles (D-087). The halves of a
+    creased or sharp edge keep the mark. Returns the new ids in row order
+    (``cut_ids``).
+    """
+    assert_ai_access()
+    edges = [list(e) for e in edges]
+    if len(edges) < 2 or any(len(e) != 2 for e in edges):
+        raise ValueError("knife_row needs two [id_a, id_b] edges at least")
+    factors = list(factor) if isinstance(factor, (list, tuple)) else [factor] * len(edges)
+    if len(factors) != len(edges) or not all(0.0 < f < 1.0 for f in factors):
+        raise ValueError("factor must be between 0 and 1, one for all edges or one per edge")
+    obj, bm, vids = _open(name)
+    index_of, missing = _by_id(bm, vids, [i for e in edges for i in e])
+    if missing:
+        bm.free()
+        raise ValueError(f"unknown ids {missing}")
+    pairs = [(index_of[a], index_of[b]) for a, b in edges]
+    found = [bm.edges.get(p) for p in pairs]
+    if None in found:
+        bm.free()
+        raise ValueError(f"no edge {[e for e, f in zip(edges, found) if f is None]}")
+    lone = [(edges[i], edges[i + 1]) for i in range(len(edges) - 1)
+            if not set(found[i].link_faces) & set(found[i + 1].link_faces)]
+    if lone:
+        bm.free()
+        raise ValueError(f"consecutive edges share no face {lone}: list the row in order")
+    cuts = []
+    for edge, (a, _b), f in zip(found, pairs, factors):
+        _new_edge, vert = bmesh.utils.edge_split(edge, a, f)
+        cuts.append(vert)
+    for va, vb in zip(cuts, cuts[1:]):
+        bmesh.ops.connect_verts(bm, verts=[va, vb])
+    bm.verts.index_update()
+    order = [v.index for v in cuts]
+    out = _finish(obj, bm, sync)
+    ids, _ = state_ids(obj, write=False)
+    out["cut_ids"] = [int(ids[i]) for i in order]
+    return out
+
+
 def mark_fold(name, ids, crease=1.0, sharp=True, sync=True):
     """Mark a fold along consecutive ids: crease and sharp on each edge, as the
     modeler marks a leaf's rib (D-082, D-084). crease=0 and sharp=False clear."""
@@ -389,8 +441,9 @@ def mark_fold(name, ids, crease=1.0, sharp=True, sync=True):
 
 
 def sharpen_folds(name, sync=True):
-    """Mark sharp every creased edge: a fold is crease and sharp together
-    (D-085). Returns how many edges gained sharp."""
+    """Mark sharp every creased inner edge: a fold is crease and sharp together
+    (D-085). A border's crease holds the outline (D-089); its sharp stays the
+    modeler's. Returns how many edges gained sharp."""
     assert_ai_access()
     obj, bm, _vids = _open(name)
     crease = bm.edges.layers.float.get("crease_edge")
@@ -399,11 +452,27 @@ def sharpen_folds(name, sync=True):
         return {"object": name, "sharpened": 0}
     count = 0
     for edge in bm.edges:
-        if edge[crease] >= 0.99 and edge.smooth:  # BMesh: sharp is smooth == False
+        if edge[crease] >= 0.99 and edge.smooth and not edge.is_boundary:  # BMesh: sharp is smooth == False
             edge.smooth = False
             count += 1
     out = _finish(obj, bm, sync)
     out["sharpened"] = count
+    return out
+
+
+def crease_border(name, sync=True):
+    """Crease 1.0 on every border edge, so Subdivision keeps the outline
+    (D-089). Sharp is left as it is. Returns how many edges gained crease."""
+    assert_ai_access()
+    obj, bm, _vids = _open(name)
+    crease = bm.edges.layers.float.get("crease_edge") or bm.edges.layers.float.new("crease_edge")
+    count = 0
+    for edge in bm.edges:
+        if edge.is_boundary and edge[crease] < 0.99:
+            edge[crease] = 1.0
+            count += 1
+    out = _finish(obj, bm, sync)
+    out["creased"] = count
     return out
 
 

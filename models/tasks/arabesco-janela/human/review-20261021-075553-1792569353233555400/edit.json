@@ -1,0 +1,437 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\arabesco-janela\\arabescos.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\arabesco-janela\\arabescos.bridge\\review.blend",
+  "objects": [
+    "Plane.001"
+  ],
+  "why": null,
+  "status": "recorded; awaiting interview and replay validation",
+  "deltas": {
+    "Plane.001": {
+      "moved_mm": {
+        "v7": [
+          2.4776,
+          0.0,
+          -6.11742
+        ],
+        "v8": [
+          2.88059,
+          0.0,
+          -5.87035
+        ],
+        "v11": [
+          0.91582,
+          0.0,
+          -4.17802
+        ],
+        "v12": [
+          2.19914,
+          -1.51098,
+          -5.7032
+        ],
+        "v13": [
+          -0.57787,
+          0.0,
+          -0.64926
+        ],
+        "v15": [
+          -0.21868,
+          0.0,
+          -1.103
+        ],
+        "v16": [
+          -0.14654,
+          0.0,
+          -0.69205
+        ],
+        "v17": [
+          0.84063,
+          0.0,
+          -1.12085
+        ],
+        "v18": [
+          -1.54117,
+          0.0,
+          3.92299
+        ],
+        "v19": [
+          1.12085,
+          0.0,
+          -1.82139
+        ],
+        "v20": [
+          -2.66203,
+          0.0,
+          3.36257
+        ],
+        "v21": [
+          0.77838,
+          0.0,
+          -0.09731
+        ],
+        "v22": [
+          -1.45945,
+          0.0,
+          0.4865
+        ],
+        "v50": [
+          0.09729,
+          0.0,
+          -0.87567
+        ],
+        "v51": [
+          -0.58378,
+          0.0,
+          6.81074
+        ],
+        "v55": [
+          2.64962,
+          0.0,
+          -6.74997
+        ],
+        "v57": [
+          1.42723,
+          0.0,
+          -5.76077
+        ],
+        "v58": [
+          -0.1625,
+          0.00064,
+          1.49655
+        ],
+        "v59": [
+          -0.17676,
+          0.00064,
+          0.42497
+        ],
+        "v62": [
+          -0.29189,
+          0.0,
+          0.19458
+        ],
+        "v86": [
+          2.78931,
+          0.0,
+          -5.39824
+        ],
+        "v87": [
+          3.30564,
+          0.00242,
+          -5.97735
+        ],
+        "v88": [
+          3.17291,
+          0.0,
+          -5.89135
+        ],
+        "v97": [
+          1.48647,
+          0.0,
+          0.74323
+        ],
+        "v98": [
+          0.75657,
+          0.0,
+          0.53801
+        ],
+        "v104": [
+          0.51269,
+          0.0,
+          0.04001
+        ],
+        "v111": [
+          -0.79021,
+          0.0,
+          -0.53801
+        ],
+        "v112": [
+          -0.60811,
+          0.0,
+          -0.33783
+        ],
+        "v175": [
+          -0.35027,
+          0.0,
+          -1.16756
+        ],
+        "v177": [
+          -1.12581,
+          0.0,
+          -4.83783
+        ],
+        "v178": [
+          0.75657,
+          0.0,
+          0.53801
+        ],
+        "v252": [
+          -0.48648,
+          0.0,
+          1.65404
+        ],
+        "v253": [
+          -1.01762,
+          2.60001,
+          2.97099
+        ],
+        "v257": [
+          -1.94592,
+          0.0,
+          0.0973
+        ],
+        "v258": [
+          0.0,
+          2.60001,
+          0.0
+        ],
+        "v260": [
+          -2.08332,
+          1e-05,
+          1.46395
+        ],
+        "v264": [
+          4.0045,
+          2.60001,
+          -2.82235
+        ],
+        "v265": [
+          2.2908,
+          0.0,
+          -3.76131
+        ],
+        "v270": [
+          0.0,
+          -2.63501,
+          0.0
+        ],
+        "v328": [
+          0.18278,
+          0.0,
+          -3.53418
+        ],
+        "v329": [
+          0.08402,
+          0.00011,
+          -1.29224
+        ],
+        "v330": [
+          1.3099,
+          0.44642,
+          -0.57977
+        ],
+        "v331": [
+          0.22522,
+          0.66192,
+          -0.80705
+        ],
+        "v332": [
+          0.23766,
+          0.00033,
+          -0.85431
+        ],
+        "v337": [
+          1.94593,
+          1e-05,
+          -4.13509
+        ],
+        "v343": [
+          -4.86481,
+          1e-05,
+          -3.2432
+        ],
+        "v345": [
+          -0.73011,
+          0.00065,
+          6.50174
+        ],
+        "v349": [
+          0.0,
+          1.46819,
+          0.0
+        ],
+        "v351": [
+          -1.83782,
+          1e-05,
+          -6.28371
+        ],
+        "v357": [
+          -0.27026,
+          0.71924,
+          -3.0405
+        ],
+        "v359": [
+          -4.60662,
+          0.00065,
+          -4.1502
+        ],
+        "v363": [
+          -9.39978,
+          2.40001,
+          0.78055
+        ],
+        "v373": [
+          -3.60905,
+          0.00065,
+          2.25835
+        ]
+      },
+      "added": [
+        "v382",
+        "v386",
+        "v387",
+        "v388",
+        "v391",
+        "v392",
+        "v393",
+        "v394",
+        "v397",
+        "v398",
+        "v400",
+        "v407",
+        "v408",
+        "v409",
+        "v410",
+        "v411",
+        "v412",
+        "v413",
+        "v414",
+        "v415",
+        "v416",
+        "v417",
+        "v418",
+        "v419",
+        "v420",
+        "v421",
+        "v422",
+        "v423",
+        "v424",
+        "v425",
+        "v426",
+        "v430",
+        "v431",
+        "v432",
+        "v433",
+        "v434",
+        "v435",
+        "v436",
+        "v437",
+        "v438",
+        "v439",
+        "v440",
+        "v441",
+        "v442",
+        "v443",
+        "v444",
+        "v445",
+        "v446",
+        "v447",
+        "v448",
+        "v449",
+        "v450",
+        "v451",
+        "v452",
+        "v453",
+        "v454",
+        "v455",
+        "v456",
+        "v457",
+        "v458",
+        "v459",
+        "v460",
+        "v461",
+        "v462",
+        "v463",
+        "v464",
+        "v465",
+        "v466",
+        "v467",
+        "v468"
+      ],
+      "removed": [
+        "v14",
+        "v176",
+        "v333",
+        "v336",
+        "v340",
+        "v342",
+        "v344",
+        "v346",
+        "v350",
+        "v353",
+        "v354",
+        "v356",
+        "v358",
+        "v362",
+        "v364",
+        "v368",
+        "v370",
+        "v371",
+        "v374",
+        "v376",
+        "v380"
+      ]
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 1340,
+      "operators": {
+        "VIEW3D_OT_select": 620,
+        "OBJECT_OT_editmode_toggle": 135,
+        "VIEW3D_OT_select_box": 10,
+        "TRANSFORM_OT_translate": 297,
+        "MESH_OT_select_more": 8,
+        "MESH_OT_rip_move": 17,
+        "TOPOLOGY": 56,
+        "MESH_OT_select_mode": 62,
+        "MESH_OT_mark_seam": 1,
+        "MESH_OT_select_linked_pick": 3,
+        "MESH_OT_shortest_path_pick": 16,
+        "MESH_OT_hide": 1,
+        "MESH_OT_reveal": 2,
+        "MESH_OT_separate": 1,
+        "OBJECT_OT_hide_view_set": 1,
+        "TRANSFORM_OT_edge_slide": 9,
+        "MESH_OT_knife_tool": 6,
+        "MESH_OT_delete": 4,
+        "MESH_OT_extrude_region_move": 4,
+        "MESH_OT_loopcut_slide": 4,
+        "MESH_OT_f2": 8,
+        "UNDO": 7,
+        "TRANSFORM_OT_vert_slide": 18,
+        "MESH_OT_mark_sharp": 11,
+        "OBJECT_OT_join": 1,
+        "MESH_OT_vert_connect_path": 1,
+        "TRANSFORM_OT_resize": 5,
+        "MESH_OT_dissolve_edges": 2,
+        "MESH_OT_loop_select": 22,
+        "TRANSFORM_OT_rotate": 1,
+        "MESH_OT_looptools_relax": 5,
+        "OBJECT_OT_shade_smooth": 1,
+        "OBJECT_OT_shade_auto_smooth": 1
+      },
+      "undos": 7,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 472,
+      "capture": "event",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 6045,
+      "operators": {
+        "INPUT": 5145,
+        "DRAG": 900
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": []
+    }
+  }
+}

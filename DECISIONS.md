@@ -756,6 +756,13 @@ v87). The AI does not add `Smooth by Angle` to a piece already marked by hand,
 and does not put it back; a fold that shades wrong is a sharp mark to add,
 asked as in D-060.
 
+Seen again (2026-10-21): the modifier came back in the `Plane.029`/`.030`
+review through Shade Auto Smooth (30°), which adds it. The modeler had only
+meant to see the shading: faces made with F2 are born flat, so their
+borders looked sharp until Shade Smooth. The AI removed it. The AI's own
+`make_face` and `bridge_loops` now copy the neighbours' smooth shading, so
+they do not leave flat faces.
+
 ### D-083: Subdivision goes down as loops go in (Stated, janela-2026-10-21)
 
 "A subdivision em 1 foi para ver se a peça funcionava com menos vértices [...]
@@ -821,6 +828,65 @@ one deep end (v81, -5.27) is the stem's, which runs on into `Plane.017`.
 How to apply: after joining a leaf, `topology_report` lists `tips` with
 their depth; `flatten_tip(name, rib_id)` brings a leaf's tip to the base.
 The taper of the rows behind it is the modeler's shaping.
+
+### D-087: Folds meet at the rib through a knife row (Seen, janela-2026-10-21)
+
+The AI joined `Plane.027` (the outer lobe of a three-lobe curl) to the stem
+as a fork: the lobe's rib (265-58), the valley from the crotch (12-58) and the
+stem's rib (57-58) met at the trunk's rib vertex v58 through two long
+triangles, [265, 12, 58] and [12, 57, 58]. The modeler's edit cut one row
+across the junction just above v58, border to border (330-332-331-329-328,
+about 0.45 of the way from v58): each fold got its own vertex on the row
+(v332 the lobe's rib, v331 the valley at mid depth, v329 the stem's rib), the
+faces above it became quads and only two short triangles stayed at v58,
+creased (D-080). The same row appeared at `Plane.021` (knife v218-v222, three
+folds into v216) and `Plane.022` (knife and loop cut v244-v251, folds into
+v243): three junctions, one pattern.
+
+How to apply: when a junction's folds meet at one vertex through triangles
+that span the junction, `knife_row(name, edges, factor)` across the edges
+around that vertex, border to border, at about 0.45 from it; the cut folds
+keep crease and sharp. On the AI's version, `knife_row` over [14, 264],
+[58, 265], [58, 12], [58, 57], [13, 11] makes the modeler's eight faces. The
+loop cut he added on the lobe (333-335, evening the long rows) and the moves
+around the junction are shaping, not this rule.
+
+### D-088: A lobe born from another is a flap held at its root; its folds merge down the stem (Stated, janela-2026-10-21)
+
+The modeler asked for the inner lobes `Plane.029` and `Plane.030` to be born
+from the face of the lobe above, with a fold where each emerges. The AI
+stitched each one along its whole length: the lower lobe's rib bridged to
+the upper lobe's lower border, which became a valley fold, and every fold of
+the three lobes met at v14. The modeler's edit (rip ×17, knife ×6, loop cut
+×4, F2 ×8) unstitched them: the upper lobe's lower border now lies over the
+lower lobe's upper edge, both on the base, and each lower lobe is held only
+at its root (the middle one at v330, the inner one at v400; `topology_report`
+lists each root as a fold of 361-362°, the overlap). Below the roots the
+lobes' ribs and valleys run on down the stem side by side and merge in
+stages, two at a time: three at v58, then at v431, then at v59, each merge
+two short creased triangles (D-087), each row running across the whole
+width, from the inner lobe's border to the stem's far border. The inner
+lobe's border meets the stem's border only at v16. Confirmed: "Sim, as duas
+coisas".
+
+How to apply: for a lobe that grows out of another, delete only what the
+upper lobe hides near the root, connect the root, and leave the rest of the
+lower lobe's upper edge free under the upper lobe's border. A fold of a degree
+or two at that root is the overlap, not a fork left open (D-081): do not
+`fill_notch` it. Run the lobes' folds on along the stem and merge them a pair
+at a time over several rows (`loop_cut` the stem for the rows, `knife_row`
+where the folds meet), never all into one vertex.
+
+### D-089: Every border of an arabesque carries crease (Stated, janela-2026-10-21)
+
+"Sim, regra": the crease on the border holds the outline under Subdivision.
+In the `Plane.029`/`.030` review the modeler creased 80 border edges (the
+lobes' flaps, the lower stem, the `Plane.021` curl). Sharp on a border stays
+as D-085 says: the AI neither adds nor clears it.
+
+How to apply: after a junction or a join, `topology_report` lists
+`uncreased_border`; `crease_border(name)` creases them. `unsharp_folds` and
+`sharpen_folds` look at inner edges only.
 
 ### D-060: Marks are messages (Stated, B1)
 

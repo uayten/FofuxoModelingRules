@@ -175,3 +175,69 @@ Knife and loop cut at the junction (v244-v251), folds meeting at v243,
 sharp on every creased edge and on 58 border edges, the tip v232 to y=0 with
 the rows behind it tapered, shade smooth. D-085, D-086. `sharpen_folds` then
 marked the last creased edge without sharp (5-7).
+
+### Fifth leaf: `Plane.027`, the outer lobe of a three-lobe curl (2026-10-21, Claude)
+- The cluster `Plane.027` / `.029` / `.030` is one curl in three nested lobes
+  that pass through each other (11-12 face pairs between lobes, 3-5 with the
+  stem); `.030`, the inner one, is shallower (depth 1-4.3 mm) and its tail
+  runs down the stem to v15/v16. The modeler chose to connect only the outer
+  lobe now and decide the other two after the correction.
+- `join_meshes(["Plane.001", "Plane.027"])`: leaf ids 252-272 and 321.
+  Backup before: `arabescos.bak-09.blend`.
+- The lobe's tail lay on the stem face [12, 14, 58, 57], its end row
+  266-267-268 on the stem's row 14-58: a fork, the stem going up and the lobe
+  going left. Steps: `delete_faces` the tail's two rows and the stem face
+  under it; `weld` 263→12 (crotch, at the stem's position); `make_face`
+  [14, 264, 265, 58] (lobe's lower border onto the trunk's border, rib onto
+  rib) and the triangles [265, 12, 58], [12, 57, 58] around the valley;
+  `mark_fold` [254, 265, 58] (the lobe's rib runs into the stem's rib) and
+  [12, 58] (valley from the crotch); v265 raised to rib depth (5.27 mm).
+- Result: 167 v / 112 f, 1 island, 0 non-manifold, one border of 115 edges,
+  no folds, no fold ends, no unsharp folds; 2 new creased triangles (D-080).
+  Render `arabescos.bridge/Plane.001.leaf5.png`; in review.
+
+### The modeler's correction of `Plane.027` (2026-10-21, 04:21)
+Review `human/review-20261021-072146-...`: 175 v / 118 f, 1 island,
+0 non-manifold, no folds, no fold ends. A knife row above v58 (330-332-331-
+329-328) split the AI's two long triangles into quads plus two short creased
+triangles at v58; a loop cut on the lobe (333-334-335); the stem above the
+junction bent outward (v5-v8, v54, v55 by 2.5-4.7 % of the frame's width) and
+the rows below moved up (v15, v16, v59 by 4-6 % of its height). Subdivision
+viewport level 1. D-087; `knife_row` reproduces the row on the AI's version.
+
+### The inner lobes `Plane.029` and `Plane.030`, each born from the lobe above (2026-10-21, Claude)
+- The modeler's direction: each inner lobe is born from the face of the lobe
+  above it, with a fold where it emerges. Backup before: `arabescos.bak-10.blend`.
+- `join_meshes(["Plane.001", "Plane.029", "Plane.030"])`: middle lobe ids
+  337-378 (odd), inner lobe 336-383 (even) and 377, 379, 381, 383.
+- Both lobes have the same layout: the lower lobe's rib runs just inside the
+  upper lobe's lower border, and its upper strip (rib to upper border) lies
+  hidden under the upper lobe; its tail lies on the stem.
+- Middle lobe: `delete_faces` its upper strip and its tail (6 faces);
+  `weld` 347→260 and 341→14 (at the outer lobe's position); `make_face` four
+  quads from the middle rib (349-357-359-373-345) to the outer lobe's lower
+  border (260-258-253-333-264-330-14). That border is now the valley fold.
+- Inner lobe: the same onto the middle lobe's lower border (351-353-363-371-
+  14): `delete_faces` 7 faces, `weld` 377→351, 383→14, 381→16 (the inner
+  border lands on the stem border), four quads from the inner rib
+  (376-358-344-368-374).
+- `mark_fold` both valleys and the middle rib's last edge (345-14); the
+  valleys raised to mid depth (2.6 and 2.4 mm), not left on the base;
+  `flatten_tip` on both lobes' tips (D-086).
+- Result: 203 v / 142 f, 1 island, 0 non-manifold, one border of 127 edges,
+  no folds, no fold ends, no unsharp folds, no new triangle. Four folds meet
+  at v14 (two valleys, two ribs), all through quads. Render
+  `arabescos.bridge/Plane.001.lobes.png`; in review.
+
+### The modeler's correction of the inner lobes (2026-10-21, 04:55)
+Review `human/review-20261021-075553-...`: 252 v / 176 f, 1 island,
+0 non-manifold, 14 triangles, 2 pentagons. The lobes are flaps again, held at
+their roots v330 and v400 (folds of 361-362°, the overlap); their folds run
+down the stem and merge at v58, v431 and v59 (D-088); 80 border edges creased
+(D-089); the D-087 row applied at v87 (`Plane.019`); `Smooth by Angle` added
+by Shade Auto Smooth, then removed by the AI. After the review: `crease_border`
+creased the 81 border edges left, `mark_fold([400, 420])` gave that fold its
+sharp. Render `arabescos.bridge/Plane.001.lobes_corrected.png`.
+- The row 16-59-15 across the stem, creased without sharp, is a fold (the
+  modeler confirmed); `sharpen_folds` gave its two edges sharp. Closing
+  checks: no unsharp folds, no uncreased border, no fold ends.

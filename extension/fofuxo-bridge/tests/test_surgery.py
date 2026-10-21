@@ -297,6 +297,70 @@ def tips_and_sharp():
     check(fc.topology_report("Leaf")["sharp_only"] == [sorted(edge)], "an inner sharp without crease is listed to ask about")
 
 
+def fold_fan():
+    """Two quads and two triangles fanning out of M, as a junction's folds meet
+    at the trunk's rib; the knife row across them leaves the triangles short."""
+    import bmesh
+    bpy.ops.wm.read_homefile(use_empty=True)
+    mesh = bpy.data.meshes.new("Fan")
+    bm = bmesh.new()
+    p, m, q = (bm.verts.new((x, 0.0, 0.0)) for x in (-2.0, 0.0, 2.0))
+    top = [bm.verts.new((x, 0.0, 2.0)) for x in (-2.0, -1.0, 0.0, 1.0, 2.0)]
+    bm.faces.new((p, m, top[1], top[0]))
+    bm.faces.new((m, top[2], top[1]))
+    bm.faces.new((m, top[3], top[2]))
+    bm.faces.new((m, q, top[4], top[3]))
+    crease = bm.edges.layers.float.new("crease_edge")
+    fold = bm.edges.get((m, top[2]))
+    fold[crease] = 1.0
+    fold.smooth = False
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new("Fan", mesh)
+    bpy.context.scene.collection.objects.link(obj)
+    from llm_modeling_bridge import mesh_io
+    mesh_io.ensure_ids(mesh, write=True)
+    from mathutils import Vector
+    vid = lambda co: ids_where(obj, lambda c: (c - Vector(co)).length < 1e-6)[0]
+    pi, mi, qi = vid((-2, 0, 0)), vid((0, 0, 0)), vid((2, 0, 0))
+    ti = [vid((x, 0, 2)) for x in (-2, -1, 0, 1, 2)]
+    check(raises(lambda: fc.knife_row("Fan", [[pi, ti[0]], [qi, ti[4]]], sync=False)),
+          "knife_row refuses edges that share no face")
+    row = [[pi, ti[0]], [mi, ti[1]], [mi, ti[2]], [mi, ti[3]], [qi, ti[4]]]
+    out = fc.knife_row("Fan", row, factor=0.25, sync=False)
+    sizes = sorted(len(f.vertices) for f in mesh.polygons)
+    zs = {round(v.co.z, 6) for v in mesh.vertices if mesh.attributes["llm_modeling_bridge_id"].data[v.index].value in out["cut_ids"]}
+    check(len(out["cut_ids"]) == 5 and sizes == [3, 3, 4, 4, 4, 4, 4, 4] and zs == {0.5} and out["non_manifold"] == 0,
+          f"knife_row cuts the fan at the factor, two short triangles left (faces {sizes}, z {zs})")
+    report = fc.topology_report("Fan")
+    check(report["fold_ends"] == [] and report["unsharp_folds"] == [],
+          f"the cut fold keeps crease and sharp on both halves ({report['fold_ends']}, {report['unsharp_folds']})")
+
+
+def border_and_shading():
+    """Borders take crease (D-089); a face made beside smooth faces is smooth."""
+    bpy.ops.wm.read_homefile(use_empty=True)
+    bpy.ops.mesh.primitive_grid_add(x_subdivisions=3, y_subdivisions=3, size=2.0)
+    obj = bpy.context.object
+    obj.name = "Rim"
+    for poly in obj.data.polygons:
+        poly.use_smooth = True
+    from llm_modeling_bridge import mesh_io
+    mesh_io.ensure_ids(obj.data, write=True)
+    report = fc.topology_report("Rim")
+    check(len(report["uncreased_border"]) == 12, f"report lists every border edge without crease ({len(report['uncreased_border'])})")
+    out = fc.crease_border("Rim", sync=False)
+    report = fc.topology_report("Rim")
+    check(out["creased"] == 12 and report["uncreased_border"] == [] and report["unsharp_folds"] == [],
+          "crease_border creases the outline, and a border crease is not an unsharp fold")
+    vid = [a.value for a in obj.data.attributes["llm_modeling_bridge_id"].data]
+    face = obj.data.polygons[4]
+    ids = [vid[i] for i in face.vertices]
+    fc.delete_faces("Rim", ids=ids, sync=False)
+    fc.make_face("Rim", ids, sync=False)
+    check(all(p.use_smooth for p in obj.data.polygons), "make_face shades the new face like its neighbours")
+
+
 def edit_beside_triangle():
     """A triangle already accepted (D-080) does not block an op; a new one does."""
     import tempfile
@@ -374,6 +438,8 @@ def main():
     edit_beside_triangle()
     fold_continues()
     tips_and_sharp()
+    fold_fan()
+    border_and_shading()
 
     print("FAILURES", len(failures))
     if failures:

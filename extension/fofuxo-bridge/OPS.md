@@ -85,15 +85,17 @@ Design and open work: [EDITING.md](EDITING.md).
 
 | Call | Gives |
 |---|---|
-| `topology_report(name)` | islands, border loops (closed or open, length, every id in walk order), where two islands cross (the ids of the crossing faces), the nearest id pair in mm, `folds`: border vertices whose faces pass 360°, `fold_ends`: crease lines that stop inside the surface, `unsharp_folds`: creased edges without sharp, `sharp_only`: inner sharp edges without crease (ask), `tips`: end rows and their depth |
+| `topology_report(name)` | islands, border loops (closed or open, length, every id in walk order), where two islands cross (the ids of the crossing faces), the nearest id pair in mm, `folds`: border vertices whose faces pass 360°, `fold_ends`: crease lines that stop inside the surface, `unsharp_folds`: creased inner edges without sharp, `uncreased_border`: border edges without crease (D-089), `sharp_only`: inner sharp edges without crease (ask), `tips`: end rows and their depth |
 | `delete_faces(name, ids=[...])` | deletes the faces whose every vertex id is in the list |
 | `bridge_loops(name, loop_a, loop_b)` | bridges exactly two loops or two open runs named by ordered ids — never "all borders"; refuses ids with a gap |
 | `cut_between(name, id_a, id_b)` | Blender's J: a cut along the surface path between two vertices of the same island; new vertices in `new_ids` |
 | `intersect(name, island_id)` | Intersect (Knife), Merge: cuts the island holding the id against the rest with one shared line; its ids in `cut_ids` |
 | `fill_notch(name, id)` | closes the wedge at a fold with one quad (the side that leaves no fold), D-081 |
+| `knife_row(name, edges, factor)` | a knife row across consecutive edges `[a, b]` (quads or triangles), each cut at `factor` from `a`; the row before the vertex where a junction's folds meet (D-087); new ids in `cut_ids` |
 | `loop_cut(name, id_a, id_b, factor)` | Loop Cut and Slide on the quad ring through edge a-b, landing at `factor` from a's side; new ids in `cut_ids` |
 | `mark_fold(name, ids)` | crease 1.0 and sharp along consecutive ids, as the modeler marks a rib (D-084) |
-| `sharpen_folds(name)` | sharp on every creased edge (D-085) |
+| `sharpen_folds(name)` | sharp on every creased inner edge (D-085) |
+| `crease_border(name)` | crease on every border edge, so Subdivision keeps the outline (D-089) |
 | `flatten_tip(name, id)` | the middle of an end row takes its corners' depth: a leaf's tip on the base (D-086) |
 | `make_face(name, ids)` | Make Face (F) through the ids in outline order, wound like its neighbours |
 | `weld(name, id_a, id_b, at="a")` | welds `a` onto `b` (`b`'s id survives), at `a`'s position (`"b"` or `"mid"` too) |
