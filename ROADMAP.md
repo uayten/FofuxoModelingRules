@@ -73,25 +73,27 @@ plan, learn from human corrections and demonstrate a lower session cost.
    `models/tasks/arabesco-janela/arabescos.blend`: the fleur-de-lis finial, the
    arch vine, the bottom band and the right capital leaves, with the window
    frame kept as a reference collection and the band's `Arabesco Base.png`
-   packed. Read that task's `prompt.md` first. The source scene left the vine
-   on the right side only and six pieces hidden in render. Agree the goal for
-   the ornaments with the modeler, write the plan (`PLAN.md`), then build stage
-   by stage. **Done when** the modeler judges the arabesques good.
+   packed. The stem `Plane.001` already carries two joined leaves; the modeler
+   rebuilt the first junction by hand and it holds (0 non-manifold). The second
+   leaf (`Plane.019`) is joined but not connected, and 18 leaves of the vine
+   are still separate objects. Read that task's `prompt.md` and `report.md`
+   first. **Done when** the modeler judges the arabesques good.
 
-2. **Let the AI edit the cage the way the modeler does**
-   (`extension/fofuxo-bridge/EDITING.md`). The junction of the vine showed the
-   gap: the AI can move and extrude a named selection but cannot ask where two
-   islands cross, cut along that line, or bridge two named loops — the two
-   automated attempts left 18 and 20 non-manifold edges. The proposal lists
-   five calls (`topology_report`, `cut_between`, `bridge_loops`, `weld`,
-   `delete_faces`) and an order to build them. Start with `topology_report`,
-   which is read-only. **Done when** the AI reproduces a junction the modeler
-   made, measured against the recorded example.
+2. **Finish the AI's cage surgery** (`extension/fofuxo-bridge/EDITING.md`).
+   Done and tested (`tests/test_surgery.py`, 10 checks; suite at 244):
+   `topology_report` (islands, border loops with ids, crossings, nearest pair)
+   and `delete_faces`, `bridge_loops`, `cut_between`, `weld`, `weld_region` by
+   stable id. Left: the cut is not shared. `mesh.intersect` cuts both islands
+   but no vertices coincide, so `weld_region` leaves 18 non-manifold edges and
+   the borders cannot be bridged. Make the cut line coincident — project the
+   cut points of one surface onto the other — then run the `Plane.019`
+   junction. **Done when** the AI reproduces the junction the modeler made by
+   hand (`human/review-20261021-040140-...`) with no non-manifold edges.
 
 ## Order
 
 | Step | What | Why first |
 |---|---|---|
-| 1 | Item 1: the window's arabesques | the modeler chose it as the next work |
-| 2 | Item 2: topology calls, starting with `topology_report` | without them every junction is a guess |
+| 1 | Item 2: the coincident cut, then the `Plane.019` junction | the junction is blocked on it; item 1 waits for the same tool |
+| 2 | Item 1: continue the vine, leaf by leaf | the modeler's chosen work |
 
