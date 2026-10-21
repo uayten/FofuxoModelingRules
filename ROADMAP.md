@@ -84,10 +84,62 @@ plan, learn from human corrections and demonstrate a lower session cost.
    `extension/fofuxo-bridge/EDITING.md`, then a review; turn each correction
    into a rule or a call. Read that task's `prompt.md` and `report.md` first.
    **Done when** the modeler judges the arabesques good.
+2. **A one-page junction checklist and a scoped report.** The modeler found
+   the leaf-by-leaf modeling too slow and too costly in tokens (each leaf took
+   20 to 80 minutes from start to the modeler's correction, see the task's
+   `report.md`). Distill D-080 to D-093 and `EDITING.md` into one page an
+   agent reads instead of them (recipe: fork or side branch, `lift_crotch`, a
+   stem loop each side, base rows level with the stem's, `crease_border`,
+   closing checks). Scope `topology_report` to the new leaf's ids and the
+   stem band near it (`Plane.001.txt` is 38 KB and grows per leaf). Use both
+   on the next leaf of item 1 and note its minutes of correction and session
+   cost. **Done when** the modeler judges the next leaf no worse for it.
+3. **`connect_leaf`: one call for the fixed part of a junction.** A bridge
+   call such as `connect_leaf(stem, leaf, recipe)` doing the join, the
+   junction rules and the crease, so the model only picks the recipe and
+   checks one image. Built from item 2's checklist, tested like any bridge
+   call, then used on a leaf of item 1. **Done when** the modeler approves
+   the call on a leaf.
+4. **[research] Jev for the recipe choice.** The modeler describes Jev as a
+   typed-decision model by TypeSafe AI ("System 1": context in, typed answer
+   out). Answer: does it exist, how is it called (API, cost, local or not),
+   and can it pick a leaf's recipe (fork or side branch) as a typed answer
+   from item 2's scoped report. **Done when** the answer is in DECISIONS with
+   its source, and the modeler decides whether it enters item 3.
+   Found (2026-10-21, web search, vendor-reported): Jev exists, launched
+   September 2026; input state plus typed questions (Choice, Score, yes/no)
+   in, answers with per-option probabilities out; access by early-access
+   waitlist; reported price $0.042 per million input tokens, output free.
+   Sources: nexos.ai/blog/what-is-jev, siliconangle.com 2026-09-16, vktr.com.
+   Left: get access, then try a Choice question on the reports of the leaves
+   already done (their recipes are known) before a new one.
+5. **A Sonnet executor for the leaves** (not a priority). A Sonnet subagent
+   gets the checklist and the leaf, runs the bridge calls and `views()`, and
+   returns only counts and the image path; the main model checks the image
+   and opens the review. Haiku is not a candidate: picking ids from the
+   geometry is its weak spot. **Done when** a leaf done this way costs less
+   for the same correction time, by the modeler's judgment.
+6. **Review what is left to prune** (not a priority, by the modeler). Each
+   needs the modeler's word before it goes:
+   - `extension/fofuxo_cage/`: the compatibility import and launcher for
+     scripts written before the rename; `tests/test_roadmap.py` and the
+     cowboy hat's plans still call `fofuxo_cage`.
+   - The older tasks `models/tasks/chapeu-cowboy`, `chifre`, `laco` and
+     `oculos-ferreiro`: still useful, or history only.
+   - `AGENTS.md` and `.agents/skills/`: copies of the modeler's global rules
+     and skills for another agent.
+
+   **Done when** the modeler has decided each one.
 
 ## Order
 
 | Step | What | Why first |
 |---|---|---|
-| 1 | Item 1: continue the vine, leaf by leaf | the modeler's chosen work |
+| 1 | Item 2: junction checklist and scoped report | makes every remaining leaf cheaper |
+| 2 | Item 1: next leaf (`Plane.023`) with item 2 | the modeler's chosen work; tests item 2 |
+| 3 | Item 4: research Jev | its answer decides part of item 3 |
+| 4 | Item 3: `connect_leaf` | needs item 2's checklist; leaves of item 1 to test on |
+| 5 | Item 1: the other leaves | the modeler's chosen work |
+| 6 | Item 5: Sonnet executor | not a priority, by the modeler |
+| 7 | Item 6: review what is left to prune | not a priority, by the modeler |
 

@@ -73,6 +73,9 @@ With those, the junction becomes a sequence the AI can actually run and check:
 4. `weld` / `weld_region`.
 
 ## Status
+The `human/review-*` folders named below left the tree on 2026-10-21; read
+them from git at `b8924f2`.
+
 - 2026-10-21: `topology_report` implemented in `topology.py` and exported as `llm_modeling_bridge.topology_report`. First run on `Plane.001` (the joined leaf): 2 islands, 1 crossing with 9 face pairs, nearest vertices 1.02 mm apart (ids 87 and 125), one 50-edge border loop of 1044 mm.
 - Next: `bridge_loops` and `delete_faces` by id, then `cut_between`, then `weld`.
 

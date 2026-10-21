@@ -2,6 +2,9 @@
 
 Check the interaction after installing LLM Modeling Bridge 0.2.1. Use a copy
 of a saved file. These checks do not approve the cowboy hat or the modeling method.
+The evidence under `models/tests/` and the implementation report
+(`IMPLEMENTATION.md`) left the tree on 2026-10-21; read them from git at
+`b8924f2`.
 
 ## Contents
 
@@ -51,7 +54,7 @@ checks also passed. The stroke and undo/redo boundary tests exercise callbacks;
 at that point real modal input still required the separate checks recorded below.
 The native shutdown diagnostic from the earlier full suite was later classified
 as Blender/NumPy thread-exit noise; see the
-[implementation report](../../IMPLEMENTATION.md#verification). Opening the isolated test file also printed context errors from
+implementation report. Opening the isolated test file also printed context errors from
 `amp_transformator` (`selected_objects`) and `vertex_skin_weights_tool`
 (`active_object`). These are environment observations, not an established
 explanation of the native shutdown diagnostic.
@@ -213,7 +216,7 @@ answers together.
 - Normal shutdown of the AI Blender exited 0 with native output captured. The
   final roadmap suite passed cleanly (43 checks); the round-trip suite passed
   its 244 checks and printed only the first-chance thread-exit diagnostics
-  classified in the [implementation report](../../IMPLEMENTATION.md#verification).
+  classified in the implementation report.
 - The generated ZIP matches the source; the installed copy matches all code.
 
 The human-review validation of 0.2.1 is complete.

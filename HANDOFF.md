@@ -27,6 +27,8 @@ are long (D-092), `crease_border(ids=<the leaf's ids>)`, `views(crop=True)`,
 ## Open questions
 - The sync state (`.state/*.json`) inside the .blend instead of beside it:
   suggested by the AI, not accepted yet.
+- ROADMAP 2 to 5 (checklist, `connect_leaf`, Jev, Sonnet executor) were
+  accepted; the Order puts the checklist before the next leaf.
 
 ## Notes for the next session
 - `bridge_loops` may pair two runs crossed (it twisted 82→629 at the elbow):
@@ -40,5 +42,5 @@ are long (D-092), `crease_border(ids=<the leaf's ids>)`, `views(crop=True)`,
 `ROADMAP.md` (item 1), `extension/fofuxo-bridge/EDITING.md` (the recipes and
 the status notes at the end), `extension/fofuxo-bridge/OPS.md`, DECISIONS
 D-080 to D-093, the last sections of `models/tasks/arabesco-janela/report.md`.
-Avoid: `models/tests/`, raw `.jsonl` logs, the `human/review-*` folders
-unless a correction is being read.
+Avoid: raw `.jsonl` logs, and the `human/review-*` folders unless a
+correction is being read.

@@ -1,5 +1,9 @@
 # Window arabesques — work log
 
+The `renders/` images, the session scripts and logs, and the `human/review-*`
+folders named below left the tree on 2026-10-21; read them from git at
+`b8924f2`.
+
 ## 2026-10-21 — environment and first merge
 
 ### Tooling
