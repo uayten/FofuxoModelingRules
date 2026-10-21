@@ -1,0 +1,202 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\arabesco-janela\\arabescos.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\arabesco-janela\\arabescos.bridge\\review.blend",
+  "objects": [
+    "Plane.001"
+  ],
+  "why": null,
+  "status": "recorded; awaiting interview and replay validation",
+  "deltas": {
+    "Plane.001": {
+      "moved_mm": {
+        "v4": [
+          2.08833,
+          0.0,
+          -1.35353
+        ],
+        "v5": [
+          -2.70709,
+          0.0,
+          1.16018
+        ],
+        "v6": [
+          -0.96682,
+          0.0,
+          -5.22082
+        ],
+        "v9": [
+          5.66832,
+          0.0,
+          -1.11995
+        ],
+        "v10": [
+          -2.77058,
+          0.0,
+          0.20667
+        ],
+        "v49": [
+          0.1865,
+          0.0,
+          0.65275
+        ],
+        "v52": [
+          1.99555,
+          0.0,
+          0.52842
+        ],
+        "v53": [
+          2.90046,
+          0.0,
+          -0.77345
+        ],
+        "v54": [
+          3.86727,
+          0.0,
+          -3.86727
+        ],
+        "v56": [
+          6.66326,
+          0.00014,
+          -0.69872
+        ],
+        "v76": [
+          2.51776,
+          0.0,
+          0.0
+        ],
+        "v87": [
+          1.119,
+          0.0,
+          0.0
+        ],
+        "v88": [
+          -1.02575,
+          0.0,
+          0.0
+        ],
+        "v187": [
+          -2.47336,
+          0.0,
+          1.38658
+        ],
+        "v188": [
+          -0.80077,
+          0.0,
+          0.96086
+        ],
+        "v191": [
+          0.03747,
+          0.0,
+          -0.41223
+        ],
+        "v192": [
+          -1.70959,
+          0.0,
+          -0.54396
+        ],
+        "v198": [
+          -2.32347,
+          5.2713,
+          1.49901
+        ],
+        "v208": [
+          -6.80727,
+          0.0,
+          3.45026
+        ],
+        "v209": [
+          1.18428,
+          0.0,
+          -3.42539
+        ],
+        "v210": [
+          -2.9063,
+          0.0,
+          0.83925
+        ],
+        "v211": [
+          0.8952,
+          0.0,
+          -2.9094
+        ],
+        "v212": [
+          -2.46181,
+          0.0,
+          -0.6714
+        ],
+        "v213": [
+          4.02841,
+          0.0,
+          -2.7975
+        ],
+        "v214": [
+          8.71268,
+          0.0,
+          -2.35753
+        ],
+        "v215": [
+          -1.90354,
+          0.0,
+          1.21508
+        ],
+        "v216": [
+          11.89795,
+          -0.00065,
+          -1.71299
+        ]
+      },
+      "added": [
+        "v218",
+        "v219",
+        "v220",
+        "v221",
+        "v222"
+      ],
+      "removed": [
+        "v0"
+      ]
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 252,
+      "operators": {
+        "VIEW3D_OT_select": 123,
+        "OBJECT_OT_editmode_toggle": 34,
+        "MESH_OT_select_mode": 14,
+        "TRANSFORM_OT_vert_slide": 10,
+        "MESH_OT_merge": 2,
+        "TOPOLOGY": 4,
+        "MESH_OT_vert_connect_path": 1,
+        "MESH_OT_mark_sharp": 3,
+        "TRANSFORM_OT_translate": 56,
+        "VIEW3D_OT_select_box": 2,
+        "TRANSFORM_OT_edge_slide": 1,
+        "TRANSFORM_OT_resize": 1,
+        "MESH_OT_knife_tool": 1
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 69,
+      "capture": "event",
+      "combined_boundaries": 1,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 1131,
+      "operators": {
+        "INPUT": 1001,
+        "DRAG": 130
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": []
+    }
+  }
+}

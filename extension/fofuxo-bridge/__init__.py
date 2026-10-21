@@ -40,7 +40,7 @@ from .migration import migrate_scene
 from .sessions import stage_handoff
 from .catalog import catalog_edit, catalog_measures
 from .topology import report as topology_report
-from .surgery import delete_faces, bridge_loops, cut_between, fill_notch, intersect, make_face, weld, weld_region
+from .surgery import delete_faces, bridge_loops, cut_between, fill_notch, intersect, loop_cut, make_face, mark_fold, weld, weld_region
 from .sync import SyncError, annotations, edit, flip, set_frame, sync, views  # sync shadows the submodule name on purpose
 
 ALIAS = "llm_modeling_bridge"

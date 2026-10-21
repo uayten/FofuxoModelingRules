@@ -139,6 +139,20 @@ def make_face_back():
     check(raises(lambda: fc.make_face("Grids", ids, sync=False)), "make_face refuses a face that exists")
 
 
+def ring_cut():
+    obj = two_grids()
+    attr = obj.data.attributes["llm_modeling_bridge_id"].data
+    a = ids_where(obj, lambda co: abs(co.x + 1) < 1e-6 and abs(co.y + 1) < 1e-6)[0]
+    b = ids_where(obj, lambda co: abs(co.x + 0.5) < 1e-6 and abs(co.y + 1) < 1e-6)[0]
+    faces = len(obj.data.polygons)
+    out = fc.loop_cut("Grids", a, b, factor=0.25, sync=False)
+    xs = {round(obj.data.vertices[i].co.x, 4) for i, v in enumerate(obj.data.attributes["llm_modeling_bridge_id"].data)
+          if v.value in out["cut_ids"]}
+    check(len(out["cut_ids"]) == 5 and len(obj.data.polygons) == faces + 4 and xs == {-0.875}
+          and out["non_manifold"] == 0,
+          f"loop_cut cuts the whole ring at the factor (ids {out['cut_ids']}, x {xs})")
+
+
 def notch():
     bpy.ops.wm.read_homefile(use_empty=True)
     bpy.ops.mesh.primitive_grid_add(x_subdivisions=2, y_subdivisions=2, size=2.0)
@@ -234,6 +248,47 @@ def sidecars():
     check(instance_mod._object_signature(copy) != sig, "a sharp mark changes the signature")
 
 
+def fold_continues():
+    bpy.ops.wm.read_homefile(use_empty=True)
+    bpy.ops.mesh.primitive_grid_add(x_subdivisions=4, y_subdivisions=4, size=2.0)
+    obj = bpy.context.object
+    obj.name = "Fold"
+    from llm_modeling_bridge import mesh_io
+    mesh_io.ensure_ids(obj.data, write=True)
+    row = sorted(ids_where(obj, lambda co: abs(co.y) < 1e-6),
+                 key=lambda vid: next(v.co.x for v in obj.data.vertices
+                                      if obj.data.attributes["llm_modeling_bridge_id"].data[v.index].value == vid))
+    fc.mark_fold("Fold", row[:3], sync=False)  # from the border to the middle: it stops inside
+    ends = fc.topology_report("Fold")["fold_ends"]
+    check([e["id"] for e in ends] == [row[2]], f"report lists the fold that stops inside ({ends})")
+    fc.mark_fold("Fold", row[2:], sync=False)
+    check(fc.topology_report("Fold")["fold_ends"] == [], "a fold run on to the border leaves no end")
+
+
+def edit_beside_triangle():
+    """A triangle already accepted (D-080) does not block an op; a new one does."""
+    import tempfile
+    bpy.ops.wm.read_homefile(use_empty=True)
+    bpy.ops.mesh.primitive_grid_add(x_subdivisions=3, y_subdivisions=3, size=2.0)
+    obj = bpy.context.object
+    obj.name = "Tri"
+    obj.modifiers.new("Subdivision", "SUBSURF")
+    from llm_modeling_bridge import mesh_io
+    mesh_io.ensure_ids(obj.data, write=True)
+    bpy.ops.wm.save_as_mainfile(filepath=str(Path(tempfile.mkdtemp(prefix="tri_")) / "t.blend"))
+    corner = ids_where(obj, lambda co: abs(co.x + 1) < 1e-6 and abs(co.y + 1) < 1e-6)[0]
+    beside = ids_where(obj, lambda co: abs(co.x + 1 / 3) < 1e-6 and abs(co.y + 1) < 1e-6)[0]
+    fc.weld("Tri", corner, beside, at="b", sync=False)
+    fc.sync("Tri", render=False)
+    far = ids_where(obj, lambda co: abs(co.x - 1) < 1e-6 and abs(co.y - 1) < 1e-6)[0]
+    r = fc.edit("Tri", f"mesh translate v{far} h=+1mm", render=False)
+    check(r.get("action") != "error", f"an op beside an accepted triangle runs ({r.get('error')})")
+    a = ids_where(obj, lambda co: abs(co.x - 1) < 1e-6 and abs(co.y + 1) < 1e-6)[0]
+    b = ids_where(obj, lambda co: abs(co.x - 1 / 3) < 1e-6 and abs(co.y + 1) < 1e-6)[0]
+    r = fc.edit("Tri", f"mesh merge v{a} v{b}", render=False)
+    check(r.get("action") == "error" and "not quads" in r.get("error", ""), "an op that makes a new triangle is refused")
+
+
 def main():
     obj = two_quads()
     report = fc.topology_report("Quads")
@@ -279,10 +334,13 @@ def main():
     open_runs()
     cut_across()
     make_face_back()
+    ring_cut()
     notch()
     weld_seam()
     crossing_ids()
     sidecars()
+    edit_beside_triangle()
+    fold_continues()
 
     print("FAILURES", len(failures))
     if failures:

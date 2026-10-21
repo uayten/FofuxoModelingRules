@@ -127,4 +127,9 @@ try:
     raise AssertionError("a zero-extent crop was accepted")
 except ValueError:
     check(True, "a zero-extent region refuses instead of producing an unusable close")
+panel = render.Panel(render.Camera("top"), 1.0, np.zeros(3))
+blank = panel.img.copy()
+for x in (-40, -3, render.PANEL + 3, render.PANEL + 40):  # a vertex left or right of a cropped panel
+    panel.dot((x, render.PANEL / 2), render.WIRE_COPY, r=2)
+check(np.array_equal(panel.img, blank), "a dot outside the panel paints nothing (no stripe across the row)")
 print(f"VIEWS CROP ALL PASSED ({checks} checks)", flush=True)

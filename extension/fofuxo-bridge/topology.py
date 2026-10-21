@@ -302,6 +302,20 @@ def report(name, limit_ids=None):
             if fan > 360:
                 out["folds"].append({"id": int(ids[vert.index]), "fan_deg": round(fan)})
 
+    # A fold (crease line) that stops inside the surface: at a junction the
+    # branch's rib must run on into the stem's rib (D-084). A fold that ends
+    # on the border (a leaf's tip) is not listed.
+    out["fold_ends"] = []
+    layer = bm.edges.layers.float.get("crease_edge")
+    if layer is not None:
+        for vert in bm.verts:
+            if vert.is_boundary:
+                continue
+            creased = [e for e in vert.link_edges if e[layer] >= 0.99]
+            if len(creased) == 1:
+                out["fold_ends"].append({"id": int(ids[vert.index]),
+                                         "from": int(ids[creased[0].other_vert(vert).index])})
+
     for index, island in enumerate(islands):
         co = [vert.co for vert in island]
         lo = [min(c[i] for c in co) for i in range(3)]

@@ -169,7 +169,11 @@ class Panel:
             span = int((r * r + r - dy * dy) ** 0.5) if r * r + r >= dy * dy else -1
             if span < 0 or not 0 <= y + dy < PANEL:
                 continue
-            self.img[y + dy, max(x - span, 0):min(x + span + 1, PANEL)] = color
+            # Clamp both ends: a dot left of the panel has a negative end,
+            # which a slice reads from the right and paints a whole row.
+            x0, x1 = max(x - span, 0), max(min(x + span + 1, PANEL), 0)
+            if x0 < x1:
+                self.img[y + dy, x0:x1] = color
 
     def text(self, x, y, s, color=TEXT, scale=2, bg=True):
         mask = font.text_mask(s, scale)

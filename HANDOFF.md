@@ -17,11 +17,11 @@ Updated: 2026-10-21
   reaches the AI file, and a join no longer leaves duplicated stable ids.
 
 ## Next step
-ROADMAP 1, the next leaf of the vine, with the junction recipe
-(`extension/fofuxo-bridge/EDITING.md`): `join_meshes`, `topology_report`,
-delete / weld / `make_face`, `fill_notch` on every fold, crease, render,
-review. The `Plane.019` junction is done (AI + modeler, D-081/D-082).
-Keep the levels and sharp marks the modeler set (D-082, D-083).
+ROADMAP 1, the next leaf down the stem (`Plane.022`, touches it at x≈168 mm)
+with the recipes in `extension/fofuxo-bridge/EDITING.md`: fork (D-081) or
+side branch (D-084: rib to rib, no `fold_ends`). Render, review, then turn the
+modeler's correction into rules or calls. Keep the levels and sharp marks the
+modeler set (D-082, D-083).
 
 ## Open questions
 - `.bridge/*.txt` cage text: inside the .blend as text datablocks, one file per

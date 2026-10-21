@@ -769,6 +769,26 @@ modeler lowers is a decision, not an accident: the AI keeps it, judges the
 piece at that level (D-015: coherent density across the model) and does not
 raise it to make a render look smoother.
 
+### D-084: A side branch meets the stem rib to rib, and its folds run on (Seen, janela-2026-10-21)
+
+The AI joined the curl `Plane.021` off the stem's top border: the leaf's rib
+(v210) was bridged to the border vertex v0, and the rib's crease stopped at
+v210. The modeler's edit merged v0 into v216, the stem's rib under the leaf,
+so the branch's fold lands on the stem's fold; a knife row (v218-v222) let
+three crease + sharp lines meet at v216: the stem's rib (52-222-216), the
+leaf's rib (210-221-216) and the acute crotch between the leaf's inner edge
+and the stem (209-220-216). Two triangles there, both creased (D-080). The
+leaf's base narrowed from 12.7 to 8.1 mm; the angle between the leaf's rib
+and the stem barely moved (45° → 52°), so the change is topology and folds,
+not the branch's direction.
+
+How to apply: a fold never stops inside the surface at a junction.
+`topology_report` lists `fold_ends`; run each into the stem's rib (weld the
+border vertex under the leaf onto the rib vertex, `cut_between` where no edge
+reaches), then `mark_fold` the new path. On the AI's version, `weld(0, 216)`
+and `mark_fold([210, 216])` leave no fold end, no fold of the border and one
+island; the crotch line and the narrower base are still the modeler's.
+
 ### D-060: Marks are messages (Stated, B1)
 
 The modeler points at the model with marks: sharp or seam on a loop means

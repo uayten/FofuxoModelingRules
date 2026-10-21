@@ -887,6 +887,11 @@ class Runner:
         faces0 = len(mesh.polygons)
         mirror = mesh_io.mirror_setup(obj)
         sides = mesh_io.kept_sides(mesh, mirror)
+        has_subsurf = any(m.type == "SUBSURF" and m.show_viewport for m in obj.modifiers)
+        # What was already there (a creased triangle the modeler accepted,
+        # D-080) does not block an op; only what the op adds does.
+        known = {(i["code"], v) for i in validate.check_mesh(obj, ids0, mirror, sides, has_subsurf)
+                 if i["level"] == "ERROR" for v in i["verts"]}
         surface = None
         if measure:
             from . import shape
@@ -910,8 +915,8 @@ class Runner:
                     raise MeshOpError(f"Blender refused {self.op.idname} ({result})")
             _retag(mesh, by_tag)
             ids, fresh = mesh_io.ensure_ids(mesh, co0, self.counter["next_id"])
-            has_subsurf = any(m.type == "SUBSURF" and m.show_viewport for m in obj.modifiers)
-            errors = [i for i in validate.check_mesh(obj, ids, mirror, sides, has_subsurf) if i["level"] == "ERROR"]
+            errors = [i for i in validate.check_mesh(obj, ids, mirror, sides, has_subsurf)
+                      if i["level"] == "ERROR" and (not i["verts"] or any((i["code"], v) not in known for v in i["verts"]))]
             if errors:
                 raise MeshOpError(_failure(errors))
         except Exception:

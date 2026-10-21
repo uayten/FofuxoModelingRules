@@ -15,7 +15,7 @@ import bpy
 from . import mesh_io
 from .instance import assert_ai_access
 
-__all__ = ("delete_faces", "bridge_loops", "cut_between", "fill_notch", "intersect", "make_face", "weld", "weld_region")
+__all__ = ("delete_faces", "bridge_loops", "cut_between", "fill_notch", "intersect", "loop_cut", "make_face", "mark_fold", "weld", "weld_region")
 
 
 def state_ids(obj, write):
@@ -278,6 +278,113 @@ def make_face(name, ids, sync=True):
             face.normal_flip()
     out = _finish(obj, bm, sync)
     out["made"] = ids
+    return out
+
+
+def _edge_ring(bm, va, vb):
+    """The quads' edge ring through edge va-vb, each edge as (side a, side b):
+    the vertex on va's side first, so a factor means the same on every edge."""
+    start = bm.edges.get((va, vb))
+    if start is None:
+        return None
+    ring, seen = [(va, vb)], {start.index}
+    for first in (True, False):
+        a, b = (va, vb)
+        edge = start
+        faces = list(edge.link_faces)
+        face = faces[0] if first else (faces[1] if len(faces) > 1 else None)
+        while face is not None and len(face.verts) == 4:
+            loop = next(l for l in face.loops if l.edge is edge)
+            # the opposite edge, oriented: a's neighbour along the face first
+            far = loop.link_loop_next.link_loop_next
+            nb, na = far.vert, far.link_loop_next.vert
+            if loop.vert is not a:
+                na, nb = nb, na
+            nxt = bm.edges.get((na, nb))
+            if nxt is None or nxt.index in seen:
+                break
+            seen.add(nxt.index)
+            if first:
+                ring.append((na, nb))
+            else:
+                ring.insert(0, (na, nb))
+            a, b, edge = na, nb, nxt
+            face = next((f for f in edge.link_faces if f is not face), None)
+    return ring
+
+
+def loop_cut(name, id_a, id_b, factor=0.5, sync=True):
+    """Blender's Loop Cut and Slide on the quad ring through edge id_a-id_b.
+
+    factor: where the cut lands on every edge of the ring, from id_a's side
+    (0) to id_b's side (1); the slide the modeler would do after the cut.
+    Returns the new vertices' ids in ring order (``cut_ids``).
+    """
+    assert_ai_access()
+    if not 0.0 < factor < 1.0:
+        raise ValueError("factor must be between 0 and 1")
+    obj, bm, vids = _open(name)
+    index_of, missing = _by_id(bm, vids, [id_a, id_b])
+    if missing:
+        bm.free()
+        raise ValueError(f"unknown ids {missing}")
+    ring = _edge_ring(bm, index_of[id_a], index_of[id_b])
+    if ring is None:
+        bm.free()
+        raise ValueError(f"no edge between {id_a} and {id_b}")
+    sides = [(a, b, a.co.copy(), b.co.copy()) for a, b in ring]
+    edges = [bm.edges.get((a, b)) for a, b in ring]
+    bmesh.ops.subdivide_edges(bm, edges=edges, cuts=1, use_grid_fill=True)
+    # The op can rebuild the vertices it touches, so find each new one where it
+    # is born, halfway along its edge, and slide it to the factor.
+    from mathutils import kdtree
+    bm.verts.index_update()
+    bm.verts.ensure_lookup_table()
+    tree = kdtree.KDTree(len(bm.verts))
+    for v in bm.verts:
+        tree.insert(v.co, v.index)
+    tree.balance()
+    order = []
+    for _a, _b, ca, cb in sides:
+        _co, index, dist = tree.find((ca + cb) / 2)
+        if dist > 1e-6 * max((cb - ca).length, 1e-6) + 1e-9:
+            bm.free()
+            raise ValueError("the cut did not land on the ring's edges")
+        bm.verts[index].co = ca.lerp(cb, factor)
+        order.append(index)
+    out = _finish(obj, bm, sync)
+    ids, _ = state_ids(obj, write=False)
+    out["cut_ids"] = [int(ids[i]) for i in order]
+    return out
+
+
+def mark_fold(name, ids, crease=1.0, sharp=True, sync=True):
+    """Mark a fold along consecutive ids: crease and sharp on each edge, as the
+    modeler marks a leaf's rib (D-082, D-084). crease=0 and sharp=False clear."""
+    assert_ai_access()
+    ids = list(ids)
+    if len(ids) < 2:
+        raise ValueError("mark_fold needs two ids at least")
+    obj, bm, vids = _open(name)
+    # Layers first: adding one rebuilds the edges and drops their references.
+    layer = bm.edges.layers.float.get("crease_edge") or bm.edges.layers.float.new("crease_edge")
+    sharp_layer = bm.edges.layers.bool.get("sharp_edge") or bm.edges.layers.bool.new("sharp_edge")
+    index_of, missing = _by_id(bm, vids, ids)
+    if missing:
+        bm.free()
+        raise ValueError(f"unknown ids {missing}")
+    edges, gaps = [], []
+    for a, b in zip(ids, ids[1:]):
+        edge = bm.edges.get((index_of[a], index_of[b]))
+        (edges.append(edge) if edge is not None else gaps.append((a, b)))
+    if gaps:
+        bm.free()
+        raise ValueError(f"no edge between {gaps}: cut_between first")
+    for edge in edges:
+        edge[layer] = crease
+        edge[sharp_layer] = sharp
+    out = _finish(obj, bm, sync)
+    out["marked"] = [[a, b] for a, b in zip(ids, ids[1:])]
     return out
 
 

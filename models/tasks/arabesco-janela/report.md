@@ -133,3 +133,22 @@ viewport Subdivision 2 → 1. Result 92 v / 60 f, 0 non-manifold, 3 triangles.
 - Sharp by hand along the stem (D-082).
 - `fill_notch` on the AI's version reproduces the quad.
 - The modeler confirmed both (D-082 sharp by hand; D-083 Subdivision drops to 1 as loops go in, export likely at 1).
+
+### Third leaf: `Plane.021`, a side branch (2026-10-21, Claude)
+- `join_meshes(["Plane.001", "Plane.021"])`: leaf ids 181-210; its text and
+  state pruned by the join. Backup before: `arabescos.bak-07.blend`.
+- The leaf's base row (181-195-182) lay along the stem, not across it.
+  Deleted it, cut two loops in the stem beside v0 (211-213 at 0.4 of 49→0
+  after a slide, 214-216 at 0.4 of 0→10), bridged 209-210-208 to 212-0-215.
+- Result: 125 v / 82 f, 1 island, 0 non-manifold, no folds, one border.
+  The stem's sharp and crease on its rib survived the cuts (52-213, 52-216).
+- Render `arabescos.bridge/Plane.001.leaf3.png`; sent to review.
+
+### The modeler's correction of `Plane.021` (2026-10-21, 02:46)
+Review `human/review-20261021-054615-...`: 129 v / 86 f, 0 non-manifold,
+5 triangles (2 new, creased). v0 merged into the stem rib v216; knife row
+v218-v222; folds 52-222-216, 210-221-216, 209-220-216 (crease + sharp);
+base 12.7 → 8.1 mm; curl flattened in depth (resize Y→0 on v184, v187,
+v188, v198). Recorded as D-084; `fold_ends` finds the AI's dangling rib.
+- The 43 cage texts of objects nobody works on (written by an absorb of the
+  whole scene) were removed with their states; `Plane.001.txt` stays.

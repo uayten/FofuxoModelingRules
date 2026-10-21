@@ -122,3 +122,28 @@ With those, the junction becomes a sequence the AI can actually run and check:
   overlapping base faces → `weld` the base row onto the stem's row →
   `make_face` what the split leaves open → `fill_notch` every fold → crease
   the triangle's edges → `views(crop=True)` → review.
+
+### Status 2026-10-21 (the `Plane.021` junction, a side branch)
+- `Plane.021` (a small curl) does not leave from a fork: its base row lies
+  along the stem and the leaf rises off the stem's top border. Recipe for a
+  side branch: `delete_faces` the leaf's base row (it lies on the stem) →
+  `loop_cut` the stem on each side of the border vertex under the leaf
+  (ids 211-216) → `bridge_loops` the leaf's new base run (209, 210, 208) to
+  the stem's border run (212, 0, 215) → slide the cut so the bridge faces are
+  not slivers (factor 0.4: aspect 4.3 → 2.9) → `views(crop=True)`.
+- New: `loop_cut(name, id_a, id_b, factor)`. `subdivide_edges` can rebuild
+  the vertices it touches, so the new ones are found by position.
+- Fixed: an `edit` op was refused when the mesh already held an accepted
+  triangle (D-080); now only an error the op adds refuses it.
+
+### Status 2026-10-21 (the modeler's `Plane.021` correction)
+- Review `human/review-20261021-054615-...`: merge ×2 (v0 into the stem rib
+  v216), J ×1, knife ×1 (v218-v222), vert slide ×10, mark sharp ×3 with
+  crease, 56 moves, resize Y→0 on the curl. D-084.
+- New: `topology_report` lists `fold_ends`; `mark_fold(name, ids)`.
+- Side-branch recipe, amended: after the bridge, `weld` the stem border
+  vertex under the leaf onto the stem's rib vertex, so rib meets rib; run
+  every `fold_ends` into the rib and `mark_fold` it; the crotch between the
+  leaf's inner edge and the stem is a fold too.
+- Fixed: `views(crop=True)` drew horizontal stripes: `Panel.dot` sliced a row
+  with a negative end for a vertex left of the panel.
