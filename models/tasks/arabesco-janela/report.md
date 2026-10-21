@@ -272,3 +272,39 @@ and below (498-500-499) the junction; the junction's row slid straight (v60,
 v18 down to v17's level); the crotch v17 lifted to 1.64 mm (v12 sits at
 1.51). Rules D-090 (crotch off the base) and D-091 (a loop each side);
 `lift_crotch` added. The closing checks stay clean.
+
+### The acanthus leaf's red and blue blades, as flaps (2026-10-21, Claude)
+- Backup before: `arabescos.bak-12.blend`. `join_meshes(["Plane.001",
+  "Plane.024", "Plane.025"])`: red ids 501-531 (odd), 540, 541; blue
+  502-538 (even), 533-539 (odd), 542.
+- Red's near border runs under the green blade its whole length and blue's
+  under red; both roots reach the stem just below v19, at one spot. To merge
+  the folds in stages (D-088), the roots were spread down the stem with two
+  loop cuts between rows 19 and 498: `loop_cut(19, 498, 0.43)` → 543
+  (border), 545 (rib); `loop_cut(543, 498, 0.37)` → 546, 547.
+- Red: `weld` its root row onto the stem (509→19, 513→543, 515→545, at the
+  stem's positions, the rib moved 6.4 mm); `delete_faces` the stem face under
+  it [19, 543, 545, 61]; `make_face` [19, 545, 61]. Red is held at v19, where
+  the green blade's far border meets the stem; its near border stays free
+  under the green.
+- Blue: the same one row down, held at v543 on red's far border (504→543,
+  538→546, 518→547; the root moved 6.0 mm); stem face [543, 546, 547, 545]
+  deleted; `make_face` [543, 547, 545].
+- `mark_fold` both ribs into the stem rib and both valleys from the roots
+  ([19, 545], [543, 547]); `flatten_tip(520)`; `lift_crotch` 19 and 543
+  (1.64 mm, D-090); `crease_border` (28 edges).
+- Result: 322 v / 224 f, 1 island, 0 non-manifold, one border of 210 edges,
+  no fold ends, no unsharp folds, no uncreased border, every leaf tip at 0.
+  The folds now meet the stem rib at three rows: 61 (green), 545 (red), 547
+  (blue). Render `arabescos.bridge/Plane.001.acanthus.png`; in review.
+
+### The modeler's correction of the acanthus blades (2026-10-21, 05:37)
+Review `human/review-20261021-083711-...`: 342 v / 238 f, 1 island,
+0 non-manifold, 20 triangles, 2 pentagons. Loop cut ×7: every blade's base
+has a row level with each stem row (D-092). Rip ×3: slits from the crotch
+v17 down to the rib v61 and from v19 down to the rib v545 (map:
+`arabescos.bridge/Plane.001.slits_map.png`; asked). The red wedge's top
+(511-540-501) left without crease on purpose (D-089 exception); Subdivision
+viewport at level 3 to evaluate (D-083). The modeler suggested a feature:
+the AI's comments placed inside Blender, pointing at the spot, answered
+there.

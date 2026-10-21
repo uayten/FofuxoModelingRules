@@ -776,6 +776,11 @@ modeler lowers is a decision, not an accident: the AI keeps it, judges the
 piece at that level (D-015: coherent density across the model) and does not
 raise it to make a render look smoother.
 
+Amended (acanthus review, 2026-10-21): the viewport level also goes up while
+the modeler evaluates ("para eu visualizar o modelo de forma mais orgânica
+possível [...] ver se tem algo quebrando nos subdivisions de níveis altos").
+Any level the modeler leaves is his; the AI neither lowers nor raises it.
+
 ### D-084: A side branch meets the stem rib to rib, and its folds run on (Seen, janela-2026-10-21)
 
 The AI joined the curl `Plane.021` off the stem's top border: the leaf's rib
@@ -885,8 +890,14 @@ lobes' flaps, the lower stem, the `Plane.021` curl). Sharp on a border stays
 as D-085 says: the AI neither adds nor clears it.
 
 How to apply: after a junction or a join, `topology_report` lists
-`uncreased_border`; `crease_border(name)` creases them. `unsharp_folds` and
-`sharpen_folds` look at inner edges only.
+`uncreased_border`; `crease_border(name, ids=...)` creases them on the piece
+just joined. `unsharp_folds` and `sharpen_folds` look at inner edges only.
+
+Exception (stated in the acanthus review): "as bordas ficaram sem crease para
+dar o formato mais arredondado que eu procuro" — the top of the red wedge
+(511-540-501) is left round on purpose. A border the modeler left without
+crease is his choice: the AI creases only the borders of what it just
+joined, never the whole object again.
 
 ### D-090: A junction's crotch stands off the base (Stated, janela-2026-10-21)
 
@@ -909,6 +920,23 @@ straight across (v60 and v18 down to v17's level), and moved little else.
 How to apply: `loop_cut(name, a, b, 0.5)` on the stem's ring through an
 edge between the junction's row and each neighbouring row, so the junction
 has supporting loops above and below.
+
+### D-092: A branch's base rows line up with the stem's rows (Stated, janela-2026-10-21)
+
+"Quando você conectar, tem que adicionar alguns loops nas bases que tiverem
+poucos loops e eles precisam ficar posicionados em harmonia com os loops do
+caule." In the acanthus review (loop cut ×7, edge slide ×19, vert slide ×13)
+every blade's base got a row at each height where the stem has one: at
+z ≈ -190, -210, -226, -232, -239, -244 and -249 mm the stem's row and the
+three blades' rows sit level, so each reads as one line across the stem and
+the blades (the blue blade gained 563-565, 557-559, 560-562). A base with
+long rows gets loops until its spacing matches the stem's.
+
+How to apply: after connecting a branch, for each stem row beside its base
+that the branch has no row level with, `loop_cut(name, a, b,
+level_with=stem_row_id)` on the branch's ring through an edge that spans that
+height; the cut lands level with the stem's row. Look at the front view: the
+rows should run on across the slits as straight lines.
 
 ### D-060: Marks are messages (Stated, B1)
 

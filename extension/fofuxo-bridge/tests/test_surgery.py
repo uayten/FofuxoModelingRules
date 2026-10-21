@@ -153,6 +153,49 @@ def ring_cut():
           f"loop_cut cuts the whole ring at the factor (ids {out['cut_ids']}, x {xs})")
 
 
+def slit_border():
+    """A slit from the border down to one vertex: the border passes it twice
+    and is still walked as one closed loop."""
+    import bmesh
+    bpy.ops.wm.read_homefile(use_empty=True)
+    bpy.ops.mesh.primitive_grid_add(x_subdivisions=4, y_subdivisions=4, size=2.0)
+    obj = bpy.context.object
+    obj.name = "Slit"
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    edge = next(e for e in bm.edges if all(abs(v.co.x) < 1e-6 for v in e.verts)
+                and min(v.co.y for v in e.verts) > 0.3)  # from the top border down to (0, 0.5)
+    bmesh.ops.split_edges(bm, edges=[edge])
+    bm.to_mesh(obj.data)
+    bm.free()
+    from llm_modeling_bridge import mesh_io
+    mesh_io.ensure_ids(obj.data, write=True)
+    loops = fc.topology_report("Slit")["border_loops"]
+    check(len(loops) == 1 and loops[0]["closed"] and loops[0]["edges"] == 18,
+          f"a border through a vertex twice is one closed loop ({[(l['closed'], l['edges']) for l in loops]})")
+
+
+def level_cut():
+    """A loop cut on one grid lands level with a row of the grid beside it (D-092)."""
+    obj = two_grids(stacked=True)
+    low = lambda x: ids_where(obj, lambda co: abs(co.x - x) < 1e-6 and abs(co.y + 1) < 1e-6 and abs(co.z) < 1e-6)[0]
+    high = lambda x: ids_where(obj, lambda co: abs(co.x - x) < 1e-6 and abs(co.y + 1) < 1e-6 and abs(co.z - 1) < 1e-6)[0]
+    row = fc.loop_cut("Grids", low(-1), low(-0.5), factor=0.25, sync=False)["cut_ids"]
+    stem = next(i for i in row if i in ids_where(obj, lambda co: abs(co.y + 1) < 1e-6))
+    out = fc.loop_cut("Grids", high(-1), high(-0.5), level_with=stem, sync=False)
+    xs = {round(obj.data.vertices[i].co.x, 4) for i, v in enumerate(obj.data.attributes["llm_modeling_bridge_id"].data)
+          if v.value in out["cut_ids"]}
+    check(out["factor"] == 0.25 and xs == {-0.875}, f"loop_cut level_with lands on the other row's line (factor {out['factor']}, x {xs})")
+    check(raises(lambda: fc.loop_cut("Grids", high(0), high(0.5), level_with=stem, sync=False)),
+          "loop_cut refuses a row it cannot be level with")
+    piece = set(ids_where(obj, lambda co: abs(co.z) < 1e-6))
+    border = fc.topology_report("Grids")["uncreased_border"]
+    out = fc.crease_border("Grids", ids=piece, sync=False)
+    left = fc.topology_report("Grids")["uncreased_border"]
+    check(out["creased"] == sum(1 for e in border if set(e) <= piece) and left and all(not set(e) <= piece for e in left),
+          f"crease_border with ids creases only that piece's border ({out['creased']}, {len(left)} left)")
+
+
 def notch():
     bpy.ops.wm.read_homefile(use_empty=True)
     bpy.ops.mesh.primitive_grid_add(x_subdivisions=2, y_subdivisions=2, size=2.0)
@@ -456,6 +499,8 @@ def main():
     cut_across()
     make_face_back()
     ring_cut()
+    level_cut()
+    slit_border()
     notch()
     weld_seam()
     crossing_ids()

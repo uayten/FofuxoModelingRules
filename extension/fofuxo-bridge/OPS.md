@@ -92,11 +92,11 @@ Design and open work: [EDITING.md](EDITING.md).
 | `intersect(name, island_id)` | Intersect (Knife), Merge: cuts the island holding the id against the rest with one shared line; its ids in `cut_ids` |
 | `fill_notch(name, id)` | closes the wedge at a fold with one quad (the side that leaves no fold), D-081 |
 | `knife_row(name, edges, factor)` | a knife row across consecutive edges `[a, b]` (quads or triangles), each cut at `factor` from `a`; the row before the vertex where a junction's folds meet (D-087); new ids in `cut_ids` |
-| `loop_cut(name, id_a, id_b, factor)` | Loop Cut and Slide on the quad ring through edge a-b, landing at `factor` from a's side; new ids in `cut_ids` |
+| `loop_cut(name, id_a, id_b, factor, level_with=None)` | Loop Cut and Slide on the quad ring through edge a-b, landing at `factor` from a's side, or level with the vertex `level_with` (a stem row, D-092); new ids in `cut_ids` |
 | `mark_fold(name, ids)` | crease 1.0 and sharp along consecutive ids, as the modeler marks a rib (D-084) |
 | `sharpen_folds(name)` | sharp on every creased inner edge (D-085) |
 | `lift_crotch(name, id, fraction=0.3)` | a junction's crotch off the base, `fraction` of the way to the rib (D-090) |
-| `crease_border(name)` | crease on every border edge, so Subdivision keeps the outline (D-089) |
+| `crease_border(name, ids=None)` | crease on the border edges (of the piece named by `ids`), so Subdivision keeps the outline (D-089) |
 | `flatten_tip(name, id)` | the middle of an end row takes its corners' depth: a leaf's tip on the base (D-086) |
 | `make_face(name, ids)` | Make Face (F) through the ids in outline order, wound like its neighbours |
 | `weld(name, id_a, id_b, at="a")` | welds `a` onto `b` (`b`'s id survives), at `a`'s position (`"b"` or `"mid"` too) |

@@ -233,6 +233,25 @@ def _islands(bm):
     return sorted(islands, key=len, reverse=True)
 
 
+def _wedge_next(edge, vert):
+    """From a border edge into vert, turn through the faces around vert to the
+    next border edge: the border's own continuation where vert is on it twice."""
+    if not edge.link_faces:
+        return None
+    current, face = edge, edge.link_faces[0]
+    for _ in range(len(vert.link_edges)):
+        other = next((e for e in face.edges if e is not current and vert in e.verts), None)
+        if other is None:
+            return None
+        if other.is_boundary:
+            return other
+        face = next((f for f in other.link_faces if f is not face), None)
+        if face is None:
+            return None
+        current = other
+    return None
+
+
 def _edge_loops(edges):
     """Walk boundary edges into loops, one step per vertex (two edges at most).
 
@@ -258,6 +277,11 @@ def _edge_loops(edges):
             loop.append((edge, vert))
             vert = edge.other_vert(vert)
             nxt = [e for e in by_vert.get(vert.index, ()) if e.index not in seen]
+            if len(nxt) > 1:
+                # The border passes this vertex twice (a slit down to it, D-088):
+                # go on along the border edge of the same wedge of faces.
+                wedge = _wedge_next(edge, vert)
+                nxt = [wedge] if wedge is not None and wedge.index not in seen else []
             edge = nxt[0] if len(nxt) == 1 else None
         closed = len(loop) > 2 and vert.index == loop[0][1].index
         loops.append((loop, closed))

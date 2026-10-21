@@ -192,3 +192,15 @@ With those, the junction becomes a sequence the AI can actually run and check:
 - New: `lift_crotch(name, id, fraction=0.3)`.
 - Fork recipe, amended: after `knife_row`, `lift_crotch` the crotch and
   `loop_cut` the stem halfway to each neighbouring row.
+
+### Status 2026-10-21 (the modeler's acanthus correction)
+- Review `human/review-20261021-083711-...`: loop cut ×7 so every blade's
+  base has a row level with each stem row (D-092); rip ×3 opened the valleys
+  stem/green (17 to 61) and green/red (19 to 545) into slits down to the
+  rib-merge vertices (asked, not yet a rule); the red wedge's top left
+  without crease on purpose (D-089 exception); Subdivision viewport at 3 to
+  evaluate (D-083 amended).
+- New: `loop_cut(..., level_with=id)`; `crease_border(name, ids=...)`.
+- Fixed: `topology_report` broke the border into open runs where it passes a
+  vertex twice (a slit down to it); it now turns through the faces to the
+  next border edge of the same wedge.

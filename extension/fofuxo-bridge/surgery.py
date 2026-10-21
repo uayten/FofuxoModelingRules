@@ -321,21 +321,31 @@ def _edge_ring(bm, va, vb):
     return ring
 
 
-def loop_cut(name, id_a, id_b, factor=0.5, sync=True):
+def loop_cut(name, id_a, id_b, factor=0.5, level_with=None, sync=True):
     """Blender's Loop Cut and Slide on the quad ring through edge id_a-id_b.
 
     factor: where the cut lands on every edge of the ring, from id_a's side
     (0) to id_b's side (1); the slide the modeler would do after the cut.
-    Returns the new vertices' ids in ring order (``cut_ids``).
+    level_with: a vertex id of the row to line up with (a stem's row beside a
+    branch's base, D-092); the factor becomes that vertex's place along a-b.
+    Returns the new vertices' ids in ring order (``cut_ids``) and the factor.
     """
     assert_ai_access()
-    if not 0.0 < factor < 1.0:
-        raise ValueError("factor must be between 0 and 1")
     obj, bm, vids = _open(name)
-    index_of, missing = _by_id(bm, vids, [id_a, id_b])
+    index_of, missing = _by_id(bm, vids, [id_a, id_b] + ([level_with] if level_with is not None else []))
     if missing:
         bm.free()
         raise ValueError(f"unknown ids {missing}")
+    if level_with is not None:
+        a_co, b_co = index_of[id_a].co, index_of[id_b].co
+        span = b_co - a_co
+        factor = (index_of[level_with].co - a_co).dot(span) / max(span.length_squared, 1e-12)
+        if not 0.05 < factor < 0.95:
+            bm.free()
+            raise ValueError(f"v{level_with} is not level with a point inside edge {id_a}-{id_b} (factor {factor:.2f})")
+    if not 0.0 < factor < 1.0:
+        bm.free()
+        raise ValueError("factor must be between 0 and 1")
     ring = _edge_ring(bm, index_of[id_a], index_of[id_b])
     if ring is None:
         bm.free()
@@ -363,6 +373,7 @@ def loop_cut(name, id_a, id_b, factor=0.5, sync=True):
     out = _finish(obj, bm, sync)
     ids, _ = state_ids(obj, write=False)
     out["cut_ids"] = [int(ids[i]) for i in order]
+    out["factor"] = round(factor, 3)
     return out
 
 
@@ -460,14 +471,19 @@ def sharpen_folds(name, sync=True):
     return out
 
 
-def crease_border(name, sync=True):
-    """Crease 1.0 on every border edge, so Subdivision keeps the outline
-    (D-089). Sharp is left as it is. Returns how many edges gained crease."""
+def crease_border(name, ids=None, sync=True):
+    """Crease 1.0 on the border edges, so Subdivision keeps the outline
+    (D-089). ids: only the border edges between these vertices (the piece just
+    joined); a border the modeler left uncreased stays round. Sharp is left as
+    it is. Returns how many edges gained crease."""
     assert_ai_access()
-    obj, bm, _vids = _open(name)
+    obj, bm, vids = _open(name)
     crease = bm.edges.layers.float.get("crease_edge") or bm.edges.layers.float.new("crease_edge")
+    wanted = set(ids) if ids is not None else None
     count = 0
     for edge in bm.edges:
+        if wanted is not None and not all(vids[v.index] in wanted for v in edge.verts):
+            continue
         if edge.is_boundary and edge[crease] < 0.99:
             edge[crease] = 1.0
             count += 1
