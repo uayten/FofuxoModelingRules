@@ -6,8 +6,8 @@
 > and keep this file true. Implemented tools belong in the extension README;
 > this file contains only work and judgments still pending.
 
-What remains before a text LLM can build an editable Blender model from an
-approved plan, learn from human corrections and demonstrate a lower session cost.
+The aim: a text LLM can build an editable Blender model from an approved
+plan, learn from human corrections and demonstrate a lower session cost.
 
 ## Contents
 
@@ -22,7 +22,9 @@ approved plan, learn from human corrections and demonstrate a lower session cost
    step. Do not read the whole repository or the whole DECISIONS.md.
 2. Take the first available step in [Order](#order), unless the modeler asks
    for another. Say which one before starting. A required human judgment
-   stays pending when the modeler is unavailable.
+   stays pending when the modeler is unavailable. When Order is empty there
+   is no pending work: ask the modeler for the next goal, write it here with
+   its scope and the files to read, then start.
 3. Modeling proceeds in the conversation, stage by stage, stopping after
    each form render for the modeler's correction. Keep the AI Blender open
    and use `review()` to open a separate human Blender with the latest saved
@@ -65,65 +67,31 @@ approved plan, learn from human corrections and demonstrate a lower session cost
 
 ## To do
 
-1. **Finish the cowboy hat (C1) and judge the method** (D-065 to D-079).
-   Read models/tasks/chapeu-cowboy/HANDOFF.md, the plan's Changes and only
-   the decisions needed by the next stage. The historical recorder has a
-   [compact receipt](models/tasks/chapeu-cowboy/ai/C1/recording-summary.json)
-   and an [observed-method index](models/example/cowboy-hat/RECORDING.md).
-   Left:
-   - the band extracted from the crown's band row (`ring v12-v62`, 12 faces,
-     previewed, not yet extracted), buckle, tail (Mirror X and Subdivision),
-     materials;
-   - cage and result checks (D-078), including the new evenness receipts;
-   - resume the checkpointed round `C1 side dent review` (`round_resume`),
-     round_end, ai/C1/report.md with supplied cost data, and the modeler's
-     verdict on the hat and method.
-   **Done when** the modeler judges the hat good and the method approved.
-   The old in-memory C1 round cannot be reconstructed by the new counters;
-   historical usage stays unknown unless actual session usage is available.
+1. **The window's arabesques** (`models/tasks/arabesco-janela/`). The modeler
+   picked the gold ornament carved on the gothic window of the shop's entrance
+   hall as the next work. The copy is
+   `models/tasks/arabesco-janela/arabescos.blend`: the fleur-de-lis finial, the
+   arch vine, the bottom band and the right capital leaves, with the window
+   frame kept as a reference collection and the band's `Arabesco Base.png`
+   packed. Read that task's `prompt.md` first. The source scene left the vine
+   on the right side only and six pieces hidden in render. Agree the goal for
+   the ornaments with the modeler, write the plan (`PLAN.md`), then build stage
+   by stage. **Done when** the modeler judges the arabesques good.
 
-2. **A second concept, chosen by the modeler.** Build with the reviewed
-   staged method. Read the session card, its reference and relevant technique
-   blocks. Test whether D-066 to D-079 and recorded techniques transfer with
-   less explanation. Before reuse, compare body/attachment, depth,
-   proportions, topology and modifier assumptions (D-063, D-064).
-   The proposed checklist is not evidence of successful transfer.
-   **Done when** the modeler judges the result and measured replay;
-   unresolved method questions go to DECISIONS.md.
-
-3. **Complete the human example catalog.** E1's top hat now has
-   models/example/chapeu/measures.json; the bow already has its measures.
-   The skirt ruffles still have no source file in the catalog. Obtain it,
-   then store their measures and example entry. New absorbed reviews preserve
-   before/after files, deltas and receipts under human/; interview the modeler
-   about each correction's why and validate useful replay before promotion
-   to a technique. C1's earlier log has counts but no historical moved-id or
-   region receipts, so exact movements cannot be recovered from its summary.
-   Read models/example/CATALOG.md, models/FEEDBACK.md and the affected
-   example's EXAMPLE.md and edit.json.
-
-4. **Demonstrate cost reduction with real session usage.** Read the README's
-   Cost per round and Session tools. On the next reviewed stage, collect
-   report characters, image pixels, external read receipts, agent text and
-   actual supplied session tokens. Compare an equivalent stage against the
-   old method: fewer calls alone do not establish savings. The target remains
-   the T2 horns' reported 180–220k tokens per horn, not a promise.
-   Remaining limits:
-   - external reads and agent text need explicit receipts; the extension does
-     not intercept unrelated agent tools or actual MCP output;
-   - exact image billing and total session usage need provider/model telemetry;
-     no supported source for those values is exposed to the extension, and
-     they must not be guessed from pixels;
-   - an end-to-end replay and second concept must show whether the technique
-     library helps rather than repeating the T2 failures.
-   **Done when** a reviewed model has attributable usage and a useful
-   comparison, with unavailable values stated as unavailable.
+2. **Let the AI edit the cage the way the modeler does**
+   (`extension/fofuxo-bridge/EDITING.md`). The junction of the vine showed the
+   gap: the AI can move and extrude a named selection but cannot ask where two
+   islands cross, cut along that line, or bridge two named loops — the two
+   automated attempts left 18 and 20 non-manifold edges. The proposal lists
+   five calls (`topology_report`, `cut_between`, `bridge_loops`, `weld`,
+   `delete_faces`) and an order to build them. Start with `topology_report`,
+   which is read-only. **Done when** the AI reproduces a junction the modeler
+   made, measured against the recorded example.
 
 ## Order
 
 | Step | What | Why first |
 |---|---|---|
-| 1 | Item 4: begin receipts on the next reviewed stage | preserve measurements before claiming a saving |
-| 2 | Item 1: finish the hat and judge the method | the open run still needs its verdict |
-| 3 | Item 2: choose and build the second concept | tests transfer and technique reuse |
-| 4 | Item 3: interview corrections and supply the ruffle file | depends on human provenance and missing data |
+| 1 | Item 1: the window's arabesques | the modeler chose it as the next work |
+| 2 | Item 2: topology calls, starting with `topology_report` | without them every junction is a guess |
+

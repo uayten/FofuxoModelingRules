@@ -1,0 +1,65 @@
+# llm_modeling_bridge 1
+# Values are permille of the frame: w = width (X), d = depth (Y), h = height (Z).
+# A mirrored axis counts from the mirror plane (0) to the frame edge (1000).
+# Edit "base w d h", then run sync. sub = where the vertex lands after the
+# modifier stack (read-only). frame, modifiers, faces and edges are written by
+# the plugin; change a modifier with a set op (set Mirror merge_threshold 0.1mm).
+
+object   Plane.019
+frame    w X 1.7..36.4   d Y -5.3..0.0   h Z -9.3..26.7   (mm)
+stack    Subdivision(2/2) > Smooth by Angle
+size     base 37.1 x 5.3 x 38.3   sub 34.8 x 5.3 x 36.0   (mm, w x d x h)
+count    v 21  f 12   evaluated v 225 f 192   (sub unavailable: NODES)
+
+modifiers
+  Subdivision (SUBSURF)  -> v 225  f 192  size 34.8 x 5.3 x 36.0 mm
+      levels 2  render_levels 2  quality 3  use_limit_surface on  boundary_smooth ALL
+      use_creases on
+  "Smooth by Angle" (NODES)  -> v 225  f 192  size 34.8 x 5.3 x 36.0 mm
+      node_group "Smooth by Angle"  open_warnings_panel on
+
+verts
+# loop  id   base w     d     h | sub w     d     h | flags
+L1      v3      773  1000   266 |     -             | pole2
+        v1      683  1000   438 |     -             | pole3
+        v17     622  1000   476 |     -             | pole3
+        v14     494  1000   481 |     -             | pole3
+        v6      361  1000   423 |     -             | pole3
+        v18     222  1000   240 |     -             | pole3
+        v0      174  1000   -20 |     -             | pole2
+L2      v9       78     0     8 |     -             | pole3
+        v20     166     0   345 |     -             |
+        v5      308     0   632 |     -             |
+        v12     487     0   776 |     -             |
+        v15     753     0   742 |     -             |
+        v4      848     0   536 |     -             |
+        v10     818     0   262 |     -             | pole3
+L3      v2       11  1000    10 |     -             | pole2
+        v19     -20  1000   389 |     -             | pole3
+        v7      121  1000   725 |     -             | pole3
+        v13     423  1000  1044 |     -             | pole3
+        v16     919  1000   979 |     -             | pole3
+        v8     1046  1000   589 |     -             | pole3
+        v11     896  1000   279 |     -             | pole2
+
+faces
+  f0   v1 v3 v10 v4
+  f1   v12 v5 v6 v14
+  f2   v4 v10 v11 v8
+  f3   v15 v4 v8 v16
+  f4   v20 v9 v0 v18
+  f5   v20 v5 v7 v19
+  f6   v5 v12 v13 v7
+  f7   v15 v12 v14 v17
+  f8   v4 v15 v17 v1
+  f9   v12 v15 v16 v13
+  f10  v9 v20 v19 v2
+  f11  v5 v20 v18 v6
+
+edges
+  crease 1.0  v0-v9 v2-v9 v4-v10 v4-v15 v5-v12 v5-v20 v9-v20 v12-v15
+  sharp  v4-v10 v4-v15 v5-v12 v5-v20 v9-v20 v12-v15
+
+ops
+
+forms

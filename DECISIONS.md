@@ -713,6 +713,20 @@ moved and how far, and the Sculpt's changes with the brush that made them
 understood and turns the steps into ops it can run (Grab: `translate` with
 `falloff=smooth` at the brush radius; Smooth: `vertices_smooth` or
 `looptools_relax` on the region), and into techniques when they repeat.
+
+### D-080: A creased triangle is not an error under Subdivision (Stated, janela-2026-10-21)
+
+"Esses triângulos não são erros, pois eu marquei as edges para ficarem duras
+com crease. [...] Algumas vezes os triângulos vão ser necessários, idealmente
+é melhor não usar muitos, mas como o resultado com Subdivision não quebrou,
+então está bom."
+
+D-023 stays the default (zero triangles under Subdivision) but stops being
+absolute: a triangle next to creased or sharp edges, where the subdivided
+result keeps its shading and silhouette, is acceptable. What matters is the
+evaluated result, not the triangle count. The junction of the window vine is
+the first case: two triangles, both creased, and the Subdivision result holds.
+
 ### D-060: Marks are messages (Stated, B1)
 
 The modeler points at the model with marks: sharp or seam on a loop means

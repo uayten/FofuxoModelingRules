@@ -1,0 +1,50 @@
+# llm_modeling_bridge 1
+# Values are permille of the frame: w = width (X), d = depth (Y), h = height (Z).
+# A mirrored axis counts from the mirror plane (0) to the frame edge (1000).
+# Edit "base w d h", then run sync. sub = where the vertex lands after the
+# modifier stack (read-only). frame, modifiers, faces and edges are written by
+# the plugin; change a modifier with a set op (set Mirror merge_threshold 0.1mm).
+
+object   Plane.020
+frame    w X -14.9..3.3   d Y -5.3..0.0   h Z -8.6..33.4   (mm)
+stack    Subdivision(2/2) > Smooth by Angle
+size     base 20.2 x 5.3 x 42.8   sub 18.1 x 5.3 x 42.0   (mm, w x d x h)
+count    v 12  f 6   evaluated v 117 f 96   (sub unavailable: NODES)
+
+modifiers
+  Subdivision (SUBSURF)  -> v 117  f 96  size 18.1 x 5.3 x 42.0 mm
+      levels 2  render_levels 2  quality 3  use_limit_surface on  boundary_smooth ALL
+      use_creases on
+  "Smooth by Angle" (NODES)  -> v 117  f 96  size 18.1 x 5.3 x 42.0 mm
+      node_group "Smooth by Angle"  open_warnings_panel on
+
+verts
+# loop  id   base w     d     h | sub w     d     h | flags
+L1      v0      827  1000   -19 |     -             | pole2
+        v6       80  1000   380 |     -             | pole3
+        v9      -47  1000   659 |     -             | pole3
+        v1      106  1000   922 |     -             | pole2
+L2      v8      946     0     5 |     -             | pole3
+        v5      347     0   433 |     -             |
+        v10     290     0   731 |     -             |
+        v2      308     0  1000 |     -             | pole3
+L3      v4      618     0   963 |     -             | pole2
+        v11     626     0   761 |     -             | pole3
+        v7      662     0   494 |     -             | pole3
+        v3     1068     0    14 |     -             | pole2
+
+faces
+  f0   v11 v4 v2 v10
+  f1   v10 v2 v1 v9
+  f2   v3 v7 v5 v8
+  f3   v5 v6 v0 v8
+  f4   v5 v10 v9 v6
+  f5   v7 v11 v10 v5
+
+edges
+  crease 1.0  v0-v8 v2-v10 v3-v8 v5-v8 v5-v10
+  sharp  v2-v10 v5-v8 v5-v10
+
+ops
+
+forms

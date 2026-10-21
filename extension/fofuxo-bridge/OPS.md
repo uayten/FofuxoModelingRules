@@ -76,3 +76,19 @@ Preview with `select(name, selection)`. Quote a region name containing spaces.
 
 See [Session tools](README.md#session-tools) for absolute positions, regions, Workbench,
 recordings, examples, cost receipts, handover and stage checkpoints.
+
+### Topology surgery, by stable id
+
+The modeler's Edit Mode, as calls the AI can run and check. Ids are the stable
+ids `views(focus=...)` prints as `v12`; `topology_report` returns them.
+Design and open work: [EDITING.md](EDITING.md).
+
+| Call | Gives |
+|---|---|
+| `topology_report(name)` | islands, border loops (edge count, length, ordered ids), where two islands cross, the nearest id pair in mm |
+| `delete_faces(name, ids=[...])` | deletes the faces whose every vertex id is in the list |
+| `bridge_loops(name, loop_a, loop_b)` | bridges exactly two loops named by ordered ids — never "all borders" |
+| `cut_between(name, id_a, id_b)` | one cut along the segment between two vertices of the same island |
+| `weld(name, id_a, id_b, at="a")` | merges two vertices, keeping `a`'s position (`"b"` or `"mid"` too) |
+| `weld_region(name, ids_a, ids_b, threshold)` | melts the closest pairs between two id sets under the threshold |
+

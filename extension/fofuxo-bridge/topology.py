@@ -209,3 +209,135 @@ def rings(edges, co):
         axis = axis if axis[int(np.argmax(np.abs(axis)))] > 0 else -axis
         out.sort(key=lambda r: float(r[2] @ axis))
     return [(loop, k) for loop, k, _ in out]
+
+
+def _islands(bm):
+    """Connected vertex islands of a bmesh, largest first."""
+    seen = set()
+    islands = []
+    for vert in bm.verts:
+        if vert.index in seen:
+            continue
+        stack = [vert]
+        seen.add(vert.index)
+        island = []
+        while stack:
+            cur = stack.pop()
+            island.append(cur)
+            for edge in cur.link_edges:
+                other = edge.other_vert(cur)
+                if other.index not in seen:
+                    seen.add(other.index)
+                    stack.append(other)
+        islands.append(island)
+    return sorted(islands, key=len, reverse=True)
+
+
+def _edge_loops(edges):
+    """Walk boundary edges into loops, one step per vertex (two edges at most)."""
+    by_vert = {}
+    for edge in edges:
+        for vert in edge.verts:
+            by_vert.setdefault(vert.index, []).append(edge)
+    seen = set()
+    loops = []
+    for start in edges:
+        if start.index in seen:
+            continue
+        loop = []
+        edge = start
+        vert = start.verts[0]
+        while edge is not None and edge.index not in seen:
+            seen.add(edge.index)
+            loop.append(edge)
+            other = edge.other_vert(vert)
+            nxt = [e for e in by_vert.get(other.index, ()) if e.index not in seen]
+            edge, vert = (nxt[0], other) if len(nxt) == 1 else (None, other)
+        loops.append(loop)
+    return loops
+
+
+def report(name, limit_ids=12):
+    """What an edit needs before cutting: islands, border loops, where two
+    islands cross, and their closest vertices.
+
+    Read-only. Every id is a stable id of the base mesh
+    (`llm_modeling_bridge_id`), so the numbers can be fed to a later op.
+    """
+    import bmesh
+    import bpy
+    from mathutils import kdtree
+    from mathutils.bvhtree import BVHTree
+    from . import mesh_io
+
+    obj = bpy.data.objects.get(name)
+    if obj is None or obj.type != "MESH":
+        raise ValueError(f"no mesh object named {name!r}")
+    mesh = obj.data
+    ids, _ = mesh_io.ensure_ids(mesh, write=False)
+    bm = bmesh.new()
+    bm.from_mesh(mesh)
+    bm.verts.ensure_lookup_table()
+    bm.faces.ensure_lookup_table()
+
+    islands = _islands(bm)
+    out = {"object": name, "verts": len(bm.verts), "faces": len(bm.faces),
+           "islands": [], "border_loops": [], "crossings": [], "nearest": []}
+
+    for index, island in enumerate(islands):
+        co = [vert.co for vert in island]
+        lo = [min(c[i] for c in co) for i in range(3)]
+        hi = [max(c[i] for c in co) for i in range(3)]
+        faces = {f for v in island for f in v.link_faces}
+        out["islands"].append({
+            "index": index,
+            "verts": len(island),
+            "faces": len(faces),
+            "bbox_mm": [round((hi[i] - lo[i]) * 1000, 2) for i in range(3)],
+            "min_mm": [round(v * 1000, 2) for v in lo],
+        })
+
+    for index, island in enumerate(islands):
+        member = {vert.index for vert in island}
+        border = [e for e in bm.edges if len(e.link_faces) == 1
+                  and e.verts[0].index in member and e.verts[1].index in member]
+        for loop in _edge_loops(border):
+            verts = []
+            for edge in loop:
+                for vert in edge.verts:
+                    if vert.index not in verts:
+                        verts.append(vert.index)
+            out["border_loops"].append({
+                "island": index,
+                "edges": len(loop),
+                "verts": len(verts),
+                "length_mm": round(sum(e.calc_length() for e in loop) * 1000, 2),
+                "ids": [int(ids[i]) for i in verts[:limit_ids]],
+                "ids_truncated": max(0, len(verts) - limit_ids),
+            })
+
+    if len(islands) > 1:
+        trees = []
+        for island in islands:
+            faces = {f for v in island for f in v.link_faces}
+            trees.append(BVHTree.FromPolygons([vert.co.copy() for vert in bm.verts],
+                                              [[v.index for v in f.verts] for f in faces],
+                                              all_triangles=False))
+        for a in range(len(islands)):
+            for b in range(a + 1, len(islands)):
+                out["crossings"].append({"islands": [a, b],
+                                         "face_pairs": len(trees[a].overlap(trees[b]))})
+                kd = kdtree.KDTree(len(islands[b]))
+                for i, vert in enumerate(islands[b]):
+                    kd.insert(vert.co, i)
+                kd.balance()
+                best = (1e9, None, None)
+                for vert in islands[a]:
+                    _co, i, dist = kd.find(vert.co)
+                    if dist < best[0]:
+                        best = (dist, vert.index, islands[b][i].index)
+                if best[1] is not None:
+                    out["nearest"].append({"islands": [a, b], "mm": round(best[0] * 1000, 2),
+                                           "a": int(ids[best[1]]), "b": int(ids[best[2]])})
+    bm.free()
+    return out

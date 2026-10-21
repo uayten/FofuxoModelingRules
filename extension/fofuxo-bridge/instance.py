@@ -901,6 +901,13 @@ def review(names=None, launch=True, save=True):
     root = _review_state_path().parent
     path = root / "review.blend"
     if save:
+        # A join (or any copied mesh) can leave duplicated stable ids; repair
+        # them before the human's file is written, or catalog_edit cannot
+        # measure the correction and the review inherits the damage.
+        from . import mesh_io
+        for obj in bpy.data.objects:
+            if obj.type == "MESH":
+                mesh_io.ensure_ids(obj.data, write=True)
         bpy.ops.wm.save_mainfile()
     if _alive(state.get("pid")) and Path(state.get("review", "")) == path:
         notice = {"source": bpy.data.filepath, "objects": names, "written": time.time()}
@@ -965,9 +972,73 @@ def replace_from(path, names):
                 idb.user_remap(twin)
             if kind == "objects" or idb.users == 0:
                 coll.remove(idb)
+    # Objects the human made in the review (a separate, a duplicate, a new
+    # mesh): `names` only lists what existed when the review opened, so bring
+    # them in here, and drop the ones the human deleted.
+    with bpy.data.libraries.load(str(path), link=False) as (src, _dst):
+        review_names = list(src.objects)
+    for name in names:
+        if name not in review_names and name not in done:
+            obj = bpy.data.objects.get(name)
+            if obj is not None:
+                bpy.data.objects.remove(obj, do_unlink=True)
+    new_names = [name for name in review_names if name not in bpy.data.objects]
+    if new_names:
+        with bpy.data.libraries.load(str(path), link=False) as (src, dst):
+            dst.objects = new_names
+        for obj in [o for o in dst.objects if o is not None]:
+            if obj.type == "MESH":
+                for slot in obj.material_slots:
+                    twin = bpy.data.materials.get(slot.material.name) if slot.material else None
+                    if twin is not None and twin is not slot.material:
+                        slot.material = twin
+                obj.data.name = obj.name
+                from . import mesh_io
+                mesh_io.ensure_ids(obj.data, write=True)
+            bpy.context.scene.collection.objects.link(obj)
+            done.append(obj.name)
     from .migration import migrate_scene
     migrate_scene()
     return done
+
+
+def join_meshes(names, into=None, sync=True):
+    """Join mesh objects into one, keeping the stack of `into` (or of the first
+    name). The modeler's ornament workflow: a piece assembled from several
+    plates becomes one object, then its junction is rebuilt face by face.
+
+    Stable ids are repaired afterwards. A join concatenates two meshes whose
+    ids both start at zero; duplicated ids make the before/after deltas of
+    `catalog_edit` impossible, so the file must never keep them.
+    """
+    assert_ai_access()
+    objects = [bpy.data.objects.get(name) for name in names]
+    missing = [name for name, obj in zip(names, objects) if obj is None]
+    if missing:
+        raise InstanceError(f"no objects {missing}")
+    if any(obj.type != "MESH" for obj in objects):
+        raise InstanceError("join_meshes takes mesh objects only")
+    target = bpy.data.objects[into] if into else objects[0]
+    if target not in objects:
+        raise InstanceError(f"{into!r} is not in the objects to join")
+    bpy.ops.object.select_all(action="DESELECT")
+    for obj in objects:
+        obj.select_set(True)
+    bpy.context.view_layer.objects.active = target
+    joined_names = [obj.name for obj in objects]
+    if len(objects) > 1:
+        bpy.ops.object.join()
+    from . import mesh_io
+    _ids, fresh = mesh_io.ensure_ids(target.data, write=True)
+    target.data.name = target.name
+    out = {"object": target.name, "joined": joined_names,
+           "verts": len(target.data.vertices), "faces": len(target.data.polygons),
+           "fresh_ids": len(fresh)}
+    if sync:
+        from .sync import sync as sync_fn
+        r = sync_fn(target.name, render=False)
+        out["sync"] = {k: r[k] for k in ("action", "issues") if k in r}
+    return out
 
 
 def _copy_groups(src, dst):

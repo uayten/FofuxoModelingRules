@@ -33,3 +33,8 @@ extension/dist/
 # Graft context graph (local, regenerable with `graft build`)
 graft/
 .graft/
+
+# Working copies and backups of a model in progress
+*.bak-*.blend
+**/*.bak-*.bridge/
+

@@ -1,0 +1,136 @@
+# llm_modeling_bridge 1
+# Values are permille of the frame: w = width (X), d = depth (Y), h = height (Z).
+# A mirrored axis counts from the mirror plane (0) to the frame edge (1000).
+# Edit "base w d h", then run sync. sub = where the vertex lands after the
+# modifier stack (read-only). frame, modifiers, faces and edges are written by
+# the plugin; change a modifier with a set op (set Mirror merge_threshold 0.1mm).
+
+object   Plane.012
+frame    w X+ 37.0   d Y -33.8..12.7   h Z -0.4..85.3   (mm)
+stack    Mirror(X) > Subdivision(5/2) > Array[off] > Smooth by Angle[off]
+size     base 74.2 x 46.5 x 85.7   sub 73.9 x 46.5 x 85.7   (mm, w x d x h)
+count    v 54  f 45   evaluated v 92166 f 92160
+
+modifiers
+  Mirror (MIRROR)  -> v 96  f 90  size 74.2 x 46.5 x 85.7 mm
+      use_axis X  use_bisect_axis -  use_clip on  use_mirror_merge on  merge_threshold 1mm
+      mirror_object -
+  Subdivision (SUBSURF)  -> v 92166  f 92160  size 73.9 x 46.5 x 85.7 mm
+      levels 5  render_levels 2  quality 3  use_limit_surface on  boundary_smooth ALL
+      use_creases on
+  Array (NODES)  (off in the viewport)
+      node_group Array  open_warnings_panel on
+  "Smooth by Angle" (NODES)  (off in the viewport)
+      node_group "Smooth by Angle"  open_warnings_panel on
+
+verts
+# loop  id   base w     d     h | sub w     d     h | flags
+L1      v45       0   355   732 |     0   354   727 | X
+        v2        0   504   585 |     0   508   564 | X
+        v40       0   677   314 |     0   656   308 | X
+        v5        0   727     5 |     0   727     5 | X
+        v13       0   779     5 |     0   779     5 | X
+        v42       0   680   314 |     0   674   308 | X
+        v10       0   545   589 |     0   546   570 | X
+        v47       0   413   751 |     0   407   743 | X
+        v15       0   243   869 |     0   232   871 | X
+        v11       0    10  1000 |     0    10  1000 | X
+        v3        0     0   978 |     0     0   978 | X
+        v7        0   201   849 |     0   193   851 | X
+L2      v50     798   507   705 |   794   516   696 |
+        v23     576   492   550 |   595   511   537 |
+        v27     464   596   315 |   472   611   302 |
+        v22     399   790     3 |   399   790     3 |
+        v35     361   841     3 |   361   841     3 |
+        v39     408   631   327 |   424   651   311 |
+        v36     551   541   557 |   564   559   546 |
+        v53     771   559   723 |   764   568   713 |
+        v37     947   631   831 |   947   631   831 |
+        v24     994   579   809 |   994   579   809 |
+L3      v1      148    93   968 |   187   122   961 | pole3
+        v6      531   361   914 |   487   348   902 |
+        v44     650   550   784 |   650   536   774 |
+        v0      769   655   593 |   711   658   578 |
+        v41     536   780   314 |   529   777   309 |
+        v4      260   888     5 |   260   888     5 | pole3
+L4      v9      128   118   989 |   167   149   980 | pole3
+        v14     492   408   927 |   451   392   914 |
+        v46     611   600   790 |   611   586   780 |
+        v8      730   707   593 |   672   710   579 |
+        v43     497   832   314 |   490   829   309 |
+        v12     221   940     5 |   221   940     5 | pole3
+L5      v17     203   743     5 |   203   743     5 | pole3
+        v25     157   626   336 |   172   612   327 |
+        v16     199   425   612 |   254   458   593 |
+        v49     567   420   777 |   568   442   756 |
+        v19     944   551   813 |   890   533   807 | pole3
+L6      v21    1004   607   797 |  1000   618   778 | pole3
+        v48     988   701   671 |   973   698   666 |
+        v18     882   779   512 |   852   772   509 |
+        v26     598   813   336 |   627   827   309 |
+        v20     485   935     0 |   485   935     0 | pole3
+L7      v38     154   808     5 |   154   808     5 | pole3
+        v28      84   660   336 |   102   656   328 |
+        v29     121   488   617 |   178   517   599 |
+        v52     501   492   792 |   506   511   770 |
+        v34     907   610   832 |   846   594   825 | pole3
+L8      v32     961   655   817 |   955   668   798 | pole3
+        v51     941   757   689 |   926   753   683 |
+        v33     834   838   526 |   805   831   521 |
+        v30     550   878   336 |   578   892   312 |
+        v31     436  1000     0 |   436  1000     0 | pole3
+
+faces
+  f0   v6 v1 v3 v7
+  f1   v41 v40 v5 v4
+  f2   v44 v6 v7 v45
+  f3   v14 v15 v11 v9
+  f4   v43 v12 v13 v42
+  f5   v46 v47 v15 v14
+  f6   v44 v46 v14 v6
+  f7   v6 v14 v9 v1
+  f8   v1 v9 v11 v3
+  f9   v41 v43 v8 v0
+  f10  v5 v13 v12 v4
+  f11  v27 v23 v16 v25
+  f12  v50 v49 v16 v23
+  f13  v48 v50 v23 v18
+  f14  v26 v18 v23 v27
+  f15  v20 v26 v27 v22
+  f16  v22 v27 v25 v17
+  f17  v39 v28 v29 v36
+  f18  v53 v36 v29 v52
+  f19  v51 v33 v36 v53
+  f20  v30 v39 v36 v33
+  f21  v31 v35 v39 v30
+  f22  v35 v38 v28 v39
+  f23  v16 v29 v28 v25
+  f24  v17 v38 v35 v22
+  f25  v22 v35 v31 v20
+  f26  v20 v31 v30 v26
+  f27  v25 v28 v38 v17
+  f28  v48 v51 v32 v21
+  f29  v24 v37 v34 v19
+  f30  v21 v32 v37 v24
+  f31  v26 v30 v33 v18
+  f32  v49 v52 v29 v16
+  f33  v4 v12 v43 v41
+  f34  v8 v43 v42 v10
+  f35  v0 v2 v40 v41
+  f36  v0 v8 v46 v44
+  f37  v8 v10 v47 v46
+  f38  v0 v44 v45 v2
+  f39  v19 v34 v52 v49
+  f40  v18 v33 v51 v48
+  f41  v32 v51 v53 v37
+  f42  v37 v53 v52 v34
+  f43  v21 v24 v50 v48
+  f44  v24 v19 v49 v50
+
+edges
+  crease 1.0  v0-v41 v0-v44 v1-v3 v1-v6 v2-v40 v2-v45 v3-v7 v3-v11 v4-v5 v4-v12 v4-v41 v5-v13 v5-v40 v6-v44 v7-v45 v8-v43 v8-v46 v9-v11 v9-v14 v10-v42 v10-v47 v11-v15 v12-v13 v12-v43 v13-v42 v14-v46 v15-v47 v16-v25 v16-v49 v17-v22 v17-v25 v17-v38 v18-v26 v18-v48 v19-v24 v19-v49 v20-v22 v20-v26 v20-v31 v21-v24 v21-v48 v22-v27 v22-v35 v23-v27 v23-v50 v24-v50 v28-v29 v28-v38 v29-v52 v30-v31 v30-v33 v31-v35 v32-v37 v32-v51 v33-v51 v34-v37 v34-v52 v35-v38 v35-v39 v36-v39 v36-v53 v37-v53
+  sharp  v0-v41 v0-v44 v1-v3 v1-v6 v2-v40 v2-v45 v3-v7 v3-v11 v4-v5 v4-v12 v4-v41 v5-v13 v5-v40 v6-v44 v7-v45 v8-v43 v8-v46 v9-v11 v9-v14 v10-v42 v10-v47 v11-v15 v12-v13 v12-v43 v13-v42 v14-v46 v15-v47 v16-v25 v16-v49 v17-v22 v17-v25 v17-v38 v18-v26 v18-v48 v19-v24 v19-v49 v20-v22 v20-v26 v20-v31 v21-v24 v21-v48 v22-v27 v22-v35 v23-v27 v23-v50 v24-v37 v24-v50 v28-v29 v28-v38 v29-v52 v30-v31 v30-v33 v31-v35 v32-v37 v32-v51 v33-v51 v34-v37 v34-v52 v35-v38 v35-v39 v36-v39 v36-v53 v37-v53
+
+ops
+
+forms

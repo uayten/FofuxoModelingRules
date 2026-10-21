@@ -21,7 +21,7 @@ from . import lock as lock_mod
 from .concept import find_box, sample
 from .labels import LabelError, mark_loop, show, show_faces
 from .editability import editability
-from .instance import InstanceError, absorb, collect, instance, is_ai, release_mcp, review, say, human_access, resume_ai
+from .instance import InstanceError, absorb, collect, instance, is_ai, release_mcp, review, say, human_access, resume_ai, join_meshes
 from .lock import LockError, lock, unlock
 from .parts import PartError, start_part
 from .rounds import PlanError, read_plan, round_end, round_start, record_read, record_agent_text, round_checkpoint, round_resume
@@ -74,3 +74,5 @@ def unregister():
         bpy.utils.unregister_class(cls)
     if sys.modules.get(ALIAS) is sys.modules[__name__] and __name__ != ALIAS:
         del sys.modules[ALIAS]
+from .topology import report as topology_report
+from .surgery import delete_faces, bridge_loops, cut_between, weld, weld_region
