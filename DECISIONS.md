@@ -888,6 +888,28 @@ How to apply: after a junction or a join, `topology_report` lists
 `uncreased_border`; `crease_border(name)` creases them. `unsharp_folds` and
 `sharpen_folds` look at inner edges only.
 
+### D-090: A junction's crotch stands off the base (Stated, janela-2026-10-21)
+
+The crotch, the border vertex where a branch's border meets the stem's,
+does not lie on the base: the modeler lifted v12 (the `Plane.027` fork) to
+1.51 mm and v17 (the acanthus blade `Plane.026`) to 1.64 mm, about 30% of
+the way from the base to the rib (5.27 mm). Confirmed: "Sim, regra".
+
+How to apply: after the fork is closed, `lift_crotch(name, id)` (fraction
+0.3 by default).
+
+### D-091: A junction gets a loop on the stem on each side (Stated, janela-2026-10-21)
+
+In the `Plane.026` review the modeler cut one loop across the stem above the
+junction (495-497-496, halfway between rows 50 and 17) and one below
+(498-500-499, halfway between rows 19 and 21), slid the junction's row
+straight across (v60 and v18 down to v17's level), and moved little else.
+`Plane.021` already had a loop each side (D-084). Confirmed: "Sim, regra".
+
+How to apply: `loop_cut(name, a, b, 0.5)` on the stem's ring through an
+edge between the junction's row and each neighbouring row, so the junction
+has supporting loops above and below.
+
 ### D-060: Marks are messages (Stated, B1)
 
 The modeler points at the model with marks: sharp or seam on a loop means

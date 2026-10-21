@@ -15,8 +15,8 @@ import bpy
 from . import mesh_io
 from .instance import assert_ai_access
 
-__all__ = ("delete_faces", "bridge_loops", "crease_border", "cut_between", "fill_notch", "flatten_tip", "intersect", "knife_row", "loop_cut", "make_face", "mark_fold",
-           "sharpen_folds", "weld", "weld_region")
+__all__ = ("delete_faces", "bridge_loops", "crease_border", "cut_between", "fill_notch", "flatten_tip", "intersect",
+           "knife_row", "lift_crotch", "loop_cut", "make_face", "mark_fold", "sharpen_folds", "weld", "weld_region")
 
 
 def state_ids(obj, write):
@@ -503,6 +503,35 @@ def flatten_tip(name, vertex_id, sync=True):
     before = mid.co[axis]
     mid.co[axis] = (corners[0].co[axis] + corners[1].co[axis]) / 2
     moved = abs(mid.co[axis] - before)
+    out = _finish(obj, bm, sync)
+    out["moved_mm"] = round(moved * 1000, 2)
+    return out
+
+
+def lift_crotch(name, vertex_id, fraction=0.3, sync=True):
+    """Lift a junction's crotch off the base: the border vertex where a
+    branch's border meets the stem's takes `fraction` of the way from the
+    base (its border neighbours' depth) to the rib (the piece's deepest
+    point), about 1.5 mm on the window vine (D-090)."""
+    assert_ai_access()
+    if not 0.0 <= fraction <= 1.0:
+        raise ValueError("fraction must be between 0 and 1")
+    obj, bm, vids = _open(name)
+    index_of, missing = _by_id(bm, vids, [vertex_id])
+    if missing:
+        bm.free()
+        raise ValueError(f"unknown ids {missing}")
+    vert = index_of[vertex_id]
+    sides = [e.other_vert(vert) for e in vert.link_edges if e.is_boundary]
+    if len(sides) != 2:
+        bm.free()
+        raise ValueError(f"v{vertex_id} is not on the border")
+    axis = _depth_axis(obj)
+    base = (sides[0].co[axis] + sides[1].co[axis]) / 2
+    rib = max((v.co[axis] for v in bm.verts), key=lambda d: abs(d - base))
+    before = vert.co[axis]
+    vert.co[axis] = base + fraction * (rib - base)
+    moved = abs(vert.co[axis] - before)
     out = _finish(obj, bm, sync)
     out["moved_mm"] = round(moved * 1000, 2)
     return out

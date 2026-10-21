@@ -361,6 +361,31 @@ def border_and_shading():
     check(all(p.use_smooth for p in obj.data.polygons), "make_face shades the new face like its neighbours")
 
 
+def crotch_lift():
+    """A V strip like a leaf (borders at y=0, rib 0.1 deep): a border vertex
+    lifted 30% of the way to the rib (D-090)."""
+    import bmesh
+    bpy.ops.wm.read_homefile(use_empty=True)
+    mesh = bpy.data.meshes.new("Crotch")
+    bm = bmesh.new()
+    rows = [[bm.verts.new((x, y, z)) for z, y in ((-0.5, 0.0), (0.0, -0.1), (0.5, 0.0))] for x in range(4)]
+    for a, b in zip(rows, rows[1:]):
+        bm.faces.new((a[0], b[0], b[1], a[1]))
+        bm.faces.new((a[1], b[1], b[2], a[2]))
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new("Crotch", mesh)
+    bpy.context.scene.collection.objects.link(obj)
+    from llm_modeling_bridge import mesh_io
+    mesh_io.ensure_ids(mesh, write=True)
+    vid = ids_where(obj, lambda co: abs(co.x - 1) < 1e-6 and abs(co.z - 0.5) < 1e-6)[0]
+    out = fc.lift_crotch("Crotch", vid, sync=False)
+    y = next(v.co.y for v in mesh.vertices if mesh.attributes["llm_modeling_bridge_id"].data[v.index].value == vid)
+    check(abs(y + 0.03) < 1e-6 and out["moved_mm"] == 30.0, f"lift_crotch lifts the border vertex 30% toward the rib (y {y})")
+    rib = ids_where(obj, lambda co: abs(co.x - 1) < 1e-6 and abs(co.z) < 1e-6)[0]
+    check(raises(lambda: fc.lift_crotch("Crotch", rib, sync=False)), "lift_crotch refuses an inner vertex")
+
+
 def edit_beside_triangle():
     """A triangle already accepted (D-080) does not block an op; a new one does."""
     import tempfile
@@ -440,6 +465,7 @@ def main():
     tips_and_sharp()
     fold_fan()
     border_and_shading()
+    crotch_lift()
 
     print("FAILURES", len(failures))
     if failures:

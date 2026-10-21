@@ -184,3 +184,11 @@ With those, the junction becomes a sequence the AI can actually run and check:
 - Every leaf now ends with: `fold_ends` empty, `unsharp_folds` empty,
   `uncreased_border` empty, every leaf tip at depth 0, `folds` empty except a
   flap's root, then the render and the review.
+
+### Status 2026-10-21 (the modeler's `Plane.026` correction)
+- Review `human/review-20261021-081713-...`: loop cut ×2 on the stem, one on
+  each side of the junction (D-091); the junction's row slid straight; the
+  crotch v17 lifted 1.64 mm off the base, as v12 before (D-090).
+- New: `lift_crotch(name, id, fraction=0.3)`.
+- Fork recipe, amended: after `knife_row`, `lift_crotch` the crotch and
+  `loop_cut` the stem halfway to each neighbouring row.

@@ -95,6 +95,7 @@ Design and open work: [EDITING.md](EDITING.md).
 | `loop_cut(name, id_a, id_b, factor)` | Loop Cut and Slide on the quad ring through edge a-b, landing at `factor` from a's side; new ids in `cut_ids` |
 | `mark_fold(name, ids)` | crease 1.0 and sharp along consecutive ids, as the modeler marks a rib (D-084) |
 | `sharpen_folds(name)` | sharp on every creased inner edge (D-085) |
+| `lift_crotch(name, id, fraction=0.3)` | a junction's crotch off the base, `fraction` of the way to the rib (D-090) |
 | `crease_border(name)` | crease on every border edge, so Subdivision keeps the outline (D-089) |
 | `flatten_tip(name, id)` | the middle of an end row takes its corners' depth: a leaf's tip on the base (D-086) |
 | `make_face(name, ids)` | Make Face (F) through the ids in outline order, wound like its neighbours |

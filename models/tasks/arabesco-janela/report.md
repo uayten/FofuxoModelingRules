@@ -241,3 +241,34 @@ sharp. Render `arabescos.bridge/Plane.001.lobes_corrected.png`.
 - The row 16-59-15 across the stem, creased without sharp, is a fold (the
   modeler confirmed); `sharpen_folds` gave its two edges sharp. Closing
   checks: no unsharp folds, no uncreased border, no fold ends.
+
+### The acanthus leaf at the stem's bend: first blade, `Plane.026` (2026-10-21, Claude)
+- Next cluster down the stem: three blades rising from the stem's inner
+  border at the bend (v19/v61): `Plane.026` (green, along the stem),
+  `Plane.024` (red, the pointed wedge), `Plane.025` (blue, the curl). The
+  modeler set the layering: green over red over blue, each next blade coming
+  out from under the one before (D-088). Built in stages: the top blade first.
+  Backup before: `arabescos.bak-11.blend`.
+- `join_meshes(["Plane.001", "Plane.026"])`: blade ids 469-489.
+- The blade's root row (485-487-486) lay on the stem face [19, 21, 62, 61]
+  and its left border touched the stem's inner border at 488, on edge 17-19:
+  a fork like `Plane.027`, the stem going up, the blade going up beside it.
+  Steps: `delete_faces` the root row; `weld` 488 onto 17 at 488's position
+  (17 slides down its own border to the crotch); `delete_faces` the stem face
+  [17, 19, 61, 60]; `make_face` [19, 471, 476, 61] (blade's far border onto
+  the trunk's border, rib onto rib) and the triangles [476, 17, 61],
+  [17, 60, 61]; `mark_fold` [484, 476, 61] and [17, 61]; `knife_row` across
+  [20, 18], [61, 60], [61, 17], [61, 476], [19, 471] at 0.45 (D-087,
+  ids 490-494); `flatten_tip(470)`; `crease_border`; `sharpen_folds`.
+- Result: 274 v / 192 f, 1 island, 0 non-manifold, no fold ends, no unsharp
+  folds, no uncreased border, every leaf tip at 0; the only folds are the
+  flap roots of the curl above (v12, v330, v400). Render
+  `arabescos.bridge/Plane.001.green.png`; in review.
+
+### The modeler's correction of `Plane.026` (2026-10-21, 05:17)
+Review `human/review-20261021-081713-...`: 280 v / 196 f, 1 island,
+0 non-manifold. Two loop cuts across the stem, halfway above (495-497-496)
+and below (498-500-499) the junction; the junction's row slid straight (v60,
+v18 down to v17's level); the crotch v17 lifted to 1.64 mm (v12 sits at
+1.51). Rules D-090 (crotch off the base) and D-091 (a loop each side);
+`lift_crotch` added. The closing checks stay clean.
