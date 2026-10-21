@@ -728,6 +728,8 @@ def _poll_human():
             print("LLM Modeling Bridge: an AI instance is running; this Blender's MCP server stopped")
         if _pending_update():
             _set_header("The LLM has a newer version of this review: LLM tab > Load LLM update")
+        from . import questions
+        questions.poll()
         _answer_collect()
     except Exception as e:  # a poll never breaks the human's Blender
         print(f"LLM Modeling Bridge: poll failed: {e!r}")
@@ -886,17 +888,20 @@ def _default_names():
 _UNITS = ("system", "scale_length", "length_unit", "mass_unit", "time_unit", "temperature_unit")
 
 
-def review(names=None, launch=True, save=True):
+def review(names=None, launch=True, save=True, questions=None):
     """Show the human the objects `names` (default: every object in the
     scene). Saves the AI's file; a normal Blender then appends them into an
     empty scene and saves <file>.bridge/review.blend. While that Blender is
     open, a later call only tells it that there is a newer version; the human
-    loads it from the LLM tab. launch=False returns the command instead."""
+    loads it from the LLM tab. launch=False returns the command instead.
+    questions: asked inside that Blender, marking their ids (questions.ask);
+    collect() returns the answers."""
     assert_ai_access()
     names = list(names or _default_names())
     missing = [n for n in names if n not in bpy.data.objects]
     if missing:
         raise InstanceError(f"no objects {missing}")
+    from . import questions as questions_mod
     state = _load_review_state()
     root = _review_state_path().parent
     path = root / "review.blend"
@@ -910,6 +915,8 @@ def review(names=None, launch=True, save=True):
                 mesh_io.ensure_ids(obj.data, write=True)
         bpy.ops.wm.save_mainfile()
     if _alive(state.get("pid")) and Path(state.get("review", "")) == path:
+        if questions:
+            questions_mod.ask(questions)  # the open review reloads them on its next poll
         notice = {"source": bpy.data.filepath, "objects": names, "written": time.time()}
         (root / UPDATE_NOTICE).write_text(json.dumps(notice), "utf-8")
         say(f"newer version announced to the human's Blender: {', '.join(names)}")
@@ -922,6 +929,10 @@ def review(names=None, launch=True, save=True):
     from .input_recorder import INPUT_LOG
     for stale in (UPDATE_NOTICE, OPENED, OPS_LOG, COLLECT, INPUT_LOG):
         (root / stale).unlink(missing_ok=True)
+    if questions:
+        questions_mod.ask(questions)
+    else:
+        questions_mod.clear()  # an earlier review's questions are not this one's
     pid = None
     if launch:
         flags = 0x00000008 | 0x00000200 if os.name == "nt" else 0  # DETACHED_PROCESS | NEW_PROCESS_GROUP
@@ -1245,6 +1256,9 @@ def collect(names=None, close=True, timeout=20.0, verbose=False):
                             "(an older LLM Modeling Bridge there? ask the human to save)")
     time.sleep(0.5)  # let the save finish writing
     out = absorb(names, verbose=verbose)
+    from .questions import answers
+    if answers():
+        out["answers"] = answers()
     if close:
         while time.time() < end + 10 and _alive(pid):
             time.sleep(0.25)
@@ -1307,8 +1321,9 @@ if hasattr(bpy.app.handlers, "exit_pre"):
 def register():
     for cls in CLASSES:
         bpy.utils.register_class(cls)
-    from . import input_recorder
+    from . import input_recorder, questions
     input_recorder.register()
+    questions.register()
     for handlers, callback in RECORD_HANDLERS:
         if callback not in handlers:
             handlers.append(callback)
@@ -1324,8 +1339,9 @@ def register():
 
 
 def unregister():
-    from . import input_recorder
+    from . import input_recorder, questions
     input_recorder.unregister()
+    questions.unregister()
     for timer in (_setup_ai, _poll_human, _record_after_event, _poll_return):
         if bpy.app.timers.is_registered(timer):
             bpy.app.timers.unregister(timer)

@@ -6,6 +6,7 @@ of a saved file. These checks do not approve the cowboy hat or the modeling meth
 ## Contents
 
 - [Review recorder](#review-recorder)
+- [Questions in the review](#questions-in-the-review)
 - [Remaining validation](#remaining-validation)
 - [Same window](#same-window)
 - [Regions and renders](#regions-and-renders)
@@ -181,6 +182,17 @@ base edges, completed by the X/Y Mirror copies. The replacement cage sheet
 shows one red `loop1` label instead of eight individual cut-vertex labels.
 The modeler approved the labeled cage/subdivision presentation and this loop
 display as-is. The cage-display validation is complete.
+
+## Questions in the review
+
+Open a review with `review(names, questions=[...])`. In the review Blender,
+within a few seconds: the marked vertices, edges and faces show in the
+viewport (the active question orange with its text, the others blue with
+their number), and the LLM tab lists the questions. **Show** enters Edit
+Mode with the elements selected and framed. Type an answer, press Enter, and
+check `review.answers.json` beside the review. Answer in any order, edit the
+model too, then tell the agent: `collect()` returns the correction and the
+answers together.
 
 ## Remaining validation
 

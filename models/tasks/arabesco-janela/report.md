@@ -308,3 +308,12 @@ v17 down to the rib v61 and from v19 down to the rib v545 (map:
 viewport at level 3 to evaluate (D-083). The modeler suggested a feature:
 the AI's comments placed inside Blender, pointing at the spot, answered
 there.
+
+### Questions inside the review: the acanthus slits (2026-10-21, 06:03)
+First review with questions marked in the modeler's viewport (four, on the
+slits). Review `human/review-20261021-090353-...`: 345 v / 242 f, 1 island,
+one closed border of 222 edges, no slit left. Answers: the two slits were
+not meant, he had not seen the vertices joined further up; he merged them
+back (19, 494, 568, 575 gone) and added a loop between the red and the blue
+blades. "Rib" was a new word for him; explained (the creased crest along a
+leaf's middle, 5.27 mm off the base) and accepted. D-088 amended.

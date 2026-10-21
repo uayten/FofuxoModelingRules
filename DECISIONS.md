@@ -882,6 +882,13 @@ or two at that root is the overlap, not a fork left open (D-081): do not
 at a time over several rows (`loop_cut` the stem for the rows, `knife_row`
 where the folds meet), never all into one vertex.
 
+Not a slit down to the rib (acanthus, 2026-10-21): the acanthus review left
+the valleys stem/green and green/red ripped open down to the ribs' meeting
+(v61, v545). Asked inside the review, the modeler answered that it was not
+meant ("não tinha visto que em cima também estava com os vértices juntos")
+and merged them back. Below a flap's root the valleys stay stitched; a rip
+the AI did not make, found after a review, is asked about, not learned.
+
 ### D-089: Every border of an arabesque carries crease (Stated, janela-2026-10-21)
 
 "Sim, regra": the crease on the border holds the outline under Subdivision.

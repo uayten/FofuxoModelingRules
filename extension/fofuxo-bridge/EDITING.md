@@ -204,3 +204,15 @@ With those, the junction becomes a sequence the AI can actually run and check:
 - Fixed: `topology_report` broke the border into open runs where it passes a
   vertex twice (a slit down to it); it now turns through the faces to the
   next border edge of the same wedge.
+
+### Status 2026-10-21 (questions inside the review)
+- The modeler asked to answer the AI's questions inside Blender, on the
+  marked geometry, instead of reading ids in the chat. New module
+  `questions.py`: `review(names, questions=[...])` / `ask()` write
+  `review.questions.json`; the review Blender marks each question's ids in
+  the viewport and lists them in the LLM tab with Show and an answer field;
+  `collect()` returns `answers`. Tests: `tests/test_questions.py` (12 checks).
+- First use: the four questions about the acanthus slits.
+- First use (06:03): four questions answered in the review Blender; the
+  answers came back with `collect()`. One answer asked what "rib" means:
+  a question names the AI's own terms only after saying what they are.

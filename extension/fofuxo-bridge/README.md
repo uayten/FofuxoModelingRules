@@ -223,6 +223,17 @@ llm_modeling_bridge.collect()                                 # the human says t
   3 s), saves the review and, with `close`, quits; then `absorb()` runs and
   the result says `closed`. A Blender started with an older LLM Modeling Bridge does
   not answer: `collect` stops after `timeout` and says so.
+- Questions inside the review: `review(names, questions=[...])`, or
+  `ask(questions)` while it is open. Each question is `{"object", "text",
+  "verts", "edges", "faces"}` by stable id (`ask` checks the ids). The
+  review Blender loads `review.questions.json` on its next poll, marks each
+  question's elements in the viewport (the active one orange with its text,
+  the others blue with their number) and lists them in the LLM tab: **Show**
+  selects the elements in Edit Mode and frames them, and the field below takes
+  the answer, written to `review.answers.json` as it is typed. When the human
+  says they answered, `collect()` returns `answers` beside the correction;
+  `answers()` reads them at any time. A new review without questions clears
+  the old ones.
 - The review Blender records the human's work: dependency-graph and input
   events copy completed operators from Blender's own history to
   `review.ops.jsonl`, one line each with its settings, and an `UNDO` or

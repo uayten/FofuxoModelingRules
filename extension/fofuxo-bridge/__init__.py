@@ -9,6 +9,8 @@ From the Blender MCP:
     llm_modeling_bridge.review(["Laço"])  # show the human, in a Blender of their own
     llm_modeling_bridge.absorb()          # read back what the human saved there
     llm_modeling_bridge.collect()         # after the human's edit: their Blender saves and closes, then absorb
+    llm_modeling_bridge.review(["Laço"], questions=[{"object": "Laço", "text": "...", "verts": [12]}])
+                                          # questions marked in their viewport; collect() returns the answers
 """
 
 import sys
@@ -32,6 +34,7 @@ from .mesh_ops import MeshOpError, ensure_looptools, help_text as mesh_help, sel
 from .shape import ShapeError, capture, compare, deviation, fit, profile, rebuild, sections
 from .targets import TargetError, check as check_targets
 from .marks import clear_annotations
+from .questions import QuestionError, answers, ask
 from .regions import name_region, region_ids
 from .positions import set_positions
 from .recording import recording_summary
