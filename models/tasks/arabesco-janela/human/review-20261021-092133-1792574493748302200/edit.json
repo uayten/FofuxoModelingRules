@@ -1,0 +1,57 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\arabesco-janela\\arabescos.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\arabesco-janela\\arabescos.bridge\\review.blend",
+  "objects": [
+    "Plane.001"
+  ],
+  "why": null,
+  "status": "recorded; awaiting interview and replay validation",
+  "deltas": {
+    "Plane.001": {
+      "moved_mm": {},
+      "added": [],
+      "removed": [
+        "v81",
+        "v82",
+        "v93"
+      ]
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 32,
+      "operators": {
+        "VIEW3D_OT_select": 17,
+        "VIEW3D_OT_select_box": 1,
+        "TRANSFORM_OT_translate": 1,
+        "MESH_OT_select_mode": 3,
+        "TRANSFORM_OT_vert_slide": 3,
+        "TOPOLOGY": 3,
+        "MESH_OT_loop_select": 3,
+        "OBJECT_OT_editmode_toggle": 1
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 1,
+      "capture": "event",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 205,
+      "operators": {
+        "INPUT": 184,
+        "DRAG": 21
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": []
+    }
+  }
+}

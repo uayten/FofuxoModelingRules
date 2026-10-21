@@ -945,6 +945,25 @@ level_with=stem_row_id)` on the branch's ring through an edge that spans that
 height; the cut lands level with the stem's row. Look at the front view: the
 rows should run on across the slits as straight lines.
 
+Both ways (answered in the review of the mended stem): "quando você for
+ligando as folhas, é muito necessário ir adicionando loops conforme a
+necessidade". Where the stem's rows are long (the lower part `Plane.017`:
+~30 mm against 15-20 mm above), the stem gets loops too as each leaf joins,
+not all beforehand.
+
+### D-093: What the scene hides needs no finish (Stated, janela-2026-10-21)
+
+Answered in the review: the elbow where the upper stem meets `Plane.017`
+"vai ficar escondida atrás de uma flor, então nem vai aparecer", and the
+stem's lower end "vai entrar por dentro de um pilar, então deixa assim". The
+modeler had split `Plane.017` off to keep the mesh small for the AI; once
+joined he kept it joined ("Deixa junto"), dissolved the old end row and
+left the elbow plain.
+
+How to apply: a part the final scene hides (behind a flower, inside a
+pillar) gets a connection that holds (one island, no non-manifold) and no
+shaping beyond it. When unsure whether a spot shows, ask in the review.
+
 ### D-060: Marks are messages (Stated, B1)
 
 The modeler points at the model with marks: sharp or seam on a loop means

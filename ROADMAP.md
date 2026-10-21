@@ -78,8 +78,9 @@ plan, learn from human corrections and demonstrate a lower session cost.
    `.022`, the three-lobe curl `.027`/`.029`/`.030` and the acanthus leaf
    `.026`/`.024`/`.025` at the stem's bend by the AI and corrected by the
    modeler (D-081 to D-092). 9 leaves of `Videira do Arco` are still separate
-   objects (`Plane.023`, `.031` to `.037`, `.018`); `Plane.017` is the stem's
-   lower part. Each next leaf follows the recipes and closing checks in
+   objects (`Plane.023`, `.031` to `.037`, `.018`), all growing from the
+   stem's lower part, `Plane.017`, now joined into `Plane.001` (its elbow and
+   lower end are hidden in the scene, D-093). Each next leaf follows the recipes and closing checks in
    `extension/fofuxo-bridge/EDITING.md`, then a review; turn each correction
    into a rule or a call. Read that task's `prompt.md` and `report.md` first.
    **Done when** the modeler judges the arabesques good.

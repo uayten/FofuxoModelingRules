@@ -317,3 +317,28 @@ not meant, he had not seen the vertices joined further up; he merged them
 back (19, 494, 568, 575 gone) and added a loop between the red and the blue
 blades. "Rib" was a new word for him; explained (the creased crest along a
 leaf's middle, 5.27 mm off the base) and accepted. D-088 amended.
+
+### The stem's lower part `Plane.017` joined (2026-10-21, Claude)
+- Every leaf left (`Plane.023`, `.031` to `.037`, `.018`) grows from
+  `Plane.017`, the stem's lower part, 4 mm from `Plane.001`'s end; so the
+  stem is mended first. Backup before: `arabescos.bak-13.blend`.
+- `join_meshes(["Plane.001", "Plane.017"])`: ids 585-629. The two ends meet
+  at an elbow: the upper stem runs right and ends with the row 82-81-93, the
+  lower one starts with 586-585-629 and runs down. `bridge_loops` paired them
+  crossed (82 to 629), so the two faces were deleted and made by hand:
+  [82, 81, 585, 586] outside, [81, 93, 629, 585] inside.
+- Both old end rows lost crease and sharp (they are inside now); the rib
+  runs on (62-81-585-613); `crease_border` on the joined part;
+  `sharpen_folds` for the part's own creased ribs.
+- Result: 390 v / 272 f, 1 island, 0 non-manifold, one border of 252 edges,
+  no fold ends, no unsharp folds. Renders `arabescos.bridge/Plane.001.elbow.png`,
+  `Plane.001.stem_whole.png`. In review with three questions: the elbow's
+  shape, the stem's lower end (still at rib depth), the part's long rows.
+
+### Answers on the mended stem (2026-10-21, 06:20)
+Review `human/review-20261021-092133-...`: 387 v / 270 f, 1 island, one
+border of 250 edges. The modeler dissolved the old end row (81, 82, 93 gone)
+and creased the elbow row; `sharpen_folds` gave it its sharp. Answers: the
+elbow hides behind a flower and the lower end goes inside a pillar, so both
+stay plain (D-093); `Plane.017` stays joined; loops go into the stem as each
+leaf joins, where its rows are long (D-092 amended).
