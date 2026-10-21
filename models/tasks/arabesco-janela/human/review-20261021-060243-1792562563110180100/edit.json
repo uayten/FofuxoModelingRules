@@ -1,0 +1,180 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\arabesco-janela\\arabescos.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\arabesco-janela\\arabescos.bridge\\review.blend",
+  "objects": [
+    "Plane.001"
+  ],
+  "why": null,
+  "status": "recorded; awaiting interview and replay validation",
+  "deltas": {
+    "Plane.001": {
+      "moved_mm": {
+        "v3": [
+          -11.08622,
+          0.0,
+          0.38004
+        ],
+        "v4": [
+          -5.41229,
+          0.0,
+          0.50526
+        ],
+        "v5": [
+          9.14514,
+          0.0,
+          -7.24138
+        ],
+        "v6": [
+          8.51196,
+          0.0,
+          -4.96745
+        ],
+        "v9": [
+          3.35627,
+          0.0,
+          -0.38226
+        ],
+        "v10": [
+          1.34799,
+          0.0,
+          -0.16493
+        ],
+        "v53": [
+          -4.01402,
+          -0.00013,
+          -0.06475
+        ],
+        "v54": [
+          7.70413,
+          2e-05,
+          -4.8503
+        ],
+        "v56": [
+          3.58137,
+          8e-05,
+          -0.45711
+        ],
+        "v224": [
+          0.41663,
+          0.0,
+          -10.82282
+        ],
+        "v225": [
+          -4.36459,
+          0.0,
+          -7.20623
+        ],
+        "v226": [
+          2.77808,
+          0.0,
+          -2.81435
+        ],
+        "v227": [
+          -2.96717,
+          0.0,
+          -0.73953
+        ],
+        "v228": [
+          8.85794,
+          0.0,
+          2.50612
+        ],
+        "v231": [
+          -2.62456,
+          3.17852,
+          -7.99237
+        ],
+        "v232": [
+          0.0,
+          5.2713,
+          0.0
+        ],
+        "v234": [
+          -4.72955,
+          0.0,
+          -3.94557
+        ],
+        "v235": [
+          -7.26004,
+          0.0,
+          -8.25507
+        ],
+        "v236": [
+          -6.1571,
+          0.61938,
+          -6.34522
+        ],
+        "v241": [
+          6.4498,
+          0.0,
+          -3.88542
+        ],
+        "v242": [
+          -5.71677,
+          0.0,
+          1.9479
+        ],
+        "v243": [
+          11.86969,
+          -7e-05,
+          -3.74673
+        ]
+      },
+      "added": [
+        "v244",
+        "v245",
+        "v246",
+        "v247",
+        "v248",
+        "v249",
+        "v250",
+        "v251"
+      ],
+      "removed": []
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 207,
+      "operators": {
+        "VIEW3D_OT_select": 90,
+        "OBJECT_OT_editmode_toggle": 20,
+        "TRANSFORM_OT_vert_slide": 4,
+        "MESH_OT_select_mode": 7,
+        "MESH_OT_mark_sharp": 4,
+        "TRANSFORM_OT_translate": 43,
+        "MESH_OT_shortest_path_pick": 6,
+        "TRANSFORM_OT_edge_slide": 9,
+        "VIEW3D_OT_select_box": 9,
+        "TRANSFORM_OT_resize": 1,
+        "OBJECT_OT_shade_smooth": 1,
+        "MESH_OT_loopcut_slide": 1,
+        "TOPOLOGY": 2,
+        "MESH_OT_knife_tool": 1,
+        "MESH_OT_loop_select": 9
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 79,
+      "capture": "event",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 963,
+      "operators": {
+        "INPUT": 852,
+        "DRAG": 111
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": []
+    }
+  }
+}

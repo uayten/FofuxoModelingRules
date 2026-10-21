@@ -85,7 +85,7 @@ Design and open work: [EDITING.md](EDITING.md).
 
 | Call | Gives |
 |---|---|
-| `topology_report(name)` | islands, border loops (closed or open, length, every id in walk order), where two islands cross (the ids of the crossing faces), the nearest id pair in mm, `folds`: border vertices whose faces pass 360°, `fold_ends`: crease lines that stop inside the surface |
+| `topology_report(name)` | islands, border loops (closed or open, length, every id in walk order), where two islands cross (the ids of the crossing faces), the nearest id pair in mm, `folds`: border vertices whose faces pass 360°, `fold_ends`: crease lines that stop inside the surface, `unsharp_folds`: creased edges without sharp, `sharp_only`: inner sharp edges without crease (ask), `tips`: end rows and their depth |
 | `delete_faces(name, ids=[...])` | deletes the faces whose every vertex id is in the list |
 | `bridge_loops(name, loop_a, loop_b)` | bridges exactly two loops or two open runs named by ordered ids — never "all borders"; refuses ids with a gap |
 | `cut_between(name, id_a, id_b)` | Blender's J: a cut along the surface path between two vertices of the same island; new vertices in `new_ids` |
@@ -93,6 +93,8 @@ Design and open work: [EDITING.md](EDITING.md).
 | `fill_notch(name, id)` | closes the wedge at a fold with one quad (the side that leaves no fold), D-081 |
 | `loop_cut(name, id_a, id_b, factor)` | Loop Cut and Slide on the quad ring through edge a-b, landing at `factor` from a's side; new ids in `cut_ids` |
 | `mark_fold(name, ids)` | crease 1.0 and sharp along consecutive ids, as the modeler marks a rib (D-084) |
+| `sharpen_folds(name)` | sharp on every creased edge (D-085) |
+| `flatten_tip(name, id)` | the middle of an end row takes its corners' depth: a leaf's tip on the base (D-086) |
 | `make_face(name, ids)` | Make Face (F) through the ids in outline order, wound like its neighbours |
 | `weld(name, id_a, id_b, at="a")` | welds `a` onto `b` (`b`'s id survives), at `a`'s position (`"b"` or `"mid"` too) |
 | `weld_region(name, ids_a, ids_b, threshold)` | welds the closest pairs between two disjoint id sets under the threshold; `a` moves onto `b` |

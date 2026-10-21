@@ -789,6 +789,39 @@ reaches), then `mark_fold` the new path. On the AI's version, `weld(0, 216)`
 and `mark_fold([210, 216])` leave no fold end, no fold of the border and one
 island; the crotch line and the narrower base are still the modeler's.
 
+### D-085: A fold is crease and sharp together (Stated, janela-2026-10-21)
+
+"Você tem que adicionar sharp onde tiver sharp." Before the modeler's review
+of `Plane.022`, 12 creased edges of `Plane.001` had no sharp (ribs of the
+joined leaves, the AI's own fold 242-243); after it, one (5-7). Every fold
+the modeler marks carries both: crease keeps it hard under Subdivision,
+sharp keeps its shading hard (D-082).
+
+How to apply: `mark_fold` sets both; after a join, `topology_report` lists
+`unsharp_folds` and `sharpen_folds(name)` completes them. Note: in BMesh,
+sharp is the edge's `smooth` flag (False), not the `sharp_edge` layer; a
+`mark_fold` before 2026-10-21 03:10 wrote a layer that was lost on save.
+Sharp on a border edge is not a rule. "As edges das bordas são naturalmente
+sharp por não estarem conectadas a nada. Visualmente não tem diferença com
+ou sem sharp. Eu adicionei mesmo só para visualizar onde termina o
+arabesco. [...] Se for conectar com algo, aí eu repenso se deve ou não ter
+sharp." So the AI neither adds nor clears sharp on borders; when a junction
+turns a sharp border edge into an inner one, that sharp starts to shade and
+must be rethought: `topology_report` lists `sharp_only` (inner edges sharp
+without crease) and the AI asks the modeler about the ones its junction made.
+
+### D-086: A leaf's tip lies on the base (Stated, janela-2026-10-21)
+
+"Deixar a ponta do arabesco no mesmo valor em Y que o resto da base." The
+modeler moved the tip's rib of `Plane.022` (v232) from -5.27 mm to 0, the
+depth of its borders, and let the rows before it rise gradually (v231 to
+-2.09, v236 to -4.65). Every leaf tip of `Plane.001` already lies at 0; the
+one deep end (v81, -5.27) is the stem's, which runs on into `Plane.017`.
+
+How to apply: after joining a leaf, `topology_report` lists `tips` with
+their depth; `flatten_tip(name, rib_id)` brings a leaf's tip to the base.
+The taper of the rows behind it is the modeler's shaping.
+
 ### D-060: Marks are messages (Stated, B1)
 
 The modeler points at the model with marks: sharp or seam on a loop means

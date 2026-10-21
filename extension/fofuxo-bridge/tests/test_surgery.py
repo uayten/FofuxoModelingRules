@@ -265,6 +265,38 @@ def fold_continues():
     check(fc.topology_report("Fold")["fold_ends"] == [], "a fold run on to the border leaves no end")
 
 
+def tips_and_sharp():
+    """A V strip like a leaf: borders at y=0, the rib behind them."""
+    import bmesh
+    bpy.ops.wm.read_homefile(use_empty=True)
+    mesh = bpy.data.meshes.new("Leaf")
+    bm = bmesh.new()
+    rows = [[bm.verts.new((x, y, z)) for z, y in ((-0.5, 0.0), (0.0, -0.1), (0.5, 0.0))] for x in range(4)]
+    for a, b in zip(rows, rows[1:]):
+        bm.faces.new((a[0], b[0], b[1], a[1]))
+        bm.faces.new((a[1], b[1], b[2], a[2]))
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new("Leaf", mesh)
+    bpy.context.scene.collection.objects.link(obj)
+    from llm_modeling_bridge import mesh_io
+    mesh_io.ensure_ids(mesh, write=True)
+    tips = fc.topology_report("Leaf")["tips"]
+    check(len(tips) == 2 and all(abs(t["depth_mm"] - 100) < 0.01 for t in tips), f"report finds both tips 100 mm deep ({tips})")
+    out = fc.flatten_tip("Leaf", tips[0]["row"][1], sync=False)
+    depths = sorted(t["depth_mm"] for t in fc.topology_report("Leaf")["tips"])
+    check(depths == [0.0, 100.0] and out["moved_mm"] == 100.0, "flatten_tip brings one tip to the base")
+    rib = [mesh.attributes["llm_modeling_bridge_id"].data[v.index].value for v in mesh.vertices if abs(v.co.z) < 1e-6]
+    fc.mark_fold("Leaf", rib[:2], sharp=False, sync=False)
+    check(len(fc.topology_report("Leaf")["unsharp_folds"]) == 1, "a crease without sharp is listed")
+    out = fc.sharpen_folds("Leaf", sync=False)
+    left = fc.topology_report("Leaf")["unsharp_folds"]
+    check(out["sharpened"] == 1 and left == [], f"sharpen_folds completes it ({out.get('sharpened')}, left {left})")
+    edge = [mesh.attributes["llm_modeling_bridge_id"].data[v.index].value for v in mesh.vertices if abs(v.co.z) < 1e-6][1:3]
+    fc.mark_fold("Leaf", edge, crease=0.0, sharp=True, sync=False)
+    check(fc.topology_report("Leaf")["sharp_only"] == [sorted(edge)], "an inner sharp without crease is listed to ask about")
+
+
 def edit_beside_triangle():
     """A triangle already accepted (D-080) does not block an op; a new one does."""
     import tempfile
@@ -341,6 +373,7 @@ def main():
     sidecars()
     edit_beside_triangle()
     fold_continues()
+    tips_and_sharp()
 
     print("FAILURES", len(failures))
     if failures:

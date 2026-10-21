@@ -15,7 +15,8 @@ import bpy
 from . import mesh_io
 from .instance import assert_ai_access
 
-__all__ = ("delete_faces", "bridge_loops", "cut_between", "fill_notch", "intersect", "loop_cut", "make_face", "mark_fold", "weld", "weld_region")
+__all__ = ("delete_faces", "bridge_loops", "cut_between", "fill_notch", "flatten_tip", "intersect", "loop_cut", "make_face", "mark_fold", "sharpen_folds", "weld",
+           "weld_region")
 
 
 def state_ids(obj, write):
@@ -366,9 +367,8 @@ def mark_fold(name, ids, crease=1.0, sharp=True, sync=True):
     if len(ids) < 2:
         raise ValueError("mark_fold needs two ids at least")
     obj, bm, vids = _open(name)
-    # Layers first: adding one rebuilds the edges and drops their references.
+    # The layer first: adding one rebuilds the edges and drops their references.
     layer = bm.edges.layers.float.get("crease_edge") or bm.edges.layers.float.new("crease_edge")
-    sharp_layer = bm.edges.layers.bool.get("sharp_edge") or bm.edges.layers.bool.new("sharp_edge")
     index_of, missing = _by_id(bm, vids, ids)
     if missing:
         bm.free()
@@ -382,9 +382,60 @@ def mark_fold(name, ids, crease=1.0, sharp=True, sync=True):
         raise ValueError(f"no edge between {gaps}: cut_between first")
     for edge in edges:
         edge[layer] = crease
-        edge[sharp_layer] = sharp
+        edge.smooth = not sharp  # BMesh keeps sharp as the edge's smooth flag, not a layer
     out = _finish(obj, bm, sync)
     out["marked"] = [[a, b] for a, b in zip(ids, ids[1:])]
+    return out
+
+
+def sharpen_folds(name, sync=True):
+    """Mark sharp every creased edge: a fold is crease and sharp together
+    (D-085). Returns how many edges gained sharp."""
+    assert_ai_access()
+    obj, bm, _vids = _open(name)
+    crease = bm.edges.layers.float.get("crease_edge")
+    if crease is None:
+        bm.free()
+        return {"object": name, "sharpened": 0}
+    count = 0
+    for edge in bm.edges:
+        if edge[crease] >= 0.99 and edge.smooth:  # BMesh: sharp is smooth == False
+            edge.smooth = False
+            count += 1
+    out = _finish(obj, bm, sync)
+    out["sharpened"] = count
+    return out
+
+
+def _depth_axis(obj):
+    """The local axis the piece is thinnest along: its depth (Y for the window
+    ornament, 5.4 mm against 260 x 310)."""
+    co = [v.co for v in obj.data.vertices]
+    spans = [max(c[i] for c in co) - min(c[i] for c in co) for i in range(3)]
+    return spans.index(min(spans))
+
+
+def flatten_tip(name, vertex_id, sync=True):
+    """Bring a leaf's tip to the base: the middle vertex of an end row (the
+    rib) takes the depth of the two border corners beside it (D-086)."""
+    assert_ai_access()
+    obj, bm, vids = _open(name)
+    index_of, missing = _by_id(bm, vids, [vertex_id])
+    if missing:
+        bm.free()
+        raise ValueError(f"unknown ids {missing}")
+    mid = index_of[vertex_id]
+    corners = [e.other_vert(mid) for e in mid.link_edges
+               if e.is_boundary and len(e.other_vert(mid).link_faces) == 1]
+    if len(corners) != 2:
+        bm.free()
+        raise ValueError(f"v{vertex_id} is not the middle of a tip row (two border corners beside it)")
+    axis = _depth_axis(obj)
+    before = mid.co[axis]
+    mid.co[axis] = (corners[0].co[axis] + corners[1].co[axis]) / 2
+    moved = abs(mid.co[axis] - before)
+    out = _finish(obj, bm, sync)
+    out["moved_mm"] = round(moved * 1000, 2)
     return out
 
 

@@ -316,6 +316,35 @@ def report(name, limit_ids=None):
                 out["fold_ends"].append({"id": int(ids[vert.index]),
                                          "from": int(ids[creased[0].other_vert(vert).index])})
 
+    # A fold is crease and sharp together (D-085): a creased edge without
+    # sharp is a mark left half done. sharpen_folds completes them.
+    out["unsharp_folds"] = []
+    if layer is not None:
+        for edge in bm.edges:
+            if edge[layer] >= 0.99 and edge.smooth:  # BMesh keeps sharp as smooth == False
+                out["unsharp_folds"].append(sorted(int(ids[v.index]) for v in edge.verts))
+
+    # Sharp on an inner edge without crease shades hard: a choice, or a border
+    # mark (only a visual aid there) that a junction turned inward. Ask (D-085).
+    out["sharp_only"] = [sorted(int(ids[v.index]) for v in edge.verts) for edge in bm.edges
+                         if not edge.smooth and not edge.is_boundary and len(edge.link_faces) == 2
+                         and (layer is None or edge[layer] < 0.99)]
+
+    # Tips: an end row (border corner, middle, border corner). A leaf's tip
+    # lies on the base (D-086): depth_mm is how far the middle stands off it.
+    from .surgery import _depth_axis
+    axis = _depth_axis(obj)
+    out["tips"] = []
+    for vert in bm.verts:
+        if len(vert.link_faces) != 2 or not vert.is_boundary:
+            continue
+        corners = [e.other_vert(vert) for e in vert.link_edges
+                   if e.is_boundary and len(e.other_vert(vert).link_faces) == 1]
+        if len(corners) == 2:
+            base = (corners[0].co[axis] + corners[1].co[axis]) / 2
+            out["tips"].append({"row": [int(ids[corners[0].index]), int(ids[vert.index]), int(ids[corners[1].index])],
+                                "depth_mm": round(abs(vert.co[axis] - base) * 1000, 2)})
+
     for index, island in enumerate(islands):
         co = [vert.co for vert in island]
         lo = [min(c[i] for c in co) for i in range(3)]

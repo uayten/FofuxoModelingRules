@@ -152,3 +152,26 @@ base 12.7 → 8.1 mm; curl flattened in depth (resize Y→0 on v184, v187,
 v188, v198). Recorded as D-084; `fold_ends` finds the AI's dangling rib.
 - The 43 cage texts of objects nobody works on (written by an absorb of the
   whole scene) were removed with their states; `Plane.001.txt` stays.
+
+### Fourth leaf: `Plane.022`, a branch off the stem's underside (2026-10-21, Claude)
+- `join_meshes`: leaf ids 223-240. Backup before: `arabescos.bak-08.blend`.
+- The leaf's first two rows lay on the stem's lower half (root near the stem
+  rib v55); it peels off the bottom border at x≈111 mm and hooks down.
+- Steps (D-084 applied from the start): `delete_faces` the two rows on the
+  stem (4 faces); `loop_cut(4, 6, 0.43)` at the peel (v241-v243); `weld`
+  229→242 (leaf's upper edge onto the stem's bottom border) and 233→243
+  (rib onto rib); `delete_faces` the stem face under the leaf
+  [243, 54, 6, 242]; `fill_notch(243)` made [243, 54, 6, 228], so the stem's
+  bottom border runs on into the leaf's lower edge; `mark_fold([242, 243])`
+  for the crotch.
+- Result: 142 v / 94 f, 1 island, 0 non-manifold, no folds, no fold ends,
+  no new triangle. Render `arabescos.bridge/Plane.001.leaf4.png`; in review.
+- The leaf's part that ran along the stem (x 125-156) is gone: the branch now
+  starts at the peel. The modeler may want that tail back.
+
+### The modeler's correction of `Plane.022` (2026-10-21, 03:02)
+Review `human/review-20261021-060243-...`: 150 v / 100 f, 0 non-manifold.
+Knife and loop cut at the junction (v244-v251), folds meeting at v243,
+sharp on every creased edge and on 58 border edges, the tip v232 to y=0 with
+the rows behind it tapered, shade smooth. D-085, D-086. `sharpen_folds` then
+marked the last creased edge without sharp (5-7).

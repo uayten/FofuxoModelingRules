@@ -147,3 +147,14 @@ With those, the junction becomes a sequence the AI can actually run and check:
   leaf's inner edge and the stem is a fold too.
 - Fixed: `views(crop=True)` drew horizontal stripes: `Panel.dot` sliced a row
   with a negative end for a vertex left of the panel.
+
+### Status 2026-10-21 (the modeler's `Plane.022` correction)
+- Review `human/review-20261021-060243-...`: knife ×1 and loop cut ×1 at the
+  junction (v244-v251, folds meeting at v243 again, 2 triangles, 2
+  pentagons), mark sharp ×4 (creased edges and 58 border edges), the tip's
+  rib to the base, shade smooth.
+- Fixed: `mark_fold` lost the sharp (BMesh keeps sharp as `edge.smooth`).
+- New: `topology_report` lists `unsharp_folds` and `tips`; `sharpen_folds`,
+  `flatten_tip` (D-085, D-086).
+- Every leaf now ends with: `fold_ends` empty, `unsharp_folds` empty, every
+  leaf tip at depth 0, `folds` empty, then the render and the review.

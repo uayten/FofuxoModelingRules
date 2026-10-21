@@ -73,13 +73,14 @@ plan, learn from human corrections and demonstrate a lower session cost.
    `models/tasks/arabesco-janela/arabescos.blend`: the fleur-de-lis finial, the
    arch vine, the bottom band and the right capital leaves, with the window
    frame kept as a reference collection and the band's `Arabesco Base.png`
-   packed. The stem `Plane.001` already carries two joined leaves; the modeler
-   rebuilt the first junction by hand and it holds (0 non-manifold). The second
-   (`Plane.019`) was made by the AI and corrected by the modeler (D-081,
-   D-082); 18 leaves of the vine are still separate objects. Each next leaf
-   follows the junction recipe in `extension/fofuxo-bridge/EDITING.md`, then a
-   review; turn each correction into a rule or a call. Read that task's
-   `prompt.md` and `report.md` first. **Done when** the modeler judges the arabesques good.
+   packed. The stem `Plane.001` carries four leaves, all connected (1 island,
+   0 non-manifold): `Plane.020` by the modeler's hand, `Plane.019`, `.021`
+   and `.022` by the AI and corrected by the modeler (D-081 to D-086). 15
+   leaves of `Videira do Arco` are still separate objects; `Plane.017` is the
+   stem's lower part. Each next leaf follows the recipes and closing checks in
+   `extension/fofuxo-bridge/EDITING.md`, then a review; turn each correction
+   into a rule or a call. Read that task's `prompt.md` and `report.md` first.
+   **Done when** the modeler judges the arabesques good.
 
 ## Order
 
