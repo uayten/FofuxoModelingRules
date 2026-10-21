@@ -12,12 +12,15 @@ From the Blender MCP:
 """
 
 import sys
+from importlib import import_module
 
 import bpy
 
 from . import cage_format, concept, frame, labels, mesh_io, marks, mesh_ops, modifier_info, object_ops, ops, render, rounds, selection, targets as targets_mod, topology, validate
-from . import instance as instance_mod
-from . import lock as lock_mod
+# `from .lock import lock` below rebinds the package's `lock` to the function,
+# so on a reload `from . import lock` would return the function, not the module.
+instance_mod = import_module(".instance", __name__)
+lock_mod = import_module(".lock", __name__)
 from .concept import find_box, sample
 from .labels import LabelError, mark_loop, show, show_faces
 from .editability import editability
@@ -36,6 +39,8 @@ from .workbench import workbench
 from .migration import migrate_scene
 from .sessions import stage_handoff
 from .catalog import catalog_edit, catalog_measures
+from .topology import report as topology_report
+from .surgery import delete_faces, bridge_loops, cut_between, fill_notch, intersect, make_face, weld, weld_region
 from .sync import SyncError, annotations, edit, flip, set_frame, sync, views  # sync shadows the submodule name on purpose
 
 ALIAS = "llm_modeling_bridge"
@@ -74,5 +79,3 @@ def unregister():
         bpy.utils.unregister_class(cls)
     if sys.modules.get(ALIAS) is sys.modules[__name__] and __name__ != ALIAS:
         del sys.modules[ALIAS]
-from .topology import report as topology_report
-from .surgery import delete_faces, bridge_loops, cut_between, weld, weld_region

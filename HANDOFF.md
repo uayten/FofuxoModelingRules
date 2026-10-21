@@ -17,11 +17,11 @@ Updated: 2026-10-21
   reaches the AI file, and a join no longer leaves duplicated stable ids.
 
 ## Next step
-ROADMAP 2, the coincident cut. `mesh.intersect` cuts both islands but creates
-no coincident vertices (18 non-manifold edges survive `weld_region`), so the
-two borders cannot be bridged. Make the cut line shared, then run the
-`Plane.019` junction with the ids from `topology_report` and show it with
-`views(crop=True)` before saving.
+ROADMAP 1, the next leaf of the vine, with the junction recipe
+(`extension/fofuxo-bridge/EDITING.md`): `join_meshes`, `topology_report`,
+delete / weld / `make_face`, `fill_notch` on every fold, crease, render,
+review. The `Plane.019` junction is done (AI + modeler, D-081/D-082).
+Keep the levels and sharp marks the modeler set (D-082, D-083).
 
 ## Open questions
 - `.bridge/*.txt` cage text: inside the .blend as text datablocks, one file per

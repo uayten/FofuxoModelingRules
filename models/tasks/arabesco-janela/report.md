@@ -104,3 +104,32 @@ the open Blender.
   45 v / 28 faces, 18 vine leaves left.
 - Renders: `renders/top_cluster_solid.png`, `renders/top_cluster_xray.png`,
   `renders/merge_step1.png`, `renders/junction_zoom.png`.
+
+### The `Plane.019` junction by the AI (2026-10-21, Claude)
+- The saved file carried duplicated ids on the leaf (joined with
+  `object.join`, not `join_meshes`); repaired, the leaf is now ids 157-177.
+- `intersect` gave one island but no clean X: the leaf lies about 1 mm from
+  the stem over a long strip, so the cut came out as 7- to 9-gons and two
+  chains that split neither surface. Reverted.
+- The leaf's base row 157-166-159 sits on the stem's crotch row 86-87-88
+  (2.9 / 1.0 / 4.6 mm). Attempt: a three-way split at 87, like the modeler's
+  two-way one. `delete_faces` [166,159,176,177] (the leaf's left base face)
+  and [86,87,103,104] (the middle leaf's right base face), `weld` 157→86 and
+  166→87, `make_face` [87,103,104]. Result: 89 v / 57 f, 1 island,
+  0 non-manifold, one closed border of 65 edges, one triangle (not creased).
+- Render: `arabescos.bridge/Plane.001.junction2.png`. Sent to the modeler in
+  a review of `Plane.001` alone. Backup before: `arabescos.bak-06.blend`.
+
+### The modeler's correction of the AI junction (2026-10-21, 02:19)
+Review `human/review-20261021-051941-...`: 240 operators, 55 moves, F2 ×1,
+loop cut ×1, edge slide ×1, rotate ×1, resize ×2 (Y to 0: flattened the
+depth of v95, v96, v99, v102), mark sharp ×1, `Smooth by Angle` removed,
+viewport Subdivision 2 → 1. Result 92 v / 60 f, 0 non-manifold, 3 triangles.
+- Kept the AI's three-way split and its triangle 87-103-104.
+- Closed the fork: quad 177-176-104-87; v87 is no longer on the border
+  (D-081). Creased v87-v104.
+- Loop cut on the left leaf (v178-v180) and reshaped it; the curl leaf moved
+  as a block by 5.8 mm; the crotch v86-v88 moved 8-10 mm.
+- Sharp by hand along the stem (D-082).
+- `fill_notch` on the AI's version reproduces the quad.
+- The modeler confirmed both (D-082 sharp by hand; D-083 Subdivision drops to 1 as loops go in, export likely at 1).

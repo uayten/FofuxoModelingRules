@@ -82,3 +82,43 @@ With those, the junction becomes a sequence the AI can actually run and check:
   `delete_faces` (one face by ids), `weld` (one pair).
 - `weld_region` is implemented but not yet exercised on a real junction.
 - The first real target: the leaf `Plane.019` joined into `Plane.001` at `arabescos.bak-04.blend` — 2 islands, 9 crossing face pairs, nearest 1.02 mm (ids 87/125).
+
+### Status 2026-10-21 (review)
+- `cut_between` used `bmesh.ops.connect_verts`, which only links two vertices of
+  one face; it now uses `connect_vert_pair` (Blender's J) and walks across
+  faces, returning the new vertices' ids in `new_ids`. It refuses two islands.
+- `topology_report` truncated every id list to 12, so its loops could not be
+  passed to `bridge_loops`; the lists are now whole, open runs come out whole
+  (`closed: false`), and each crossing names the vertex ids of the faces that
+  pass through each other (`ids_a`, `ids_b`).
+- `bridge_loops` refuses a list with a gap between consecutive ids instead of
+  bridging part of it, and takes two open runs as well as two closed loops.
+- `weld_region` refuses one set passed twice, pairs closest first and welds
+  with `weld_verts`.
+- Every call returns `non_manifold`, `boundary` and `wire` edge counts, and
+  repairs ids against the last sync state, so sync does not renumber them.
+- The "cut is not shared" diagnosis was wrong: `mesh.intersect` with
+  `separate_mode="NONE"` merges the cut line (1 component); its 18 edges with
+  4 faces are the crossing, removed by deleting the flaps.
+- `intersect(name, island_id)` runs Edit Mode's Intersect (Knife) with
+  `SELECT_UNSELECT` and Merge on one island against the rest. On `Plane.001`
+  with the leaf `Plane.019` (id 125): 112 v / 69 f, 1 island, 18 edges with 4
+  faces, 20 new vertices on the cut (ids 137-156).
+- Sidecars: `absorb()` syncs only what the human changed, what already has a
+  text, and what an annotation points at (a review opens the whole scene);
+  `join_meshes()` and `absorb()` remove the text and state of objects that left
+  the file (`sync.prune_sidecars`).
+
+### Status 2026-10-21 (the `Plane.019` junction, AI then modeler)
+- The AI's junction (three-way split at v87) used `make_face`; `weld` now
+  keeps `id_b`'s id (it kept `id_a`'s, and the next call lost v87).
+- The modeler's correction (`human/review-20261021-051941-...`): one quad
+  closing the fork at v87, crease on v87-v104, a loop cut on the left leaf,
+  ~50 moves (the curl leaf moved as a block by 5.8 mm, the crotch 8-10 mm),
+  sharp marks instead of `Smooth by Angle` (D-081, D-082).
+- New: `topology_report` lists `folds`; `fill_notch(name, id)` closes one and,
+  run on the AI's version, makes the modeler's quad (87, 177, 176, 104).
+- Junction recipe: `join_meshes` → `topology_report` → `delete_faces` the
+  overlapping base faces → `weld` the base row onto the stem's row →
+  `make_face` what the split leaves open → `fill_notch` every fold → crease
+  the triangle's edges → `views(crop=True)` → review.

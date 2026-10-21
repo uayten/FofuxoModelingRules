@@ -234,47 +234,57 @@ def _islands(bm):
 
 
 def _edge_loops(edges):
-    """Walk boundary edges into loops, one step per vertex (two edges at most)."""
+    """Walk boundary edges into loops, one step per vertex (two edges at most).
+
+    Returns [(edges in walk order, closed)]. An open run is walked from one of
+    its ends, so it comes out whole and not as two halves.
+    """
     by_vert = {}
     for edge in edges:
         for vert in edge.verts:
             by_vert.setdefault(vert.index, []).append(edge)
+    # Ends first: a walk that starts mid-run only reaches one end.
+    order = sorted(edges, key=lambda e: min(len(by_vert[v.index]) for v in e.verts) != 1)
     seen = set()
     loops = []
-    for start in edges:
+    for start in order:
         if start.index in seen:
             continue
+        vert = next((v for v in start.verts if len(by_vert[v.index]) == 1), start.verts[0])
         loop = []
         edge = start
-        vert = start.verts[0]
         while edge is not None and edge.index not in seen:
             seen.add(edge.index)
-            loop.append(edge)
-            other = edge.other_vert(vert)
-            nxt = [e for e in by_vert.get(other.index, ()) if e.index not in seen]
-            edge, vert = (nxt[0], other) if len(nxt) == 1 else (None, other)
-        loops.append(loop)
+            loop.append((edge, vert))
+            vert = edge.other_vert(vert)
+            nxt = [e for e in by_vert.get(vert.index, ()) if e.index not in seen]
+            edge = nxt[0] if len(nxt) == 1 else None
+        closed = len(loop) > 2 and vert.index == loop[0][1].index
+        loops.append((loop, closed))
     return loops
 
 
-def report(name, limit_ids=12):
+def report(name, limit_ids=None):
     """What an edit needs before cutting: islands, border loops, where two
     islands cross, and their closest vertices.
 
     Read-only. Every id is a stable id of the base mesh
-    (`llm_modeling_bridge_id`), so the numbers can be fed to a later op.
+    (`llm_modeling_bridge_id`), so the numbers can be fed to a later op: a
+    border loop's ``ids`` go to ``bridge_loops`` as they are, in walk order.
+    limit_ids shortens each id list for reading only; a shortened list cannot
+    be bridged.
     """
     import bmesh
     import bpy
     from mathutils import kdtree
     from mathutils.bvhtree import BVHTree
-    from . import mesh_io
+    from .surgery import state_ids
 
     obj = bpy.data.objects.get(name)
     if obj is None or obj.type != "MESH":
         raise ValueError(f"no mesh object named {name!r}")
     mesh = obj.data
-    ids, _ = mesh_io.ensure_ids(mesh, write=False)
+    ids, _ = state_ids(obj, write=False)
     bm = bmesh.new()
     bm.from_mesh(mesh)
     bm.verts.ensure_lookup_table()
@@ -282,7 +292,15 @@ def report(name, limit_ids=12):
 
     islands = _islands(bm)
     out = {"object": name, "verts": len(bm.verts), "faces": len(bm.faces),
-           "islands": [], "border_loops": [], "crossings": [], "nearest": []}
+           "islands": [], "border_loops": [], "folds": [], "crossings": [], "nearest": []}
+
+    # A border vertex whose faces turn more than a full circle: the border
+    # folds over itself, as at a fork left open (D-081). fill_notch closes it.
+    for vert in bm.verts:
+        if vert.is_boundary and vert.link_faces:
+            fan = math.degrees(sum(loop.calc_angle() for loop in vert.link_loops))
+            if fan > 360:
+                out["folds"].append({"id": int(ids[vert.index]), "fan_deg": round(fan)})
 
     for index, island in enumerate(islands):
         co = [vert.co for vert in island]
@@ -301,32 +319,38 @@ def report(name, limit_ids=12):
         member = {vert.index for vert in island}
         border = [e for e in bm.edges if len(e.link_faces) == 1
                   and e.verts[0].index in member and e.verts[1].index in member]
-        for loop in _edge_loops(border):
-            verts = []
-            for edge in loop:
-                for vert in edge.verts:
-                    if vert.index not in verts:
-                        verts.append(vert.index)
+        for loop, closed in _edge_loops(border):
+            verts = [vert.index for _edge, vert in loop]
+            if not closed:
+                verts.append(loop[-1][0].other_vert(loop[-1][1]).index)
+            keep = len(verts) if limit_ids is None else limit_ids
             out["border_loops"].append({
                 "island": index,
+                "closed": closed,
                 "edges": len(loop),
                 "verts": len(verts),
-                "length_mm": round(sum(e.calc_length() for e in loop) * 1000, 2),
-                "ids": [int(ids[i]) for i in verts[:limit_ids]],
-                "ids_truncated": max(0, len(verts) - limit_ids),
+                "length_mm": round(sum(e.calc_length() for e, _vert in loop) * 1000, 2),
+                "ids": [int(ids[i]) for i in verts[:keep]],
+                "ids_truncated": max(0, len(verts) - keep),
             })
 
     if len(islands) > 1:
-        trees = []
+        coords = [vert.co.copy() for vert in bm.verts]
+        trees, island_faces = [], []
         for island in islands:
-            faces = {f for v in island for f in v.link_faces}
-            trees.append(BVHTree.FromPolygons([vert.co.copy() for vert in bm.verts],
-                                              [[v.index for v in f.verts] for f in faces],
+            faces = sorted({f for v in island for f in v.link_faces}, key=lambda f: f.index)
+            island_faces.append(faces)
+            trees.append(BVHTree.FromPolygons(coords, [[v.index for v in f.verts] for f in faces],
                                               all_triangles=False))
         for a in range(len(islands)):
             for b in range(a + 1, len(islands)):
-                out["crossings"].append({"islands": [a, b],
-                                         "face_pairs": len(trees[a].overlap(trees[b]))})
+                hits = trees[a].overlap(trees[b])
+                # The vertex ids of the faces that pass through each other: what
+                # an intersect cuts and what delete_faces is likely to remove.
+                ids_a = sorted({int(ids[v.index]) for fa, _fb in hits for v in island_faces[a][fa].verts})
+                ids_b = sorted({int(ids[v.index]) for _fa, fb in hits for v in island_faces[b][fb].verts})
+                out["crossings"].append({"islands": [a, b], "face_pairs": len(hits),
+                                         "ids_a": ids_a, "ids_b": ids_b})
                 kd = kdtree.KDTree(len(islands[b]))
                 for i, vert in enumerate(islands[b]):
                     kd.insert(vert.co, i)

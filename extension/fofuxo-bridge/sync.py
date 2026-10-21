@@ -34,6 +34,11 @@ class SyncError(RuntimeError):
     pass
 
 
+def safe_name(name):
+    """An object name as a file name: the characters Windows refuses become _."""
+    return re.sub(r'[<>:"/\\|?*]', "_", name)
+
+
 def paths(obj):
     blend = bpy.data.filepath
     if not blend:
@@ -41,13 +46,56 @@ def paths(obj):
     from .migration import data_root, migrate_scene
     migrate_scene()
     root = data_root(blend)
-    safe = re.sub(r'[<>:"/\\|?*]', "_", obj.name)
+    safe = safe_name(obj.name)
     return {
         "text": root / f"{safe}.txt",
         "render": root / f"{safe}.png",
         "state": root / ".state" / f"{safe}.json",
         "rejected": root / f"{safe}.rejected.txt",
     }
+
+
+HEADER = "# llm_modeling_bridge"
+
+
+def prune_sidecars():
+    """Remove the text and the sync state of objects that left the file.
+
+    A join, a delete or a rename leaves `<old name>.txt` behind, describing a
+    mesh that no longer exists; the next reader cannot tell it is stale. Only
+    files the bridge wrote are touched: a text that starts with the bridge
+    header, a state with its `co` and `next_id`. Renders stay, as the record of
+    what was shown. Returns the paths removed, relative to the sidecar folder.
+    """
+    from .migration import data_root
+    root = data_root()
+    if not root.exists():
+        return []
+    live = {safe_name(obj.name) for obj in bpy.data.objects}
+    removed = []
+    for path in sorted(root.glob("*.txt")):
+        stem = path.name[:-len(".rejected.txt")] if path.name.endswith(".rejected.txt") else path.stem
+        if stem in live:
+            continue
+        try:
+            with path.open(encoding="utf-8") as f:
+                ours = f.readline().startswith(HEADER)
+        except (OSError, UnicodeDecodeError):
+            ours = False
+        if ours:
+            path.unlink()
+            removed.append(path.name)
+    for path in sorted((root / ".state").glob("*.json")):
+        if path.stem in live:
+            continue
+        try:
+            data = json.loads(path.read_text("utf-8"))
+        except (OSError, ValueError):
+            continue
+        if isinstance(data, dict) and "co" in data and "next_id" in data:
+            path.unlink()
+            removed.append(f".state/{path.name}")
+    return removed
 
 
 def _load_state(path):

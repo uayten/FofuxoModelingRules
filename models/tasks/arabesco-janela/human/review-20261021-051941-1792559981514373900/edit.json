@@ -1,0 +1,289 @@
+{
+  "before_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\arabesco-janela\\arabescos.blend",
+  "after_source": "C:\\Users\\ant7a\\OneDrive\\Documentos\\GitHub\\FofuxoModelingRules\\models\\tasks\\arabesco-janela\\arabescos.bridge\\review.blend",
+  "objects": [
+    "Plane.001"
+  ],
+  "why": null,
+  "status": "recorded; awaiting interview and replay validation",
+  "deltas": {
+    "Plane.001": {
+      "moved_mm": {
+        "v84": [
+          2.68379,
+          0.0,
+          -0.929
+        ],
+        "v85": [
+          1.65156,
+          0.0,
+          0.61934
+        ],
+        "v86": [
+          3.67777,
+          0.0,
+          -7.67598
+        ],
+        "v87": [
+          3.70996,
+          0.00329,
+          -8.10138
+        ],
+        "v88": [
+          5.2217,
+          0.0,
+          -8.98956
+        ],
+        "v89": [
+          4.02568,
+          0.0,
+          -0.929
+        ],
+        "v91": [
+          -3.02213,
+          0.0,
+          -1.17272
+        ],
+        "v92": [
+          -3.94253,
+          0.0,
+          -2.0071
+        ],
+        "v94": [
+          10.56019,
+          0.0,
+          6.14658
+        ],
+        "v95": [
+          6.02981,
+          5.2713,
+          2.64701
+        ],
+        "v96": [
+          0.70562,
+          5.2713,
+          3.40345
+        ],
+        "v97": [
+          1.63505,
+          0.0,
+          0.44592
+        ],
+        "v98": [
+          1.63505,
+          0.0,
+          0.44592
+        ],
+        "v99": [
+          1.63505,
+          4.46644,
+          0.44592
+        ],
+        "v100": [
+          2.05298,
+          0.0,
+          7.97405
+        ],
+        "v101": [
+          1.59502,
+          0.0,
+          3.86993
+        ],
+        "v102": [
+          1.23133,
+          5.2713,
+          2.23488
+        ],
+        "v103": [
+          0.21505,
+          0.0,
+          0.07169
+        ],
+        "v104": [
+          -2.90314,
+          0.0,
+          0.70488
+        ],
+        "v105": [
+          0.07168,
+          0.0,
+          0.0
+        ],
+        "v107": [
+          -1.34189,
+          0.0,
+          0.51611
+        ],
+        "v108": [
+          -2.16767,
+          0.0,
+          -1.13544
+        ],
+        "v112": [
+          0.64515,
+          0.0,
+          0.57345
+        ],
+        "v113": [
+          -0.64514,
+          0.0,
+          -0.35841
+        ],
+        "v114": [
+          -2.58056,
+          0.0,
+          -2.15047
+        ],
+        "v115": [
+          1.57701,
+          0.0,
+          -5.30449
+        ],
+        "v158": [
+          5.76394,
+          0.0,
+          0.47483
+        ],
+        "v160": [
+          6.35851,
+          0.0,
+          1.5153
+        ],
+        "v161": [
+          5.76394,
+          0.0,
+          0.47482
+        ],
+        "v162": [
+          5.76395,
+          0.0,
+          0.47482
+        ],
+        "v163": [
+          5.76394,
+          0.0,
+          0.47483
+        ],
+        "v164": [
+          5.76394,
+          0.0,
+          0.47482
+        ],
+        "v165": [
+          5.76394,
+          0.0,
+          0.47483
+        ],
+        "v167": [
+          5.76395,
+          5.2713,
+          0.47482
+        ],
+        "v168": [
+          4.27754,
+          0.0,
+          0.92075
+        ],
+        "v169": [
+          5.76395,
+          0.0,
+          0.47483
+        ],
+        "v170": [
+          5.76394,
+          0.0,
+          0.47483
+        ],
+        "v171": [
+          5.76394,
+          0.0,
+          0.47483
+        ],
+        "v172": [
+          5.76394,
+          0.0,
+          0.47482
+        ],
+        "v173": [
+          5.76394,
+          0.0,
+          0.47483
+        ],
+        "v174": [
+          5.76394,
+          0.0,
+          0.47482
+        ],
+        "v175": [
+          5.76394,
+          0.0,
+          0.47482
+        ],
+        "v176": [
+          5.91926,
+          0.0,
+          1.93236
+        ],
+        "v177": [
+          3.68802,
+          0.0,
+          0.39741
+        ]
+      },
+      "added": [
+        "v178",
+        "v179",
+        "v180"
+      ],
+      "removed": []
+    }
+  },
+  "recordings": {
+    "operators": {
+      "count": 240,
+      "operators": {
+        "VIEW3D_OT_select": 109,
+        "OBJECT_OT_editmode_toggle": 26,
+        "MESH_OT_select_mode": 5,
+        "VIEW3D_OT_select_box": 14,
+        "MESH_OT_select_more": 11,
+        "MESH_OT_hide": 1,
+        "MESH_OT_reveal": 1,
+        "TRANSFORM_OT_translate": 55,
+        "MESH_OT_f2": 1,
+        "MESH_OT_select_less": 1,
+        "MESH_OT_loopcut_slide": 1,
+        "TOPOLOGY": 1,
+        "MESH_OT_shortest_path_pick": 6,
+        "TRANSFORM_OT_rotate": 1,
+        "TRANSFORM_OT_edge_slide": 1,
+        "TRANSFORM_OT_resize": 2,
+        "MESH_OT_loop_select": 2,
+        "MESH_OT_mark_sharp": 1,
+        "OBJECT_OT_modifier_remove": 1
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 122,
+      "capture": "event",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas"
+    },
+    "inputs": {
+      "count": 1115,
+      "operators": {
+        "INPUT": 962,
+        "DRAG": 153
+      },
+      "undos": 0,
+      "redos": 0,
+      "moves_by_region": {},
+      "unattributed_vertex_samples": 0,
+      "capture": "legacy_or_mixed",
+      "combined_boundaries": 0,
+      "attribution": "completed operators and strokes carry boundary deltas; legacy poll records may group operations; net_mm sums vertex deltas",
+      "replay_candidates": []
+    }
+  }
+}

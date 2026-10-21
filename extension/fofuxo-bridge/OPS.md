@@ -85,10 +85,14 @@ Design and open work: [EDITING.md](EDITING.md).
 
 | Call | Gives |
 |---|---|
-| `topology_report(name)` | islands, border loops (edge count, length, ordered ids), where two islands cross, the nearest id pair in mm |
+| `topology_report(name)` | islands, border loops (closed or open, length, every id in walk order), where two islands cross (the ids of the crossing faces), the nearest id pair in mm, `folds`: border vertices whose faces pass 360° |
 | `delete_faces(name, ids=[...])` | deletes the faces whose every vertex id is in the list |
-| `bridge_loops(name, loop_a, loop_b)` | bridges exactly two loops named by ordered ids — never "all borders" |
-| `cut_between(name, id_a, id_b)` | one cut along the segment between two vertices of the same island |
-| `weld(name, id_a, id_b, at="a")` | merges two vertices, keeping `a`'s position (`"b"` or `"mid"` too) |
-| `weld_region(name, ids_a, ids_b, threshold)` | melts the closest pairs between two id sets under the threshold |
+| `bridge_loops(name, loop_a, loop_b)` | bridges exactly two loops or two open runs named by ordered ids — never "all borders"; refuses ids with a gap |
+| `cut_between(name, id_a, id_b)` | Blender's J: a cut along the surface path between two vertices of the same island; new vertices in `new_ids` |
+| `intersect(name, island_id)` | Intersect (Knife), Merge: cuts the island holding the id against the rest with one shared line; its ids in `cut_ids` |
+| `fill_notch(name, id)` | closes the wedge at a fold with one quad (the side that leaves no fold), D-081 |
+| `make_face(name, ids)` | Make Face (F) through the ids in outline order, wound like its neighbours |
+| `weld(name, id_a, id_b, at="a")` | welds `a` onto `b` (`b`'s id survives), at `a`'s position (`"b"` or `"mid"` too) |
+| `weld_region(name, ids_a, ids_b, threshold)` | welds the closest pairs between two disjoint id sets under the threshold; `a` moves onto `b` |
 
+Every call returns `non_manifold`, `boundary` and `wire` edge counts, to check a step before the next.

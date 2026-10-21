@@ -1035,9 +1035,55 @@ def join_meshes(names, into=None, sync=True):
            "verts": len(target.data.vertices), "faces": len(target.data.polygons),
            "fresh_ids": len(fresh)}
     if sync:
-        from .sync import sync as sync_fn
+        from .sync import prune_sidecars, sync as sync_fn
         r = sync_fn(target.name, render=False)
         out["sync"] = {k: r[k] for k in ("action", "issues") if k in r}
+        out["pruned"] = prune_sidecars()  # the joined objects' texts describe meshes that are gone
+    return out
+
+
+def _object_signature(obj):
+    """What a review can change on an object: transform, modifier stack, and
+    the mesh with every point, edge and face attribute (marks included)."""
+    import numpy as np
+    parts = [tuple(round(x, 7) for row in obj.matrix_basis for x in row),
+             tuple((m.name, m.type, m.show_viewport) for m in getattr(obj, "modifiers", ()))]
+    mesh = obj.data if obj.type == "MESH" else None
+    if mesh is not None:
+        co = np.zeros(len(mesh.vertices) * 3)
+        mesh.vertices.foreach_get("co", co)
+        loops = np.zeros(len(mesh.loops), dtype=np.int64)
+        mesh.loops.foreach_get("vertex_index", loops)
+        parts += [len(mesh.vertices), len(mesh.edges), len(mesh.polygons),
+                  np.round(co, 7).tobytes(), loops.tobytes()]
+        for attr in mesh.attributes:
+            if attr.data_type in {"FLOAT", "INT", "BOOLEAN", "INT8"} and not attr.name.startswith("."):
+                values = np.zeros(len(attr.data), dtype=bool if attr.data_type == "BOOLEAN" else float)
+                attr.data.foreach_get("value", values)
+                parts.append((attr.name, attr.domain, values.tobytes()))
+    return hash(tuple(parts))
+
+
+def _near_strokes(names, margin=0.1):
+    """The objects whose bounding box (grown by margin of its size) holds a
+    point of a 3D annotation stroke: what the modeler pointed at."""
+    from mathutils import Vector
+    from .marks import _strokes
+    points = [p for _layer, _k, mode, pts in _strokes() if mode == "3DSPACE" for p in pts]
+    if not points:
+        return set()
+    out = set()
+    for name in names:
+        obj = bpy.data.objects.get(name)
+        if obj is None or obj.type != "MESH":
+            continue
+        corners = [obj.matrix_world @ Vector(c) for c in obj.bound_box]
+        lo = Vector([min(c[i] for c in corners) for i in range(3)])
+        hi = Vector([max(c[i] for c in corners) for i in range(3)])
+        grow = (hi - lo) * margin
+        lo, hi = lo - grow, hi + grow
+        if any(all(lo[i] <= p[i] <= hi[i] for i in range(3)) for p in points):
+            out.add(name)
     return out
 
 
@@ -1109,6 +1155,7 @@ def absorb(names=None, sync=True, verbose=False, why=None, human_dir=None):
     bpy.ops.wm.save_mainfile()
     from .catalog import archive_review
     example = archive_review(bpy.data.filepath, path, names, why=why, human_dir=human_dir)
+    before = {name: _object_signature(bpy.data.objects[name]) for name in names if name in bpy.data.objects}
     done = replace_from(path, names)
     _take_annotations(path)
     state["absorbed"] = mtime
@@ -1147,14 +1194,26 @@ def absorb(names=None, sync=True, verbose=False, why=None, human_dir=None):
         state["inputs_read"] = len(records)
         _save_review_state(state)
     if sync:
-        from .sync import sync as sync_fn
+        from .sync import paths, prune_sidecars, sync as sync_fn
+        out["pruned"] = prune_sidecars()
+        # Sync what the human changed, what the AI already works on (it has a
+        # text) and what an annotation points at; a review opens the whole
+        # scene, and a text for every object nobody touched is noise.
+        marked = _near_strokes(done)
+        unchanged = []
         for name in done:
-            if bpy.data.objects[name].type != "MESH":
+            obj = bpy.data.objects[name]
+            if obj.type != "MESH":
+                continue
+            if (name in before and _object_signature(obj) == before[name] and name not in marked
+                    and not paths(obj)["text"].exists()):
+                unchanged.append(name)
                 continue
             r = sync_fn(name, render=False)
             out[name] = {k: r[k] for k in ("action", "blender_edits", "blender_deltas", "blender_by_loop", "stack_changes", "marks",
                                            "annotations", "changes_by_region", "error") if k in r}
             out[name]["issues"] = [f"{i['level']} {i['code']} {' '.join(i['verts'])}" for i in r["issues"]]
+        out["unchanged"] = unchanged
     say(f"absorbed the human's review: {', '.join(done)}")
     bpy.ops.wm.save_mainfile()
     from .reports import finish

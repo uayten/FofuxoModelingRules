@@ -75,25 +75,15 @@ plan, learn from human corrections and demonstrate a lower session cost.
    frame kept as a reference collection and the band's `Arabesco Base.png`
    packed. The stem `Plane.001` already carries two joined leaves; the modeler
    rebuilt the first junction by hand and it holds (0 non-manifold). The second
-   leaf (`Plane.019`) is joined but not connected, and 18 leaves of the vine
-   are still separate objects. Read that task's `prompt.md` and `report.md`
-   first. **Done when** the modeler judges the arabesques good.
-
-2. **Finish the AI's cage surgery** (`extension/fofuxo-bridge/EDITING.md`).
-   Done and tested (`tests/test_surgery.py`, 10 checks; suite at 244):
-   `topology_report` (islands, border loops with ids, crossings, nearest pair)
-   and `delete_faces`, `bridge_loops`, `cut_between`, `weld`, `weld_region` by
-   stable id. Left: the cut is not shared. `mesh.intersect` cuts both islands
-   but no vertices coincide, so `weld_region` leaves 18 non-manifold edges and
-   the borders cannot be bridged. Make the cut line coincident — project the
-   cut points of one surface onto the other — then run the `Plane.019`
-   junction. **Done when** the AI reproduces the junction the modeler made by
-   hand (`human/review-20261021-040140-...`) with no non-manifold edges.
+   (`Plane.019`) was made by the AI and corrected by the modeler (D-081,
+   D-082); 18 leaves of the vine are still separate objects. Each next leaf
+   follows the junction recipe in `extension/fofuxo-bridge/EDITING.md`, then a
+   review; turn each correction into a rule or a call. Read that task's
+   `prompt.md` and `report.md` first. **Done when** the modeler judges the arabesques good.
 
 ## Order
 
 | Step | What | Why first |
 |---|---|---|
-| 1 | Item 2: the coincident cut, then the `Plane.019` junction | the junction is blocked on it; item 1 waits for the same tool |
-| 2 | Item 1: continue the vine, leaf by leaf | the modeler's chosen work |
+| 1 | Item 1: continue the vine, leaf by leaf | the modeler's chosen work |
 

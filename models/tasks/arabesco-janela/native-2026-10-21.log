@@ -234,3 +234,16 @@ Transformator Icons reloaded
 ISLANDS [(0, 71), (1, 21)] leaf 1
 DEL_IDS 16
 48:07.344  blend            | Read blend: "C:\Users\ant7a\OneDrive\Documentos\GitHub\FofuxoModelingRules\models\tasks\arabesco-janela\arabescos.blend"
+01:02:09.860  blend            | Saved session recovery to "C:\Users\ant7a\AppData\Local\Temp\quit.blend"
+Traceback (most recent call last):
+  File "C:\Program Files (x86)\Steam\steamapps\common\Blender\5.2\scripts\modules\addon_utils.py", line 595, in disable
+    mod.unregister()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\ant7a\AppData\Roaming\Blender Foundation\Blender\5.2\extensions\user_default\llm_modeling_bridge\__init__.py", line 71, in unregister
+    lock_mod.unlock()
+    ^^^^^^^^^^^^^^^
+AttributeError: 'function' object has no attribute 'unlock'
+Transformator Icons reloaded
+Exception in module unregister(): 'C:\\Users\\ant7a\\AppData\\Roaming\\Blender Foundation\\Blender\\5.2\\extensions\\user_default\\llm_modeling_bridge\\__init__.py'
+
+Blender quit

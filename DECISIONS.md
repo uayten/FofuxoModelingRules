@@ -727,6 +727,48 @@ result keeps its shading and silhouette, is acceptable. What matters is the
 evaluated result, not the triangle count. The junction of the window vine is
 the first case: two triangles, both creased, and the Subdivision result holds.
 
+### D-081: A fork closes around its split vertex (Seen, janela-2026-10-21)
+
+The AI joined the leaf `Plane.019` to the vine at a three-way split on v87
+and left the wedge between the new leaf and the middle leaf open: v87 stayed
+on the border with its faces turning 450°, the border folded over itself.
+The modeler's edit closed it with one quad (F2 on v87, v177, v176, v104), so
+v87 ends inside the surface, and creased v87-v104, the edge between the
+junction triangle and that quad (D-080). The other crotches of the fork
+(v104, v105, 280-330°) stay open: that is the outline between two leaves.
+
+How to apply: after a junction, `topology_report` lists `folds`, the border
+vertices whose faces pass 360°; close each with `fill_notch(name, id)`, which
+picks the side that leaves no fold (it reproduces the modeler's quad from the
+AI's version), then crease the edge it shares with a junction triangle.
+
+### D-082: Sharp by hand, not Smooth by Angle, once the shape settles (Stated, janela-2026-10-21)
+
+"O sharp do smooth by angle é bom no começo, a gente usava para eu mostrar
+onde era pra acontecer cada coisa, mas com a evolução do programinha, ficou só
+a função de modificar as normals. É muito mais preciso editar o sharp na mão e
+eu posso colocar exatamente onde eu quero, é bem melhor."
+
+The `Smooth by Angle` modifier serves the start of a piece. Once the shape
+settles, the modeler removes it and marks sharp edge by edge where the
+shading must break (on `Plane.001`: the stem's fold, v52-v62, v76, v77, v81,
+v87). The AI does not add `Smooth by Angle` to a piece already marked by hand,
+and does not put it back; a fold that shades wrong is a sharp mark to add,
+asked as in D-060.
+
+### D-083: Subdivision goes down as loops go in (Stated, janela-2026-10-21)
+
+"A subdivision em 1 foi para ver se a peça funcionava com menos vértices [...]
+o resultado final que eu vou exportar provavelmente é em 1. É comum alternar
+os levels de subdivisão conforme for deixando a malha mais complexa. Começa
+com um mais alto e vai diminuindo conforme for adicionando novos loops."
+
+A coarse cage starts at a higher viewport level; each round of loops lowers
+it, and the arabesques are expected to export at level 1. A level the
+modeler lowers is a decision, not an accident: the AI keeps it, judges the
+piece at that level (D-015: coherent density across the model) and does not
+raise it to make a render look smoother.
+
 ### D-060: Marks are messages (Stated, B1)
 
 The modeler points at the model with marks: sharp or seam on a loop means
